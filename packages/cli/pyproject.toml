@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "motusos"
-version = "0.4.5"
+version = "0.1.0"
 description = "Command Center for AI Agents - Real-time observability for Claude Code, Codex CLI, and AI coding assistants"
 readme = "README.md"
 license = "MIT"

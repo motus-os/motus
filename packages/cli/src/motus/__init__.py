@@ -35,9 +35,9 @@ except PackageNotFoundError as e:
 
     logger = get_logger(__name__)
     logger.debug(f"Failed to get version from package metadata: {e}")
-    __version__ = "0.4.5"  # fallback for editable installs
+    __version__ = "0.1.0"  # fallback for editable installs
 
-__author__ = "Ben Voss"
+__author__ = "Motus Contributors"
 
 # PERFORMANCE: Lazy imports to reduce CLI startup time
 # Only import lightweight modules at package level
