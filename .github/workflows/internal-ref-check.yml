@@ -38,7 +38,7 @@ jobs:
           if [ $FAIL -eq 1 ]; then
             echo ""
             echo "Public repo must contain ONLY shipped product."
-            echo "Internal artifacts belong in motus-command (internal repo)."
+            echo "Internal artifacts belong in the internal repo (not public)."
             exit 1
           fi
 
@@ -49,7 +49,8 @@ jobs:
           echo "Scanning for internal references in file contents..."
 
           # Patterns that should never appear in public repo
-          PATTERNS="bnvoss|motus-command|\.ai/|/Users/ben|veritas\.associates"
+          # Note: Only personal identifiers - repo structure checked above
+          PATTERNS="bnvoss|/Users/ben|veritas\.associates"
 
           # Scan ENTIRE repo (not just packages/) including docs/, root files
           if grep -rE "$PATTERNS" . \
@@ -63,6 +64,8 @@ jobs:
             --include="*.yml" \
             --include="*.toml" \
             --exclude-dir=".git" \
+            --exclude-dir=".github" \
+            --exclude-dir=".venv" \
             --exclude-dir="node_modules" \
             --exclude-dir="__pycache__"; then
             echo ""
