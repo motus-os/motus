@@ -22,7 +22,7 @@ Evidence in the repository shows Textual was chosen and used to implement the TU
 
 - Dependency: `pyproject.toml` includes `textual>=6.0.0`
 - TUI implementation: `src/motus/ui/tui/app.py`, `src/motus/ui/tui/panels/*`
-- Snapshot tests: `tests/test_snapshots.py` (“Textual Snapshot Tests for MC TUI”)
+- Snapshot tests: Planned for v0.1.1 (not yet implemented)
 
 ## Decision
 Use **Textual** as the framework for the terminal UI (TUI).
@@ -33,7 +33,7 @@ The architecture keeps the **orchestrator + protocols** independent of UI so alt
 
 ### Positive
 - A full-featured terminal UI with a composable widget model and event loop.
-- A viable snapshot-testing strategy (see `tests/test_snapshots.py`) to prevent silent UI regressions.
+- A viable snapshot-testing strategy (planned for v0.1.1) to prevent silent UI regressions.
 
 ### Negative
 - Textual introduces global/process-level state concerns that can leak between tests and runs; this later motivated isolating snapshot tests behind an env flag (see `docs/testing.md`).

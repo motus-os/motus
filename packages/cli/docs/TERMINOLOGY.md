@@ -41,7 +41,7 @@
 
 ## The 6-Call API
 
-The canonical Work Compiler protocol. See `.ai/specs/6-CALL-API-FACADE.md` for full specification.
+The canonical Work Compiler protocol.
 
 | Call | Purpose |
 |------|---------|

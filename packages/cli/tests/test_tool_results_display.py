@@ -93,15 +93,12 @@ class TestToolResultWebDisplay:
 
     def test_tool_result_function_exists(self):
         """renderToolResult function should exist in dashboard.js."""
-        import os
+        from pathlib import Path
 
-        dashboard_path = (
-            "/home/user/projects/motus-command/src/motus/ui/static/dashboard.js"
-        )
+        dashboard_path = Path(__file__).parent.parent / "src" / "motus" / "ui" / "static" / "dashboard.js"
 
-        if os.path.exists(dashboard_path):
-            with open(dashboard_path) as f:
-                content = f.read()
+        if dashboard_path.exists():
+            content = dashboard_path.read_text()
 
             # Should have tool result handling
             assert "renderToolResult" in content
@@ -109,13 +106,12 @@ class TestToolResultWebDisplay:
 
     def test_tool_result_css_exists(self):
         """Tool result CSS should exist in dashboard.css."""
-        import os
+        from pathlib import Path
 
-        css_path = "/home/user/projects/motus-command/src/motus/ui/static/dashboard.css"
+        css_path = Path(__file__).parent.parent / "src" / "motus" / "ui" / "static" / "dashboard.css"
 
-        if os.path.exists(css_path):
-            with open(css_path) as f:
-                content = f.read()
+        if css_path.exists():
+            content = css_path.read_text()
 
             # Should have tool result styling
             assert "tool-result" in content or "tool_result" in content
@@ -153,13 +149,12 @@ class TestToolResultGrouping:
 
     def test_tool_result_indented_in_web(self):
         """Tool results should be indented in web UI via CSS."""
-        import os
+        from pathlib import Path
 
-        css_path = "/home/user/projects/motus-command/src/motus/ui/static/dashboard.css"
+        css_path = Path(__file__).parent.parent / "src" / "motus" / "ui" / "static" / "dashboard.css"
 
-        if os.path.exists(css_path):
-            with open(css_path) as f:
-                content = f.read()
+        if css_path.exists():
+            content = css_path.read_text()
 
             # Should have margin-left for indentation
             assert "margin-left" in content and "tool-result" in content

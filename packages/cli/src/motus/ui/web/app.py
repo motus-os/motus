@@ -129,7 +129,7 @@ class MCWebServer:
         """
         if not WEB_AVAILABLE:
             print("Web dependencies not installed.")
-            print("Install with: pip install motus-command[web]")
+            print("Install with: pip install motusos[web]")
             print("\nFalling back to CLI mode...")
             return False
 

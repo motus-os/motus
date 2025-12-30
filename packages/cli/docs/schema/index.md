@@ -5,7 +5,7 @@ Scope: Kernel schema overview and module index
 Version: 0.1
 Date: 2025-12-30
 
-**Kernel Spec**: v0.1.3 (see `.ai/handoffs/KERNEL-SCHEMA.md`)
+**Kernel Spec**: v0.1.3
 **Database**: `~/.motus/coordination.db` (kernel.db deprecated alias)
 **Engine**: SQLite
 
@@ -40,7 +40,6 @@ PRAGMA cache_size = -64000;      -- 64MB cache
 | Kernel DB | [kernel.md](./kernel.md) | Kernel tables, views, triggers in coordination.db |
 | Program Management | [program-management.md](./program-management.md) | Products, releases, standards, roadmap metadata |
 | Userland DB (planned) | [userland.md](./userland.md) | User preferences and local customization |
-| KERNEL-SCHEMA Spec | `.ai/handoffs/KERNEL-SCHEMA.md` | Canonical spec and terminology |
 
 ## Design Principles
 

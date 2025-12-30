@@ -821,7 +821,7 @@ When your study bot stops being productive, MC shows:
 
 ```bash
 # Install Motus Command
-pip install motus-command
+pip install motusos
 
 # Verify installation
 mc --version
@@ -831,8 +831,8 @@ mc --version
 
 ```bash
 # Clone examples (or copy from this doc)
-git clone https://github.com/bnvoss/motus-command.git
-cd motus-command/docs/examples
+git clone https://github.com/motus-os/motus.git
+cd motus/packages/cli/docs/examples
 
 # Run any example
 python dad_joke_bot.py
@@ -943,7 +943,7 @@ Use these examples as templates:
 
 ### Contribute
 
-Found a bug or have a better example? [Open an issue](https://github.com/bnvoss/motus-command/issues) or submit a PR!
+Found a bug or have a better example? [Open an issue](https://github.com/motus-os/motus/issues) or submit a PR!
 
 ---
 
@@ -965,4 +965,4 @@ That's what these examples provide.
 
 ---
 
-*Built with [Motus Command](https://github.com/bnvoss/motus-command) - The local-first agent kernel.*
+*Built with [Motus](https://github.com/motus-os/motus) - The local-first agent kernel.*

@@ -6,8 +6,7 @@ Version: 0.1
 Date: 2025-12-30
 
 Motus exposes a single coordination surface used by the CLI, SDKs, and bundled
-modules. The canonical definitions live in `.ai/specs/6-CALL-API-FACADE.md` and
-terminology lives in `docs/TERMINOLOGY.md`. This page is the high-level entry
+modules. Terminology lives in `docs/TERMINOLOGY.md`. This page is the high-level entry
 point for integrators.
 
 ## Canonical calls
@@ -39,5 +38,4 @@ point for integrators.
 
 ## See also
 
-- `.ai/specs/6-CALL-API-FACADE.md` (normative API definitions)
 - `docs/TERMINOLOGY.md` (canonical terms)

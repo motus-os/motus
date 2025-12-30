@@ -1,7 +1,5 @@
 # Motus Website IA and Layout
 
-Source of truth: /Users/ben/Downloads/WEBSITE-MISSION-HANDOFF-2025-12-23.md
-
 ## Site Map
 
 - / (Home)

@@ -15,9 +15,10 @@ We take the security of Motus Command seriously. If you believe you have found a
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please report them via email to **ben@veritas.associates**.
+Instead, please report them via GitHub Security Advisories:
+**https://github.com/motus-os/motus/security/advisories**
 
-You should receive a response within 48 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
+You should receive a response within 48 hours.
 
 Please include the requested information listed below (as much as you can provide) to help us better understand the nature and scope of the possible issue:
 

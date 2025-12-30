@@ -1,0 +1,74 @@
+name: Internal Reference Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-internal-refs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for internal artifacts
+        run: |
+          echo "Checking for internal artifacts that should not exist..."
+
+          FAIL=0
+
+          # Check for directories that should never exist in public repo
+          for dir in .ai handoffs reviews specs; do
+            if [ -d "$dir" ]; then
+              echo "ERROR: Internal directory '$dir' found in public repo!"
+              FAIL=1
+            fi
+          done
+
+          # Check for files that should never exist in public repo
+          for file in CLAUDE.md coordination.db; do
+            if [ -f "$file" ]; then
+              echo "ERROR: Internal file '$file' found in public repo!"
+              FAIL=1
+            fi
+          done
+
+          if [ $FAIL -eq 1 ]; then
+            echo ""
+            echo "Public repo must contain ONLY shipped product."
+            echo "Internal artifacts belong in motus-command (internal repo)."
+            exit 1
+          fi
+
+          echo "No internal artifacts found."
+
+      - name: Check for internal references
+        run: |
+          echo "Scanning for internal references in file contents..."
+
+          # Patterns that should never appear in public repo
+          PATTERNS="bnvoss|motus-command|\.ai/|/Users/ben|veritas\.associates"
+
+          # Scan ENTIRE repo (not just packages/) including docs/, root files
+          if grep -rE "$PATTERNS" . \
+            --include="*.py" \
+            --include="*.md" \
+            --include="*.astro" \
+            --include="*.ts" \
+            --include="*.tsx" \
+            --include="*.json" \
+            --include="*.yaml" \
+            --include="*.yml" \
+            --include="*.toml" \
+            --exclude-dir=".git" \
+            --exclude-dir="node_modules" \
+            --exclude-dir="__pycache__"; then
+            echo ""
+            echo "ERROR: Internal references found!"
+            echo "These patterns must not appear in the public repo."
+            exit 1
+          fi
+
+          echo "No internal references found."

@@ -99,7 +99,7 @@ class TestEventDisplayParity:
 
     def test_file_path_visible_in_all_surfaces(self):
         """File paths must be visible in tool events across all surfaces."""
-        test_path = "/home/user/motus-command/src/test.py"
+        test_path = "/home/user/motus/src/test.py"
 
         # Create events
         unified_event = UnifiedEvent(
@@ -515,7 +515,7 @@ class TestSessionDisplayParity:
     def test_project_name_extraction_consistent(self):
         """Project names must be extracted consistently from paths."""
         test_cases = [
-            ("/home/user/projects/motus-command", "motus-command"),
+            ("/home/user/projects/motus", "motus"),
             ("/tmp/test-project", "test-project"),
             ("/home/user/my-app", "my-app"),
         ]

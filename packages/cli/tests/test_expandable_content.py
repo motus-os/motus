@@ -113,40 +113,32 @@ class TestWebExpandFunctionality:
 
     def test_toggle_content_function_exists(self):
         """toggleContentExpand JavaScript function should be defined."""
-        import os
+        from pathlib import Path
 
-        dashboard_path = (
-            "/home/user/projects/motus-command/src/motus/ui/static/dashboard.js"
-        )
+        dashboard_path = Path(__file__).parent.parent / "src" / "motus" / "ui" / "static" / "dashboard.js"
 
-        if os.path.exists(dashboard_path):
-            with open(dashboard_path) as f:
-                content = f.read()
-
+        if dashboard_path.exists():
+            content = dashboard_path.read_text()
             assert "toggleContentExpand" in content
 
     def test_expand_btn_class_in_css(self):
         """expand-btn CSS class should be defined."""
-        import os
+        from pathlib import Path
 
-        css_path = "/home/user/projects/motus-command/src/motus/ui/static/dashboard.css"
+        css_path = Path(__file__).parent.parent / "src" / "motus" / "ui" / "static" / "dashboard.css"
 
-        if os.path.exists(css_path):
-            with open(css_path) as f:
-                content = f.read()
-
+        if css_path.exists():
+            content = css_path.read_text()
             assert ".expand-btn" in content
 
     def test_expandable_content_class_in_css(self):
         """expandable-content CSS class should be defined."""
-        import os
+        from pathlib import Path
 
-        css_path = "/home/user/projects/motus-command/src/motus/ui/static/dashboard.css"
+        css_path = Path(__file__).parent.parent / "src" / "motus" / "ui" / "static" / "dashboard.css"
 
-        if os.path.exists(css_path):
-            with open(css_path) as f:
-                content = f.read()
-
+        if css_path.exists():
+            content = css_path.read_text()
             assert ".expandable-content" in content
 
 

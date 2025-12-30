@@ -14,7 +14,7 @@ Supported sources in this guide:
 ## Prerequisites
 
 ```bash
-pip install motus-command
+pip install motusos
 ```
 
 Generate at least one session in the agent CLI you want to integrate. Motus

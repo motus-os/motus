@@ -8,7 +8,7 @@ import json
 import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from src.motus.ingestors.base import DECISION_REGEX
 from src.motus.ingestors.claude import ClaudeBuilder
@@ -405,13 +405,17 @@ class TestSessionOrchestrator:
         sessions = orch.discover_all(max_age_hours=1)
         assert sessions == []
 
-    def test_discover_all_falls_back_when_sqlite_cache_fails(self):
+    @patch("src.motus.orchestrator.discovery.SessionDiscovery._maybe_auto_sync")
+    def test_discover_all_falls_back_when_sqlite_cache_fails(self, mock_auto_sync):
         """If SQLite cache query fails, discovery falls back to builder.discover()."""
+        mock_auto_sync.return_value = False  # Auto-sync returns false (nothing synced)
+
         orch = SessionOrchestrator()
 
         orch._process_detector.get_running_projects = MagicMock(return_value=set())
-        orch._sqlite_cache.sync = MagicMock(return_value=None)
         orch._sqlite_cache.query = MagicMock(side_effect=Exception("boom"))
+        # Propagate mock to discovery layer
+        orch._discovery._sqlite_cache = orch._sqlite_cache
 
         # Only Claude should be consulted for this test.
         for builder in orch._builders.values():
@@ -419,7 +423,9 @@ class TestSessionOrchestrator:
 
         sessions = orch.discover_all(max_age_hours=1, sources=[Source.CLAUDE])
         assert sessions == []
-        orch._sqlite_cache.sync.assert_called_once()
+        # When query fails, auto_sync is attempted
+        mock_auto_sync.assert_called_once()
+        # Then falls back to builder.discover()
         orch._builders[Source.CLAUDE].discover.assert_called_once()
 
     def test_discover_all_does_not_sync_sqlite_cache_when_cached(self):
@@ -428,6 +434,8 @@ class TestSessionOrchestrator:
 
         orch._process_detector.get_running_projects = MagicMock(return_value=set())
         orch._sqlite_cache.sync = MagicMock(return_value=None)
+        # Propagate mock to discovery layer
+        orch._discovery._sqlite_cache = orch._sqlite_cache
         cached = CachedSession(
             session_id="cached-1",
             file_path=Path("/tmp/cached.jsonl"),
@@ -448,12 +456,17 @@ class TestSessionOrchestrator:
         orch._sqlite_cache.sync.assert_not_called()
         orch._builders[Source.CLAUDE].discover.assert_not_called()
 
-    def test_discover_all_auto_syncs_when_cache_empty(self):
+    @patch("src.motus.core.bootstrap.ensure_database")
+    def test_discover_all_auto_syncs_when_cache_empty(self, mock_ensure_db):
         """discover_all auto-syncs once when cache is empty."""
+        mock_ensure_db.return_value = None  # ensure_database succeeds
+
         orch = SessionOrchestrator()
 
         orch._process_detector.get_running_projects = MagicMock(return_value=set())
         orch._sqlite_cache.sync = MagicMock(return_value=None)
+        # Propagate mock to discovery layer
+        orch._discovery._sqlite_cache = orch._sqlite_cache
         cached = CachedSession(
             session_id="cached-2",
             file_path=Path("/tmp/cached-2.jsonl"),

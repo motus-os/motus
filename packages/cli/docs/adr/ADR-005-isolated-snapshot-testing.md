@@ -1,7 +1,7 @@
 # ADR-005: Isolated Snapshot Testing for the UI
 
 ## Status
-Accepted (retroactive)
+Accepted (retroactive). Implementation planned for v0.1.1.
 
 ## Date
 2025-12-18 (documented); retroactive to v0.4.x
@@ -15,7 +15,7 @@ UI regression tests are valuable, but “snapshot” style tests are sensitive t
 
 Motus Command includes Textual snapshot tests for the terminal UI:
 
-- `tests/test_snapshots.py` (skipped unless `MC_RUN_SNAPSHOTS=1`)
+- Snapshot tests (planned for v0.1.1, skipped unless `MC_RUN_SNAPSHOTS=1`)
 - Test harness notes in `docs/testing.md` explain why snapshots are isolated
 - `tests/conftest.py` documents running snapshot tests first to avoid state pollution
 

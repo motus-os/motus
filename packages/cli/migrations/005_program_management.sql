@@ -764,8 +764,8 @@ INSERT INTO standards (id, name, description, level_key, check_type_key, check_c
  '! grep -rqiE "CUDA|4IR|\bDNA\b|hallucination" src/ README.md 2>/dev/null',
  'FAIL:blocklist - Found prohibited terms', 1),
 
-('STD-REL-002', 'No personal paths', 'Ensure no /Users/ben or personal identifiers', 'release', 'boolean',
- '! grep -rqiE "/Users/ben|bnvoss|veritas\.associates" src/ tests/ 2>/dev/null',
+('STD-REL-002', 'No personal paths', 'Ensure no personal identifiers', 'release', 'boolean',
+ '! grep -rqiE "/Users/|/home/|C:\\\\Users\\\\|bnvoss|veritas" src/ tests/ 2>/dev/null',
  'FAIL:personal - Found personal identifiers', 1),
 
 ('STD-REL-003', 'No database files', 'Ensure no .db files in repo', 'release', 'boolean',

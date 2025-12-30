@@ -95,7 +95,7 @@ EXAMPLES:
     mc watch abc123              # Watch session
     mc list --max-age-hours=24   # Recent sessions
 
-See full docs: https://github.com/bnvoss/motus-command
+See full docs: https://github.com/motus-os/motus
 ```
 
 ---

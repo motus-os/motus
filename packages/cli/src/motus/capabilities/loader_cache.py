@@ -126,7 +126,6 @@ def detect_product_from_repo(repo_path: Path, yaml_module) -> str | None:
     known_products = {
         "project-emmaus": "emmaus",
         "emmaus": "emmaus",
-        "motus-command": "motus",
         "motus": "motus",
     }
 

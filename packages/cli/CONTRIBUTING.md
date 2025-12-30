@@ -3,8 +3,8 @@
 ## Development Setup
 
 ```bash
-git clone https://github.com/motus-command/motus-command
-cd motus-command
+git clone https://github.com/motus-os/motus
+cd motus/packages/cli
 python3 -m venv venv
 source venv/bin/activate
 pip install -e ".[dev]"

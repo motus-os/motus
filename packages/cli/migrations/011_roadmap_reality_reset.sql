@@ -65,7 +65,7 @@ INSERT OR IGNORE INTO roadmap_items (id, phase_key, title, description, status_k
 ('RI-C-011', 'phase_c', 'Move website to monorepo', 'packages/website/', 'pending', NULL, 50, 'system', 'migration:011'),
 ('RI-C-012', 'phase_c', 'Configure CI/CD', 'GitHub Actions', 'pending', NULL, 60, 'system', 'migration:011'),
 ('RI-C-020', 'phase_c', 'Fresh clone verification', 'New user can clone + build + test', 'pending', NULL, 70, 'system', 'migration:011'),
-('RI-C-021', 'phase_c', 'Archive old repos', 'motus-command, motus-standards -> read-only', 'pending', NULL, 80, 'system', 'migration:011'),
+('RI-C-021', 'phase_c', 'Archive old repos', 'Archive legacy repos -> read-only', 'pending', NULL, 80, 'system', 'migration:011'),
 ('RI-C-030', 'phase_c', 'Decide: KERNEL-SCHEMA before or after monorepo', 'Timing decision for schema migration', 'pending', NULL, 5, 'system', 'migration:011'),
 ('RI-C-031', 'phase_c', 'Apply KERNEL-SCHEMA.md if before monorepo', 'Or defer to Phase D', 'pending', NULL, 6, 'system', 'migration:011');
 

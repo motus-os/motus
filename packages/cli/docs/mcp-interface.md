@@ -11,7 +11,7 @@ teleport bundles.
 MCP support is an optional dependency:
 
 ```bash
-pip install "motus-command[mcp]"
+pip install "motusos[mcp]"
 ```
 
 For editable installs:

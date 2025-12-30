@@ -37,7 +37,7 @@ def register_routes(app: FastAPI) -> None:
         if not template_file.exists():
             raise FileNotFoundError(
                 f"Dashboard template not found: {template_file}. "
-                "Ensure motus-command is properly installed with template files."
+                "Ensure motusos is properly installed with template files."
             )
 
         try:

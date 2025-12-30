@@ -1,30 +1,27 @@
-# Testing Strategy (quality-first)
+# Testing Strategy
 
 ## Commands
-- Main suite (fast, stable):  
-  `MC_RUN_SNAPSHOTS=0 python3 -m pytest -q -k "not snapshots"`
 
-- Snapshot suite (run isolated):  
-  `MC_RUN_SNAPSHOTS=1 python3 -m pytest tests/test_snapshots.py -q`
+Run the full test suite:
+```bash
+python3 -m pytest tests/ -q
+```
 
-## Why separate?
-- Textual snapshots are sensitive to global state; running them in their own process removes flake.
-- Main suite stays green and fast; snapshots remain a strict visual guardrail when intentionally invoked (or in a dedicated CI job).
+## CI Recommendation
 
-## CI recommendation
-Run two jobs:
-1) `MC_RUN_SNAPSHOTS=0 python3 -m pytest -q -k "not snapshots"`
-2) `MC_RUN_SNAPSHOTS=1 python3 -m pytest tests/test_snapshots.py -q`
-
-Optional: set `PYTHONHASHSEED=0` in the snapshot job for extra determinism.
+Run lint and tests in CI:
+1. `ruff check src/` - Lint check
+2. `python3 -m pytest tests/ -q` - Full test suite
 
 Example GitHub Actions (see .github/workflows/ci.yml):
 - lint: ruff + black
-- tests: main suite with snapshots disabled
-- snapshots: isolated run with `MC_RUN_SNAPSHOTS=1` and `PYTHONHASHSEED=0`
+- tests: full test suite
 
-## Updating snapshots
-When UI changes are intentional:  
-`MC_RUN_SNAPSHOTS=1 python3 -m pytest tests/test_snapshots.py --snapshot-update`
+## Snapshot Testing
 
-Check in the updated SVGs after review.***
+Snapshot testing for the TUI is planned for v0.1.1. Not yet available.
+
+When implemented, snapshots will:
+- Run isolated from the main suite via `MC_RUN_SNAPSHOTS=1`
+- Use `PYTHONHASHSEED=0` for determinism
+- Provide visual regression coverage for UI changes

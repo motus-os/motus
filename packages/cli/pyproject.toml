@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [
-    { name = "Ben Voss", email = "ben@veritas.associates" }
+    { name = "Motus Contributors" }
 ]
 keywords = [
     "ai", "agents", "observability", "claude", "codex", "gemini", "llm",
@@ -63,7 +63,6 @@ gemini = [
 [project.scripts]
 motus = "motus.cli.core:main"  # Primary (v0.1.0+)
 mc = "motus.cli.core:main"      # Alias (deprecated v0.2.0, removed v0.3.0)
-motus-command = "motus.cli.core:main"  # Legacy
 
 [project.urls]
 Homepage = "https://github.com/motus-os/motus"

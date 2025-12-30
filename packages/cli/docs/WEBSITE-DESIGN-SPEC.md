@@ -1,6 +1,6 @@
 # Motus Command - Website Design Spec
 
-> Design specification for motus-command.dev
+> Design specification for motusos.ai
 
 ## Design Principles
 - **Minimal & Fast**: Single-page navigation, progressive enhancement
@@ -30,7 +30,7 @@
 ## MVP Site Structure (3 Pages)
 
 ```
-motus-command.dev/
+motusos.ai/
 ├── index.html              # Hero + features + quick start + FAQ
 ├── docs.html              # Single-page documentation (anchor navigation)
 └── changelog.html         # Release history
@@ -47,7 +47,7 @@ motus-command.dev/
 │                    HERO SECTION                         │
 │   "See What Your AI Agents Are Thinking"               │
 │   [Animated terminal showing live agent trace]         │
-│   pip install motus-command                            │
+│   pip install motusos                                  │
 │   [Get Started →]  [View Docs]                         │
 ├────────────────────────────────────────────────────────┤
 │                TRUST BAR (3 pillars)                    │
@@ -110,7 +110,7 @@ code: 14px, font-mono
 
 Auto-typing effect showing:
 ```
-$ pip install motus-command
+$ pip install motusos
 $ mc
 ```
 
@@ -129,7 +129,7 @@ Colors: BASH (red), THINK (dim), DECIDE (mint), SPAWN (purple)
 ## Launch Checklist
 
 ### Pre-Launch
-- [ ] Domain: motus-command.dev
+- [ ] Domain: motusos.ai
 - [ ] Cloudflare Pages connected
 - [ ] SSL provisioned
 

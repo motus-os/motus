@@ -286,7 +286,7 @@ class TestSessionTransformerParity:
         session = UnifiedSession(
             session_id="session_transform_123456789",
             source=Source.CLAUDE,
-            project_path="/home/user/projects/motus-command",
+            project_path="/home/user/projects/motus",
             status=SessionStatus.ACTIVE,
             status_reason="Active session",
             file_path=Path("/tmp/session.json"),
@@ -364,7 +364,7 @@ class TestSessionTransformerParity:
         session = UnifiedSession(
             session_id="session_project_123",
             source=Source.CLAUDE,
-            project_path="/home/user/projects/motus-command",
+            project_path="/home/user/projects/motus",
             status=SessionStatus.ACTIVE,
             status_reason="Active",
             file_path=Path("/tmp/session.json"),
@@ -377,7 +377,7 @@ class TestSessionTransformerParity:
 
         # Both extract same project name
         assert display_tui.project_name == display_web.project_name
-        assert display_tui.project_name == "motus-command"
+        assert display_tui.project_name == "motus"
 
 
 class TestEscapedContentIdentical:

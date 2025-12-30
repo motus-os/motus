@@ -1,7 +1,6 @@
 # Kernel Database Schema
 
 **Database**: `~/.motus/coordination.db` (kernel.db deprecated alias)
-**Spec Reference**: `.ai/handoffs/KERNEL-SCHEMA.md`
 **Migrations**: `migrations/*.sql` (plus `schema_version` from migration runner)
 
 ---
