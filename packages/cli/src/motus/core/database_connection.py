@@ -15,7 +15,7 @@ from .layered_config import get_config
 
 logger = get_logger(__name__)
 
-EXPECTED_SCHEMA_VERSION = 18
+EXPECTED_SCHEMA_VERSION = 19
 
 
 def configure_connection(conn: sqlite3.Connection, set_row_factory: bool = True) -> None:
