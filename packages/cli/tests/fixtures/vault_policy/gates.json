@@ -1,0 +1,16 @@
+{
+  "version": "0.1.0",
+  "tiers": [
+    {"id": "T0", "name": "Tier 0", "description": "Fast checks"},
+    {"id": "T1", "name": "Tier 1", "description": "Standard checks"},
+    {"id": "T2", "name": "Tier 2", "description": "High rigor checks"}
+  ],
+  "gates": [
+    {"id": "GATE-INTAKE-001", "tier": "T0", "kind": "intake", "description": "DoR"},
+    {"id": "GATE-PLAN-001", "tier": "T0", "kind": "plan", "description": "Plan"},
+    {"id": "GATE-TOOL-001", "tier": "T1", "kind": "tool", "description": "Tool gate"},
+    {"id": "GATE-ARTIFACT-001", "tier": "T1", "kind": "artifact", "description": "Artifact gate"},
+    {"id": "GATE-EGRESS-001", "tier": "T2", "kind": "egress", "description": "Egress gate"}
+  ]
+}
+

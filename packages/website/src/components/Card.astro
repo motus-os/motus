@@ -1,0 +1,10 @@
+---
+interface Props {
+  hover?: boolean;
+}
+const { hover = true } = Astro.props;
+const hoverClass = hover ? "hover:border-mint/20 transition-colors" : "";
+---
+<div class={`bg-surface rounded-xl p-6 md:p-8 border border-white/5 ${hoverClass}`}>
+  <slot />
+</div>

@@ -1,0 +1,155 @@
+---
+const base = import.meta.env.BASE_URL;
+
+const navItems = [
+  { href: `${base}`, label: 'Home' },
+  { href: `${base}how-it-works`, label: 'How It Works' },
+  { href: `${base}strategies`, label: 'Strategies' },
+  { href: `${base}open-source`, label: 'Open Source' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="border-b border-white/10 relative bg-charcoal/95 backdrop-blur-sm">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <a href={base} class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+      <img src={`${base}logo.svg`} alt="Motus" class="w-8 h-8" />
+      <span class="text-xl font-bold text-mint">Motus</span>
+    </a>
+
+    <!-- Desktop nav (hidden on mobile) -->
+    <ul class="hidden md:flex gap-8">
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class:list={[
+              'text-sm font-medium transition-colors',
+              currentPath === item.href
+                ? 'text-mint'
+                : 'text-white/80 hover:text-mint',
+            ]}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Mobile hamburger button (visible on mobile only) -->
+    <button
+      id="mobile-menu-button"
+      class="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span class="hamburger-line block w-6 h-0.5 bg-text-primary transition-all duration-300"></span>
+      <span class="hamburger-line block w-6 h-0.5 bg-text-primary transition-all duration-300"></span>
+      <span class="hamburger-line block w-6 h-0.5 bg-text-primary transition-all duration-300"></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu (hidden by default) -->
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden absolute top-full left-0 right-0 bg-surface border-b border-surface z-50"
+  >
+    <ul class="flex flex-col px-6 py-4 gap-4">
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            class:list={[
+              'block text-base py-2 font-medium transition-colors',
+              currentPath === item.href
+                ? 'text-mint'
+                : 'text-white/80 hover:text-mint',
+            ]}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<script>
+  function initMobileMenu() {
+    const button = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+
+    if (!button || !menu) return;
+
+    const lines = button.querySelectorAll('.hamburger-line');
+
+    function toggleMenu() {
+      const isOpen = menu.classList.contains('hidden');
+
+      if (isOpen) {
+        // Open menu
+        menu.classList.remove('hidden');
+        button.setAttribute('aria-expanded', 'true');
+
+        // Animate hamburger to X
+        if (lines.length === 3) {
+          lines[0].classList.add('rotate-45', 'translate-y-2');
+          lines[1].classList.add('opacity-0');
+          lines[2].classList.add('-rotate-45', '-translate-y-2');
+        }
+      } else {
+        // Close menu
+        menu.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+
+        // Reset hamburger lines
+        if (lines.length === 3) {
+          lines[0].classList.remove('rotate-45', 'translate-y-2');
+          lines[1].classList.remove('opacity-0');
+          lines[2].classList.remove('-rotate-45', '-translate-y-2');
+        }
+      }
+    }
+
+    function closeMenu() {
+      menu.classList.add('hidden');
+      button.setAttribute('aria-expanded', 'false');
+
+      if (lines.length === 3) {
+        lines[0].classList.remove('rotate-45', 'translate-y-2');
+        lines[1].classList.remove('opacity-0');
+        lines[2].classList.remove('-rotate-45', '-translate-y-2');
+      }
+    }
+
+    // Toggle on button click
+    button.addEventListener('click', toggleMenu);
+
+    // Close menu when a link is clicked
+    const menuLinks = menu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+        closeMenu();
+      }
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node;
+      if (!button.contains(target) && !menu.contains(target) && !menu.classList.contains('hidden')) {
+        closeMenu();
+      }
+    });
+  }
+
+  // Initialize on page load and after Astro navigation
+  initMobileMenu();
+  document.addEventListener('astro:after-swap', initMobileMenu);
+</script>

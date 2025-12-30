@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vault OS control-plane EvidenceManifest schema",
+  "type": "object",
+  "required": [
+    "version",
+    "run_id",
+    "created_at",
+    "repo_dir",
+    "policy_versions",
+    "plan",
+    "gate_results"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Contract version for this schema. No breaking changes without a new major."
+    },
+    "profile_id": {
+      "type": "string",
+      "description": "Optional profile identifier (e.g., personal/team/smb-enterprise)."
+    },
+    "run_hash": {
+      "type": "string",
+      "description": "SHA-256 over the canonical JSON bytes of this manifest, excluding signature fields (see control-plane/README.md for canonicalization rules)."
+    },
+    "prev_run_hash": {
+      "type": "string",
+      "description": "Optional SHA-256 run hash of the prior run (chain-of-work link)."
+    },
+    "artifact_hashes": {
+      "type": "array",
+      "description": "Optional SHA-256 hashes for evidence artifacts (paths only; no inlined contents). Paths should be relative to the evidence bundle root when possible.",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string"},
+          "sha256": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "key_id": {
+      "type": "string",
+      "description": "Optional signing key id used to generate `signature`."
+    },
+    "signature": {
+      "type": "string",
+      "description": "Optional signature over `run_hash` (profile-dependent requirement)."
+    },
+    "run_id": {
+      "type": "string",
+      "description": "Unique run identifier for this evidence bundle."
+    },
+    "created_at": {
+      "type": "string",
+      "description": "UTC timestamp when the evidence bundle was created (ISO 8601)."
+    },
+    "repo_dir": {
+      "type": "string",
+      "description": "Repository root directory for the run."
+    },
+    "vault_dir": {
+      "type": "string",
+      "description": "Vault root directory used to load policy artifacts."
+    },
+    "policy_versions": {
+      "type": "object",
+      "description": "Versions of policy artifacts used for this run.",
+      "required": ["skill_packs_registry", "gates"],
+      "properties": {
+        "skill_packs_registry": {"type": "string"},
+        "gates": {"type": "string"},
+        "profiles": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "plan": {
+      "type": "object",
+      "description": "Reference to the gate plan that was executed.",
+      "required": ["kind"],
+      "properties": {
+        "kind": {"type": "string", "enum": ["inline", "path"]},
+        "path": {"type": "string"},
+        "inline": {
+          "type": "object",
+          "required": [
+            "version",
+            "policy_versions",
+            "packs",
+            "pack_versions",
+            "gate_tier",
+            "gates",
+            "pack_cap"
+          ],
+          "properties": {
+            "version": {"type": "string"},
+            "policy_versions": {
+              "type": "object",
+              "required": ["skill_packs_registry", "gates"],
+              "properties": {
+                "skill_packs_registry": {"type": "string"},
+                "gates": {"type": "string"}
+              },
+              "additionalProperties": false
+            },
+            "packs": {"type": "array", "items": {"type": "string"}},
+            "pack_versions": {"type": "array"},
+            "gate_tier": {"type": "string"},
+            "gates": {"type": "array", "items": {"type": "string"}},
+            "pack_cap": {
+              "type": "object",
+              "required": ["cap", "selected", "exceeded"],
+              "properties": {
+                "cap": {"type": "integer"},
+                "selected": {"type": "integer"},
+                "exceeded": {"type": "boolean"}
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "gate_results": {
+      "type": "array",
+      "description": "Per-gate execution results. Logs are referenced by path only (no inlined raw output).",
+      "items": {
+        "type": "object",
+        "required": ["gate_id", "status", "exit_code", "duration_ms", "log_paths"],
+        "properties": {
+          "gate_id": {"type": "string"},
+          "status": {"type": "string", "enum": ["pass", "fail", "skip"]},
+          "exit_code": {"type": "integer"},
+          "duration_ms": {"type": "integer", "minimum": 0},
+          "log_paths": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "description": "Optional run-level budgets/metrics (paths-only rule still applies).",
+      "properties": {
+        "tokens": {"type": "integer", "minimum": 0},
+        "cost_usd": {"type": "number", "minimum": 0},
+        "tool_calls": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    },
+    "workspace_root_start": {
+      "type": "string",
+      "description": "Optional workspace snapshot root hash before execution (sha256 or merkle root over the workspace snapshot; paths-only rule applies)."
+    },
+    "workspace_root_end": {
+      "type": "string",
+      "description": "Optional workspace snapshot root hash after execution."
+    },
+    "workspace_delta_paths": {
+      "type": "array",
+      "description": "Optional list of workspace paths that changed during the run (paths only; no contents). Paths should be relative to repo_dir when possible.",
+      "items": {"type": "string"}
+    },
+    "untracked_delta_paths": {
+      "type": "array",
+      "description": "Optional list of changed paths that were not accounted for by the run's declared scope or artifact records (paths only; no contents). When non-empty, verification should FAIL with RECON.UNTRACKED_DELTA.",
+      "items": {"type": "string"}
+    },
+    "source_state": {
+      "type": "object",
+      "description": "Immutable binding of this evidence run to a specific source state (e.g., git commit).",
+      "required": ["vcs", "commit_sha", "dirty"],
+      "properties": {
+        "vcs": {"type": "string", "enum": ["git"]},
+        "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "ref": {"type": "string"},
+        "dirty": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

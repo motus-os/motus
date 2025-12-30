@@ -1,0 +1,135 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
+
+const strategies = [
+  {
+    name: 'Root Cause Loop',
+    trigger: 'Verification failed',
+    description: 'Keep asking "why" until you hit bedrock. Most fixes address symptoms, not causes.',
+    example: 'Tests failing after auth change? Why? Session expired. Why? Token refresh broken. Why? Date parsing bug.'
+  },
+  {
+    name: 'Progressive Disclosure',
+    trigger: 'Scope unclear',
+    description: 'Expand incrementally. Start with one file, prove it works, then expand.',
+    example: 'Refactoring a module? Start with the main entry point. Get it green. Then follow the imports.'
+  },
+  {
+    name: "Devil's Advocate",
+    trigger: 'High-stakes decision',
+    description: 'Force counter-arguments before committing. What could go wrong?',
+    example: 'Before migrating the database schema, explicitly list three ways it could fail in production.'
+  },
+  {
+    name: 'Parallel Spike',
+    trigger: 'Multiple valid approaches',
+    description: 'Try N approaches in parallel, compare results, pick the winner.',
+    example: 'Performance optimization? Try caching, query optimization, and lazy loading in parallel.'
+  },
+  {
+    name: 'Agent Council',
+    trigger: 'Multi-perspective needed',
+    description: 'Spawn distinct roles to review from different angles.',
+    example: 'Security review: spawn CISO, developer, and attacker perspectives. Compare findings.'
+  },
+  {
+    name: 'Timeboxed Exploration',
+    trigger: 'Unknown territory',
+    description: 'Hard stop after N minutes, then decide with what you have.',
+    example: 'Investigating a bug? Set 20-minute timer. At the bell, decide: fix what you found or escalate.'
+  },
+  {
+    name: 'Checkpoint Recovery',
+    trigger: 'Long-running task',
+    description: 'Save state periodically. Resume safely after interruption.',
+    example: 'Large refactor? Commit after each module. If context window expires, resume from last commit.'
+  },
+  {
+    name: 'Dependency Unwinding',
+    trigger: 'Tangled changes',
+    description: 'Atomic rollback when changes entangle unexpectedly.',
+    example: 'Changed three files and broke five? Roll back to last checkpoint, attack one file at a time.'
+  },
+  {
+    name: 'Consensus Building',
+    trigger: 'Team disagreement',
+    description: 'Structured resolution when multiple agents disagree.',
+    example: 'Two agents propose different architectures? Have each defend their choice, then vote on criteria.'
+  },
+];
+---
+
+<Layout title="Strategies - Motus">
+  <section class="py-16 md:py-24 text-center">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="mb-8">
+        <span class="text-7xl md:text-9xl font-black text-mint">9</span>
+        <p class="text-xl text-text-secondary mt-4">battle-tested decision patterns</p>
+      </div>
+      <h1 class="text-4xl md:text-5xl font-black text-text-primary mb-6">
+        Strategy Library
+      </h1>
+      <p class="text-xl text-text-secondary">
+        Fresh agents start from zero. Motus accumulates wisdom.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <p class="text-text-secondary max-w-2xl mx-auto">
+          Expert problem-solving patterns, encoded and ready to deploy. Each strategy has a trigger condition and a structured approach.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {strategies.map((strategy) => (
+          <div class="bg-surface rounded-xl p-6 border border-white/5 hover:border-mint/20 transition-colors">
+            <h3 class="text-xl font-bold text-mint mb-3">{strategy.name}</h3>
+            <div class="mb-4">
+              <span class="text-xs uppercase tracking-wider text-text-secondary">Trigger: </span>
+              <span class="text-sm text-text-primary font-medium">{strategy.trigger}</span>
+            </div>
+            <p class="text-text-secondary text-sm mb-4">{strategy.description}</p>
+            <div class="pt-4 border-t border-white/10">
+              <p class="text-text-secondary text-xs italic">{strategy.example}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20 bg-surface/30">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold text-text-primary mb-6">The Moat</h2>
+      <p class="text-lg text-text-secondary mb-8 leading-relaxed">
+        Every time an agent solves a hard problem, the pattern can be captured.
+        Over time, Motus builds a library of proven approaches that new agents inherit automatically.
+      </p>
+      <p class="text-text-secondary">
+        Strategies are not prompts. They are structured decision trees with clear triggers, actions, and exit conditions.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24 text-center">
+    <div class="max-w-2xl mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-6">
+        Ready to deploy accumulated wisdom?
+      </h2>
+      <div class="inline-block bg-surface px-6 py-3 rounded-lg border border-mint/20">
+        <span class="text-text-secondary text-lg">Coming </span>
+        <span class="text-mint font-bold text-lg">January 1, 2026</span>
+      </div>
+      <p class="text-text-secondary mt-6">
+        <a href={`${base}open-source`} class="text-mint hover:text-white transition-colors">
+          Learn about the open source model
+        </a>
+      </p>
+    </div>
+  </section>
+</Layout>

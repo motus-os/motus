@@ -1,0 +1,110 @@
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone
+from pathlib import Path, PurePosixPath
+from typing import Any
+
+from motus.atomic_io import atomic_write_text
+from motus.coordination.namespace_acl import NamespaceACL
+from motus.coordination.schemas import ClaimedResource, ClaimRecord
+
+
+class ClaimRegistryError(Exception):
+    pass
+
+
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _posix(path: str) -> PurePosixPath:
+    return PurePosixPath(path.replace("\\", "/"))
+
+
+def _norm_namespace(namespace: str | None) -> str:
+    return (namespace or "default").strip() or "default"
+
+
+def _resources_overlap(a: ClaimedResource, b: ClaimedResource) -> bool:
+    a_path = _posix(a.path)
+    b_path = _posix(b.path)
+
+    a_type = a.type.lower()
+    b_type = b.type.lower()
+
+    if a_type == "file" and b_type == "file":
+        return a_path == b_path
+
+    if a_type == "directory" and b_type == "directory":
+        return a_path == b_path or str(a_path).startswith(f"{b_path}/") or str(b_path).startswith(f"{a_path}/")
+
+    if a_type == "directory" and b_type == "file":
+        return b_path == a_path or str(b_path).startswith(f"{a_path}/")
+    if a_type == "file" and b_type == "directory":
+        return a_path == b_path or str(a_path).startswith(f"{b_path}/")
+
+    return a.type == b.type and a_path == b_path
+
+
+class _ClaimStorage:
+    def __init__(self, root_dir: str | Path, *, namespace_acl: NamespaceACL | None = None) -> None:
+        self._root = Path(root_dir)
+        self._sequence_path = self._root / "SEQUENCE"
+        self._lock_path = self._root / "SEQUENCE.lock"
+        self._acl = namespace_acl
+
+    def _claim_path(self, claim_id: str) -> Path:
+        return self._root / f"{claim_id}.json"
+
+    def _list_claim_files(self) -> list[Path]:
+        if not self._root.exists():
+            return []
+        return sorted(p for p in self._root.glob("cl-*.json") if p.is_file())
+
+    def _load_claim(self, path: Path) -> ClaimRecord:
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception as e:  # noqa: BLE001
+            raise ClaimRegistryError(f"failed to read claim file: {path}") from e
+        try:
+            return ClaimRecord.from_json(payload)
+        except Exception as e:  # noqa: BLE001
+            raise ClaimRegistryError(f"invalid claim payload: {path}") from e
+
+    def _is_expired(self, claim: ClaimRecord, *, now: datetime) -> bool:
+        return now >= claim.expires_at
+
+    def _acquire_sequence_lock(self) -> Any:
+        self._root.mkdir(parents=True, exist_ok=True)
+        f = self._lock_path.open("a+", encoding="utf-8")
+
+        try:
+            import fcntl  # type: ignore[import-not-found]
+
+            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+        except Exception:
+            # Best-effort: on platforms without fcntl (e.g., Windows), proceed unlocked.
+            pass
+
+        return f
+
+    def _next_sequence(self) -> int:
+        lock_f = self._acquire_sequence_lock()
+        try:
+            current = 0
+            try:
+                text = self._sequence_path.read_text(encoding="utf-8").strip()
+                if text:
+                    current = int(text)
+            except FileNotFoundError:
+                current = 0
+
+            next_value = current + 1
+            atomic_write_text(self._sequence_path, f"{next_value}\n")
+            return next_value
+        finally:
+            try:
+                lock_f.close()
+            except OSError:
+                pass

@@ -1,0 +1,162 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "motusos"
+version = "0.4.5"
+description = "Command Center for AI Agents - Real-time observability for Claude Code, Codex CLI, and AI coding assistants"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Ben Voss", email = "ben@veritas.associates" }
+]
+keywords = [
+    "ai", "agents", "observability", "claude", "codex", "gemini", "llm",
+    "developer-tools", "cli", "tui", "monitoring", "dashboard", "tracing"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+]
+dependencies = [
+    "PyYAML>=6.0",
+    "jsonschema>=4.0",
+    "pydantic>=2.0.0",
+    "psutil>=5.9.0",
+    "rich>=13.0.0",
+]
+
+[project.optional-dependencies]
+web = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0",
+    "websockets>=11.0",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "pre-commit>=3.0.0",
+    "httpx>=0.25.0",
+    "beautifulsoup4>=4.12.0",
+]
+mcp = [
+    "mcp>=1.2.0",
+]
+gemini = [
+    "google-genai>=0.3.0",
+]
+
+[project.scripts]
+motus = "motus.cli.core:main"  # Primary (v0.1.0+)
+mc = "motus.cli.core:main"      # Alias (deprecated v0.2.0, removed v0.3.0)
+motus-command = "motus.cli.core:main"  # Legacy
+
+[project.urls]
+Homepage = "https://github.com/motus-os/motus"
+Documentation = "https://github.com/motus-os/motus#readme"
+Repository = "https://github.com/motus-os/motus"
+Issues = "https://github.com/motus-os/motus/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/motus"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src" = ""
+
+# Include static files (CSS, JS, HTML) for web UI
+[tool.hatch.build.targets.wheel.shared-data]
+
+[tool.hatch.build]
+include = [
+    "src/motus/**/*.py",
+    "src/motus/**/*.css",
+    "src/motus/**/*.js",
+    "src/motus/**/*.html",
+    "src/motus/py.typed",
+    "migrations/*.sql",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/migrations",
+    "/README.md",
+    "/LICENSE",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+# BLE001 (blind-except) deferred to v0.1.1 - 76 pre-existing violations
+select = ["E", "F", "I", "N", "W"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v"
+markers = [
+    "smoke: Quick import tests (<5s)",
+    "critical: Core functionality tests (<2min)",
+    "integration: Full integration tests",
+    "slow: Long-running tests (>30s)",
+]
+
+[tool.coverage.run]
+source = ["src/motus"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = false
+warn_unused_configs = true
+ignore_missing_imports = true
+# Disable strict optional to avoid None assignment errors
+strict_optional = false
+# Allow implicit Optional
+no_implicit_optional = false
+# Don't check bodies of untyped functions
+check_untyped_defs = false
+
+# Ignore errors in specific modules that need extensive refactoring
+[[tool.mypy.overrides]]
+module = [
+    "motus.cli",
+    "motus.hooks",
+    "motus.safety",
+    "motus.ui.web",
+    "motus.session_manager",
+    "motus.drift_detector",
+    "motus.commands.list_cmd",
+    "motus.commands.summary_cmd",
+]
+ignore_errors = true

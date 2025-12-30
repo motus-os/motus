@@ -1,0 +1,139 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Kernel Schema v0.1.3">
+  <section class="py-16 md:py-24 text-center">
+    <div class="max-w-3xl mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-black text-text-primary mb-6">
+        Kernel Schema v0.1.3
+      </h1>
+      <p class="text-xl text-text-secondary">
+        The minimal, audited core that powers Motus.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="bg-surface rounded-xl p-6 md:p-8 border border-white/5">
+        <p class="text-text-secondary mb-2">Status: APPROVED</p>
+        <p class="text-text-secondary mb-2">Owner: DOCS_SPECS</p>
+        <p class="text-text-secondary mb-2">Scope: Kernel schema + coordination.db</p>
+        <p class="text-text-secondary mb-2">Version: 0.1.3</p>
+        <p class="text-text-secondary">Date: 2025-12-29</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20 bg-surface/30">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-text-primary mb-4 text-center">
+        Single Source of Truth
+      </h2>
+      <p class="text-text-secondary text-center mb-10 max-w-3xl mx-auto">
+        Kernel state lives in <span class="text-text-primary font-medium">~/.motus/coordination.db</span>.
+        This file is the authoritative record for attempts, decisions, evidence, and leases.
+      </p>
+      <div class="bg-surface rounded-xl p-6 border border-white/5">
+        <code class="text-mint font-mono text-sm">~/.motus/coordination.db</code>
+        <p class="text-text-secondary mt-2 text-sm">
+          Kernel truth. Append-only governance. Deterministic replay.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-text-primary mb-4 text-center">
+        6-Call Coordination API
+      </h2>
+      <p class="text-text-secondary text-center mb-12 max-w-2xl mx-auto">
+        These calls are the public surface for coordination and outcomes.
+      </p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">claim_work()</code>
+          <p class="text-text-secondary mt-2">Claim a task, acquire a lease, and receive context.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">get_context()</code>
+          <p class="text-text-secondary mt-2">Refresh the Lens mid-task with current prerequisites.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">put_outcome()</code>
+          <p class="text-text-secondary mt-2">Record the outcome of an attempt.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">record_evidence()</code>
+          <p class="text-text-secondary mt-2">Attach proof artifacts tied to outcomes.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">record_decision()</code>
+          <p class="text-text-secondary mt-2">Append governance decisions and waivers.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">release_work()</code>
+          <p class="text-text-secondary mt-2">Finalize, attach proof, and release the lease.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20 bg-surface/30">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-text-primary mb-4 text-center">
+        Core Tables (v0.1.3)
+      </h2>
+      <p class="text-text-secondary text-center mb-12 max-w-2xl mx-auto">
+        The kernel is intentionally small. Outcomes live on attempts and are proven by evidence.
+      </p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <p class="text-text-primary font-medium">roadmap_items</p>
+          <p class="text-text-secondary text-sm">Planning intent and dependency graph.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <p class="text-text-primary font-medium">attempts</p>
+          <p class="text-text-secondary text-sm">Execution instances + outcome status.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <p class="text-text-primary font-medium">decisions</p>
+          <p class="text-text-secondary text-sm">Append-only approvals, waivers, reviews.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <p class="text-text-primary font-medium">evidence</p>
+          <p class="text-text-secondary text-sm">Typed, hashed proof artifacts.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <p class="text-text-primary font-medium">blockers</p>
+          <p class="text-text-secondary text-sm">Execution issues with resolution tracking.</p>
+        </div>
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <p class="text-text-primary font-medium">leases</p>
+          <p class="text-text-secondary text-sm">Resource coordination and exclusivity.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-6">
+        Full Schema Reference
+      </h2>
+      <p class="text-text-secondary mb-8">
+        The complete DDL lives in the repository as KERNEL-SCHEMA v0.1.3.
+      </p>
+      <a
+        href="https://github.com/bnvoss/motus-command"
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-2 bg-mint text-charcoal font-bold px-6 py-3 rounded-lg hover:bg-white transition-colors"
+      >
+        View KERNEL-SCHEMA.md
+      </a>
+    </div>
+  </section>
+</Layout>

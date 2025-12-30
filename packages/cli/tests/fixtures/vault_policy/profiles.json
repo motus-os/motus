@@ -1,0 +1,12 @@
+{
+  "version": "0.1.0",
+  "profiles": [
+    {
+      "id": "personal",
+      "description": "Single operator",
+      "defaults": {"pack_cap": 8, "gate_tier_min": "T0"}
+    },
+    {"id": "team", "description": "Small team", "defaults": {"pack_cap": 6, "gate_tier_min": "T1"}}
+  ]
+}
+

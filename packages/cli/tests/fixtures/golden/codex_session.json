@@ -1,0 +1,62 @@
+{
+  "session_id": "codex-test-session-001",
+  "source": "codex",
+  "project_path": "/Users/test/projects/api-server",
+  "created_at": "2025-01-15T09:00:00+00:00",
+  "last_modified": "2025-01-15T11:45:00+00:00",
+  "events": [
+    {
+      "event_id": "evt-001",
+      "timestamp": "2025-01-15T09:00:00+00:00",
+      "event_type": "init",
+      "content": "Codex session started",
+      "metadata": {"model": "codex-cli"}
+    },
+    {
+      "event_id": "evt-002",
+      "timestamp": "2025-01-15T09:01:00+00:00",
+      "event_type": "user_message",
+      "content": "Add rate limiting to the API endpoints",
+      "metadata": {}
+    },
+    {
+      "event_id": "evt-003",
+      "timestamp": "2025-01-15T09:01:30+00:00",
+      "event_type": "thinking",
+      "content": "Analyzing the API structure for rate limiting implementation...",
+      "metadata": {"duration_ms": 1800}
+    },
+    {
+      "event_id": "evt-004",
+      "timestamp": "2025-01-15T09:02:00+00:00",
+      "event_type": "tool_use",
+      "tool_name": "Read",
+      "tool_input": {"file_path": "/Users/test/projects/api-server/src/middleware.py"},
+      "content": "Reading middleware.py",
+      "metadata": {}
+    },
+    {
+      "event_id": "evt-005",
+      "timestamp": "2025-01-15T09:03:00+00:00",
+      "event_type": "tool_use",
+      "tool_name": "Write",
+      "tool_input": {"file_path": "/Users/test/projects/api-server/src/rate_limiter.py"},
+      "content": "Creating rate_limiter.py",
+      "metadata": {}
+    },
+    {
+      "event_id": "evt-006",
+      "timestamp": "2025-01-15T09:04:00+00:00",
+      "event_type": "tool_result",
+      "content": "File created successfully",
+      "metadata": {"lines": 75}
+    },
+    {
+      "event_id": "evt-007",
+      "timestamp": "2025-01-15T11:45:00+00:00",
+      "event_type": "assistant_message",
+      "content": "Rate limiting has been implemented using a token bucket algorithm...",
+      "metadata": {}
+    }
+  ]
+}

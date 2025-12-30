@@ -1,0 +1,7 @@
+"""Shared CLI exit code constants."""
+
+EXIT_SUCCESS = 0
+EXIT_ERROR = 1
+EXIT_USAGE = 2
+
+__all__ = ["EXIT_SUCCESS", "EXIT_ERROR", "EXIT_USAGE"]

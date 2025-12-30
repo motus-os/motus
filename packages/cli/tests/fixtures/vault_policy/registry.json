@@ -1,0 +1,18 @@
+{
+  "version": "0.1.0",
+  "packs": [
+    {
+      "id": "BP-PACK-BASELINE",
+      "path": "core/best-practices/skill-packs/REGISTRY.md",
+      "precedence": 100,
+      "scopes": ["**/*"],
+      "gate_tier": "T0",
+      "coverage_tags": ["CDIO:all", "SSDF:all"],
+      "version": "0.1.0",
+      "owner": "Example",
+      "status": "active",
+      "replacement": ""
+    }
+  ]
+}
+

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motus Command - Command Center</title>
+    <link rel="stylesheet" href="/static/dashboard.css?v=20251204">
+</head>
+<body>
+    <!-- Local Only Security Badge -->
+    <div class="local-only-badge">Local Only (127.0.0.1)</div>
+    <!-- Version Badge -->
+    <div class="version-badge" id="version-badge">v{{ version }}</div>
+
+    <!-- Keyboard Shortcuts Help Modal -->
+    <div class="shortcuts-overlay" id="shortcuts-overlay" role="dialog" aria-modal="true" aria-labelledby="shortcuts-header">
+        <div class="shortcuts-modal">
+            <div class="shortcuts-header" id="shortcuts-header">⌨️ Keyboard Shortcuts</div>
+            <div class="shortcuts-grid">
+                <div class="shortcuts-section">
+                    <div class="shortcuts-section-title">Navigation</div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">j / ↓</span>
+                        <span class="shortcut-desc">Next session</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">k / ↑</span>
+                        <span class="shortcut-desc">Previous session</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Enter</span>
+                        <span class="shortcut-desc">Select session</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Esc</span>
+                        <span class="shortcut-desc">Deselect / Close</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">1-9</span>
+                        <span class="shortcut-desc">Quick select</span>
+                    </div>
+                </div>
+
+                <div class="shortcuts-section">
+                    <div class="shortcuts-section-title">Actions</div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">/</span>
+                        <span class="shortcut-desc">Focus search</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">r</span>
+                        <span class="shortcut-desc">Refresh sessions</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">e</span>
+                        <span class="shortcut-desc">Export summary</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">? / h</span>
+                        <span class="shortcut-desc">Show this help</span>
+                    </div>
+                </div>
+            </div>
+            <div class="shortcuts-footer">
+                Press <strong>Esc</strong> or click outside to close
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Orbs Background -->
+    <div class="orb-container">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+        <div class="orb orb-5"></div>
+        <div class="orb orb-6"></div>
+    </div>
+    <div class="container" style="position:relative;z-index:1;">
+        <header class="header">
+            <div class="logo">🎯 MC</div>
+            <div class="breadcrumbs" id="breadcrumbs">
+                <span class="breadcrumb active">All Sessions</span>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light/dark theme" aria-label="Toggle theme">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                <button class="help-btn" onclick="toggleShortcutsHelp()" title="Keyboard shortcuts (? or h)" aria-label="Show keyboard shortcuts">
+                    ?
+                </button>
+                <button class="export-btn" id="export-btn" onclick="exportSummary()" disabled title="Select a session to export">
+                    📋 Export Summary
+                </button>
+                <div class="connection-status" role="status" aria-live="polite">
+                    <div class="status-dot" id="status-dot"></div>
+                    <span id="status-text">Connecting...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="panel" id="sessions-panel">
+            <div class="panel-title">📡 Sessions</div>
+            <div class="session-filter">
+                <button class="filter-toggle active" data-filter="active" onclick="setSessionFilter('active')">Active</button>
+                <button class="filter-toggle" data-filter="all" onclick="setSessionFilter('all')">All</button>
+            </div>
+            <div id="sessions"></div>
+        </div>
+
+        <div class="panel" id="feed-panel">
+            <div class="panel-title">⚡ Live Feed</div>
+
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-row">
+                    <span class="filter-label">Search</span>
+                    <input type="text"
+                           class="filter-search"
+                           id="search-filter"
+                           placeholder="Filter events by content..."
+                           oninput="applyFilters()">
+                </div>
+
+                <div class="filter-row">
+                    <span class="filter-label">Tools</span>
+                    <div class="filter-chips">
+                        <div class="filter-chip" data-tool="Read" onclick="toggleToolFilter('Read')">Read</div>
+                        <div class="filter-chip" data-tool="Write" onclick="toggleToolFilter('Write')">Write</div>
+                        <div class="filter-chip" data-tool="Edit" onclick="toggleToolFilter('Edit')">Edit</div>
+                        <div class="filter-chip" data-tool="Bash" onclick="toggleToolFilter('Bash')">Bash</div>
+                        <div class="filter-chip" data-tool="Glob" onclick="toggleToolFilter('Glob')">Glob</div>
+                        <div class="filter-chip" data-tool="Grep" onclick="toggleToolFilter('Grep')">Grep</div>
+                        <div class="filter-chip" data-tool="THINK" onclick="toggleToolFilter('THINK')">Think</div>
+                        <div class="filter-chip" data-tool="SPAWN" onclick="toggleToolFilter('SPAWN')">Spawn</div>
+                    </div>
+                </div>
+
+                <div class="filter-row">
+                    <span class="filter-label">Risk</span>
+                    <div class="filter-chips">
+                        <div class="filter-chip risk-all active" data-risk="all" onclick="setRiskFilter('all')">All</div>
+                        <div class="filter-chip risk-safe" data-risk="safe" onclick="setRiskFilter('safe')">Safe</div>
+                        <div class="filter-chip risk-medium" data-risk="medium" onclick="setRiskFilter('medium')">Medium</div>
+                        <div class="filter-chip risk-high" data-risk="high" onclick="setRiskFilter('high')">High</div>
+                    </div>
+                    <button class="clear-filters-btn" onclick="clearAllFilters()">Clear Filters</button>
+                </div>
+
+                <div class="results-count" id="results-count"></div>
+            </div>
+
+            <div id="feed" aria-live="polite" aria-label="Live event feed">
+                <div class="empty-state">Waiting for events...</div>
+            </div>
+        </div>
+
+        <div class="panel" id="context-panel">
+            <div class="panel-title">🧠 Context</div>
+
+            <!-- Agent Status Panel (simplified) -->
+            <div class="working-memory" id="working-memory">
+                <div class="working-memory-header" onclick="toggleWorkingMemory()">
+                    <span class="working-memory-title">
+                        <span>📊</span> Agent Status
+                    </span>
+                    <svg class="health-ring" width="48" height="48" viewBox="0 0 48 48" id="health-ring">
+                        <circle class="health-ring-bg" cx="24" cy="24" r="20" fill="none" stroke-width="4"/>
+                        <circle class="health-ring-progress" cx="24" cy="24" r="20" fill="none" stroke-width="4"
+                                stroke-linecap="round" transform="rotate(-90 24 24)" id="health-ring-progress"/>
+                        <text class="health-ring-text" x="24" y="24" text-anchor="middle" dominant-baseline="central" id="health-ring-text">—</text>
+                    </svg>
+                </div>
+                <div class="working-memory-content health-waiting" id="wm-content">
+                    <!-- Status Row -->
+                    <div class="wm-section">
+                        <div class="status-row">
+                            <span id="health-status-icon">⏳</span>
+                            <span class="health-status-text" id="health-status-text">Waiting...</span>
+                        </div>
+                    </div>
+                    <!-- Current Goal -->
+                    <div class="wm-section">
+                        <div class="wm-label">Current Focus</div>
+                        <div class="wm-goal" id="wm-goal">Waiting for task...</div>
+                    </div>
+                    <!-- Active Files -->
+                    <div class="wm-section">
+                        <div class="wm-label">Active</div>
+                        <div class="wm-focus" id="wm-focus">
+                            <span class="wm-focus-item">—</span>
+                        </div>
+                    </div>
+                </div>
+	            </div>
+	
+	            <div id="context">
+	                <div class="empty-state">Select a session</div>
+	            </div>
+	        </div>
+	    </div>
+
+    <script src="/static/dashboard.js?v=20251204"></script>
+</body>
+</html>

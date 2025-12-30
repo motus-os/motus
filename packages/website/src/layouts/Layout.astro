@@ -1,0 +1,39 @@
+---
+import Nav from '../components/Nav.astro';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Motus - The execution layer for AI agents. Models are powerful. Motus makes them capable." />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <title>{title} | Motus</title>
+  </head>
+  <body class="bg-charcoal text-text-primary min-h-screen font-sans antialiased">
+    <Nav />
+    <main class="max-w-6xl mx-auto px-6 py-12">
+      <slot />
+    </main>
+    <footer class="border-t border-surface mt-24">
+      <div class="max-w-6xl mx-auto px-6 py-8 text-center text-text-secondary text-sm">
+        <p class="mb-4">Motus - The execution layer for AI agents</p>
+        <div class="flex justify-center gap-6">
+          <a href={`${base}privacy`} class="hover:text-text-primary transition-colors">Privacy Policy</a>
+          <a href={`${base}terms`} class="hover:text-text-primary transition-colors">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

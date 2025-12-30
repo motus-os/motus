@@ -1,0 +1,55 @@
+version: "1.0"
+
+paths:
+  governance: ./governance
+  cr: ./governance/cr
+  agents: ./governance/agents
+  knowledge: ./knowledge
+  research: ./knowledge/research
+  library: ./library
+  voice: ./voice
+  skills: ./skills
+  products: ./products
+  scratch: ./.scratch
+
+cr:
+  folders: [queue, in-progress, review, done]
+  manifest: MANIFEST.md
+  coordination_log: COORDINATION-LOG.md
+  template: TEMPLATE.md
+
+agents:
+  inbox_dir: ./governance/agents/inbox
+  registry: REGISTRY.md
+  statuses: [COMPLETE, BLOCKED, GO, WAITING, IDLE, CLAIMED, REQUEST, ACKNOWLEDGED, ASSIGNED, PROCESS UPDATE]
+
+contracts:
+  truth_standards: true
+  review_required: true
+  evidence_required: true
+  atomic_cr: true
+  no_self_review: true
+
+outputs:
+  weekly: ./products/weekly/{date}
+  deliverables: ./products/weekly/{date}/deliverables
+  content_wip: ./products/content-engine/wip
+  published: ./products/{product}/content/published/{date}
+
+protected:
+  - path: ./voice
+    rule: read-only
+  - path: ./governance/policy
+    rule: append-only
+
+tasks:
+  content:
+    preload:
+      - voice/examples
+      - voice/anti-patterns
+  development:
+    preload:
+      - governance/policy/security-requirements.md
+  research:
+    preload:
+      - knowledge/research

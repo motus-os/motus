@@ -1,0 +1,85 @@
+{
+  "session_id": "claude-test-session-001",
+  "source": "claude",
+  "project_path": "/Users/test/projects/web-app",
+  "created_at": "2025-01-15T10:00:00+00:00",
+  "last_modified": "2025-01-15T11:58:00+00:00",
+  "events": [
+    {
+      "event_id": "evt-001",
+      "timestamp": "2025-01-15T10:00:00+00:00",
+      "event_type": "init",
+      "content": "Session started",
+      "metadata": {}
+    },
+    {
+      "event_id": "evt-002",
+      "timestamp": "2025-01-15T10:01:00+00:00",
+      "event_type": "user_message",
+      "content": "Help me refactor the authentication module",
+      "metadata": {}
+    },
+    {
+      "event_id": "evt-003",
+      "timestamp": "2025-01-15T10:01:30+00:00",
+      "event_type": "thinking",
+      "content": "I'll analyze the current authentication implementation...",
+      "metadata": {"duration_ms": 2500}
+    },
+    {
+      "event_id": "evt-004",
+      "timestamp": "2025-01-15T10:02:00+00:00",
+      "event_type": "tool_use",
+      "tool_name": "Read",
+      "tool_input": {"file_path": "/Users/test/projects/web-app/src/auth.py"},
+      "content": "Reading auth.py",
+      "metadata": {}
+    },
+    {
+      "event_id": "evt-005",
+      "timestamp": "2025-01-15T10:02:30+00:00",
+      "event_type": "tool_result",
+      "content": "class AuthHandler:\n    def __init__(self):\n        self.sessions = {}\n    ...",
+      "metadata": {"lines": 150}
+    },
+    {
+      "event_id": "evt-006",
+      "timestamp": "2025-01-15T10:03:00+00:00",
+      "event_type": "thinking",
+      "content": "The auth module has some issues with session management...",
+      "metadata": {"duration_ms": 3000}
+    },
+    {
+      "event_id": "evt-007",
+      "timestamp": "2025-01-15T10:04:00+00:00",
+      "event_type": "tool_use",
+      "tool_name": "Edit",
+      "tool_input": {"file_path": "/Users/test/projects/web-app/src/auth.py"},
+      "content": "Refactoring session management",
+      "metadata": {}
+    },
+    {
+      "event_id": "evt-008",
+      "timestamp": "2025-01-15T10:05:00+00:00",
+      "event_type": "tool_result",
+      "content": "File updated successfully",
+      "metadata": {"lines_changed": 25}
+    },
+    {
+      "event_id": "evt-009",
+      "timestamp": "2025-01-15T10:06:00+00:00",
+      "event_type": "assistant_message",
+      "content": "I've refactored the authentication module to use a more secure session management approach...",
+      "metadata": {}
+    },
+    {
+      "event_id": "evt-010",
+      "timestamp": "2025-01-15T11:58:00+00:00",
+      "event_type": "tool_use",
+      "tool_name": "Bash",
+      "tool_input": {"command": "pytest tests/test_auth.py -v"},
+      "content": "Running auth tests",
+      "metadata": {}
+    }
+  ]
+}

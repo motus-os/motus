@@ -1,0 +1,42 @@
+usage: mc [-h]
+          {watch,list,web,context,summary,intent,harness,checkpoint,checkpoints,rollback,diff,history,teleport}
+          ...
+
+Motus Command: Command Center for AI Agents.
+Run 'mc' with no arguments for interactive TUI dashboard.
+Run 'mc web' for web dashboard at http://127.0.0.1:4000
+Run 'mc --help' for a list of commands.
+
+positional arguments:
+  {watch,list,web,context,summary,intent,harness,checkpoint,checkpoints,rollback,diff,history,teleport}
+                        Available commands
+    watch               Watch a session in real-time
+    list                List recent sessions
+    web                 Launch web dashboard at http://127.0.0.1:4000
+    context             Generate context summary for AI agent prompts
+    summary             Generate a rich summary for CLAUDE.md injection
+    intent              Extract/show intent from a session
+    harness             Detect test harness for a repository
+    checkpoint          Create a state checkpoint
+    checkpoints         List all available checkpoints
+    rollback            Restore state to a previous checkpoint
+    diff                Show changes between current state and a checkpoint
+    history             Show command history
+    teleport            Export a session bundle for cross-session context
+                        transfer
+
+options:
+  -h, --help            show this help message and exit
+usage: mc list [-h]
+
+options:
+  -h, --help  show this help message and exit
+usage: mc web [-h]
+
+options:
+  -h, --help  show this help message and exit
+usage: mc [-h]
+          {watch,list,web,context,summary,intent,harness,checkpoint,checkpoints,rollback,diff,history,teleport}
+          ...
+mc: error: unrecognized arguments: --version
+Version: 0.4.0

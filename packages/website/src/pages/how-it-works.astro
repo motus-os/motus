@@ -1,0 +1,213 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout title="How It Works - Motus">
+  <section class="py-16 md:py-24 text-center">
+    <div class="max-w-3xl mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-black text-text-primary mb-6">
+        How It Works
+      </h1>
+      <p class="text-xl text-text-secondary mb-12">
+        Technical credibility in 3 minutes.
+      </p>
+      <div class="flex justify-center gap-12 md:gap-20">
+        <div>
+          <span class="text-5xl md:text-7xl font-black text-mint">5</span>
+          <p class="text-text-secondary mt-2">OODA phases</p>
+        </div>
+        <div>
+          <span class="text-5xl md:text-7xl font-black text-mint">6</span>
+          <p class="text-text-secondary mt-2">API calls</p>
+        </div>
+        <div>
+          <span class="text-5xl md:text-7xl font-black text-mint">0</span>
+          <p class="text-text-secondary mt-2">Cloud required</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-text-primary mb-4 text-center">The Work Compiler</h2>
+      <p class="text-text-secondary text-center mb-12 max-w-2xl mx-auto">
+        Every task follows the OODA loop. Observe, Orient, Decide, Act, Verify.
+        Most agents skip Orient. That is where understanding happens.
+      </p>
+
+      <div class="bg-surface rounded-xl p-8 md:p-12 border border-white/5">
+        <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 text-center">
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
+              <span class="text-mint font-bold">O</span>
+            </div>
+            <span class="text-text-primary font-medium text-sm">OBSERVE</span>
+          </div>
+
+          <span class="text-mint text-xl font-bold">&gt;</span>
+
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-mint/20 border-2 border-mint flex items-center justify-center mb-2">
+              <span class="text-mint font-bold">O</span>
+            </div>
+            <span class="text-text-primary font-medium text-sm">ORIENT</span>
+          </div>
+
+          <span class="text-mint text-xl font-bold">&gt;</span>
+
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
+              <span class="text-mint font-bold">D</span>
+            </div>
+            <span class="text-text-primary font-medium text-sm">DECIDE</span>
+          </div>
+
+          <span class="text-mint text-xl font-bold">&gt;</span>
+
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
+              <span class="text-mint font-bold">A</span>
+            </div>
+            <span class="text-text-primary font-medium text-sm">ACT</span>
+          </div>
+
+          <span class="text-mint text-xl font-bold">&gt;</span>
+
+          <div class="flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
+              <span class="text-mint font-bold">V</span>
+            </div>
+            <span class="text-text-primary font-medium text-sm">VERIFY</span>
+          </div>
+        </div>
+
+        <p class="text-text-secondary text-sm text-center mt-8 pt-8 border-t border-white/10">
+          Feedback loop: Verify feeds back to Observe for the next iteration.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20 bg-surface/30">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-text-primary mb-4 text-center">The Coordination API</h2>
+      <p class="text-text-secondary text-center mb-12 max-w-2xl mx-auto">
+        Six calls. Simple enough to memorize, powerful enough for production.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">claim_work()</code>
+          <p class="text-text-secondary mt-2">Claim a resource. Get a lease, a Lens, and a snapshot.</p>
+        </div>
+
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">get_context()</code>
+          <p class="text-text-secondary mt-2">Refresh understanding mid-task. Get the latest Lens.</p>
+        </div>
+
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">put_outcome()</code>
+          <p class="text-text-secondary mt-2">Register deliverables. Files, artifacts, results.</p>
+        </div>
+
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">record_evidence()</code>
+          <p class="text-text-secondary mt-2">Attach test results, diffs, verification artifacts.</p>
+        </div>
+
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">record_decision()</code>
+          <p class="text-text-secondary mt-2">Log reasoning. Why you chose this approach.</p>
+        </div>
+
+        <div class="bg-surface rounded-xl p-6 border border-white/5">
+          <code class="text-mint font-mono text-lg">release_work()</code>
+          <p class="text-text-secondary mt-2">Finalize the work. Attach proof. Hand back the lease.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-4">
+        Kernel Schema v0.1.3
+      </h2>
+      <p class="text-text-secondary mb-6">
+        The kernel is intentionally small: attempts, decisions, evidence, blockers, and leases.
+        All state lives in <span class="text-text-primary font-medium">~/.motus/coordination.db</span>.
+      </p>
+      <a href={`${base}schema`} class="text-mint hover:text-white transition-colors font-medium">
+        View the schema docs →
+      </a>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-20">
+    <div class="max-w-5xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-text-primary mb-4 text-center">Real Code</h2>
+      <p class="text-text-secondary text-center mb-12 max-w-2xl mx-auto">
+        Not illustrations. Actual code you can run.
+      </p>
+
+      <div class="space-y-8">
+        <div class="bg-surface rounded-xl p-6 md:p-8 border border-white/5">
+          <h3 class="text-xl font-bold text-mint mb-4">SCOPE: Bounded Context with Lens</h3>
+          <pre class="bg-charcoal rounded-lg p-4 md:p-6 overflow-x-auto text-sm">
+<code><span class="text-text-secondary"># Get a 300-token lens instead of reading 50k tokens</span>
+<span class="text-mint">from</span> motus <span class="text-mint">import</span> create_lens
+
+lens = create_lens(
+    files=["src/auth.py", "src/users.py"],
+    max_tokens=300
+)
+</code></pre>
+        </div>
+
+        <div class="bg-surface rounded-xl p-6 md:p-8 border border-white/5">
+          <h3 class="text-xl font-bold text-mint mb-4">COORDINATE: Safe Multi-Agent Handoff</h3>
+          <pre class="bg-charcoal rounded-lg p-4 md:p-6 overflow-x-auto text-sm">
+<code><span class="text-text-secondary"># Agent 1: Use the 6-call Work Compiler</span>
+<span class="text-mint">from</span> motus.api <span class="text-mint">import</span> WorkCompiler
+
+wc = WorkCompiler()
+result = wc.claim_work(task_id="fix-auth", agent_id="agent-1")
+<span class="text-text-secondary"># Work safely...</span>
+wc.release_work(result.lease.lease_id, outcome="success")
+</code></pre>
+        </div>
+
+        <div class="bg-surface rounded-xl p-6 md:p-8 border border-white/5">
+          <h3 class="text-xl font-bold text-mint mb-4">VERIFY: Cryptographic Work Receipts</h3>
+          <pre class="bg-charcoal rounded-lg p-4 md:p-6 overflow-x-auto text-sm">
+<code><span class="text-text-secondary"># Every action generates a signed receipt</span>
+<span class="text-mint">from</span> motus.policy <span class="text-mint">import</span> verify_receipt
+
+<span class="text-mint">assert</span> verify_receipt(receipt)  <span class="text-text-secondary"># Tamper-evident</span>
+</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24 text-center bg-surface/30">
+    <div class="max-w-2xl mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-6">
+        Ready to try it?
+      </h2>
+      <div class="inline-block bg-surface px-6 py-3 rounded-lg border border-mint/20">
+        <span class="text-text-secondary text-lg">Coming </span>
+        <span class="text-mint font-bold text-lg">January 1, 2026</span>
+      </div>
+      <p class="text-text-secondary mt-6">
+        <a href={`${base}strategies`} class="text-mint hover:text-white transition-colors">
+          Or explore the strategy library
+        </a>
+      </p>
+    </div>
+  </section>
+</Layout>
