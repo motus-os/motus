@@ -24,9 +24,9 @@ const base = import.meta.env.BASE_URL;
     />
     <title>{title} | Motus</title>
   </head>
-  <body
+    <body
     class="bg-charcoal text-text-primary min-h-screen font-sans antialiased"
-    style={`background-image: radial-gradient(60rem 40rem at 50% -10%, rgba(111, 255, 227, 0.18), transparent 60%), radial-gradient(48rem 34rem at 85% 90%, rgba(255, 255, 255, 0.06), transparent 65%); --noise-url: url('${base}brand/noise.svg');`}
+    style={`background-image: radial-gradient(60rem 40rem at 50% -10%, rgb(var(--mint) / 0.18), transparent 60%), radial-gradient(48rem 34rem at 85% 90%, rgba(255, 255, 255, 0.06), transparent 65%); --noise-url: url('${base}brand/noise.svg');`}
   >
     <style is:global>
       :root {
@@ -36,13 +36,17 @@ const base = import.meta.env.BASE_URL;
         --line: 255 255 255;
         --text-primary: 247 246 242;
         --text-secondary: 155 155 151;
+        --mint: 111 255 227;
+        --error: 255 107 107;
       }
 
       .theme-light {
-        --surface: 246 244 239;
-        --line: 0 0 0;
-        --text-primary: 18 18 18;
-        --text-secondary: 90 90 86;
+        --surface: 242 240 234;
+        --line: 40 40 37;
+        --text-primary: 22 22 20;
+        --text-secondary: 92 92 86;
+        --mint: 14 140 118;
+        --error: 237 86 86;
         color-scheme: light;
       }
 
@@ -51,6 +55,8 @@ const base = import.meta.env.BASE_URL;
         --line: 255 255 255;
         --text-primary: 247 246 242;
         --text-secondary: 155 155 151;
+        --mint: 111 255 227;
+        --error: 255 107 107;
         color-scheme: dark;
       }
 

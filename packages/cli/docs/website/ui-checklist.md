@@ -10,6 +10,8 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 - Use `theme-dark` for dark panels inside light sections.
 - Keep section cadence consistent: quiet section -> proof block -> CTA.
 - Avoid dense grids; keep generous whitespace between blocks.
+- Use theme tokens only (`surface`, `line`, `text-*`, `mint`, `error`) - no raw hex.
+- Pair `text-text-primary` with `bg-surface`; reserve `text-text-secondary` for supporting copy.
 
 ## Typography
 
