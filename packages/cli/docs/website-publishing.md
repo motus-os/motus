@@ -13,6 +13,7 @@ the deployment flow that keeps the website and codebase aligned.
   - `packages/website/src/data/vision.json` (when the vision pipeline lands)
   - `packages/website/src/data/persona-map.json`
   - `packages/website/src/data/proof-ledger.json`
+  - `packages/website/src/data/ecosystem-map.json`
 
 ## Registry gate
 
@@ -23,6 +24,10 @@ version. CI enforces that YAML and JSON stay in sync before deploy.
 The proof ledger is authored in `packages/cli/docs/website/proof-ledger.yaml`
 and synced to `packages/website/src/data/proof-ledger.json`. CI enforces the
 sync so claims cannot ship without proof references.
+
+The ecosystem map is authored in `packages/cli/docs/website/ecosystem-map.yaml`
+and synced to `packages/website/src/data/ecosystem-map.json`. CI enforces the
+sync and validates that every node has a valid source, proof, and logo path.
 
 The persona map is authored in `packages/cli/docs/website/persona-map.yaml` and
 synced to `packages/website/src/data/persona-map.json`. This is an editorial
