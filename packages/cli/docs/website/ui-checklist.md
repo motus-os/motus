@@ -5,13 +5,15 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 ## Layout rhythm
 
 - Use `phi-*` spacing tokens for vertical rhythm and section padding.
+- Wrap long-form content in `theme-light` to improve readability.
+- Use `theme-dark` for dark panels inside light sections.
 - Keep section cadence consistent: quiet section -> proof block -> CTA.
 - Avoid dense grids; keep generous whitespace between blocks.
 
 ## Typography
 
 - Headings use `font-display` (Sora).
-- Body copy uses `font-sans` (Space Grotesk).
+- Body copy uses `font-sans` (Sora).
 - Code snippets use `font-mono` (JetBrains Mono).
 - Avoid more than two font families in any section.
 
@@ -30,4 +32,4 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 
 - Use the Card component for module lists.
 - Use rounded-2xl containers for major blocks.
-- Keep borders subtle (`border-white/10` or `border-mint/20`).
+- Keep borders subtle (`border-line/10` or `border-mint/20`).

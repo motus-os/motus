@@ -77,7 +77,8 @@ const strategies = [
     </div>
   </section>
 
-  <section class="py-phi-5 md:py-phi-6">
+  <div class="theme-light bg-surface text-text-primary">
+  <section class="py-phi-5 md:py-phi-6 border-t border-line/10">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-phi-4">
         <p class="text-text-secondary max-w-2xl mx-auto">
@@ -87,14 +88,14 @@ const strategies = [
 
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-phi-3">
         {strategies.map((strategy) => (
-          <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10 hover:border-mint/30 transition-colors">
+          <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10 hover:border-mint/30 transition-colors">
             <h3 class="text-xl font-display text-mint mb-phi-2">{strategy.name}</h3>
             <div class="mb-phi-2">
               <span class="text-xs uppercase tracking-[0.3em] text-text-secondary">Trigger: </span>
               <span class="text-sm text-text-primary font-medium">{strategy.trigger}</span>
             </div>
             <p class="text-text-secondary text-sm mb-phi-2">{strategy.description}</p>
-            <div class="pt-phi-2 border-t border-white/10">
+            <div class="pt-phi-2 border-t border-line/10">
               <p class="text-text-secondary text-xs italic">{strategy.example}</p>
             </div>
           </div>
@@ -126,10 +127,11 @@ const strategies = [
         <span class="text-mint font-bold text-lg">January 1, 2026</span>
       </div>
       <p class="text-text-secondary mt-phi-3">
-        <a href={`${base}open-source`} class="text-mint hover:text-white transition-colors">
+        <a href={`${base}open-source`} class="text-mint hover:text-text-primary transition-colors">
           Learn about the open source model
         </a>
       </p>
     </div>
   </section>
+  </div>
 </Layout>

@@ -40,8 +40,22 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
     </div>
   </section>
 
+  <div class="theme-light bg-surface text-text-primary">
+  <!-- Proof Bar -->
+  <section class="py-phi-3 border-t border-line/10">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex flex-wrap justify-center gap-phi-2 text-xs uppercase tracking-[0.2em] text-text-secondary">
+        {proofLedger.claims.map((claim) => (
+          <a class="px-3 py-2 rounded-full border border-line/10 bg-surface/70 hover:border-mint/30 transition-colors" href={claim.evidence[0].url}>
+            {claim.evidence[0].label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- Big Numbers -->
-  <section class="py-phi-6 md:py-phi-7 bg-surface/40">
+  <section class="py-phi-6 md:py-phi-7">
     <div class="max-w-6xl mx-auto">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-phi-4 text-center">
         <div>
@@ -71,7 +85,7 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
   <!-- Implementation Guide Wayfinding -->
   <section class="py-phi-6 md:py-phi-7">
     <div class="max-w-6xl mx-auto">
-      <div class="border border-white/10 bg-surface/40 rounded-2xl p-phi-5 md:p-phi-6 grid md:grid-cols-2 gap-phi-5 items-center">
+      <div class="border border-line/10 bg-surface/40 rounded-2xl p-phi-5 md:p-phi-6 grid md:grid-cols-2 gap-phi-5 items-center">
         <div class="space-y-phi-2">
           <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">For Builders</p>
           <h2 class="text-3xl md:text-4xl font-display text-text-primary">
@@ -84,12 +98,12 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
           </p>
           <a
             href={`${base}implementation`}
-            class="inline-flex items-center gap-2 text-mint hover:text-white transition-colors"
+            class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors"
           >
             View Implementation Guide &#8594;
           </a>
         </div>
-        <div class="bg-charcoal/60 border border-white/10 rounded-xl p-phi-4 space-y-phi-2 text-sm text-text-secondary">
+        <div class="theme-dark bg-charcoal/60 border border-line/10 rounded-xl p-phi-4 space-y-phi-2 text-sm text-text-secondary">
           <div class="flex items-start gap-phi-2">
             <span class="text-mint">&#x2022;</span>
             <span>Kernel invariants and data paths</span>
@@ -112,7 +126,7 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
   </section>
 
   <!-- Persona Journeys -->
-  <section class="py-phi-6 md:py-phi-7 bg-surface/40">
+  <section class="py-phi-6 md:py-phi-7 bg-surface/50">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-phi-5">
         <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Choose Your Path</p>
@@ -126,7 +140,7 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
           const proof = proofIndex.get(persona.proof_id);
           const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
           return (
-            <div class="rounded-2xl border border-white/10 bg-charcoal/70 p-phi-4 space-y-phi-2">
+            <div class="theme-dark rounded-2xl border border-line/10 bg-charcoal/70 p-phi-4 space-y-phi-2">
               <div class="text-xs uppercase tracking-[0.3em] text-text-secondary">{persona.title}</div>
               <h3 class="text-2xl font-display text-text-primary">{persona.hook}</h3>
               <p class="text-sm text-text-secondary">{persona.value}</p>
@@ -241,7 +255,7 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
             </li>
             <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
-              <a href={`${base}strategies`} class="text-mint hover:text-white transition-colors">View all 9 &#8594;</a>
+              <a href={`${base}strategies`} class="text-mint hover:text-text-primary transition-colors">View all 9 &#8594;</a>
             </li>
           </ul>
         </Card>
@@ -250,7 +264,7 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
   </section>
 
   <!-- Open Source Trust Block -->
-  <section class="py-phi-6 md:py-phi-7 bg-surface/50">
+  <section class="py-phi-6 md:py-phi-7 bg-surface/60">
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Open Source. Verifiable. Yours.</h2>
       <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
@@ -275,7 +289,7 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
       </div>
 
       <div class="mt-phi-4">
-        <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-mint hover:text-white transition-colors">
+        <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors">
           <GitHubIcon />
           View on GitHub
         </a>
@@ -292,4 +306,5 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
       <InstallCommand />
     </div>
   </section>
+  </div>
 </Layout>

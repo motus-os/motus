@@ -5,7 +5,7 @@ interface Props {
 const { hover = true } = Astro.props;
 const hoverClass = hover ? "hover:border-mint/30 hover:bg-surface/80 transition-colors" : "";
 ---
-<div class={`group relative rounded-2xl p-phi-4 md:p-phi-5 border border-white/10 bg-surface/60 ${hoverClass}`}>
+<div class={`group relative rounded-2xl p-phi-4 md:p-phi-5 border border-line/10 bg-surface/60 ${hoverClass}`}>
   <div class="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(120%_120%_at_0%_0%,rgba(111,255,227,0.08),transparent_55%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
   <div class="relative">
     <slot />

@@ -4,12 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        charcoal: '#0B0B0B',
-        surface: '#151515',
+        charcoal: 'rgb(var(--charcoal) / <alpha-value>)',
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        line: 'rgb(var(--line) / <alpha-value>)',
         mint: '#6FFFE3',
         error: '#FF6B6B',
-        'text-primary': '#F7F6F2',
-        'text-secondary': '#9B9B97',
+        'text-primary': 'rgb(var(--text-primary) / <alpha-value>)',
+        'text-secondary': 'rgb(var(--text-secondary) / <alpha-value>)',
       },
       fontFamily: {
         display: ['Sora', 'ui-sans-serif', 'system-ui', 'sans-serif'],

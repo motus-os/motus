@@ -14,9 +14,10 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </section>
 
-  <section class="py-phi-5 md:py-phi-6">
+  <div class="theme-light bg-surface text-text-primary">
+  <section class="py-phi-5 md:py-phi-6 border-t border-line/10">
     <div class="max-w-4xl mx-auto">
-      <div class="bg-surface/70 rounded-2xl p-phi-3 md:p-phi-4 border border-white/10">
+      <div class="bg-surface/70 rounded-2xl p-phi-3 md:p-phi-4 border border-line/10">
         <p class="text-text-secondary mb-2">Status: APPROVED</p>
         <p class="text-text-secondary mb-2">Owner: DOCS_SPECS</p>
         <p class="text-text-secondary mb-2">Scope: Kernel schema + coordination.db</p>
@@ -35,7 +36,7 @@ import Layout from '../layouts/Layout.astro';
         Kernel state lives in <span class="text-text-primary font-medium">~/.motus/coordination.db</span>.
         This file is the authoritative record for attempts, decisions, evidence, and leases.
       </p>
-      <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+      <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
         <code class="text-mint font-mono text-sm">~/.motus/coordination.db</code>
         <p class="text-text-secondary mt-2 text-sm">
           Kernel truth. Append-only governance. Deterministic replay.
@@ -53,27 +54,27 @@ import Layout from '../layouts/Layout.astro';
         These calls are the public surface for coordination and outcomes.
       </p>
       <div class="grid md:grid-cols-2 gap-phi-3">
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <code class="text-mint font-mono text-lg">claim_work()</code>
           <p class="text-text-secondary mt-2">Claim a task, acquire a lease, and receive context.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <code class="text-mint font-mono text-lg">get_context()</code>
           <p class="text-text-secondary mt-2">Refresh the Lens mid-task with current prerequisites.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <code class="text-mint font-mono text-lg">put_outcome()</code>
           <p class="text-text-secondary mt-2">Record the outcome of an attempt.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <code class="text-mint font-mono text-lg">record_evidence()</code>
           <p class="text-text-secondary mt-2">Attach proof artifacts tied to outcomes.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <code class="text-mint font-mono text-lg">record_decision()</code>
           <p class="text-text-secondary mt-2">Append governance decisions and waivers.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <code class="text-mint font-mono text-lg">release_work()</code>
           <p class="text-text-secondary mt-2">Finalize, attach proof, and release the lease.</p>
         </div>
@@ -90,27 +91,27 @@ import Layout from '../layouts/Layout.astro';
         The kernel is intentionally small. Outcomes live on attempts and are proven by evidence.
       </p>
       <div class="grid md:grid-cols-2 gap-phi-3">
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <p class="text-text-primary font-medium">roadmap_items</p>
           <p class="text-text-secondary text-sm">Planning intent and dependency graph.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <p class="text-text-primary font-medium">attempts</p>
           <p class="text-text-secondary text-sm">Execution instances + outcome status.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <p class="text-text-primary font-medium">decisions</p>
           <p class="text-text-secondary text-sm">Append-only approvals, waivers, reviews.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <p class="text-text-primary font-medium">evidence</p>
           <p class="text-text-secondary text-sm">Typed, hashed proof artifacts.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <p class="text-text-primary font-medium">blockers</p>
           <p class="text-text-secondary text-sm">Execution issues with resolution tracking.</p>
         </div>
-        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-white/10">
+        <div class="bg-surface/70 rounded-2xl p-phi-3 border border-line/10">
           <p class="text-text-primary font-medium">leases</p>
           <p class="text-text-secondary text-sm">Resource coordination and exclusivity.</p>
         </div>
@@ -136,4 +137,5 @@ import Layout from '../layouts/Layout.astro';
       </a>
     </div>
   </section>
+  </div>
 </Layout>
