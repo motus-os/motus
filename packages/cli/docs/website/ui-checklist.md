@@ -6,10 +6,12 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 
 - Use `phi-*` spacing tokens for vertical rhythm and section padding.
 - Sections own horizontal padding (`px-6 md:px-10`) so background bands can run full width.
-- Wrap long-form content in `theme-light` to improve readability.
-- Use `theme-dark` for dark panels inside light sections.
+- Use `Section` tone `light` or `muted` for long-form readability.
+- Use `Panel` tone `dark` for dark panels inside light sections.
 - Keep section cadence consistent: quiet section -> proof block -> CTA.
 - Avoid dense grids; keep generous whitespace between blocks.
+- Use `Section` + `Panel` + `Chip` components for layout primitives (no bespoke div styling).
+- Use `Card` for feature/module grids.
 - Use theme tokens only (`surface`, `line`, `text-*`, `mint`, `error`) - no raw hex.
 - Pair `text-text-primary` with `bg-surface`; reserve `text-text-secondary` for supporting copy.
 

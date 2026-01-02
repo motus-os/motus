@@ -1,0 +1,26 @@
+---
+const {
+  tone = 'light',
+  size = 'md',
+  class: className = '',
+  border = true,
+} = Astro.props;
+
+const toneClass =
+  tone === 'dark'
+    ? 'theme-dark bg-charcoal/70 text-text-primary'
+    : 'bg-surface/70 text-text-primary';
+
+const borderClass = border ? 'border border-line/10' : '';
+
+const padClass =
+  size === 'lg'
+    ? 'p-phi-5 md:p-phi-6'
+    : size === 'sm'
+      ? 'p-phi-2 md:p-phi-3'
+      : 'p-phi-4 md:p-phi-5';
+---
+
+<div class={`rounded-2xl ${borderClass} ${toneClass} ${padClass} ${className}`.trim()}>
+  <slot />
+</div>

@@ -1,0 +1,31 @@
+---
+const {
+  tone = 'light',
+  pad = 'md',
+  class: className = '',
+  innerClass = '',
+  id,
+} = Astro.props;
+
+const toneClass =
+  tone === 'dark'
+    ? 'theme-dark bg-charcoal text-text-primary'
+    : tone === 'muted'
+      ? 'theme-light bg-surface/50 text-text-primary'
+      : 'theme-light bg-surface text-text-primary';
+
+const padClass =
+  pad === 'hero'
+    ? 'px-6 md:px-10 py-phi-7 md:py-phi-8'
+    : pad === 'tight'
+      ? 'px-6 md:px-10 py-phi-5 md:py-phi-6'
+      : pad === 'none'
+        ? ''
+        : 'px-6 md:px-10 py-phi-6 md:py-phi-7';
+---
+
+<section id={id} class={`${toneClass} ${padClass} ${className}`.trim()}>
+  <div class={`max-w-6xl mx-auto ${innerClass}`.trim()}>
+    <slot />
+  </div>
+</section>

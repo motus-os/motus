@@ -1,132 +1,75 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Panel from '../components/Panel.astro';
 
 const lastUpdated = '2025-12-26';
 ---
 
 <Layout title="Terms of Service">
-  <div class="theme-light bg-surface text-text-primary">
-  <section class="py-16 md:py-24 text-center px-6 md:px-10">
-    <div class="max-w-3xl mx-auto">
-      <h1 class="text-4xl md:text-5xl font-black text-text-primary mb-6">
-        Terms of Service
-      </h1>
-      <p class="text-text-secondary">
-        Last updated: {lastUpdated}
-      </p>
-    </div>
-  </section>
+  <Section tone="light" class="text-center" innerClass="max-w-3xl">
+    <h1 class="text-4xl md:text-5xl font-black text-text-primary mb-6">
+      Terms of Service
+    </h1>
+    <p class="text-text-secondary">
+      Last updated: {lastUpdated}
+    </p>
+  </Section>
 
-  <section class="py-12 md:py-20 px-6 md:px-10">
-    <div class="max-w-3xl mx-auto">
-      <div class="space-y-12">
+  <Section tone="light" pad="tight" innerClass="max-w-3xl">
+    <div class="space-y-12">
+      <div>
+        <h2 class="text-2xl font-bold text-text-primary mb-4">Acceptance of Terms</h2>
+        <p class="text-text-secondary leading-relaxed">
+          By accessing or using Motus, you agree to be bound by these Terms of Service.
+          If you do not agree, please do not use the software or website.
+        </p>
+      </div>
 
-        <div>
-          <h2 class="text-2xl font-bold text-text-primary mb-4">Acceptance of Terms</h2>
+      <div>
+        <h2 class="text-2xl font-bold text-text-primary mb-4">Open Source License</h2>
+        <Panel size="sm">
           <p class="text-text-secondary leading-relaxed">
-            By accessing this website or using Motus software, you agree to be bound by these Terms of Service.
-            If you do not agree to these terms, please do not use our website or software.
+            Motus is open source software licensed under Apache 2.0. You are free to use,
+            modify, and distribute the software in accordance with the terms of that license.
           </p>
-        </div>
+        </Panel>
+      </div>
 
-        <div>
-          <h2 class="text-2xl font-bold text-text-primary mb-4">Open Source License</h2>
-          <div class="bg-surface rounded-xl p-6 border border-line/5">
-            <p class="text-text-secondary leading-relaxed mb-4">
-              Motus is open source software licensed under the
-              <span class="text-mint font-medium">Apache License 2.0</span>.
-            </p>
-            <p class="text-text-secondary leading-relaxed mb-4">
-              Under this license, you are free to:
-            </p>
-            <ul class="list-disc list-inside text-text-secondary space-y-1 ml-4 mb-4">
-              <li>Use the software for any purpose</li>
-              <li>Modify and distribute the software</li>
-              <li>Use the software in commercial projects</li>
-              <li>Sublicense the software</li>
-            </ul>
-            <p class="text-text-secondary leading-relaxed">
-              The full license text is available in the
-              <a href="https://github.com/motus-os/motus/blob/main/LICENSE" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
-                LICENSE file
-              </a> in our repository.
-            </p>
-          </div>
-        </div>
+      <div>
+        <h2 class="text-2xl font-bold text-text-primary mb-4">No Warranty</h2>
+        <p class="text-text-secondary leading-relaxed">
+          The software is provided "as is" without warranty of any kind, express or implied.
+          We do not guarantee that the software will meet your requirements or be error-free.
+        </p>
+      </div>
 
-        <div>
-          <h2 class="text-2xl font-bold text-text-primary mb-4">Disclaimer of Warranties</h2>
-          <div class="bg-surface rounded-xl p-6 border border-mint/20">
-            <p class="text-text-secondary leading-relaxed uppercase text-sm">
-              The software is provided "as is", without warranty of any kind, express or implied,
-              including but not limited to the warranties of merchantability, fitness for a particular purpose,
-              and noninfringement. In no event shall the authors or copyright holders be liable for any claim,
-              damages, or other liability, whether in an action of contract, tort, or otherwise, arising from,
-              out of, or in connection with the software or the use or other dealings in the software.
-            </p>
-          </div>
-          <p class="text-text-secondary leading-relaxed mt-4">
-            This is standard open source software disclaimer language. We provide Motus as a tool
-            to help with AI agent coordination, but we cannot guarantee it will work for your specific use case
-            or be free of bugs.
-          </p>
-        </div>
+      <div>
+        <h2 class="text-2xl font-bold text-text-primary mb-4">Limitation of Liability</h2>
+        <p class="text-text-secondary leading-relaxed">
+          In no event shall the Motus contributors be liable for any damages arising from the use
+          or inability to use the software, including but not limited to direct, indirect, incidental,
+          or consequential damages.
+        </p>
+      </div>
 
-        <div>
-          <h2 class="text-2xl font-bold text-text-primary mb-4">Limitation of Liability</h2>
-          <p class="text-text-secondary leading-relaxed">
-            To the maximum extent permitted by applicable law, in no event shall Motus, its contributors,
-            or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages,
-            or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data,
-            use, goodwill, or other intangible losses resulting from your use of the software.
-          </p>
-        </div>
+      <div>
+        <h2 class="text-2xl font-bold text-text-primary mb-4">Changes to These Terms</h2>
+        <p class="text-text-secondary leading-relaxed">
+          We may update these terms from time to time. Changes will be posted on this page
+          with an updated revision date.
+        </p>
+      </div>
 
-        <div>
-          <h2 class="text-2xl font-bold text-text-primary mb-4">Paid Services</h2>
-          <div class="bg-surface rounded-xl p-6 border border-line/5">
-            <p class="text-mint font-medium mb-2">Coming Soon</p>
-            <p class="text-text-secondary leading-relaxed mb-4">
-              We plan to offer paid hosted services in the future, including cloud infrastructure,
-              team synchronization, and enterprise compliance features.
-            </p>
-            <p class="text-text-secondary leading-relaxed">
-              When paid services become available, additional terms specific to those services will apply.
-              We will update these Terms of Service and provide notice before launching paid offerings.
-              The open source software will remain free under the Apache 2.0 license.
-            </p>
-          </div>
-        </div>
-
-        <div>
-          <h2 class="text-2xl font-bold text-text-primary mb-4">Modifications to Terms</h2>
-          <p class="text-text-secondary leading-relaxed">
-            We reserve the right to modify these Terms of Service at any time. Changes will be posted
-            on this page with an updated revision date. Your continued use of the website or software
-            after changes are posted constitutes your acceptance of the modified terms.
-          </p>
-        </div>
-
-        <div>
-          <h2 class="text-2xl font-bold text-text-primary mb-4">Governing Law</h2>
-          <p class="text-text-secondary leading-relaxed">
-            These terms shall be governed by and construed in accordance with applicable law,
-            without regard to conflict of law principles.
-          </p>
-        </div>
-
-        <div>
-          <h2 class="text-2xl font-bold text-text-primary mb-4">Contact</h2>
-          <p class="text-text-secondary leading-relaxed">
-            If you have questions about these Terms of Service, please open an issue at our
-            <a href="https://github.com/motus-os/motus/issues" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
-              GitHub repository
-            </a>.
-          </p>
-        </div>
-
+      <div>
+        <h2 class="text-2xl font-bold text-text-primary mb-4">Contact</h2>
+        <p class="text-text-secondary leading-relaxed">
+          If you have questions about these terms, please open an issue at our
+          <a href="https://github.com/motus-os/motus/issues" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+            GitHub repository
+          </a>.
+        </p>
       </div>
     </div>
-  </section>
-  </div>
+  </Section>
 </Layout>

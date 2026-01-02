@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Panel from '../components/Panel.astro';
+
 import registry from '../data/module-registry.json';
 
 const kernel = registry.kernel;
@@ -15,159 +18,157 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
 ---
 
 <Layout title="Implementation">
-  <div class="theme-light bg-surface text-text-primary">
-  <div class="max-w-6xl mx-auto px-6 md:px-10 py-phi-6 md:py-phi-7">
-  <section class="space-y-phi-3">
-    <div class="space-y-phi-2">
-      <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Implementation Guide</p>
-      <h1 class="text-4xl md:text-5xl font-display text-text-primary">Kernel + Bundled Modules</h1>
-      <p class="text-lg text-text-secondary max-w-3xl">
-        This page documents how to implement Motus correctly. The kernel is the
-        non-negotiable execution layer. Bundled modules add capabilities while
-        preserving kernel invariants.
-      </p>
-    </div>
-
-    <div class="grid md:grid-cols-3 gap-phi-2">
-      {Object.entries(registry.status_semantics).map(([key, value]) => (
-        <div class="rounded-xl border border-line/10 bg-surface/70 p-phi-2">
-          <div class="text-xs uppercase tracking-[0.2em] text-text-secondary">{key}</div>
-          <div class="mt-2 text-sm text-text-primary">{value}</div>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <section class="mt-phi-6 space-y-phi-3">
-    <div class="flex flex-wrap items-center gap-phi-2">
-      <h2 class="text-3xl font-display text-text-primary">Choose Your Path</h2>
-      <span class="text-xs px-3 py-1 rounded-full border border-line/10 text-text-secondary">By role</span>
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-phi-3">
-      <div class="rounded-xl border border-line/10 bg-surface/70 p-phi-3 space-y-phi-2">
-        <h3 class="text-lg font-display text-text-primary">Builder / Engineer</h3>
-        <p class="text-sm text-text-secondary">
-          Start with kernel invariants and the module guides. Implement one module at a time.
+  <Section tone="light" innerClass="max-w-6xl">
+    <section class="space-y-phi-3">
+      <div class="space-y-phi-2">
+        <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Implementation Guide</p>
+        <h1 class="text-4xl md:text-5xl font-display text-text-primary">Kernel + Bundled Modules</h1>
+        <p class="text-lg text-text-secondary max-w-3xl">
+          This page documents how to implement Motus correctly. The kernel is the
+          non-negotiable execution layer. Bundled modules add capabilities while
+          preserving kernel invariants.
         </p>
-        <a class="text-sm text-mint hover:text-text-primary transition-colors" href="#kernel">
-          Go to Kernel Guide &#8594;
-        </a>
       </div>
-      <div class="rounded-xl border border-line/10 bg-surface/70 p-phi-3 space-y-phi-2">
-        <h3 class="text-lg font-display text-text-primary">Architect / CTO</h3>
-        <p class="text-sm text-text-secondary">
-          Review the module registry and audit mapping to validate boundaries and scope.
-        </p>
-        <a class="text-sm text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/tree/main/packages/cli/docs">
-          Open Docs Index &#8594;
-        </a>
-      </div>
-      <div class="rounded-xl border border-line/10 bg-surface/70 p-phi-3 space-y-phi-2">
-        <h3 class="text-lg font-display text-text-primary">Compliance / Reviewer</h3>
-        <p class="text-sm text-text-secondary">
-          Focus on evidence capture, policy gates, and append-only audit trails.
-        </p>
-        <a class="text-sm text-mint hover:text-text-primary transition-colors" href="#proof-engine">
-          Go to Proof Engine &#8594;
-        </a>
-      </div>
-      <div class="rounded-xl border border-line/10 bg-surface/70 p-phi-3 space-y-phi-2">
-        <h3 class="text-lg font-display text-text-primary">Product / Leadership</h3>
-        <p class="text-sm text-text-secondary">
-          Use the current/building/future semantics to track releases and capability growth.
-        </p>
-        <a class="text-sm text-mint hover:text-text-primary transition-colors" href="#module-manager">
-          Go to Module Manager &#8594;
-        </a>
-      </div>
-    </div>
-  </section>
 
-  <section id="kernel" class="mt-phi-6 space-y-phi-3">
-    <div class="flex flex-wrap items-center gap-phi-2">
-      <h2 class="text-3xl font-display text-text-primary">{kernel.marketing_name}</h2>
-      <span class={`text-xs px-3 py-1 rounded-full ${statusClasses[kernel.status]}`}>
-        {statusLabel(kernel.status)}
-      </span>
-    </div>
-
-    <p class="text-text-secondary max-w-3xl">{kernel.description}</p>
-
-    <div class="grid md:grid-cols-2 gap-phi-3">
-      <div class="rounded-xl border border-line/10 bg-surface/70 p-phi-3">
-        <h3 class="text-lg font-display text-text-primary">Primary Surfaces</h3>
-        <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary">
-          {kernel.primary_surfaces.map((item) => (
-            <li>• {item}</li>
-          ))}
-        </ul>
+      <div class="grid md:grid-cols-3 gap-phi-2">
+        {Object.entries(registry.status_semantics).map(([key, value]) => (
+          <Panel size="sm">
+            <div class="text-xs uppercase tracking-[0.2em] text-text-secondary">{key}</div>
+            <div class="mt-2 text-sm text-text-primary">{value}</div>
+          </Panel>
+        ))}
       </div>
-      <div class="rounded-xl border border-line/10 bg-surface/70 p-phi-3">
-        <h3 class="text-lg font-display text-text-primary">Best Practices</h3>
-        <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary">
-          {kernel.best_practices.map((item) => (
-            <li>• {item}</li>
-          ))}
-        </ul>
+    </section>
+
+    <section class="mt-phi-6 space-y-phi-3">
+      <div class="flex flex-wrap items-center gap-phi-2">
+        <h2 class="text-3xl font-display text-text-primary">Choose Your Path</h2>
+        <span class="text-xs px-3 py-1 rounded-full border border-line/10 text-text-secondary">By role</span>
       </div>
-    </div>
-  </section>
 
-  <section class="mt-phi-6 space-y-phi-3">
-    <h2 class="text-3xl font-display text-text-primary">Bundled Modules</h2>
-    <p class="text-text-secondary max-w-3xl">
-      Bundled modules are optional capabilities that must never violate kernel
-      invariants. Each module has a defined scope, best practices, and roadmap.
-    </p>
+      <div class="grid md:grid-cols-2 gap-phi-3">
+        <Panel size="sm">
+          <h3 class="text-lg font-display text-text-primary">Builder / Engineer</h3>
+          <p class="text-sm text-text-secondary">
+            Start with kernel invariants and the module guides. Implement one module at a time.
+          </p>
+          <a class="text-sm text-mint hover:text-text-primary transition-colors" href="#kernel">
+            Go to Kernel Guide &#8594;
+          </a>
+        </Panel>
+        <Panel size="sm">
+          <h3 class="text-lg font-display text-text-primary">Architect / CTO</h3>
+          <p class="text-sm text-text-secondary">
+            Review the module registry and audit mapping to validate boundaries and scope.
+          </p>
+          <a class="text-sm text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/tree/main/packages/cli/docs">
+            Open Docs Index &#8594;
+          </a>
+        </Panel>
+        <Panel size="sm">
+          <h3 class="text-lg font-display text-text-primary">Compliance / Reviewer</h3>
+          <p class="text-sm text-text-secondary">
+            Focus on evidence capture, policy gates, and append-only audit trails.
+          </p>
+          <a class="text-sm text-mint hover:text-text-primary transition-colors" href="#proof-engine">
+            Go to Proof Engine &#8594;
+          </a>
+        </Panel>
+        <Panel size="sm">
+          <h3 class="text-lg font-display text-text-primary">Product / Leadership</h3>
+          <p class="text-sm text-text-secondary">
+            Use the current/building/future semantics to track releases and capability growth.
+          </p>
+          <a class="text-sm text-mint hover:text-text-primary transition-colors" href="#module-manager">
+            Go to Module Manager &#8594;
+          </a>
+        </Panel>
+      </div>
+    </section>
 
-    <div class="grid md:grid-cols-2 gap-phi-3">
-      {modules.map((module) => (
-        <div id={module.id} class="rounded-xl border border-line/10 bg-surface/70 p-phi-3 space-y-phi-2">
-          <div class="flex items-center justify-between gap-phi-2">
-            <div>
-              <h3 class="text-lg font-display text-text-primary">{module.marketing_name}</h3>
-              <p class="text-sm text-text-secondary">{module.description}</p>
-            </div>
-            <span class={`text-xs px-3 py-1 rounded-full ${statusClasses[module.status]}`}>
-              {statusLabel(module.status)}
-            </span>
-          </div>
-          <div class="text-xs text-text-secondary uppercase tracking-[0.2em]">Best Practices</div>
-          <ul class="space-y-phi-1 text-sm text-text-secondary">
-            {module.best_practices.map((item) => (
+    <section id="kernel" class="mt-phi-6 space-y-phi-3">
+      <div class="flex flex-wrap items-center gap-phi-2">
+        <h2 class="text-3xl font-display text-text-primary">{kernel.marketing_name}</h2>
+        <span class={`text-xs px-3 py-1 rounded-full ${statusClasses[kernel.status]}`}>
+          {statusLabel(kernel.status)}
+        </span>
+      </div>
+
+      <p class="text-text-secondary max-w-3xl">{kernel.description}</p>
+
+      <div class="grid md:grid-cols-2 gap-phi-3">
+        <Panel size="sm">
+          <h3 class="text-lg font-display text-text-primary">Primary Surfaces</h3>
+          <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary">
+            {kernel.primary_surfaces.map((item) => (
               <li>• {item}</li>
             ))}
           </ul>
-          <div class="flex flex-wrap gap-phi-1 text-xs text-text-secondary">
-            <span class="px-2 py-1 rounded-full border border-line/10">{module.scope}</span>
-            {module.roadmap_id ? (
-              <span class="px-2 py-1 rounded-full border border-line/10">{module.roadmap_id}</span>
-            ) : null}
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
+        </Panel>
+        <Panel size="sm">
+          <h3 class="text-lg font-display text-text-primary">Best Practices</h3>
+          <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary">
+            {kernel.best_practices.map((item) => (
+              <li>• {item}</li>
+            ))}
+          </ul>
+        </Panel>
+      </div>
+    </section>
 
-  <section class="mt-phi-6 space-y-phi-2">
-    <h2 class="text-2xl font-display text-text-primary">Docs Reference</h2>
-    <p class="text-sm text-text-secondary">
-      The canonical docs and registry live in the public repo. These links are the
-      source of truth for implementation details.
-    </p>
-    <div class="flex flex-wrap gap-3 text-sm">
-      <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/tree/main/packages/cli/docs">
-        Docs Index
-      </a>
-      <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md">
-        Kernel Guide
-      </a>
-      <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml">
-        Module Registry
-      </a>
-    </div>
-  </section>
-  </div>
-  </div>
+    <section class="mt-phi-6 space-y-phi-3">
+      <h2 class="text-3xl font-display text-text-primary">Bundled Modules</h2>
+      <p class="text-text-secondary max-w-3xl">
+        Bundled modules are optional capabilities that must never violate kernel
+        invariants. Each module has a defined scope, best practices, and roadmap.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-phi-3">
+        {modules.map((module) => (
+          <Panel size="sm" class="space-y-phi-2">
+            <div class="flex items-center justify-between gap-phi-2">
+              <div>
+                <h3 class="text-lg font-display text-text-primary">{module.marketing_name}</h3>
+                <p class="text-sm text-text-secondary">{module.description}</p>
+              </div>
+              <span class={`text-xs px-3 py-1 rounded-full ${statusClasses[module.status]}`}>
+                {statusLabel(module.status)}
+              </span>
+            </div>
+            <div class="text-xs text-text-secondary uppercase tracking-[0.2em]">Best Practices</div>
+            <ul class="space-y-phi-1 text-sm text-text-secondary">
+              {module.best_practices.map((item) => (
+                <li>• {item}</li>
+              ))}
+            </ul>
+            <div class="flex flex-wrap gap-phi-1 text-xs text-text-secondary">
+              <span class="px-2 py-1 rounded-full border border-line/10">{module.scope}</span>
+              {module.roadmap_id ? (
+                <span class="px-2 py-1 rounded-full border border-line/10">{module.roadmap_id}</span>
+              ) : null}
+            </div>
+          </Panel>
+        ))}
+      </div>
+    </section>
+
+    <section class="mt-phi-6 space-y-phi-2">
+      <h2 class="text-2xl font-display text-text-primary">Docs Reference</h2>
+      <p class="text-sm text-text-secondary">
+        The canonical docs and registry live in the public repo. These links are the
+        source of truth for implementation details.
+      </p>
+      <div class="flex flex-wrap gap-3 text-sm">
+        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/tree/main/packages/cli/docs">
+          Docs Index
+        </a>
+        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md">
+          Kernel Guide
+        </a>
+        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml">
+          Module Registry
+        </a>
+      </div>
+    </section>
+  </Section>
 </Layout>

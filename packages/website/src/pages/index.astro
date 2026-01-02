@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Panel from '../components/Panel.astro';
+import Chip from '../components/Chip.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import GitHubIcon from '../components/GitHubIcon.astro';
 import Card from '../components/Card.astro';
@@ -11,300 +14,270 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
 ---
 
 <Layout title="Motus - The Execution Layer for AI Agents">
-  <!-- Hero Section -->
-  <section class="py-phi-7 md:py-phi-8 text-center px-6 md:px-10">
-    <div class="max-w-4xl mx-auto">
-      <div class="mb-phi-5">
-        <span class="text-6xl md:text-[7.5rem] font-display font-semibold text-mint">66%</span>
-        <p class="text-lg md:text-xl text-text-secondary mt-phi-2">
-          of developers spend more time fixing AI code than they saved.<a href="https://survey.stackoverflow.co/2024/ai" target="_blank" rel="noopener noreferrer" class="text-text-secondary/60 hover:text-mint transition-colors align-super text-sm ml-1" title="Stack Overflow 2024 Developer Survey">*</a>
-        </p>
-      </div>
-
-      <div class="w-32 h-px bg-mint/70 mx-auto mb-phi-5"></div>
-
-      <p class="text-sm uppercase tracking-[0.35em] text-text-secondary mb-phi-2">The problem is waste</p>
-      <h1 class="text-4xl md:text-6xl font-display text-text-primary mb-phi-2">
-        Workflow Compression
-      </h1>
-      <p class="text-lg md:text-2xl text-text-secondary mb-phi-5">
-        Agents re-read, re-reason, re-work. Motus eliminates the redundancy.
+  <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-4xl">
+    <div class="mb-phi-5">
+      <span class="text-6xl md:text-[7.5rem] font-display font-semibold text-mint">66%</span>
+      <p class="text-lg md:text-xl text-text-secondary mt-phi-2">
+        of developers spend more time fixing AI code than they saved.<a href="https://survey.stackoverflow.co/2024/ai" target="_blank" rel="noopener noreferrer" class="text-text-secondary/60 hover:text-mint transition-colors align-super text-sm ml-1" title="Stack Overflow 2024 Developer Survey">*</a>
       </p>
-
-      <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">
-        <InstallCommand />
-        <a href={`${base}how-it-works`} class="text-mint hover:text-text-primary transition-colors px-phi-3 py-phi-2">
-          See How It Works &#8594;
-        </a>
-      </div>
     </div>
-  </section>
 
-  <div class="theme-light bg-surface text-text-primary">
-  <!-- Proof Bar -->
-  <section class="py-phi-3 border-t border-line/10 px-6 md:px-10">
-    <div class="max-w-6xl mx-auto">
-      <div class="flex flex-wrap justify-center gap-phi-2 text-xs uppercase tracking-[0.2em] text-text-secondary">
-        {proofLedger.claims.map((claim) => (
-          <a class="px-3 py-2 rounded-full border border-line/10 bg-surface/70 hover:border-mint/30 transition-colors" href={claim.evidence[0].url}>
-            {claim.evidence[0].label}
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
+    <div class="w-32 h-px bg-mint/70 mx-auto mb-phi-5"></div>
 
-  <!-- Big Numbers -->
-  <section class="py-phi-6 md:py-phi-7 px-6 md:px-10">
-    <div class="max-w-6xl mx-auto">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-phi-4 text-center">
-        <div>
-          <span class="text-5xl md:text-6xl font-display text-mint">6</span>
-          <p class="text-text-secondary mt-phi-1">API calls</p>
-          <p class="text-text-secondary/60 text-sm">Total coordination surface</p>
-        </div>
-        <div>
-          <span class="text-5xl md:text-6xl font-display text-mint">300</span>
-          <p class="text-text-secondary mt-phi-1">Token Lens</p>
-          <p class="text-text-secondary/60 text-sm">vs 50k raw context</p>
-        </div>
-        <div>
-          <span class="text-5xl md:text-6xl font-display text-mint">9</span>
-          <p class="text-text-secondary mt-phi-1">Strategies</p>
-          <p class="text-text-secondary/60 text-sm">Battle-tested patterns</p>
-        </div>
-        <div>
-          <span class="text-5xl md:text-6xl font-display text-mint">100%</span>
-          <p class="text-text-secondary mt-phi-1">Local</p>
-          <p class="text-text-secondary/60 text-sm">Your data stays yours</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    <p class="text-sm uppercase tracking-[0.35em] text-text-secondary mb-phi-2">The problem is waste</p>
+    <h1 class="text-4xl md:text-6xl font-display text-text-primary mb-phi-2">
+      Workflow Compression
+    </h1>
+    <p class="text-lg md:text-2xl text-text-secondary mb-phi-5">
+      Agents re-read, re-reason, re-work. Motus eliminates the redundancy.
+    </p>
 
-  <!-- Implementation Guide Wayfinding -->
-  <section class="py-phi-6 md:py-phi-7 px-6 md:px-10">
-    <div class="max-w-6xl mx-auto">
-      <div class="border border-line/10 bg-surface/40 rounded-2xl p-phi-5 md:p-phi-6 grid md:grid-cols-2 gap-phi-5 items-center">
-        <div class="space-y-phi-2">
-          <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">For Builders</p>
-          <h2 class="text-3xl md:text-4xl font-display text-text-primary">
-            Implementation Guide
-          </h2>
-          <p class="text-lg text-text-secondary">
-            Learn how the kernel works and how bundled modules extend it without
-            breaking invariants. This is the fastest path from curiosity to
-            correct implementation.
-          </p>
-          <a
-            href={`${base}implementation`}
-            class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors"
-          >
-            View Implementation Guide &#8594;
-          </a>
-        </div>
-        <div class="theme-dark bg-charcoal/60 border border-line/10 rounded-xl p-phi-4 space-y-phi-2 text-sm text-text-secondary">
-          <div class="flex items-start gap-phi-2">
-            <span class="text-mint">&#x2022;</span>
-            <span>Kernel invariants and data paths</span>
-          </div>
-          <div class="flex items-start gap-phi-2">
-            <span class="text-mint">&#x2022;</span>
-            <span>Bundled module boundaries + best practices</span>
-          </div>
-          <div class="flex items-start gap-phi-2">
-            <span class="text-mint">&#x2022;</span>
-            <span>Status semantics: current vs building vs future</span>
-          </div>
-          <div class="flex items-start gap-phi-2">
-            <span class="text-mint">&#x2022;</span>
-            <span>Roadmap IDs tied to implementation detail</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Persona Journeys -->
-  <section class="py-phi-6 md:py-phi-7 bg-surface/50 px-6 md:px-10">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center mb-phi-5">
-        <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Choose Your Path</p>
-        <h2 class="text-3xl md:text-4xl font-display text-text-primary mt-phi-2">Designed for the journey you are on</h2>
-        <p class="text-text-secondary max-w-2xl mx-auto mt-phi-2">
-          Each path includes a proof link so you can verify what matters before you commit time.
-        </p>
-      </div>
-      <div class="grid md:grid-cols-2 gap-phi-3">
-        {personaMap.personas.map((persona) => {
-          const proof = proofIndex.get(persona.proof_id);
-          const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
-          return (
-            <div class="theme-dark rounded-2xl border border-line/10 bg-charcoal/70 p-phi-4 space-y-phi-2">
-              <div class="text-xs uppercase tracking-[0.3em] text-text-secondary">{persona.title}</div>
-              <h3 class="text-2xl font-display text-text-primary">{persona.hook}</h3>
-              <p class="text-sm text-text-secondary">{persona.value}</p>
-              <div class="flex flex-wrap items-center gap-phi-2 text-sm">
-                <a class="text-mint hover:text-text-primary transition-colors" href={`${base}${path}`}>
-                  Start here &#8594;
-                </a>
-                {proof ? (
-                  <a class="text-text-secondary hover:text-mint transition-colors" href={proof.evidence[0].url}>
-                    Proof: {proof.evidence[0].label}
-                  </a>
-                ) : null}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  </section>
-
-  <!-- Four Modules -->
-  <section class="py-phi-6 md:py-phi-7 px-6 md:px-10">
-    <div class="max-w-6xl mx-auto">
-      <div class="text-center mb-phi-5">
-        <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-2">Four Modules. Four Types of Waste Eliminated.</h2>
-      </div>
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-3">
-        <!-- LENS Module -->
-        <Card>
-          <h3 class="text-2xl font-display text-mint mb-phi-1">LENS</h3>
-          <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Reading</p>
-          <p class="text-text-secondary mb-phi-3 leading-relaxed">
-            300 tokens instead of 50,000. Agents get exactly what's relevant.
-          </p>
-          <ul class="space-y-phi-1 text-sm">
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <span class="text-text-secondary">Token compression</span>
-            </li>
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <span class="text-text-secondary">Cryptographic provenance</span>
-            </li>
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <span class="text-text-secondary">Snapshot versioning</span>
-            </li>
-          </ul>
-        </Card>
-
-        <!-- LEASES Module -->
-        <Card>
-          <h3 class="text-2xl font-display text-mint mb-phi-1">LEASES</h3>
-          <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Coordination</p>
-          <p class="text-text-secondary mb-phi-3 leading-relaxed">
-            6 API calls. Safe handoffs, not collision chaos.
-          </p>
-          <ul class="space-y-phi-1 text-sm font-mono">
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <code class="text-text-secondary">peek() claim()</code>
-            </li>
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <code class="text-text-secondary">status() release()</code>
-            </li>
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <span class="text-text-secondary">Conflict detection</span>
-            </li>
-          </ul>
-        </Card>
-
-        <!-- RECEIPTS Module -->
-        <Card>
-          <h3 class="text-2xl font-display text-mint mb-phi-1">RECEIPTS</h3>
-          <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Trust</p>
-          <p class="text-text-secondary mb-phi-3 leading-relaxed">
-            Cryptographic proof instead of hope. Every action recorded.
-          </p>
-          <ul class="space-y-phi-1 text-sm">
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <span class="text-text-secondary">HMAC signing</span>
-            </li>
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <span class="text-text-secondary">Policy gates</span>
-            </li>
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <span class="text-text-secondary">Audit trail</span>
-            </li>
-          </ul>
-        </Card>
-
-        <!-- STRATEGIES Module -->
-        <Card>
-          <h3 class="text-2xl font-display text-mint mb-phi-1">STRATEGIES</h3>
-          <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Reasoning</p>
-          <p class="text-text-secondary mb-phi-3 leading-relaxed">
-            9 battle-tested patterns. Proven approaches, not reinvention.
-          </p>
-          <ul class="space-y-phi-1 text-sm">
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <span class="text-text-secondary">Decision patterns</span>
-            </li>
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <span class="text-text-secondary">Trigger conditions</span>
-            </li>
-            <li class="flex items-start gap-phi-1">
-              <span class="text-mint">&#x2022;</span>
-              <a href={`${base}strategies`} class="text-mint hover:text-text-primary transition-colors">View all 9 &#8594;</a>
-            </li>
-          </ul>
-        </Card>
-      </div>
-    </div>
-  </section>
-
-  <!-- Open Source Trust Block -->
-  <section class="py-phi-6 md:py-phi-7 bg-surface/60 px-6 md:px-10">
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Open Source. Verifiable. Yours.</h2>
-      <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
-        Boyd gave away OODA because paradigms should be shared.<br class="hidden md:inline" />
-        We honor that by keeping the Work Compiler open source.<br class="hidden md:inline" />
-        The infrastructure has a cost. The idea doesn't.
-      </p>
-
-      <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center text-left md:text-center">
-        <div class="flex items-center gap-phi-1">
-          <span class="text-mint text-xl">&#10003;</span>
-          <span class="text-text-primary">Your receipts are YOUR data</span>
-        </div>
-        <div class="flex items-center gap-phi-1">
-          <span class="text-mint text-xl">&#10003;</span>
-          <span class="text-text-primary">Local by default</span>
-        </div>
-        <div class="flex items-center gap-phi-1">
-          <span class="text-mint text-xl">&#10003;</span>
-          <span class="text-text-primary">Audit every line of code</span>
-        </div>
-      </div>
-
-      <div class="mt-phi-4">
-        <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors">
-          <GitHubIcon />
-          View on GitHub
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer CTA -->
-  <section class="py-phi-6 md:py-phi-7 text-center px-6 md:px-10">
-    <div class="max-w-2xl mx-auto">
-      <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-3">
-        Ready to make your agents capable?
-      </h2>
+    <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">
       <InstallCommand />
+      <a href={`${base}how-it-works`} class="text-mint hover:text-text-primary transition-colors px-phi-3 py-phi-2">
+        See How It Works &#8594;
+      </a>
     </div>
-  </section>
-  </div>
+  </Section>
+
+  <Section tone="light" pad="tight" class="border-t border-line/10">
+    <div class="flex flex-wrap justify-center gap-phi-2">
+      {proofLedger.claims.map((claim) => (
+        <Chip href={claim.evidence[0].url}>
+          {claim.evidence[0].label}
+        </Chip>
+      ))}
+    </div>
+  </Section>
+
+  <Section tone="light">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-phi-4 text-center">
+      <div>
+        <span class="text-5xl md:text-6xl font-display text-mint">6</span>
+        <p class="text-text-secondary mt-phi-1">API calls</p>
+        <p class="text-text-secondary/60 text-sm">Total coordination surface</p>
+      </div>
+      <div>
+        <span class="text-5xl md:text-6xl font-display text-mint">300</span>
+        <p class="text-text-secondary mt-phi-1">Token Lens</p>
+        <p class="text-text-secondary/60 text-sm">vs 50k raw context</p>
+      </div>
+      <div>
+        <span class="text-5xl md:text-6xl font-display text-mint">9</span>
+        <p class="text-text-secondary mt-phi-1">Strategies</p>
+        <p class="text-text-secondary/60 text-sm">Battle-tested patterns</p>
+      </div>
+      <div>
+        <span class="text-5xl md:text-6xl font-display text-mint">100%</span>
+        <p class="text-text-secondary mt-phi-1">Local</p>
+        <p class="text-text-secondary/60 text-sm">Your data stays yours</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section tone="light">
+    <Panel tone="light" size="lg" class="grid md:grid-cols-2 gap-phi-5 items-center">
+      <div class="space-y-phi-2">
+        <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">For Builders</p>
+        <h2 class="text-3xl md:text-4xl font-display text-text-primary">
+          Implementation Guide
+        </h2>
+        <p class="text-lg text-text-secondary">
+          Learn how the kernel works and how bundled modules extend it without
+          breaking invariants. This is the fastest path from curiosity to
+          correct implementation.
+        </p>
+        <a
+          href={`${base}implementation`}
+          class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors"
+        >
+          View Implementation Guide &#8594;
+        </a>
+      </div>
+      <Panel tone="dark" size="md" class="space-y-phi-2 text-sm text-text-secondary">
+        <div class="flex items-start gap-phi-2">
+          <span class="text-mint">&#x2022;</span>
+          <span>Kernel invariants and data paths</span>
+        </div>
+        <div class="flex items-start gap-phi-2">
+          <span class="text-mint">&#x2022;</span>
+          <span>Bundled module boundaries + best practices</span>
+        </div>
+        <div class="flex items-start gap-phi-2">
+          <span class="text-mint">&#x2022;</span>
+          <span>Status semantics: current vs building vs future</span>
+        </div>
+        <div class="flex items-start gap-phi-2">
+          <span class="text-mint">&#x2022;</span>
+          <span>Roadmap IDs tied to implementation detail</span>
+        </div>
+      </Panel>
+    </Panel>
+  </Section>
+
+  <Section tone="muted">
+    <div class="text-center mb-phi-5">
+      <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Choose Your Path</p>
+      <h2 class="text-3xl md:text-4xl font-display text-text-primary mt-phi-2">Designed for the journey you are on</h2>
+      <p class="text-text-secondary max-w-2xl mx-auto mt-phi-2">
+        Each path includes a proof link so you can verify what matters before you commit time.
+      </p>
+    </div>
+    <div class="grid md:grid-cols-2 gap-phi-3">
+      {personaMap.personas.map((persona) => {
+        const proof = proofIndex.get(persona.proof_id);
+        const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
+        return (
+          <Panel tone="dark" size="md" class="space-y-phi-2">
+            <div class="text-xs uppercase tracking-[0.3em] text-text-secondary">{persona.title}</div>
+            <h3 class="text-2xl font-display text-text-primary">{persona.hook}</h3>
+            <p class="text-sm text-text-secondary">{persona.value}</p>
+            <div class="flex flex-wrap items-center gap-phi-2 text-sm">
+              <a class="text-mint hover:text-text-primary transition-colors" href={`${base}${path}`}>
+                Start here &#8594;
+              </a>
+              {proof ? (
+                <a class="text-text-secondary hover:text-mint transition-colors" href={proof.evidence[0].url}>
+                  Proof: {proof.evidence[0].label}
+                </a>
+              ) : null}
+            </div>
+          </Panel>
+        );
+      })}
+    </div>
+  </Section>
+
+  <Section tone="light">
+    <div class="text-center mb-phi-5">
+      <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-2">Four Modules. Four Types of Waste Eliminated.</h2>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-3">
+      <Card>
+        <h3 class="text-2xl font-display text-mint mb-phi-1">LENS</h3>
+        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Reading</p>
+        <p class="text-text-secondary mb-phi-3 leading-relaxed">
+          300 tokens instead of 50,000. Agents get exactly what&apos;s relevant.
+        </p>
+        <ul class="space-y-phi-1 text-sm">
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">Token compression</span>
+          </li>
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">Cryptographic provenance</span>
+          </li>
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">Snapshot versioning</span>
+          </li>
+        </ul>
+      </Card>
+
+      <Card>
+        <h3 class="text-2xl font-display text-mint mb-phi-1">LEASES</h3>
+        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Coordination</p>
+        <p class="text-text-secondary mb-phi-3 leading-relaxed">
+          6 API calls. Safe handoffs, not collision chaos.
+        </p>
+        <ul class="space-y-phi-1 text-sm font-mono">
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <code class="text-text-secondary">peek() claim()</code>
+          </li>
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <code class="text-text-secondary">status() release()</code>
+          </li>
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">Conflict detection</span>
+          </li>
+        </ul>
+      </Card>
+
+      <Card>
+        <h3 class="text-2xl font-display text-mint mb-phi-1">RECEIPTS</h3>
+        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Trust</p>
+        <p class="text-text-secondary mb-phi-3 leading-relaxed">
+          Cryptographic proof instead of hope. Every action recorded.
+        </p>
+        <ul class="space-y-phi-1 text-sm">
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">HMAC signing</span>
+          </li>
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">Policy gates</span>
+          </li>
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">Audit trail</span>
+          </li>
+        </ul>
+      </Card>
+
+      <Card>
+        <h3 class="text-2xl font-display text-mint mb-phi-1">STRATEGIES</h3>
+        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Reasoning</p>
+        <p class="text-text-secondary mb-phi-3 leading-relaxed">
+          9 battle-tested patterns. Proven approaches, not reinvention.
+        </p>
+        <ul class="space-y-phi-1 text-sm">
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">Decision patterns</span>
+          </li>
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">Trigger conditions</span>
+          </li>
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <a href={`${base}strategies`} class="text-mint hover:text-text-primary transition-colors">View all 9 &#8594;</a>
+          </li>
+        </ul>
+      </Card>
+    </div>
+  </Section>
+
+  <Section tone="muted" class="text-center" innerClass="max-w-4xl">
+    <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Open Source. Verifiable. Yours.</h2>
+    <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
+      Boyd gave away OODA because paradigms should be shared.<br class="hidden md:inline" />
+      We honor that by keeping the Work Compiler open source.<br class="hidden md:inline" />
+      The infrastructure has a cost. The idea doesn&apos;t.
+    </p>
+
+    <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center text-left md:text-center">
+      <div class="flex items-center gap-phi-1">
+        <span class="text-mint text-xl">&#10003;</span>
+        <span class="text-text-primary">Your receipts are YOUR data</span>
+      </div>
+      <div class="flex items-center gap-phi-1">
+        <span class="text-mint text-xl">&#10003;</span>
+        <span class="text-text-primary">Local by default</span>
+      </div>
+      <div class="flex items-center gap-phi-1">
+        <span class="text-mint text-xl">&#10003;</span>
+        <span class="text-text-primary">Audit every line of code</span>
+      </div>
+    </div>
+
+    <div class="mt-phi-4">
+      <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors">
+        <GitHubIcon />
+        View on GitHub
+      </a>
+    </div>
+  </Section>
+
+  <Section tone="light" class="text-center" innerClass="max-w-2xl">
+    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-3">
+      Ready to make your agents capable?
+    </h2>
+    <InstallCommand />
+  </Section>
 </Layout>
