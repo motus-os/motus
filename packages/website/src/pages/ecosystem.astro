@@ -1,0 +1,314 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Panel from '../components/Panel.astro';
+import Chip from '../components/Chip.astro';
+
+import ecosystemMap from '../data/ecosystem-map.json';
+import proofLedger from '../data/proof-ledger.json';
+
+const groups = ecosystemMap.groups || [];
+const nodes = ecosystemMap.nodes || [];
+
+const nodesByGroup = groups.reduce((acc, group) => {
+  acc[group.id] = nodes.filter((node) => node.group === group.id);
+  return acc;
+}, {});
+
+const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]));
+const proofData = Object.fromEntries(proofLedger.claims.map((claim) => [claim.id, claim]));
+const labelIndex = Object.fromEntries(nodes.map((node) => [node.id, node.label]));
+
+const defaultNode = nodes[0];
+const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaultNode.proof_id) : null;
+---
+
+<Layout title="Ecosystem Map - Motus">
+  <Section tone="dark" class="text-center" innerClass="max-w-3xl">
+    <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Ecosystem Map</p>
+    <h1 class="text-4xl md:text-5xl font-display text-text-primary mt-phi-2">
+      The minimal system for verifiable AI work
+    </h1>
+    <p class="text-lg text-text-secondary mt-phi-3">
+      Every block is tied to documentation, proof, and roadmap status. Nothing is implied.
+    </p>
+  </Section>
+
+  <Section tone="light" pad="tight" class="border-t border-line/10">
+    <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-phi-4 items-start">
+      <div class="space-y-phi-3">
+        {groups.map((group) => (
+          <Panel size="sm">
+            <div class="flex items-start justify-between gap-phi-2">
+              <div>
+                <h2 class="text-lg font-display text-text-primary">{group.label}</h2>
+                <p class="text-sm text-text-secondary">{group.description}</p>
+              </div>
+              <Chip>{group.id}</Chip>
+            </div>
+            <div class="mt-phi-2 grid sm:grid-cols-2 gap-phi-1">
+              {(nodesByGroup[group.id] || []).map((node) => (
+                <button
+                  type="button"
+                  class="flex items-center gap-phi-1 rounded-xl border border-line/10 px-phi-2 py-phi-1 text-left text-sm text-text-secondary hover:text-text-primary hover:border-mint/30 transition-colors duration-base ease-standard"
+                  data-eco-node={node.id}
+                >
+                  {node.logo ? (
+                    <img
+                      src={node.logo}
+                      alt={node.label}
+                      class="h-5 w-5 text-text-secondary"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span class="h-2 w-2 rounded-full bg-mint/60"></span>
+                  )}
+                  <span class="flex-1">{node.label}</span>
+                </button>
+              ))}
+            </div>
+          </Panel>
+        ))}
+      </div>
+
+      <Panel size="lg" class="sticky top-24">
+        <div class="flex items-center justify-between gap-phi-2">
+          <div class="flex items-center gap-phi-2">
+            <img
+              data-eco-detail="logo"
+              src={defaultNode?.logo || ''}
+              alt=""
+              class={`h-8 w-8 ${defaultNode?.logo ? '' : 'hidden'}`}
+            />
+            <h3 class="text-2xl font-display text-text-primary" data-eco-detail="label">
+              {defaultNode?.label}
+            </h3>
+          </div>
+          <span
+            class="text-xs px-3 py-1 rounded-full border border-line/10 text-text-secondary"
+            data-eco-detail="status"
+          >
+            {defaultNode?.status}
+          </span>
+        </div>
+
+        <p class="text-text-secondary mt-phi-2" data-eco-detail="summary">
+          {defaultNode?.summary}
+        </p>
+
+        <div class="mt-phi-3 space-y-phi-1" data-eco-detail="improves-block">
+          {defaultNode?.improves ? (
+            <div>
+              <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Motus improves</p>
+              <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary" data-eco-detail="improves">
+                {defaultNode.improves.map((entry) => (
+                  <li>
+                    <span class="text-text-primary">{entry.label}</span>
+                    <span class="text-text-secondary"> ({entry.motus_nodes.map((node) => labelIndex[node]).join(', ')})</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </div>
+
+        <div class="mt-phi-3 flex flex-wrap gap-phi-2 text-sm" data-eco-detail="links">
+          {defaultNode?.website_path ? (
+            <a class="text-mint hover:text-text-primary transition-colors" href={defaultNode.website_path}>
+              View on site
+            </a>
+          ) : null}
+          {defaultNode?.docs_url ? (
+            <a class="text-mint hover:text-text-primary transition-colors" href={defaultNode.docs_url} target="_blank" rel="noopener">
+              Docs
+            </a>
+          ) : null}
+          {defaultNode?.external_url ? (
+            <a class="text-mint hover:text-text-primary transition-colors" href={defaultNode.external_url} target="_blank" rel="noopener">
+              External site
+            </a>
+          ) : null}
+          {defaultProof ? (
+            <a class="text-text-secondary hover:text-mint transition-colors" href={defaultProof.evidence[0].url} target="_blank" rel="noopener">
+              Proof: {defaultProof.evidence[0].label}
+            </a>
+          ) : null}
+        </div>
+      </Panel>
+    </div>
+  </Section>
+
+  {groups.map((group, index) => (
+    <Section tone={index % 2 === 0 ? 'light' : 'muted'} pad="tight">
+      <div class="text-center mb-phi-4">
+        <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{group.id}</p>
+        <h2 class="text-3xl font-display text-text-primary mt-phi-2">{group.label}</h2>
+        <p class="text-text-secondary max-w-measure mx-auto mt-phi-2">
+          {group.description}
+        </p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-phi-3">
+        {(nodesByGroup[group.id] || []).map((node) => (
+          <Panel size="sm" class="space-y-phi-2">
+            <div class="flex items-center gap-phi-2">
+              {node.logo ? (
+                <img src={node.logo} alt={node.label} class="h-6 w-6 text-text-secondary" loading="lazy" />
+              ) : (
+                <span class="h-2 w-2 rounded-full bg-mint/60"></span>
+              )}
+              <h3 class="text-lg font-display text-text-primary">{node.label}</h3>
+              <span class="text-xs px-2 py-1 rounded-full border border-line/10 text-text-secondary">
+                {node.status}
+              </span>
+            </div>
+            <p class="text-sm text-text-secondary">{node.summary}</p>
+            {node.improves ? (
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Motus improves</p>
+                <ul class="mt-phi-1 space-y-phi-1 text-sm text-text-secondary">
+                  {node.improves.map((entry) => (
+                    <li>
+                      <span class="text-text-primary">{entry.label}</span>
+                      <span class="text-text-secondary"> ({entry.motus_nodes.map((id) => labelIndex[id]).join(', ')})</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            <div class="flex flex-wrap gap-phi-2 text-sm">
+              {node.website_path ? (
+                <a class="text-mint hover:text-text-primary transition-colors" href={node.website_path}>
+                  Site
+                </a>
+              ) : null}
+              {node.docs_url ? (
+                <a class="text-mint hover:text-text-primary transition-colors" href={node.docs_url} target="_blank" rel="noopener">
+                  Docs
+                </a>
+              ) : null}
+              {node.external_url ? (
+                <a class="text-mint hover:text-text-primary transition-colors" href={node.external_url} target="_blank" rel="noopener">
+                  External
+                </a>
+              ) : null}
+              {node.proof_id ? (
+                <a class="text-text-secondary hover:text-mint transition-colors" href={proofIndex.get(node.proof_id)?.evidence[0].url} target="_blank" rel="noopener">
+                  Proof
+                </a>
+              ) : null}
+            </div>
+          </Panel>
+        ))}
+      </div>
+    </Section>
+  ))}
+
+  <script type="application/json" id="ecosystem-data">{JSON.stringify(ecosystemMap)}</script>
+  <script type="application/json" id="ecosystem-proof">{JSON.stringify(proofData)}</script>
+  <script type="application/json" id="ecosystem-labels">{JSON.stringify(labelIndex)}</script>
+
+  <script>
+    const dataEl = document.getElementById('ecosystem-data');
+    const proofEl = document.getElementById('ecosystem-proof');
+    const labelEl = document.getElementById('ecosystem-labels');
+
+    if (dataEl && proofEl && labelEl) {
+      const data = JSON.parse(dataEl.textContent);
+      const proofs = JSON.parse(proofEl.textContent);
+      const labels = JSON.parse(labelEl.textContent);
+      const nodes = new Map((data.nodes || []).map((node) => [node.id, node]));
+
+      const detail = document.querySelector('[data-eco-detail="label"]')?.closest('div');
+      const logo = document.querySelector('[data-eco-detail="logo"]');
+      const label = document.querySelector('[data-eco-detail="label"]');
+      const status = document.querySelector('[data-eco-detail="status"]');
+      const summary = document.querySelector('[data-eco-detail="summary"]');
+      const improvesBlock = document.querySelector('[data-eco-detail="improves-block"]');
+      const improvesList = document.querySelector('[data-eco-detail="improves"]');
+      const links = document.querySelector('[data-eco-detail="links"]');
+
+      const setDetail = (nodeId) => {
+        const node = nodes.get(nodeId);
+        if (!node || !label || !summary || !status || !links || !improvesBlock) return;
+
+        if (logo) {
+          if (node.logo) {
+            logo.src = node.logo;
+            logo.alt = node.label;
+            logo.classList.remove('hidden');
+          } else {
+            logo.classList.add('hidden');
+          }
+        }
+
+        label.textContent = node.label;
+        status.textContent = node.status;
+        summary.textContent = node.summary;
+
+        const proof = node.proof_id ? proofs[node.proof_id] : null;
+
+        links.innerHTML = '';
+        if (node.website_path) {
+          const link = document.createElement('a');
+          link.href = node.website_path;
+          link.textContent = 'View on site';
+          link.className = 'text-mint hover:text-text-primary transition-colors';
+          links.append(link);
+        }
+        if (node.docs_url) {
+          const link = document.createElement('a');
+          link.href = node.docs_url;
+          link.textContent = 'Docs';
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.className = 'text-mint hover:text-text-primary transition-colors';
+          links.append(link);
+        }
+        if (node.external_url) {
+          const link = document.createElement('a');
+          link.href = node.external_url;
+          link.textContent = 'External site';
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.className = 'text-mint hover:text-text-primary transition-colors';
+          links.append(link);
+        }
+        if (proof && proof.evidence && proof.evidence[0]) {
+          const link = document.createElement('a');
+          link.href = proof.evidence[0].url;
+          link.textContent = `Proof: ${proof.evidence[0].label}`;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.className = 'text-text-secondary hover:text-mint transition-colors';
+          links.append(link);
+        }
+
+        if (node.improves && improvesBlock) {
+          improvesBlock.classList.remove('hidden');
+          if (improvesList) {
+            improvesList.innerHTML = '';
+            node.improves.forEach((entry) => {
+              const li = document.createElement('li');
+              const labelsJoined = (entry.motus_nodes || []).map((id) => labels[id]).filter(Boolean).join(', ');
+              li.innerHTML = `<span class="text-text-primary">${entry.label}</span><span class="text-text-secondary"> (${labelsJoined})</span>`;
+              improvesList.append(li);
+            });
+          }
+        } else if (improvesBlock) {
+          improvesBlock.classList.add('hidden');
+        }
+      };
+
+      document.querySelectorAll('[data-eco-node]').forEach((button) => {
+        const nodeId = button.getAttribute('data-eco-node');
+        if (!nodeId) return;
+        button.addEventListener('mouseenter', () => setDetail(nodeId));
+        button.addEventListener('focus', () => setDetail(nodeId));
+        button.addEventListener('click', () => setDetail(nodeId));
+      });
+
+      const firstNode = data.nodes && data.nodes[0] ? data.nodes[0].id : null;
+      if (firstNode) setDetail(firstNode);
+    }
+  </script>
+</Layout>

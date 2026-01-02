@@ -1,0 +1,294 @@
+{
+  "version": "1.0",
+  "updated": "2026-01-02",
+  "groups": [
+    {
+      "id": "core",
+      "label": "Core Execution",
+      "description": "Minimum primitives that make AI work verifiable."
+    },
+    {
+      "id": "modules",
+      "label": "Bundled Modules",
+      "description": "Optional capabilities that extend the kernel without breaking invariants."
+    },
+    {
+      "id": "boundary",
+      "label": "Boundary Systems",
+      "description": "Tools and models Motus strengthens with governance and proof."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "kernel",
+      "type": "internal",
+      "group": "core",
+      "label": "Motus Kernel",
+      "status": "current",
+      "registry_id": "kernel",
+      "summary": "Deterministic coordination layer and evidence ledger.",
+      "website_path": "/implementation#kernel",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md",
+      "proof_id": "kernel_schema"
+    },
+    {
+      "id": "coordination-api",
+      "type": "internal",
+      "group": "core",
+      "label": "Coordination API",
+      "status": "current",
+      "summary": "Six-call surface for claiming, updating, and releasing work.",
+      "website_path": "/how-it-works",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md",
+      "proof_id": "six_call_api"
+    },
+    {
+      "id": "roadmap-api",
+      "type": "internal",
+      "group": "core",
+      "label": "Roadmap API",
+      "status": "current",
+      "summary": "Plan, claim, review, and complete work without bypassing the kernel.",
+      "website_path": "/implementation#kernel",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+    },
+    {
+      "id": "module-sdk",
+      "type": "internal",
+      "group": "modules",
+      "label": "Module SDK",
+      "status": "building",
+      "registry_id": "module-sdk",
+      "summary": "Interfaces and toggle behavior for bundled modules.",
+      "website_path": "/implementation#module-sdk",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/module-sdk.md"
+    },
+    {
+      "id": "capability-matrix",
+      "type": "internal",
+      "group": "modules",
+      "label": "Capability Matrix",
+      "status": "building",
+      "registry_id": "capability-matrix",
+      "summary": "Capability registry + grants with explainable eligibility.",
+      "website_path": "/implementation#capability-matrix",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/capability-matrix.md"
+    },
+    {
+      "id": "contract-compiler",
+      "type": "internal",
+      "group": "modules",
+      "label": "Contract Compiler",
+      "status": "building",
+      "registry_id": "contract-compiler",
+      "summary": "Compile standards into deterministic contracts and hashes.",
+      "website_path": "/implementation#contract-compiler",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/contract-compiler.md"
+    },
+    {
+      "id": "knowledge-engine",
+      "type": "internal",
+      "group": "modules",
+      "label": "Knowledge Engine",
+      "status": "building",
+      "registry_id": "knowledge-engine",
+      "summary": "Hot authority + cold reference with traceable retrieval.",
+      "website_path": "/implementation#knowledge-engine",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/knowledge-engine.md"
+    },
+    {
+      "id": "lens-engine",
+      "type": "internal",
+      "group": "modules",
+      "label": "Lens Engine",
+      "status": "building",
+      "registry_id": "lens-engine",
+      "summary": "Deterministic context assembly from contracts and knowledge.",
+      "website_path": "/implementation#lens-engine",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/lens-engine.md"
+    },
+    {
+      "id": "proof-engine",
+      "type": "internal",
+      "group": "modules",
+      "label": "Proof Engine",
+      "status": "building",
+      "registry_id": "proof-engine",
+      "summary": "Evidence bundles + validators for completion gates.",
+      "website_path": "/implementation#proof-engine",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/proof-engine.md"
+    },
+    {
+      "id": "module-manager",
+      "type": "internal",
+      "group": "modules",
+      "label": "Module Manager",
+      "status": "building",
+      "registry_id": "module-manager",
+      "summary": "Enable/disable modules with explicit config.",
+      "website_path": "/implementation#module-manager",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/module-manager.md"
+    },
+    {
+      "id": "motus-blueprints",
+      "type": "internal",
+      "group": "modules",
+      "label": "Motus Blueprints",
+      "status": "building",
+      "registry_id": "motus-blueprints",
+      "summary": "Deterministic scaffolding for programs and projects.",
+      "website_path": "/implementation#motus-blueprints",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/motus-blueprints.md"
+    },
+    {
+      "id": "langchain",
+      "type": "external",
+      "group": "boundary",
+      "label": "LangChain",
+      "status": "external",
+      "logo": "/brand/ecosystem/langchain.svg",
+      "external_url": "https://langchain.com",
+      "summary": "Agent framework + tool routing.",
+      "improves": [
+        {
+          "label": "Deterministic context assembly",
+          "motus_nodes": [
+            "lens-engine"
+          ]
+        },
+        {
+          "label": "Evidence ledger for tool output",
+          "motus_nodes": [
+            "proof-engine"
+          ]
+        },
+        {
+          "label": "Coordination API for handoffs",
+          "motus_nodes": [
+            "coordination-api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "n8n",
+      "type": "external",
+      "group": "boundary",
+      "label": "n8n",
+      "status": "external",
+      "logo": "/brand/ecosystem/n8n.svg",
+      "external_url": "https://n8n.io",
+      "summary": "Workflow automation and integrations.",
+      "improves": [
+        {
+          "label": "Receipts for automation outcomes",
+          "motus_nodes": [
+            "proof-engine"
+          ]
+        },
+        {
+          "label": "Policy gates before execution",
+          "motus_nodes": [
+            "kernel"
+          ]
+        },
+        {
+          "label": "Module enablement controls",
+          "motus_nodes": [
+            "module-manager"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "claude",
+      "type": "external",
+      "group": "boundary",
+      "label": "Claude (Anthropic)",
+      "status": "external",
+      "logo": "/brand/ecosystem/anthropic.svg",
+      "external_url": "https://www.anthropic.com/claude",
+      "summary": "Foundation model for reasoning and generation.",
+      "improves": [
+        {
+          "label": "Context compression and grounding",
+          "motus_nodes": [
+            "lens-engine"
+          ]
+        },
+        {
+          "label": "Decision trace + evidence logging",
+          "motus_nodes": [
+            "proof-engine"
+          ]
+        },
+        {
+          "label": "Governed task flow",
+          "motus_nodes": [
+            "coordination-api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gemini",
+      "type": "external",
+      "group": "boundary",
+      "label": "Gemini",
+      "status": "external",
+      "logo": "/brand/ecosystem/googlegemini.svg",
+      "external_url": "https://gemini.google.com",
+      "summary": "Multimodal model and assistant stack.",
+      "improves": [
+        {
+          "label": "Deterministic context assembly",
+          "motus_nodes": [
+            "lens-engine"
+          ]
+        },
+        {
+          "label": "Proof-first completion gates",
+          "motus_nodes": [
+            "proof-engine"
+          ]
+        },
+        {
+          "label": "Governed coordination",
+          "motus_nodes": [
+            "coordination-api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "openai",
+      "type": "external",
+      "group": "boundary",
+      "label": "OpenAI",
+      "status": "external",
+      "logo": "/brand/ecosystem/openai.png",
+      "external_url": "https://openai.com",
+      "summary": "Model APIs for agent and tool execution.",
+      "improves": [
+        {
+          "label": "Context compression + Lens",
+          "motus_nodes": [
+            "lens-engine"
+          ]
+        },
+        {
+          "label": "Evidence ledger for outputs",
+          "motus_nodes": [
+            "proof-engine"
+          ]
+        },
+        {
+          "label": "Policy-gated workflows",
+          "motus_nodes": [
+            "kernel"
+          ]
+        }
+      ]
+    }
+  ]
+}

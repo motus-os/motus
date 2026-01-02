@@ -28,5 +28,6 @@ factually accurate and contextually useful for different roles.
 - [Terminology](TERMINOLOGY.md)
 - [Website Publishing](website-publishing.md)
 - [Website Persona Map](website/persona-map.yaml)
+- [Website Ecosystem Map](website/ecosystem-map.yaml)
 - [Website Proof Ledger](website/proof-ledger.yaml)
 - [Website UI Checklist](website/ui-checklist.md)

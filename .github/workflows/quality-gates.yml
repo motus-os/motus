@@ -9,8 +9,10 @@ on:
       - "packages/cli/src/**"
       - "packages/cli/scripts/ci/**"
       - "packages/cli/docs/standards/module-registry.yaml"
+      - "packages/cli/docs/website/ecosystem-map.yaml"
       - "packages/cli/docs/website/proof-ledger.yaml"
       - "packages/website/src/data/module-registry.json"
+      - "packages/website/src/data/ecosystem-map.json"
       - "packages/website/src/data/proof-ledger.json"
       - ".github/workflows/quality-gates.yml"
 
@@ -33,3 +35,5 @@ jobs:
         run: python scripts/ci/check_module_registry.py
       - name: Proof ledger sync guard
         run: python scripts/ci/check_proof_ledger.py
+      - name: Ecosystem map sync guard
+        run: python scripts/ci/check_ecosystem_map.py
