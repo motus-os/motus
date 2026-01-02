@@ -6,6 +6,7 @@ export default {
       colors: {
         charcoal: 'rgb(var(--charcoal) / <alpha-value>)',
         surface: 'rgb(var(--surface) / <alpha-value>)',
+        'surface-muted': 'rgb(var(--surface-muted) / <alpha-value>)',
         line: 'rgb(var(--line) / <alpha-value>)',
         mint: 'rgb(var(--mint) / <alpha-value>)',
         error: 'rgb(var(--error) / <alpha-value>)',

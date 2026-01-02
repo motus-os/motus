@@ -12,7 +12,7 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 - Avoid dense grids; keep generous whitespace between blocks.
 - Use `Section` + `Panel` + `Chip` components for layout primitives (no bespoke div styling).
 - Use `Card` for feature/module grids.
-- Use theme tokens only (`surface`, `line`, `text-*`, `mint`, `error`) - no raw hex.
+- Use theme tokens only (`surface`, `surface-muted`, `line`, `text-*`, `mint`, `error`) - no raw hex.
 - Pair `text-text-primary` with `bg-surface`; reserve `text-text-secondary` for supporting copy.
 
 ## Typography
