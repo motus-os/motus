@@ -56,12 +56,12 @@ class TestReleaseIdempotency:
         assert release2.decision.reason_code == "RELEASED_IDEMPOTENT_REPLAY"
 
     def test_release_nonexistent_lease_idempotent(self, coordinator: Coordinator) -> None:
-        """Releasing a nonexistent lease returns idempotent response."""
+        """Releasing a nonexistent lease returns a missing-lease denial."""
         release_response = coordinator.release(
             lease_id="nonexistent-lease-123",
             outcome="success",
         )
-        assert release_response.decision.reason_code == "RELEASED_IDEMPOTENT_REPLAY"
+        assert release_response.decision.reason_code == "LEASE_NOT_FOUND"
 
     def test_resource_available_after_release(self, coordinator: Coordinator) -> None:
         """Resource becomes claimable after release."""
@@ -126,5 +126,5 @@ class TestReleaseIdempotency:
 
         # Per release-response.schema.json: decision object
         # Rollback status is in the reason_code
-        assert release.decision.reason_code == "RELEASED_ROLLBACK_OK"
+        assert release.decision.reason_code == "RELEASED_ROLLBACK_UNSUPPORTED"
         assert release.decision.human_message  # REQUIRED per spec

@@ -30,6 +30,7 @@ from motus.coordination.api.types import (
 )
 from motus.coordination.schemas import ClaimedResource as Resource
 from motus.lens.compiler import assemble_lens, set_cache_reader
+from motus.observability.roles import Role, get_agent_role
 
 
 def _utcnow() -> datetime:
@@ -611,8 +612,17 @@ class Coordinator:
         # Get lease
         lease = self._lease_store.get_lease(lease_id)
 
-        # Handle idempotent release
-        if lease is None or lease.status in ("released", "expired", "aborted"):
+        # Handle missing lease
+        if lease is None:
+            decision = make_decision(
+                decision="DENIED",
+                reason_code="LEASE_NOT_FOUND",
+                rules_fired=["validate_lease"],
+            )
+            return ReleaseResponse(decision=decision, lease=None)
+
+        # Handle idempotent release (lease exists but already released/expired/aborted)
+        if lease.status in ("released", "expired", "aborted"):
             decision = make_decision(
                 decision="GRANTED",
                 reason_code="RELEASED_IDEMPOTENT_REPLAY",
@@ -620,13 +630,11 @@ class Coordinator:
             )
             return ReleaseResponse(decision=decision, lease=lease)
 
-        # Determine if rollback needed
-        needs_rollback = rollback == "auto" and outcome in ("failure", "aborted")
+        # Determine if rollback was requested (unsupported in v0.1.x)
+        rollback_requested = rollback == "auto" and outcome in ("failure", "aborted")
         rollback_success = None
-
-        if needs_rollback:
-            # TODO: Perform actual rollback to snapshot
-            rollback_success = True  # Placeholder
+        rollback_performed = False
+        rollback_reason = "unsupported" if rollback_requested else None
 
         # Update lease status
         final_status: LeaseStatus = "aborted" if outcome == "aborted" else "released"
@@ -638,23 +646,26 @@ class Coordinator:
             event_type="LEASE_RELEASED",
             payload={
                 "outcome": outcome,
-                "rollback_performed": needs_rollback,
+                "rollback_requested": rollback_requested,
+                "rollback_performed": rollback_performed,
                 "rollback_success": rollback_success,
+                "rollback_reason": rollback_reason,
                 "evidence_ids": evidence_ids or [],
                 "handoff": handoff,
             },
         )
 
         # Determine reason code
-        if needs_rollback:
-            reason_code = "RELEASED_ROLLBACK_OK" if rollback_success else "RELEASED_ROLLBACK_FAILED"
+        if rollback_requested:
+            reason_code = "RELEASED_ROLLBACK_UNSUPPORTED"
         else:
             reason_code = "RELEASED_OK"
 
         decision = make_decision(
             decision="GRANTED",
             reason_code=reason_code,
-            rules_fired=["release_lease", "record_outcome"] + (["perform_rollback"] if needs_rollback else []),
+            rules_fired=["release_lease", "record_outcome"]
+            + (["rollback_unsupported"] if rollback_requested else []),
         )
 
         # Get updated lease for response
@@ -682,6 +693,15 @@ class Coordinator:
         Returns:
             ForceReleaseResponse per force-release-response.schema.json.
         """
+        operator_role = get_agent_role(operator_id)
+        if operator_role not in {Role.OPERATOR, Role.ARCHITECT}:
+            decision = make_decision(
+                decision="DENIED",
+                reason_code="DENY_POLICY",
+                rules_fired=["force_release_auth"],
+            )
+            return ForceReleaseResponse(decision=decision)
+
         self._lease_store.expire_stale_leases()
         # Find active leases holding this resource
         affected = self._lease_store.get_active_leases_for_resources([resource])

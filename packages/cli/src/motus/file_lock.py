@@ -13,6 +13,10 @@ class FileLockError(RuntimeError):
     """Raised when a file lock cannot be acquired."""
 
 
+class PlatformNotSupportedError(FileLockError):
+    """Raised when file locking is not supported on this platform."""
+
+
 @contextmanager
 def file_lock(
     path: Path,
@@ -23,7 +27,7 @@ def file_lock(
     """Acquire a file lock with timeout (best-effort on non-POSIX).
 
     On POSIX platforms, uses fcntl advisory locks. On platforms without fcntl,
-    the lock is a no-op and yields immediately.
+    raises PlatformNotSupportedError (Motus v0.1.x does not support Windows).
     """
     lock_path = path.with_suffix(path.suffix + ".lock")
     lock_path.parent.mkdir(parents=True, exist_ok=True)
@@ -36,9 +40,10 @@ def file_lock(
     try:
         try:
             import fcntl  # type: ignore[import-not-found]
-        except ImportError:
-            yield lock_fd
-            return
+        except ImportError as e:
+            raise PlatformNotSupportedError(
+                "Motus v0.1.x does not support Windows file locking."
+            ) from e
 
         mode = fcntl.LOCK_EX if exclusive else fcntl.LOCK_SH
         deadline = time.monotonic() + timeout

@@ -8,6 +8,9 @@ Updated 2025-12-23 to match schema-compliant response types.
 
 from __future__ import annotations
 
+import os
+from unittest.mock import patch
+
 import pytest
 
 from motus.coordination.api import Coordinator
@@ -113,11 +116,12 @@ class TestMutualExclusion:
         assert claim2.decision.decision == "BUSY"
 
         # Human operator force releases
-        force = coordinator.force_release(
-            resource=resource,
-            reason="Agent 1 is unresponsive",
-            operator_id="human-operator",
-        )
+        with patch.dict(os.environ, {"MC_AGENT_ROLE": "operator", "MC_REVIEWER": "0"}):
+            force = coordinator.force_release(
+                resource=resource,
+                reason="Agent 1 is unresponsive",
+                operator_id="human-operator",
+            )
         # Per force-release-response.schema.json: just decision object
         assert force.decision.reason_code == "OVERRIDE_FORCE_RELEASE"
         assert force.decision.human_message  # REQUIRED per spec
