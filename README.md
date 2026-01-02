@@ -18,7 +18,13 @@ motus --help
 
 ## Documentation
 
-See [packages/cli/README.md](packages/cli/README.md) for full documentation.
+Start here:
+- [Implementation Guide (docs)](packages/cli/docs/implementation/README.md)
+- [Kernel Guide](packages/cli/docs/implementation/kernel.md)
+- [Module Registry](packages/cli/docs/standards/module-registry.yaml)
+- [Docs Index](packages/cli/docs/README.md)
+
+See [packages/cli/README.md](packages/cli/README.md) for the full CLI overview.
 
 ## License
 

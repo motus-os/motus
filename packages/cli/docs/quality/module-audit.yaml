@@ -1,0 +1,41 @@
+version: "1.0"
+notes:
+  - "Manual audit mapping for public surfaces -> module ownership."
+  - "Kernel is authoritative; bundled modules must not bypass kernel APIs."
+
+mappings:
+  - surface: "Work Compiler (6-call API)"
+    module_id: "kernel"
+    docs_ref: "packages/cli/docs/api/coordination-api.md#work-compiler"
+
+  - surface: "Roadmap API (ready/claim/review/complete)"
+    module_id: "kernel"
+    docs_ref: "packages/cli/docs/api/coordination-api.md#roadmap"
+
+  - surface: "Policy gates + evidence requirements"
+    module_id: "kernel"
+    docs_ref: "packages/cli/docs/api/coordination-api.md#policy"
+
+  - surface: "KnowledgeStore (current)"
+    module_id: "knowledge-engine"
+    docs_ref: "packages/cli/docs/api/core-modules.md#knowledge"
+
+  - surface: "Lens assembly"
+    module_id: "lens-engine"
+    docs_ref: "packages/cli/docs/api/core-modules.md#lens"
+
+  - surface: "Standards engine"
+    module_id: "contract-compiler"
+    docs_ref: "packages/cli/docs/api/core-modules.md#standards"
+
+  - surface: "Capabilities loader"
+    module_id: "capability-matrix"
+    docs_ref: "packages/cli/docs/api/core-modules.md#capabilities"
+
+  - surface: "Evidence bundles + validators"
+    module_id: "proof-engine"
+    docs_ref: "packages/cli/docs/cli-reference.md#policy-commands"
+
+  - surface: "Workspace scaffolding (motus init)"
+    module_id: "motus-blueprints"
+    docs_ref: "packages/cli/docs/cli-reference.md#init"

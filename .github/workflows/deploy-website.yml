@@ -1,0 +1,68 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/website/**"
+      - "packages/cli/docs/**"
+      - "packages/cli/docs/implementation/**"
+      - "packages/cli/docs/quality/**"
+      - "packages/cli/docs/standards/**"
+      - ".github/workflows/deploy-website.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/website
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Registry sync guard
+        working-directory: .
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+          python packages/cli/scripts/ci/check_module_registry.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: packages/website/package-lock.json
+      - name: Install deps
+        run: npm ci
+      - name: Build website
+        env:
+          ASTRO_SITE: https://motus-os.github.io
+          ASTRO_BASE: /motus
+        run: npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: packages/website/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -3,8 +3,11 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
+const site = process.env.ASTRO_SITE || 'https://motus-os.github.io';
+const base = process.env.ASTRO_BASE || '/';
+
 export default defineConfig({
-  site: 'https://motus-os.github.io',
-  base: '/motus-website/',
+  site,
+  base,
   integrations: [tailwind()],
 });

@@ -65,6 +65,49 @@ const base = import.meta.env.BASE_URL;
     </div>
   </section>
 
+  <!-- Implementation Guide Wayfinding -->
+  <section class="py-16 md:py-24">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="border border-white/10 bg-surface/40 rounded-2xl p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center">
+        <div class="space-y-4">
+          <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">For Builders</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-text-primary">
+            Implementation Guide
+          </h2>
+          <p class="text-lg text-text-secondary">
+            Learn how the kernel works and how bundled modules extend it without
+            breaking invariants. This is the fastest path from curiosity to
+            correct implementation.
+          </p>
+          <a
+            href={`${base}implementation`}
+            class="inline-flex items-center gap-2 text-mint hover:text-white transition-colors"
+          >
+            View Implementation Guide &#8594;
+          </a>
+        </div>
+        <div class="bg-charcoal/60 border border-white/10 rounded-xl p-6 space-y-3 text-sm text-text-secondary">
+          <div class="flex items-start gap-3">
+            <span class="text-mint">&#x2022;</span>
+            <span>Kernel invariants and data paths</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-mint">&#x2022;</span>
+            <span>Bundled module boundaries + best practices</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-mint">&#x2022;</span>
+            <span>Status semantics: current vs building vs future</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-mint">&#x2022;</span>
+            <span>Roadmap IDs tied to implementation detail</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Four Modules -->
   <section class="py-16 md:py-24">
     <div class="max-w-6xl mx-auto px-4">

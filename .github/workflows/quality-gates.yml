@@ -8,6 +8,8 @@ on:
       - "packages/cli/migrations/**"
       - "packages/cli/src/**"
       - "packages/cli/scripts/ci/**"
+      - "packages/cli/docs/standards/module-registry.yaml"
+      - "packages/website/src/data/module-registry.json"
       - ".github/workflows/quality-gates.yml"
 
 jobs:
@@ -25,3 +27,5 @@ jobs:
           python-version: "3.11"
       - name: SQLite usage guard
         run: python scripts/ci/check_sqlite_usage.py
+      - name: Module registry sync guard
+        run: python scripts/ci/check_module_registry.py

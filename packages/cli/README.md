@@ -41,6 +41,11 @@ python examples/hello_agent.py
 
 ## Documentation
 - [Coordination API](docs/api/coordination-api.md)
+- [Implementation Guide](docs/implementation/README.md)
+- [Kernel Guide](docs/implementation/kernel.md)
+- [Module Guides](docs/implementation/modules/)
+- [Module Registry](docs/standards/module-registry.yaml)
+- [Docs Index](docs/README.md)
 - [Kernel Schema](docs/schema/index.md)
 - [Architecture](docs/architecture.md)
 - [CLI Reference](docs/cli-reference.md)

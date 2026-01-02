@@ -4,19 +4,20 @@
 
 - / (Home)
   - /how-it-works
-  - /features
-  - /use-cases
-  - /pricing
-  - /docs
-  - /about
+  - /implementation
+  - /strategies
+  - /open-source
+  - /schema
+  - /privacy
+  - /terms
 
-Primary CTA: Talk to Us (contact or demo request). Secondary CTAs: See How It Works, Read the Docs.
+Primary CTA: Install (motusos) or See How It Works. Secondary CTA: Implementation Guide.
 
 ## Navigation Structure
 
-Primary nav (top): Home, How It Works, Features, Use Cases, Docs, About, Talk to Us (button)
-Secondary nav (footer): Privacy, Security, GitHub, Contact
-In-page anchors: Each page supports a short anchor list for long-form content.
+Primary nav (top): Home, How It Works, Implementation, Strategies, Open Source
+Secondary nav (footer): Privacy, Terms, GitHub
+In-page anchors: Each page supports anchors for long-form content.
 
 ## Page Templates
 
@@ -24,71 +25,51 @@ In-page anchors: Each page supports a short anchor list for long-form content.
 
 - Hero: one-sentence value proposition + two CTAs
 - Problem / Solution split: agents work blind vs. Motus provides context
-- Key features: 4 to 6 cards (Context Cache, Lens, Coordination, Evidence, Tool Bridge, Policy Certificates)
+- Key features: 4 to 6 cards (Lens, Leases, Receipts, Strategies)
+- Implementation wayfinding: clear path for builders to the Implementation Guide
 - Architecture snapshot: diagram preview + link to How It Works
-- Use cases preview: 3 cards with links
 - Proof: reason codes and replayable evidence callout
-- CTA band: Talk to Us
+- Open source trust block + GitHub link
+- CTA band: Install
 
 ### How It Works
 
-- Hero: The 4-call lifecycle overview
-- Diagram: peek -> claim -> status -> release
+- Hero: The 6-call lifecycle overview
+- Diagram: claim -> context -> outcome -> evidence -> decision -> release
 - Lens assembly: sources -> compiler -> tiered output
 - Evidence capture: replay tokens and audit trail
 - Coordination: leases, snapshots, mutual exclusion
-- CTA: Read the Docs
+- CTA: Implementation Guide
 
-### Features
+### Implementation
 
-- Hero: capabilities overview
-- Feature sections (one per capability):
-  - Context Cache
-  - Context Assembly
-  - Context Delivery (Lens)
-  - Tool Bridge (MCP)
-  - Evidence Capture
-  - Coordination
-- Each section: 1 diagram + 2 to 3 bullet benefits
+- Hero: kernel + bundled modules explained
+- Status semantics: current/building/future
+- Kernel implementation: invariants + best practices
+- Bundled modules: per-module best practices + roadmap IDs
+- CTA: See module guides in docs
 
-### Use Cases
+### Strategies
 
-- Hero: concrete outcomes
-- Use case cards (3):
-  - Multi-agent software delivery
-  - CI/CD automation
-  - Review and compliance automation
-- Each card: problem, Motus impact, evidence artifact
-- CTA: Talk to Us
+- Hero: reasoning patterns
+- Strategy grid: 9 patterns
+- Evidence: when to apply + triggers
+- CTA: Apply in workflows
 
-### Pricing
+### Open Source
 
-- Hero: simple pricing framing
-- Plans: Starter, Team, Enterprise (if unknown, use Contact Us placeholders)
-- What is included: core features list
-- CTA: Talk to Us
-
-### Docs
-
-- Hero: technical entry points
-- Quick links: API, schemas, reason codes, examples
-- Getting started: 3-step summary
-- CTA: View API Reference
-
-### About
-
-- Hero: Veritas philosophy and mission
-- Values: convivial tech, transparency, safety without friction
-- Why Motus: knowledge plane positioning
-- CTA: Contact
+- Hero: trust, local-first, verifiable
+- Proof: repos + policies
+- CTA: GitHub
 
 ## Component Requirements
 
 - Global: top nav, footer, CTA band
-- Card grid (features, use cases, plans)
+- Card grid (modules, strategies)
 - Diagram block (supports SVG or inline diagram image)
 - Reason code table
 - Side-by-side problem/solution block
+ - Implementation guide section
 
 ## Mobile Responsiveness Requirements
 
