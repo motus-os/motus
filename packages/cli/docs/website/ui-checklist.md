@@ -5,6 +5,7 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 ## Layout rhythm
 
 - Use `phi-*` spacing tokens for vertical rhythm and section padding.
+- Sections own horizontal padding (`px-6 md:px-10`) so background bands can run full width.
 - Wrap long-form content in `theme-light` to improve readability.
 - Use `theme-dark` for dark panels inside light sections.
 - Keep section cadence consistent: quiet section -> proof block -> CTA.
