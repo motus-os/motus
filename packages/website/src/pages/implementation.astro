@@ -15,10 +15,10 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
 ---
 
 <Layout title="Implementation">
-  <section class="space-y-6">
-    <div class="space-y-4">
+  <section class="space-y-phi-3">
+    <div class="space-y-phi-2">
       <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Implementation Guide</p>
-      <h1 class="text-4xl md:text-5xl font-semibold text-text-primary">Kernel + Bundled Modules</h1>
+      <h1 class="text-4xl md:text-5xl font-display text-text-primary">Kernel + Bundled Modules</h1>
       <p class="text-lg text-text-secondary max-w-3xl">
         This page documents how to implement Motus correctly. The kernel is the
         non-negotiable execution layer. Bundled modules add capabilities while
@@ -26,9 +26,9 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
       </p>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-4">
+    <div class="grid md:grid-cols-3 gap-phi-2">
       {Object.entries(registry.status_semantics).map(([key, value]) => (
-        <div class="rounded-lg border border-white/10 bg-surface p-4">
+        <div class="rounded-xl border border-white/10 bg-surface/70 p-phi-2">
           <div class="text-xs uppercase tracking-[0.2em] text-text-secondary">{key}</div>
           <div class="mt-2 text-sm text-text-primary">{value}</div>
         </div>
@@ -36,15 +36,15 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
     </div>
   </section>
 
-  <section class="mt-16 space-y-6">
-    <div class="flex flex-wrap items-center gap-3">
-      <h2 class="text-3xl font-semibold text-text-primary">Choose Your Path</h2>
+  <section class="mt-phi-6 space-y-phi-3">
+    <div class="flex flex-wrap items-center gap-phi-2">
+      <h2 class="text-3xl font-display text-text-primary">Choose Your Path</h2>
       <span class="text-xs px-3 py-1 rounded-full border border-white/10 text-text-secondary">By role</span>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="rounded-lg border border-white/10 bg-surface p-5 space-y-3">
-        <h3 class="text-lg font-semibold text-text-primary">Builder / Engineer</h3>
+    <div class="grid md:grid-cols-2 gap-phi-3">
+      <div class="rounded-xl border border-white/10 bg-surface/70 p-phi-3 space-y-phi-2">
+        <h3 class="text-lg font-display text-text-primary">Builder / Engineer</h3>
         <p class="text-sm text-text-secondary">
           Start with kernel invariants and the module guides. Implement one module at a time.
         </p>
@@ -52,8 +52,8 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
           Go to Kernel Guide →
         </a>
       </div>
-      <div class="rounded-lg border border-white/10 bg-surface p-5 space-y-3">
-        <h3 class="text-lg font-semibold text-text-primary">Architect / CTO</h3>
+      <div class="rounded-xl border border-white/10 bg-surface/70 p-phi-3 space-y-phi-2">
+        <h3 class="text-lg font-display text-text-primary">Architect / CTO</h3>
         <p class="text-sm text-text-secondary">
           Review the module registry and audit mapping to validate boundaries and scope.
         </p>
@@ -61,8 +61,8 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
           Open Docs Index →
         </a>
       </div>
-      <div class="rounded-lg border border-white/10 bg-surface p-5 space-y-3">
-        <h3 class="text-lg font-semibold text-text-primary">Compliance / Reviewer</h3>
+      <div class="rounded-xl border border-white/10 bg-surface/70 p-phi-3 space-y-phi-2">
+        <h3 class="text-lg font-display text-text-primary">Compliance / Reviewer</h3>
         <p class="text-sm text-text-secondary">
           Focus on evidence capture, policy gates, and append-only audit trails.
         </p>
@@ -70,8 +70,8 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
           Go to Proof Engine →
         </a>
       </div>
-      <div class="rounded-lg border border-white/10 bg-surface p-5 space-y-3">
-        <h3 class="text-lg font-semibold text-text-primary">Product / Leadership</h3>
+      <div class="rounded-xl border border-white/10 bg-surface/70 p-phi-3 space-y-phi-2">
+        <h3 class="text-lg font-display text-text-primary">Product / Leadership</h3>
         <p class="text-sm text-text-secondary">
           Use the current/building/future semantics to track releases and capability growth.
         </p>
@@ -82,9 +82,9 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
     </div>
   </section>
 
-  <section id="kernel" class="mt-16 space-y-6">
-    <div class="flex flex-wrap items-center gap-3">
-      <h2 class="text-3xl font-semibold text-text-primary">{kernel.marketing_name}</h2>
+  <section id="kernel" class="mt-phi-6 space-y-phi-3">
+    <div class="flex flex-wrap items-center gap-phi-2">
+      <h2 class="text-3xl font-display text-text-primary">{kernel.marketing_name}</h2>
       <span class={`text-xs px-3 py-1 rounded-full ${statusClasses[kernel.status]}`}>
         {statusLabel(kernel.status)}
       </span>
@@ -92,18 +92,18 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
 
     <p class="text-text-secondary max-w-3xl">{kernel.description}</p>
 
-    <div class="grid md:grid-cols-2 gap-6">
-      <div class="rounded-lg border border-white/10 bg-surface p-5">
-        <h3 class="text-lg font-semibold text-text-primary">Primary Surfaces</h3>
-        <ul class="mt-3 space-y-2 text-sm text-text-secondary">
+    <div class="grid md:grid-cols-2 gap-phi-3">
+      <div class="rounded-xl border border-white/10 bg-surface/70 p-phi-3">
+        <h3 class="text-lg font-display text-text-primary">Primary Surfaces</h3>
+        <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary">
           {kernel.primary_surfaces.map((item) => (
             <li>• {item}</li>
           ))}
         </ul>
       </div>
-      <div class="rounded-lg border border-white/10 bg-surface p-5">
-        <h3 class="text-lg font-semibold text-text-primary">Best Practices</h3>
-        <ul class="mt-3 space-y-2 text-sm text-text-secondary">
+      <div class="rounded-xl border border-white/10 bg-surface/70 p-phi-3">
+        <h3 class="text-lg font-display text-text-primary">Best Practices</h3>
+        <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary">
           {kernel.best_practices.map((item) => (
             <li>• {item}</li>
           ))}
@@ -112,19 +112,19 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
     </div>
   </section>
 
-  <section class="mt-16 space-y-6">
-    <h2 class="text-3xl font-semibold text-text-primary">Bundled Modules</h2>
+  <section class="mt-phi-6 space-y-phi-3">
+    <h2 class="text-3xl font-display text-text-primary">Bundled Modules</h2>
     <p class="text-text-secondary max-w-3xl">
       Bundled modules are optional capabilities that must never violate kernel
       invariants. Each module has a defined scope, best practices, and roadmap.
     </p>
 
-    <div class="grid md:grid-cols-2 gap-6">
+    <div class="grid md:grid-cols-2 gap-phi-3">
       {modules.map((module) => (
-        <div id={module.id} class="rounded-lg border border-white/10 bg-surface p-5 space-y-3">
-          <div class="flex items-center justify-between gap-4">
+        <div id={module.id} class="rounded-xl border border-white/10 bg-surface/70 p-phi-3 space-y-phi-2">
+          <div class="flex items-center justify-between gap-phi-2">
             <div>
-              <h3 class="text-lg font-semibold text-text-primary">{module.marketing_name}</h3>
+              <h3 class="text-lg font-display text-text-primary">{module.marketing_name}</h3>
               <p class="text-sm text-text-secondary">{module.description}</p>
             </div>
             <span class={`text-xs px-3 py-1 rounded-full ${statusClasses[module.status]}`}>
@@ -132,12 +132,12 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
             </span>
           </div>
           <div class="text-xs text-text-secondary uppercase tracking-[0.2em]">Best Practices</div>
-          <ul class="space-y-2 text-sm text-text-secondary">
+          <ul class="space-y-phi-1 text-sm text-text-secondary">
             {module.best_practices.map((item) => (
               <li>• {item}</li>
             ))}
           </ul>
-          <div class="flex flex-wrap gap-2 text-xs text-text-secondary">
+          <div class="flex flex-wrap gap-phi-1 text-xs text-text-secondary">
             <span class="px-2 py-1 rounded-full border border-white/10">{module.scope}</span>
             {module.roadmap_id ? (
               <span class="px-2 py-1 rounded-full border border-white/10">{module.roadmap_id}</span>
@@ -148,8 +148,8 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
     </div>
   </section>
 
-  <section class="mt-16 space-y-4">
-    <h2 class="text-2xl font-semibold text-text-primary">Docs Reference</h2>
+  <section class="mt-phi-6 space-y-phi-2">
+    <h2 class="text-2xl font-display text-text-primary">Docs Reference</h2>
     <p class="text-sm text-text-secondary">
       The canonical docs and registry live in the public repo. These links are the
       source of truth for implementation details.

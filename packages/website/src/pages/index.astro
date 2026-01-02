@@ -9,28 +9,28 @@ const base = import.meta.env.BASE_URL;
 
 <Layout title="Motus - The Execution Layer for AI Agents">
   <!-- Hero Section -->
-  <section class="py-20 md:py-32 text-center">
-    <div class="max-w-4xl mx-auto px-4">
-      <div class="mb-8">
-        <span class="text-7xl md:text-9xl font-black text-mint">66%</span>
-        <p class="text-xl md:text-2xl text-text-secondary mt-4">
+  <section class="py-phi-7 md:py-phi-8 text-center">
+    <div class="max-w-4xl mx-auto">
+      <div class="mb-phi-5">
+        <span class="text-6xl md:text-[7.5rem] font-display font-semibold text-mint">66%</span>
+        <p class="text-lg md:text-xl text-text-secondary mt-phi-2">
           of developers spend more time fixing AI code than they saved.<a href="https://survey.stackoverflow.co/2024/ai" target="_blank" rel="noopener noreferrer" class="text-text-secondary/60 hover:text-mint transition-colors align-super text-sm ml-1" title="Stack Overflow 2024 Developer Survey">*</a>
         </p>
       </div>
 
-      <div class="w-24 h-px bg-mint mx-auto mb-8"></div>
+      <div class="w-32 h-px bg-mint/70 mx-auto mb-phi-5"></div>
 
-      <p class="text-lg text-text-secondary mb-4">The problem is waste.</p>
-      <h1 class="text-4xl md:text-5xl font-black text-text-primary mb-4">
+      <p class="text-sm uppercase tracking-[0.35em] text-text-secondary mb-phi-2">The problem is waste</p>
+      <h1 class="text-4xl md:text-6xl font-display text-text-primary mb-phi-2">
         Workflow Compression
       </h1>
-      <p class="text-xl md:text-2xl text-text-secondary mb-12">
+      <p class="text-lg md:text-2xl text-text-secondary mb-phi-5">
         Agents re-read, re-reason, re-work. Motus eliminates the redundancy.
       </p>
 
-      <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+      <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">
         <InstallCommand />
-        <a href={`${base}how-it-works`} class="text-mint hover:text-white transition-colors px-6 py-3">
+        <a href={`${base}how-it-works`} class="text-mint hover:text-text-primary transition-colors px-phi-3 py-phi-2">
           See How It Works &#8594;
         </a>
       </div>
@@ -38,27 +38,27 @@ const base = import.meta.env.BASE_URL;
   </section>
 
   <!-- Big Numbers -->
-  <section class="py-16 md:py-20 bg-surface/30">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+  <section class="py-phi-6 md:py-phi-7 bg-surface/40">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-phi-4 text-center">
         <div>
-          <span class="text-5xl md:text-6xl font-black text-mint">6</span>
-          <p class="text-text-secondary mt-2">API calls</p>
+          <span class="text-5xl md:text-6xl font-display text-mint">6</span>
+          <p class="text-text-secondary mt-phi-1">API calls</p>
           <p class="text-text-secondary/60 text-sm">Total coordination surface</p>
         </div>
         <div>
-          <span class="text-5xl md:text-6xl font-black text-mint">300</span>
-          <p class="text-text-secondary mt-2">Token Lens</p>
+          <span class="text-5xl md:text-6xl font-display text-mint">300</span>
+          <p class="text-text-secondary mt-phi-1">Token Lens</p>
           <p class="text-text-secondary/60 text-sm">vs 50k raw context</p>
         </div>
         <div>
-          <span class="text-5xl md:text-6xl font-black text-mint">9</span>
-          <p class="text-text-secondary mt-2">Strategies</p>
+          <span class="text-5xl md:text-6xl font-display text-mint">9</span>
+          <p class="text-text-secondary mt-phi-1">Strategies</p>
           <p class="text-text-secondary/60 text-sm">Battle-tested patterns</p>
         </div>
         <div>
-          <span class="text-5xl md:text-6xl font-black text-mint">100%</span>
-          <p class="text-text-secondary mt-2">Local</p>
+          <span class="text-5xl md:text-6xl font-display text-mint">100%</span>
+          <p class="text-text-secondary mt-phi-1">Local</p>
           <p class="text-text-secondary/60 text-sm">Your data stays yours</p>
         </div>
       </div>
@@ -66,12 +66,12 @@ const base = import.meta.env.BASE_URL;
   </section>
 
   <!-- Implementation Guide Wayfinding -->
-  <section class="py-16 md:py-24">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="border border-white/10 bg-surface/40 rounded-2xl p-8 md:p-12 grid md:grid-cols-2 gap-10 items-center">
-        <div class="space-y-4">
+  <section class="py-phi-6 md:py-phi-7">
+    <div class="max-w-6xl mx-auto">
+      <div class="border border-white/10 bg-surface/40 rounded-2xl p-phi-5 md:p-phi-6 grid md:grid-cols-2 gap-phi-5 items-center">
+        <div class="space-y-phi-2">
           <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">For Builders</p>
-          <h2 class="text-3xl md:text-4xl font-bold text-text-primary">
+          <h2 class="text-3xl md:text-4xl font-display text-text-primary">
             Implementation Guide
           </h2>
           <p class="text-lg text-text-secondary">
@@ -86,20 +86,20 @@ const base = import.meta.env.BASE_URL;
             View Implementation Guide &#8594;
           </a>
         </div>
-        <div class="bg-charcoal/60 border border-white/10 rounded-xl p-6 space-y-3 text-sm text-text-secondary">
-          <div class="flex items-start gap-3">
+        <div class="bg-charcoal/60 border border-white/10 rounded-xl p-phi-4 space-y-phi-2 text-sm text-text-secondary">
+          <div class="flex items-start gap-phi-2">
             <span class="text-mint">&#x2022;</span>
             <span>Kernel invariants and data paths</span>
           </div>
-          <div class="flex items-start gap-3">
+          <div class="flex items-start gap-phi-2">
             <span class="text-mint">&#x2022;</span>
             <span>Bundled module boundaries + best practices</span>
           </div>
-          <div class="flex items-start gap-3">
+          <div class="flex items-start gap-phi-2">
             <span class="text-mint">&#x2022;</span>
             <span>Status semantics: current vs building vs future</span>
           </div>
-          <div class="flex items-start gap-3">
+          <div class="flex items-start gap-phi-2">
             <span class="text-mint">&#x2022;</span>
             <span>Roadmap IDs tied to implementation detail</span>
           </div>
@@ -109,29 +109,29 @@ const base = import.meta.env.BASE_URL;
   </section>
 
   <!-- Four Modules -->
-  <section class="py-16 md:py-24">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-text-primary mb-4">Four Modules. Four Types of Waste Eliminated.</h2>
+  <section class="py-phi-6 md:py-phi-7">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-phi-5">
+        <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-2">Four Modules. Four Types of Waste Eliminated.</h2>
       </div>
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-3">
         <!-- LENS Module -->
         <Card>
-          <h3 class="text-2xl font-bold text-mint mb-2">LENS</h3>
-          <p class="text-sm text-text-secondary uppercase tracking-wider mb-4">Compresses Reading</p>
-          <p class="text-text-secondary mb-6 leading-relaxed">
+          <h3 class="text-2xl font-display text-mint mb-phi-1">LENS</h3>
+          <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Reading</p>
+          <p class="text-text-secondary mb-phi-3 leading-relaxed">
             300 tokens instead of 50,000. Agents get exactly what's relevant.
           </p>
-          <ul class="space-y-2 text-sm">
-            <li class="flex items-start gap-2">
+          <ul class="space-y-phi-1 text-sm">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <span class="text-text-secondary">Token compression</span>
             </li>
-            <li class="flex items-start gap-2">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <span class="text-text-secondary">Cryptographic provenance</span>
             </li>
-            <li class="flex items-start gap-2">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <span class="text-text-secondary">Snapshot versioning</span>
             </li>
@@ -140,21 +140,21 @@ const base = import.meta.env.BASE_URL;
 
         <!-- LEASES Module -->
         <Card>
-          <h3 class="text-2xl font-bold text-mint mb-2">LEASES</h3>
-          <p class="text-sm text-text-secondary uppercase tracking-wider mb-4">Compresses Coordination</p>
-          <p class="text-text-secondary mb-6 leading-relaxed">
+          <h3 class="text-2xl font-display text-mint mb-phi-1">LEASES</h3>
+          <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Coordination</p>
+          <p class="text-text-secondary mb-phi-3 leading-relaxed">
             6 API calls. Safe handoffs, not collision chaos.
           </p>
-          <ul class="space-y-2 text-sm font-mono">
-            <li class="flex items-start gap-2">
+          <ul class="space-y-phi-1 text-sm font-mono">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <code class="text-text-secondary">peek() claim()</code>
             </li>
-            <li class="flex items-start gap-2">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <code class="text-text-secondary">status() release()</code>
             </li>
-            <li class="flex items-start gap-2">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <span class="text-text-secondary">Conflict detection</span>
             </li>
@@ -163,21 +163,21 @@ const base = import.meta.env.BASE_URL;
 
         <!-- RECEIPTS Module -->
         <Card>
-          <h3 class="text-2xl font-bold text-mint mb-2">RECEIPTS</h3>
-          <p class="text-sm text-text-secondary uppercase tracking-wider mb-4">Compresses Trust</p>
-          <p class="text-text-secondary mb-6 leading-relaxed">
+          <h3 class="text-2xl font-display text-mint mb-phi-1">RECEIPTS</h3>
+          <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Trust</p>
+          <p class="text-text-secondary mb-phi-3 leading-relaxed">
             Cryptographic proof instead of hope. Every action recorded.
           </p>
-          <ul class="space-y-2 text-sm">
-            <li class="flex items-start gap-2">
+          <ul class="space-y-phi-1 text-sm">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <span class="text-text-secondary">HMAC signing</span>
             </li>
-            <li class="flex items-start gap-2">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <span class="text-text-secondary">Policy gates</span>
             </li>
-            <li class="flex items-start gap-2">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <span class="text-text-secondary">Audit trail</span>
             </li>
@@ -186,21 +186,21 @@ const base = import.meta.env.BASE_URL;
 
         <!-- STRATEGIES Module -->
         <Card>
-          <h3 class="text-2xl font-bold text-mint mb-2">STRATEGIES</h3>
-          <p class="text-sm text-text-secondary uppercase tracking-wider mb-4">Compresses Reasoning</p>
-          <p class="text-text-secondary mb-6 leading-relaxed">
+          <h3 class="text-2xl font-display text-mint mb-phi-1">STRATEGIES</h3>
+          <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Reasoning</p>
+          <p class="text-text-secondary mb-phi-3 leading-relaxed">
             9 battle-tested patterns. Proven approaches, not reinvention.
           </p>
-          <ul class="space-y-2 text-sm">
-            <li class="flex items-start gap-2">
+          <ul class="space-y-phi-1 text-sm">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <span class="text-text-secondary">Decision patterns</span>
             </li>
-            <li class="flex items-start gap-2">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <span class="text-text-secondary">Trigger conditions</span>
             </li>
-            <li class="flex items-start gap-2">
+            <li class="flex items-start gap-phi-1">
               <span class="text-mint">&#x2022;</span>
               <a href={`${base}strategies`} class="text-mint hover:text-white transition-colors">View all 9 &#8594;</a>
             </li>
@@ -211,31 +211,31 @@ const base = import.meta.env.BASE_URL;
   </section>
 
   <!-- Open Source Trust Block -->
-  <section class="py-16 md:py-24 bg-surface/50">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold text-text-primary mb-6">Open Source. Verifiable. Yours.</h2>
-      <p class="text-lg text-text-secondary mb-8 leading-relaxed">
+  <section class="py-phi-6 md:py-phi-7 bg-surface/50">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Open Source. Verifiable. Yours.</h2>
+      <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
         Boyd gave away OODA because paradigms should be shared.<br class="hidden md:inline" />
         We honor that by keeping the Work Compiler open source.<br class="hidden md:inline" />
         The infrastructure has a cost. The idea doesn't.
       </p>
 
-      <div class="flex flex-col md:flex-row gap-6 justify-center items-center text-left md:text-center">
-        <div class="flex items-center gap-3">
+      <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center text-left md:text-center">
+        <div class="flex items-center gap-phi-1">
           <span class="text-mint text-xl">&#10003;</span>
           <span class="text-text-primary">Your receipts are YOUR data</span>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-phi-1">
           <span class="text-mint text-xl">&#10003;</span>
           <span class="text-text-primary">Local by default</span>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-phi-1">
           <span class="text-mint text-xl">&#10003;</span>
           <span class="text-text-primary">Audit every line of code</span>
         </div>
       </div>
 
-      <div class="mt-12">
+      <div class="mt-phi-4">
         <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-mint hover:text-white transition-colors">
           <GitHubIcon />
           View on GitHub
@@ -245,9 +245,9 @@ const base = import.meta.env.BASE_URL;
   </section>
 
   <!-- Footer CTA -->
-  <section class="py-16 md:py-24 text-center">
-    <div class="max-w-2xl mx-auto px-4">
-      <h2 class="text-2xl md:text-3xl font-bold text-text-primary mb-6">
+  <section class="py-phi-6 md:py-phi-7 text-center">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-3">
         Ready to make your agents capable?
       </h2>
       <InstallCommand />
