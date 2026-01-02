@@ -94,7 +94,7 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
           View Implementation Guide &#8594;
         </a>
       </div>
-      <Panel tone="dark" size="md" class="space-y-phi-2 text-sm text-text-secondary">
+      <Panel size="md" class="space-y-phi-2 text-sm text-text-secondary">
         <div class="flex items-start gap-phi-2">
           <span class="text-mint">&#x2022;</span>
           <span>Kernel invariants and data paths</span>
@@ -128,7 +128,7 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
         const proof = proofIndex.get(persona.proof_id);
         const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
         return (
-          <Panel tone="dark" size="md" class="space-y-phi-2">
+          <Panel size="md" class="space-y-phi-2">
             <div class="text-xs uppercase tracking-[0.3em] text-text-secondary">{persona.title}</div>
             <h3 class="text-2xl font-display text-text-primary">{persona.hook}</h3>
             <p class="text-sm text-text-secondary">{persona.value}</p>
