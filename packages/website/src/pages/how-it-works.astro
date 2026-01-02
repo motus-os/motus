@@ -20,16 +20,16 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       class="mb-phi-4"
     />
     <div class="flex justify-center gap-phi-4 md:gap-phi-5">
-      <MetricStat value="5" label="OODA phases" />
-      <MetricStat value="6" label="API calls" />
-      <MetricStat value="0" label="Cloud required" />
+      <MetricStat value="6" label="API calls" detail="Coordination surface" />
+      <MetricStat value="Local" label="Execution" detail="No cloud required" />
+      <MetricStat value="Proof" label="Evidence-first" detail="Deterministic outcomes" />
     </div>
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
     <SectionHeader
       title="The Work Compiler"
-      subtitle="Every task follows the OODA loop. Observe, Orient, Decide, Act, Verify. Most agents skip Orient. That is where understanding happens."
+      subtitle="Motus uses a disciplined execution loop so work stays verifiable, not implied."
       class="mb-phi-4"
       maxWidth="max-w-2xl"
     />
@@ -81,7 +81,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       </div>
 
       <p class="text-text-secondary text-sm text-center mt-phi-3 pt-phi-3 border-t border-line/10">
-        Feedback loop: Verify feeds back to Observe for the next iteration.
+        Under the hood: OODA-inspired loop (Observe, Orient, Decide, Act, Verify).
       </p>
     </Panel>
   </Section>
