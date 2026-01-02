@@ -17,6 +17,7 @@ Stripe/Spotify-inspired "Pit of Success" design:
 from dataclasses import dataclass, field
 from typing import Any
 
+from ..governance.roles import Role, get_agent_role
 from motus.logging import get_logger
 
 from .database_connection import get_db_manager
@@ -323,6 +324,18 @@ class RoadmapAPI:
             RoadmapResponse with completion result
         """
         try:
+            is_reviewer = get_agent_role(self.agent_id) == Role.REVIEWER
+            if not is_reviewer:
+                return RoadmapResponse(
+                    success=False,
+                    message=(
+                        "[ROAD-010] Only reviewers can mark items complete. "
+                        "Use 'mc roadmap review' instead."
+                    ),
+                    action="Set MC_REVIEWER=1 if you are the designated reviewer",
+                    command="mc roadmap review <id>",
+                )
+
             with self._db.transaction() as conn:
                 # Check assignment
                 assignment = conn.execute(
@@ -341,7 +354,7 @@ class RoadmapAPI:
                         command=f"mc roadmap claim {item_id}",
                     )
 
-                if assignment["agent_id"] != self.agent_id:
+                if assignment["agent_id"] != self.agent_id and not is_reviewer:
                     return RoadmapResponse(
                         success=False,
                         message=f"[ROAD-006] Assigned to {assignment['agent_id']}, not you",
@@ -670,6 +683,7 @@ class RoadmapAPI:
             RoadmapResponse with update result
         """
         try:
+            is_reviewer = get_agent_role(self.agent_id) == Role.REVIEWER
             valid_statuses = {
                 "pending",
                 "in_progress",
@@ -683,6 +697,25 @@ class RoadmapAPI:
                     success=False,
                     message=f"Invalid status '{status}'",
                     action="Use a valid status",
+                    command="mc roadmap review <id> --status review",
+                )
+
+            if status == "completed" and not is_reviewer:
+                return RoadmapResponse(
+                    success=False,
+                    message=(
+                        "[ROAD-010] Only reviewers can mark items complete. "
+                        "Use 'mc roadmap review' instead."
+                    ),
+                    action="Set MC_REVIEWER=1 if you are the designated reviewer",
+                    command="mc roadmap review <id>",
+                )
+
+            if status != "review" and not is_reviewer:
+                return RoadmapResponse(
+                    success=False,
+                    message="[ROAD-010] Builders can only set status to 'review'.",
+                    action="Ask a reviewer to update status or mark complete",
                     command="mc roadmap review <id> --status review",
                 )
 

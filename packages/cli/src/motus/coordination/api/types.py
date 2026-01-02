@@ -177,6 +177,8 @@ class Lease:
     snapshot_id: str
     policy_version: str
     lens_digest: str
+    work_id: str | None = None
+    attempt_id: str | None = None
     status: LeaseStatus = "active"
     outcome: Outcome | None = None
 

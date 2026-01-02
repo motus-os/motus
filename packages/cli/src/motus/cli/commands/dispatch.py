@@ -43,11 +43,13 @@ def dispatch_command(
     command = args.command
 
     # Bootstrap database on first run (Phase 0 Foundation)
+    bootstrap_ok = True
     try:
         from motus.core.bootstrap import ensure_database
 
         ensure_database()
     except (DatabaseError, MigrationError) as e:
+        bootstrap_ok = False
         logger.debug(f"Database bootstrap skipped: {e}")
 
     # Install shutdown hooks (best-effort)
@@ -62,21 +64,24 @@ def dispatch_command(
         logger.debug(f"Shutdown manager skipped: {e}")
 
     # Best-effort CLI invocation audit event for tier gating.
-    try:
-        from motus.observability.audit import AuditEvent, AuditLogger
+    if bootstrap_ok:
+        try:
+            import sqlite3
 
-        AuditLogger().emit(
-            AuditEvent(
-                event_type="cli",
-                actor="user",
-                action="invoke",
-                resource_type="command",
-                resource_id=format_cli_resource_id(command, args),
-                context={"version": __version__},
+            from motus.observability.audit import AuditEvent, AuditLogger
+
+            AuditLogger().emit(
+                AuditEvent(
+                    event_type="cli",
+                    actor="user",
+                    action="invoke",
+                    resource_type="command",
+                    resource_id=format_cli_resource_id(command, args),
+                    context={"version": __version__},
+                )
             )
-        )
-    except (DatabaseError, ImportError, TypeError, ValueError):
-        pass
+        except (DatabaseError, ImportError, TypeError, ValueError, sqlite3.OperationalError):
+            pass
 
     if command == "harness":
         from motus.commands.harness_cmd import harness_command

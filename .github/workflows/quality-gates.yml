@@ -1,0 +1,27 @@
+name: Quality Gates
+
+on:
+  pull_request:
+    paths:
+      - "packages/cli/pyproject.toml"
+      - "packages/cli/CHANGELOG.md"
+      - "packages/cli/migrations/**"
+      - "packages/cli/src/**"
+      - "packages/cli/scripts/ci/**"
+      - ".github/workflows/quality-gates.yml"
+
+jobs:
+  hygiene-gates:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/cli
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: SQLite usage guard
+        run: python scripts/ci/check_sqlite_usage.py

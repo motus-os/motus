@@ -17,11 +17,15 @@ Example GitHub Actions (see .github/workflows/ci.yml):
 - lint: ruff + black
 - tests: full test suite
 
-## Snapshot Testing
+## Snapshot Tests
 
-Snapshot testing for the TUI is planned for v0.1.1. Not yet available.
+Snapshot testing is planned for a future release. The current test suite uses:
 
-When implemented, snapshots will:
-- Run isolated from the main suite via `MC_RUN_SNAPSHOTS=1`
-- Use `PYTHONHASHSEED=0` for determinism
-- Provide visual regression coverage for UI changes
+```bash
+python -m pytest tests/ -q
+```
+
+For deterministic test runs:
+```bash
+PYTHONHASHSEED=0 TZ=UTC python -m pytest tests/
+```

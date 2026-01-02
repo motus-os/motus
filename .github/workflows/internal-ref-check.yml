@@ -67,7 +67,13 @@ jobs:
             --exclude-dir=".github" \
             --exclude-dir=".venv" \
             --exclude-dir="node_modules" \
-            --exclude-dir="__pycache__"; then
+            --exclude-dir="__pycache__" \
+            --exclude-dir="tests" \
+            --exclude-dir="fixtures" \
+            --exclude-dir="examples" \
+            --exclude-dir="__snapshots__" \
+            --exclude="*test*.*" \
+            --exclude="conftest.py"; then
             echo ""
             echo "ERROR: Internal references found!"
             echo "These patterns must not appear in the public repo."

@@ -35,6 +35,7 @@ dependencies = [
     "pydantic>=2.0.0",
     "psutil>=5.9.0",
     "rich>=13.0.0",
+    "httpx>=0.25.0",
 ]
 
 [project.optional-dependencies]
@@ -52,7 +53,6 @@ dev = [
     "black>=23.0.0",
     "ruff>=0.1.0",
     "pre-commit>=3.0.0",
-    "httpx>=0.25.0",
     "beautifulsoup4>=4.12.0",
     "fastapi>=0.100.0",
 ]
@@ -81,6 +81,9 @@ packages = ["src/motus"]
 
 # Include static files (CSS, JS, HTML) for web UI
 [tool.hatch.build.targets.wheel.shared-data]
+
+[tool.hatch.build.targets.wheel.force-include]
+"migrations" = "motus/migrations"
 
 [tool.hatch.build]
 include = [
