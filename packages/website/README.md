@@ -10,9 +10,15 @@ Public documentation and product site for Motus. The canonical source lives in
   published through this site.
 - Do not edit generated data by hand:
   - `packages/website/src/data/module-registry.json`
+  - `packages/website/src/data/persona-map.json`
+  - `packages/website/src/data/proof-ledger.json`
 - The module registry source of truth is
   `packages/cli/docs/standards/module-registry.yaml`.
 - `vision.json` will be added when the vision pipeline lands.
+- The persona map source of truth is
+  `packages/cli/docs/website/persona-map.yaml`.
+- The proof ledger source of truth is
+  `packages/cli/docs/website/proof-ledger.yaml`.
 
 ## Local development
 

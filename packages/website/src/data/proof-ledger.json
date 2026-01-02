@@ -1,0 +1,44 @@
+{
+  "claims": [
+    {
+      "id": "six_call_api",
+      "claim": "Coordination surface is six API calls.",
+      "evidence": [
+        {
+          "label": "Coordination API docs",
+          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md"
+        }
+      ]
+    },
+    {
+      "id": "module_registry",
+      "claim": "Current/building/future is defined in the module registry.",
+      "evidence": [
+        {
+          "label": "Module registry",
+          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml"
+        }
+      ]
+    },
+    {
+      "id": "kernel_schema",
+      "claim": "Kernel schema v0.1.3 defines the authoritative tables.",
+      "evidence": [
+        {
+          "label": "Kernel schema docs",
+          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/index.md"
+        }
+      ]
+    },
+    {
+      "id": "docs_registry_sync",
+      "claim": "Docs and website registry are kept in sync.",
+      "evidence": [
+        {
+          "label": "Registry sync gate",
+          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/scripts/ci/check_module_registry.py"
+        }
+      ]
+    }
+  ]
+}

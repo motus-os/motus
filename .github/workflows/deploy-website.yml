@@ -39,6 +39,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyyaml
           python packages/cli/scripts/ci/check_module_registry.py
+          python packages/cli/scripts/ci/check_proof_ledger.py
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

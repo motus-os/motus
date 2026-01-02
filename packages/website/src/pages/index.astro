@@ -3,8 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import GitHubIcon from '../components/GitHubIcon.astro';
 import Card from '../components/Card.astro';
+import personaMap from '../data/persona-map.json';
+import proofLedger from '../data/proof-ledger.json';
 
 const base = import.meta.env.BASE_URL;
+const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]));
 ---
 
 <Layout title="Motus - The Execution Layer for AI Agents">
@@ -104,6 +107,42 @@ const base = import.meta.env.BASE_URL;
             <span>Roadmap IDs tied to implementation detail</span>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Persona Journeys -->
+  <section class="py-phi-6 md:py-phi-7 bg-surface/40">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-phi-5">
+        <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Choose Your Path</p>
+        <h2 class="text-3xl md:text-4xl font-display text-text-primary mt-phi-2">Designed for the journey you are on</h2>
+        <p class="text-text-secondary max-w-2xl mx-auto mt-phi-2">
+          Each path includes a proof link so you can verify what matters before you commit time.
+        </p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-phi-3">
+        {personaMap.personas.map((persona) => {
+          const proof = proofIndex.get(persona.proof_id);
+          const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
+          return (
+            <div class="rounded-2xl border border-white/10 bg-charcoal/70 p-phi-4 space-y-phi-2">
+              <div class="text-xs uppercase tracking-[0.3em] text-text-secondary">{persona.title}</div>
+              <h3 class="text-2xl font-display text-text-primary">{persona.hook}</h3>
+              <p class="text-sm text-text-secondary">{persona.value}</p>
+              <div class="flex flex-wrap items-center gap-phi-2 text-sm">
+                <a class="text-mint hover:text-text-primary transition-colors" href={`${base}${path}`}>
+                  Start here &#8594;
+                </a>
+                {proof ? (
+                  <a class="text-text-secondary hover:text-mint transition-colors" href={proof.evidence[0].url}>
+                    Proof: {proof.evidence[0].label}
+                  </a>
+                ) : null}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   </section>

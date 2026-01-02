@@ -1,0 +1,36 @@
+{
+  "personas": [
+    {
+      "id": "cto",
+      "title": "CTO / Architect",
+      "hook": "Prove system integrity in minutes, not quarters.",
+      "value": "Clear boundaries, enforceable gates, and drift-proof docs.",
+      "proof_id": "docs_registry_sync",
+      "next": "/implementation"
+    },
+    {
+      "id": "builder",
+      "title": "Builder / Engineer",
+      "hook": "Ship faster without re-reading the world.",
+      "value": "Compression of context, coordination, and reasoning.",
+      "proof_id": "six_call_api",
+      "next": "/how-it-works"
+    },
+    {
+      "id": "compliance",
+      "title": "Compliance / Risk",
+      "hook": "Every change has a receipt you can audit.",
+      "value": "Append-only evidence and deterministic review gates.",
+      "proof_id": "kernel_schema",
+      "next": "/schema"
+    },
+    {
+      "id": "product",
+      "title": "Product / Leadership",
+      "hook": "Roadmap clarity without the guesswork.",
+      "value": "Current, building, and future defined in one registry.",
+      "proof_id": "module_registry",
+      "next": "/implementation"
+    }
+  ]
+}
