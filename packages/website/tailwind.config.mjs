@@ -12,7 +12,7 @@ export default {
         'text-secondary': '#9B9B97',
       },
       fontFamily: {
-        display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+        display: ['Sora', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         sans: ['Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
       },
