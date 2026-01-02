@@ -7,6 +7,7 @@ Provides CLI access to the 6-call Work Compiler API:
 - mc work evidence <lease_id> - Record verification artifact
 - mc work decision <lease_id> - Log decision
 - mc work release <lease_id> - Release with outcome
+- mc work cleanup - Expire stale leases
 """
 
 from __future__ import annotations
@@ -125,5 +126,13 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     )
     status_parser.add_argument("lease_id", help="Lease ID to check")
     status_parser.add_argument("--json", action="store_true", help="Output as JSON")
+
+    # mc work cleanup
+    cleanup_parser = work_subparsers.add_parser(
+        "cleanup",
+        help="Expire stale leases",
+        description="Expire stale leases to clear blocking entries",
+    )
+    cleanup_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
     return work_parser

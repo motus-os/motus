@@ -36,6 +36,8 @@ CREATE TABLE IF NOT EXISTS coordination_leases (
     snapshot_id TEXT NOT NULL,
     policy_version TEXT NOT NULL,
     lens_digest TEXT NOT NULL,
+    work_id TEXT,
+    attempt_id TEXT,
     status TEXT NOT NULL DEFAULT 'active',
     outcome TEXT,
     created_at TEXT NOT NULL,
@@ -135,7 +137,19 @@ class LeaseStore:
                     f"Database has v{db_version}, code expects v{_SCHEMA_VERSION}. "
                     f"Delete {self._db_path} to reset (leases will be lost)."
                 )
+        self._ensure_lease_columns()
         self._conn.commit()
+
+    def _ensure_lease_columns(self) -> None:
+        """Ensure optional lease metadata columns exist."""
+        cursor = self._conn.cursor()
+        cursor.execute("PRAGMA table_info(coordination_leases)")
+        columns = {row["name"] for row in cursor.fetchall()}
+
+        if "work_id" not in columns:
+            cursor.execute("ALTER TABLE coordination_leases ADD COLUMN work_id TEXT")
+        if "attempt_id" not in columns:
+            cursor.execute("ALTER TABLE coordination_leases ADD COLUMN attempt_id TEXT")
 
     def close(self) -> None:
         """Close database connection."""
@@ -154,6 +168,8 @@ class LeaseStore:
         snapshot_id: str,
         policy_version: str,
         lens_digest: str,
+        work_id: str | None = None,
+        attempt_id: str | None = None,
     ) -> Lease:
         """Create a new lease.
 
@@ -165,6 +181,8 @@ class LeaseStore:
             snapshot_id: Snapshot baseline ID.
             policy_version: Policy version used for this claim.
             lens_digest: Hash of the Lens assembled for this lease.
+            work_id: Optional work item identifier for metadata.
+            attempt_id: Optional attempt identifier for metadata.
 
         Returns:
             The created Lease.
@@ -185,8 +203,8 @@ class LeaseStore:
             INSERT INTO coordination_leases
                 (lease_id, owner_agent_id, mode, resources, issued_at, expires_at,
                  heartbeat_deadline, snapshot_id, policy_version, lens_digest,
-                 status, outcome, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 work_id, attempt_id, status, outcome, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 lease_id,
@@ -199,6 +217,8 @@ class LeaseStore:
                 snapshot_id,
                 policy_version,
                 lens_digest,
+                work_id,
+                attempt_id,
                 "active",
                 None,
                 _iso_z(now),
@@ -218,6 +238,8 @@ class LeaseStore:
             snapshot_id=snapshot_id,
             policy_version=policy_version,
             lens_digest=lens_digest,
+            work_id=work_id,
+            attempt_id=attempt_id,
             status="active",
             outcome=None,
         )
@@ -229,7 +251,29 @@ class LeaseStore:
         row = cursor.fetchone()
         if row is None:
             return None
-        return self._row_to_lease(row)
+        lease = self._row_to_lease(row)
+
+        if lease.status == "active":
+            now = _utcnow()
+            if lease.expires_at <= now or lease.heartbeat_deadline <= now:
+                cursor.execute(
+                    """
+                    UPDATE coordination_leases
+                    SET status = 'expired', updated_at = ?
+                    WHERE lease_id = ?
+                    """,
+                    (_iso_z(now), lease_id),
+                )
+                self._conn.commit()
+                refreshed = self._conn.execute(
+                    "SELECT * FROM coordination_leases WHERE lease_id = ?",
+                    (lease_id,),
+                ).fetchone()
+                if refreshed is None:
+                    return None
+                return self._row_to_lease(refreshed)
+
+        return lease
 
     def get_active_leases_for_resources(
         self, resources: list[Resource], mode: LeaseMode | None = None
@@ -489,6 +533,8 @@ class LeaseStore:
         """Convert a database row to a Lease object."""
         resources_data = json.loads(row["resources"])
         resources = [Resource(type=r["type"], path=r["path"]) for r in resources_data]
+        work_id = row["work_id"] if "work_id" in row.keys() else None
+        attempt_id = row["attempt_id"] if "attempt_id" in row.keys() else None
 
         return Lease(
             lease_id=row["lease_id"],
@@ -501,6 +547,8 @@ class LeaseStore:
             snapshot_id=row["snapshot_id"],
             policy_version=row["policy_version"],
             lens_digest=row["lens_digest"],
+            work_id=work_id,
+            attempt_id=attempt_id,
             status=row["status"],
             outcome=row["outcome"],
         )

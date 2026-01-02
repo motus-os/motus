@@ -51,12 +51,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Literal
 
 from motus.config import config
+from motus.config_loader import load_config
 from motus.context_cache import ContextCache
 from motus.coordination.api import Coordinator, GetContextResponse
 from motus.coordination.api.lease_store import LeaseStore
@@ -83,6 +85,25 @@ def _generate_id(prefix: str) -> str:
 
 
 _kernel_logger = get_logger("motus.api.kernel")
+
+
+def _metrics_enabled() -> bool:
+    try:
+        return load_config().metrics_enabled
+    except Exception:
+        return True
+
+
+def _map_release_outcome(outcome: Outcome) -> str | None:
+    if outcome == "success":
+        return "completed"
+    if outcome == "failure":
+        return "failed"
+    if outcome == "partial":
+        return "handed_off"
+    if outcome == "aborted":
+        return "failed"
+    return None
 
 
 def _persist_decision(
@@ -193,6 +214,8 @@ def _persist_outcome(
     lease_id: str,
     outcome_type: str,
     *,
+    work_id: str | None = None,
+    attempt_id: str | None = None,
     path: str | None = None,
     description: str | None = None,
     metadata: dict[str, Any] | None = None,
@@ -205,12 +228,14 @@ def _persist_outcome(
             conn.execute(
                 """
                 INSERT INTO kernel_outcomes (
-                    id, lease_id, outcome_type, path, description,
+                    id, work_id, attempt_id, lease_id, outcome_type, path, description,
                     metadata, created_by
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     outcome_id,
+                    work_id,
+                    attempt_id,
                     lease_id,
                     outcome_type,
                     path,
@@ -222,6 +247,48 @@ def _persist_outcome(
         return True
     except Exception as e:
         _kernel_logger.warning(f"Failed to persist outcome: {e}")
+        return False
+
+
+def _persist_attempt(
+    attempt_id: str,
+    work_id: str,
+    worker_id: str,
+    *,
+    worker_type: str = "agent",
+) -> bool:
+    """Persist an attempt row for a claim (KERNEL-SCHEMA v0.1.3)."""
+    try:
+        db = get_db_manager()
+        with db.transaction() as conn:
+            item = conn.execute(
+                "SELECT 1 FROM roadmap_items WHERE id = ?",
+                (work_id,),
+            ).fetchone()
+            if item is None:
+                conn.execute(
+                    """
+                    INSERT INTO roadmap_items (id, phase_key, title, created_by)
+                    VALUES (?, ?, ?, ?)
+                    """,
+                    (
+                        work_id,
+                        "phase_f",
+                        f"Ad hoc work item {work_id}",
+                        "work_compiler",
+                    ),
+                )
+
+            conn.execute(
+                """
+                INSERT INTO attempts (id, work_id, worker_id, worker_type)
+                VALUES (?, ?, ?, ?)
+                """,
+                (attempt_id, work_id, worker_id, worker_type),
+            )
+        return True
+    except Exception as e:
+        _kernel_logger.warning(f"Failed to persist attempt: {e}")
         return False
 
 
@@ -315,6 +382,97 @@ class WorkCompiler:
         self._decisions: dict[str, list[dict[str, Any]]] = {}
         self._draft_decisions: dict[str, dict[str, Any]] = {}
         self._lease_task_ids: dict[str, str] = {}  # PA-099: lease_id -> task_id
+        self._lease_attempt_ids: dict[str, str] = {}
+
+    def _cache_lease_metadata(
+        self,
+        lease_id: str,
+        work_id: str | None,
+        attempt_id: str | None,
+    ) -> None:
+        if work_id:
+            self._lease_task_ids[lease_id] = work_id
+        if attempt_id:
+            self._lease_attempt_ids[lease_id] = attempt_id
+
+    def _resolve_lease_metadata(
+        self,
+        lease_id: str,
+        lease: Any | None,
+    ) -> tuple[str | None, str | None]:
+        work_id = lease.work_id if lease is not None else None
+        attempt_id = lease.attempt_id if lease is not None else None
+
+        if work_id is None:
+            work_id = self._lease_task_ids.get(lease_id)
+        if attempt_id is None:
+            attempt_id = self._lease_attempt_ids.get(lease_id)
+        if attempt_id is None:
+            attempt_id = lease_id
+
+        return work_id, attempt_id
+
+    def _clear_lease_metadata(self, lease_id: str) -> None:
+        self._lease_task_ids.pop(lease_id, None)
+        self._lease_attempt_ids.pop(lease_id, None)
+
+    def _record_metric(
+        self,
+        operation: str,
+        start_time: float,
+        *,
+        success: bool,
+        metadata: dict[str, Any] | None = None,
+    ) -> None:
+        if not _metrics_enabled():
+            return
+        try:
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
+            db = get_db_manager()
+            db.record_metric(
+                operation=operation,
+                elapsed_ms=elapsed_ms,
+                success=success,
+                metadata=metadata,
+            )
+        except Exception as exc:
+            _kernel_logger.warning(f"Failed to record metric {operation}: {exc}")
+
+    def _finalize_attempt(self, lease_id: str, lease: Any | None, outcome: Outcome) -> None:
+        work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
+        if attempt_id is None:
+            return
+
+        attempt_outcome = _map_release_outcome(outcome)
+        ended_at = _utcnow().isoformat()
+
+        try:
+            db = get_db_manager()
+            with db.transaction() as conn:
+                if attempt_outcome == "completed":
+                    evidence = conn.execute(
+                        "SELECT 1 FROM evidence WHERE attempt_id = ? LIMIT 1",
+                        (attempt_id,),
+                    ).fetchone()
+                    if evidence is None:
+                        conn.execute(
+                            "UPDATE attempts SET ended_at = ? WHERE id = ? AND ended_at IS NULL",
+                            (ended_at, attempt_id),
+                        )
+                        return
+
+                if attempt_outcome:
+                    conn.execute(
+                        "UPDATE attempts SET ended_at = ?, outcome = ? WHERE id = ? AND ended_at IS NULL",
+                        (ended_at, attempt_outcome, attempt_id),
+                    )
+                else:
+                    conn.execute(
+                        "UPDATE attempts SET ended_at = ? WHERE id = ? AND ended_at IS NULL",
+                        (ended_at, attempt_id),
+                    )
+        except Exception as exc:
+            _kernel_logger.warning(f"Failed to finalize attempt {attempt_id}: {exc}")
 
     # =========================================================================
     # 1. claim_work
@@ -364,19 +522,51 @@ class WorkCompiler:
             for r in resources
         ]
 
-        result = self._coordinator.claim(
-            resources=normalized,
-            mode=mode,
-            ttl_s=ttl_s,
-            intent=f"[{task_id}] {intent}",
-            agent_id=agent_id,
-        )
+        attempt_id = _generate_id("attempt")
+
+        start_time = time.perf_counter()
+        try:
+            result = self._coordinator.claim(
+                resources=normalized,
+                mode=mode,
+                ttl_s=ttl_s,
+                intent=f"[{task_id}] {intent}",
+                agent_id=agent_id,
+                work_id=task_id,
+                attempt_id=attempt_id,
+            )
+        except Exception as exc:
+            self._record_metric(
+                "work_compiler.claim_work",
+                start_time,
+                success=False,
+                metadata={
+                    "work_id": task_id,
+                    "attempt_id": attempt_id,
+                    "agent_id": agent_id,
+                    "mode": mode,
+                    "resource_count": len(normalized),
+                    "error": type(exc).__name__,
+                },
+            )
+            raise
 
         # Add missing_prereqs to lens for immediate visibility (PA-078)
         if result.decision.decision == "GRANTED":
-            # PA-099: Track lease_id -> task_id for evidence/decision persistence
+            # PA-099/PA-107: Track lease metadata + create attempt row
             if result.lease:
-                self._lease_task_ids[result.lease.lease_id] = task_id
+                result.lease.work_id = task_id
+                result.lease.attempt_id = attempt_id
+                self._cache_lease_metadata(
+                    result.lease.lease_id,
+                    task_id,
+                    attempt_id,
+                )
+                _persist_attempt(
+                    attempt_id=attempt_id,
+                    work_id=task_id,
+                    worker_id=agent_id,
+                )
 
             try:
                 from motus.core.roadmap import get_missing_prereqs
@@ -393,6 +583,22 @@ class WorkCompiler:
                 ]
             except Exception:
                 result.lens["missing_prereqs"] = []
+
+        self._record_metric(
+            "work_compiler.claim_work",
+            start_time,
+            success=result.decision.decision == "GRANTED",
+            metadata={
+                "work_id": task_id,
+                "attempt_id": attempt_id,
+                "agent_id": agent_id,
+                "mode": mode,
+                "resource_count": len(normalized),
+                "decision": result.decision.decision,
+                "reason_code": result.decision.reason_code,
+                "lease_id": result.lease.lease_id if result.lease else None,
+            },
+        )
 
         return result
 
@@ -428,7 +634,21 @@ class WorkCompiler:
                 resource_specs = ctx.lens.get("resource_specs", [])
                 missing_prereqs = ctx.lens.get("missing_prereqs", [])
         """
-        result = self._coordinator.get_context(lease_id, intent=intent)
+        start_time = time.perf_counter()
+        try:
+            result = self._coordinator.get_context(lease_id, intent=intent)
+        except Exception as exc:
+            self._record_metric(
+                "work_compiler.get_context",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "task_id": task_id,
+                    "error": type(exc).__name__,
+                },
+            )
+            raise
 
         # Add missing_prereqs if task_id provided
         if task_id and result.decision.decision == "GRANTED":
@@ -448,6 +668,18 @@ class WorkCompiler:
             except Exception:
                 # Best-effort: don't fail if roadmap db unavailable
                 result.lens["missing_prereqs"] = []
+
+        self._record_metric(
+            "work_compiler.get_context",
+            start_time,
+            success=result.decision.decision == "GRANTED",
+            metadata={
+                "lease_id": lease_id,
+                "task_id": task_id,
+                "decision": result.decision.decision,
+                "reason_code": result.decision.reason_code,
+            },
+        )
 
         return result
 
@@ -488,14 +720,36 @@ class WorkCompiler:
                 description="Defined LensAssembler protocol",
             )
         """
+        start_time = time.perf_counter()
         # Get lease to validate it's active
         lease = self._coordinator._lease_store.get_lease(lease_id)
         if lease is None:
+            self._record_metric(
+                "work_compiler.put_outcome",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "outcome_type": outcome_type,
+                    "error": "lease_not_found",
+                },
+            )
             return OutcomeResponse(
                 accepted=False,
                 message="Lease not found",
             )
         if lease.status != "active":
+            self._record_metric(
+                "work_compiler.put_outcome",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "outcome_type": outcome_type,
+                    "lease_status": lease.status,
+                    "error": "lease_not_active",
+                },
+            )
             return OutcomeResponse(
                 accepted=False,
                 message=f"Lease is {lease.status}, not active",
@@ -528,13 +782,29 @@ class WorkCompiler:
         )
 
         # Persist to kernel table (PA-061)
+        work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
         _persist_outcome(
             outcome_id=outcome_id,
             lease_id=lease_id,
             outcome_type=outcome_type,
+            work_id=work_id,
+            attempt_id=attempt_id,
             path=path,
             description=description,
             metadata=metadata,
+        )
+
+        self._record_metric(
+            "work_compiler.put_outcome",
+            start_time,
+            success=True,
+            metadata={
+                "lease_id": lease_id,
+                "outcome_id": outcome_id,
+                "outcome_type": outcome_type,
+                "work_id": work_id,
+                "attempt_id": attempt_id,
+            },
         )
 
         return OutcomeResponse(
@@ -583,14 +853,36 @@ class WorkCompiler:
                 test_results={"passed": 44, "failed": 0, "skipped": 2},
             )
         """
+        start_time = time.perf_counter()
         # Get lease to validate it's active
         lease = self._coordinator._lease_store.get_lease(lease_id)
         if lease is None:
+            self._record_metric(
+                "work_compiler.record_evidence",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "evidence_type": evidence_type,
+                    "error": "lease_not_found",
+                },
+            )
             return EvidenceResponse(
                 accepted=False,
                 message="Lease not found",
             )
         if lease.status != "active":
+            self._record_metric(
+                "work_compiler.record_evidence",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "evidence_type": evidence_type,
+                    "lease_status": lease.status,
+                    "error": "lease_not_active",
+                },
+            )
             return EvidenceResponse(
                 accepted=False,
                 message=f"Lease is {lease.status}, not active",
@@ -624,17 +916,30 @@ class WorkCompiler:
         )
 
         # Persist to kernel table (PA-061, PA-099)
-        work_id = self._lease_task_ids.get(lease_id)
+        work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
         _persist_evidence(
             evidence_id=evidence_id,
             lease_id=lease_id,
             evidence_type=evidence_type,
             work_id=work_id,
-            attempt_id=lease_id,  # Use lease_id as attempt_id
+            attempt_id=attempt_id,
             artifacts=artifacts,
             test_results=test_results,
             diff_summary=diff_summary,
             log_excerpt=log_excerpt,
+        )
+
+        self._record_metric(
+            "work_compiler.record_evidence",
+            start_time,
+            success=True,
+            metadata={
+                "lease_id": lease_id,
+                "evidence_id": evidence_id,
+                "evidence_type": evidence_type,
+                "work_id": work_id,
+                "attempt_id": attempt_id,
+            },
         )
 
         return EvidenceResponse(
@@ -679,14 +984,34 @@ class WorkCompiler:
                 alternatives_considered=["ABC", "TypedDict"],
             )
         """
+        start_time = time.perf_counter()
         # Get lease to validate it's active
         lease = self._coordinator._lease_store.get_lease(lease_id)
         if lease is None:
+            self._record_metric(
+                "work_compiler.record_decision",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "error": "lease_not_found",
+                },
+            )
             return DecisionResponse(
                 accepted=False,
                 message="Lease not found",
             )
         if lease.status != "active":
+            self._record_metric(
+                "work_compiler.record_decision",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "lease_status": lease.status,
+                    "error": "lease_not_active",
+                },
+            )
             return DecisionResponse(
                 accepted=False,
                 message=f"Lease is {lease.status}, not active",
@@ -719,17 +1044,29 @@ class WorkCompiler:
         )
 
         # Persist to kernel table (PA-061, PA-099)
-        work_id = self._lease_task_ids.get(lease_id)
+        work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
         _persist_decision(
             decision_id=decision_id,
             lease_id=lease_id,
             decision_type="approval",  # Default type for record_decision
             decision_summary=decision,
             work_id=work_id,
-            attempt_id=lease_id,  # Use lease_id as attempt_id
+            attempt_id=attempt_id,
             rationale=rationale,
             alternatives_considered=alternatives_considered,
             constraints=constraints,
+        )
+
+        self._record_metric(
+            "work_compiler.record_decision",
+            start_time,
+            success=True,
+            metadata={
+                "lease_id": lease_id,
+                "decision_id": decision_id,
+                "work_id": work_id,
+                "attempt_id": attempt_id,
+            },
         )
 
         return DecisionResponse(
@@ -771,6 +1108,7 @@ class WorkCompiler:
             if result.decision.reason_code == "RELEASED_OK":
                 print("Work completed successfully")
         """
+        start_time = time.perf_counter()
         # Gather all evidence IDs for this lease
         evidence_ids = [
             e["evidence_id"] for e in self._evidence.get(lease_id, [])
@@ -791,11 +1129,34 @@ class WorkCompiler:
             rollback=rollback,
         )
 
+        if result.lease is not None:
+            self._finalize_attempt(lease_id, result.lease, outcome)
+
+        work_id = None
+        attempt_id = None
+        if result.lease is not None:
+            work_id, attempt_id = self._resolve_lease_metadata(lease_id, result.lease)
+
         # Clean up in-memory storage
         self._outcomes.pop(lease_id, None)
         self._evidence.pop(lease_id, None)
         self._decisions.pop(lease_id, None)
-        self._lease_task_ids.pop(lease_id, None)  # PA-099
+        self._clear_lease_metadata(lease_id)  # PA-099
+
+        self._record_metric(
+            "work_compiler.release_work",
+            start_time,
+            success=result.decision.decision == "GRANTED",
+            metadata={
+                "lease_id": lease_id,
+                "work_id": work_id,
+                "attempt_id": attempt_id,
+                "outcome": outcome,
+                "decision": result.decision.decision,
+                "reason_code": result.decision.reason_code,
+                "evidence_count": len(evidence_ids),
+            },
+        )
 
         return result
 
@@ -814,6 +1175,10 @@ class WorkCompiler:
     def get_decisions(self, lease_id: str) -> list[dict[str, Any]]:
         """Get all decisions logged for a lease."""
         return list(self._decisions.get(lease_id, []))
+
+    def cleanup_leases(self) -> int:
+        """Expire stale leases and return count."""
+        return self._coordinator.cleanup_stale_leases()
 
     def get_draft_decisions(self, lease_id: str) -> list[dict[str, Any]]:
         """Get all pending draft decisions for a lease."""
@@ -900,14 +1265,14 @@ class WorkCompiler:
         )
 
         # Persist to kernel table (PA-061, PA-099)
-        work_id = self._lease_task_ids.get(lease_id)
+        work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
         _persist_decision(
             decision_id=draft_id,
             lease_id=lease_id,
             decision_type="draft_emitted",
             decision_summary=decision,
             work_id=work_id,
-            attempt_id=lease_id,
+            attempt_id=attempt_id,
             rationale=rationale,
             alternatives_considered=alternatives_considered,
             constraints=constraints,
@@ -992,14 +1357,15 @@ class WorkCompiler:
 
             # Persist approval to kernel table (PA-061, PA-099)
             draft_lease_id = draft["lease_id"]
-            work_id = self._lease_task_ids.get(draft_lease_id)
+            lease = self._coordinator._lease_store.get_lease(draft_lease_id)
+            work_id, attempt_id = self._resolve_lease_metadata(draft_lease_id, lease)
             _persist_decision(
                 decision_id=_generate_id("approval"),
                 lease_id=draft_lease_id,
                 decision_type="draft_approved",
                 decision_summary=f"Approved draft: {draft['decision']}",
                 work_id=work_id,
-                attempt_id=draft_lease_id,
+                attempt_id=attempt_id,
                 rationale=approval_note,
                 decided_by=approver_id or "agent",
                 supersedes_decision_id=draft_id,  # Links to original draft
@@ -1064,14 +1430,15 @@ class WorkCompiler:
 
         # Persist rejection to kernel table (PA-061, PA-099)
         draft_lease_id = draft["lease_id"]
-        work_id = self._lease_task_ids.get(draft_lease_id)
+        lease = self._coordinator._lease_store.get_lease(draft_lease_id)
+        work_id, attempt_id = self._resolve_lease_metadata(draft_lease_id, lease)
         _persist_decision(
             decision_id=_generate_id("rejection"),
             lease_id=draft_lease_id,
             decision_type="draft_rejected",
             decision_summary=f"Rejected draft: {draft['decision']}",
             work_id=work_id,
-            attempt_id=draft_lease_id,
+            attempt_id=attempt_id,
             rationale=rejection_reason,
             decided_by=rejector_id or "agent",
             supersedes_decision_id=draft_id,  # Links to original draft

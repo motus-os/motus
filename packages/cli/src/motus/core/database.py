@@ -22,6 +22,11 @@ def get_connection():
     return get_db_manager().get_connection()
 
 
+def get_readonly_connection():
+    """Return a read-only database connection from the global manager."""
+    return get_db_manager().get_connection(read_only=True)
+
+
 __all__ = [
     "Database",
     "DatabaseManager",
@@ -29,6 +34,7 @@ __all__ = [
     "_configure_connection",
     "configure_connection",
     "get_connection",
+    "get_readonly_connection",
     "get_database_path",
     "get_default_db_path",
     "get_db_manager",

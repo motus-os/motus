@@ -105,6 +105,7 @@ class Coordinator:
         Returns:
             PeekResponse with lock status and Lens.
         """
+        self._lease_store.expire_stale_leases()
         now = _utcnow()
 
         # Check for existing write leases
@@ -150,6 +151,7 @@ class Coordinator:
             cache_state_hash=self._context_cache.state_hash(),
             timestamp=now,
         )
+        lens_payload = dict(lens)
 
         # Build decision object with human_message
         decision = make_decision(
@@ -162,7 +164,7 @@ class Coordinator:
 
         return PeekResponse(
             decision=decision,
-            lens=lens,
+            lens=lens_payload,
             locks=locks,
         )
 
@@ -180,10 +182,9 @@ class Coordinator:
         ttl_s: int,
         intent: str,
         agent_id: str,
+        work_id: str | None = None,
+        attempt_id: str | None = None,
         lens_level: int = 0,
-        wait: bool = False,
-        timeout_s: int | None = None,
-        priority: int = 0,
     ) -> ClaimResponse:
         """Acquire a lease with snapshot and Lens.
 
@@ -193,11 +194,9 @@ class Coordinator:
             ttl_s: Time-to-live in seconds (must be > 0, max 7 days).
             intent: What the agent plans to do.
             agent_id: ID of the requesting agent.
+            work_id: Optional work item identifier for lease metadata.
+            attempt_id: Optional attempt identifier for lease metadata.
             lens_level: Lens tier (0, 1, or 2).
-            wait: If True, wait for resources to become available.
-            timeout_s: Max wait time if wait=True.
-            priority: Priority for queue ordering.
-
         Returns:
             ClaimResponse with lease and Lens if granted.
         """
@@ -211,6 +210,7 @@ class Coordinator:
             cache_state_hash=self._context_cache.state_hash(),
             timestamp=now,
         )
+        lens_payload = dict(lens)
 
         # Validate agent_id
         if not agent_id or not agent_id.strip():
@@ -219,7 +219,7 @@ class Coordinator:
                 reason_code="DENY_INVALID_AGENT_ID",
                 rules_fired=["validate_agent_id"],
             )
-            return ClaimResponse(decision=decision, lens=lens)
+            return ClaimResponse(decision=decision, lens=lens_payload)
 
         # Validate TTL (must be positive, capped at MAX_TTL_SECONDS)
         if ttl_s <= 0:
@@ -228,7 +228,7 @@ class Coordinator:
                 reason_code="DENY_INVALID_TTL",
                 rules_fired=["validate_ttl"],
             )
-            return ClaimResponse(decision=decision, lens=lens)
+            return ClaimResponse(decision=decision, lens=lens_payload)
 
         # Cap TTL to prevent overflow and resource exhaustion
         ttl_s = min(ttl_s, self.MAX_TTL_SECONDS)
@@ -240,7 +240,9 @@ class Coordinator:
                 reason_code="DENY_INVALID_RESOURCES",
                 rules_fired=["validate_resources"],
             )
-            return ClaimResponse(decision=decision, lens=lens)
+            return ClaimResponse(decision=decision, lens=lens_payload)
+
+        self._lease_store.expire_stale_leases()
 
         # Check for conflicting leases
         if mode == "write":
@@ -260,12 +262,13 @@ class Coordinator:
                 ),
                 ttl_remaining_s=max(0, int((first_conflict.expires_at - now).total_seconds())),
             )
-            return ClaimResponse(decision=decision, lens=lens)
+            return ClaimResponse(decision=decision, lens=lens_payload)
 
         # Create snapshot
         snapshot_id = _generate_snapshot_id()
 
-        lens_digest = lens.get("lens_hash", "")
+        lens_hash = lens_payload.get("lens_hash")
+        lens_digest = lens_hash if isinstance(lens_hash, str) else ""
 
         # Create lease
         lease = self._lease_store.create_lease(
@@ -276,18 +279,25 @@ class Coordinator:
             snapshot_id=snapshot_id,
             policy_version=self._policy_version,
             lens_digest=lens_digest,
+            work_id=work_id,
+            attempt_id=attempt_id,
         )
 
         # Record claim event
+        event_payload = {
+            "agent_id": agent_id,
+            "mode": mode,
+            "resources": [f"{r.type}:{r.path}" for r in resources],
+            "intent": intent,
+        }
+        if work_id:
+            event_payload["work_id"] = work_id
+        if attempt_id:
+            event_payload["attempt_id"] = attempt_id
         self._lease_store.record_event(
             lease_id=lease.lease_id,
             event_type="LEASE_CLAIMED",
-            payload={
-                "agent_id": agent_id,
-                "mode": mode,
-                "resources": [f"{r.type}:{r.path}" for r in resources],
-                "intent": intent,
-            },
+            payload=event_payload,
         )
 
         decision = make_decision(
@@ -298,7 +308,7 @@ class Coordinator:
 
         return ClaimResponse(
             decision=decision,
-            lens=lens,
+            lens=lens_payload,
             lease=lease,
         )
 
@@ -332,6 +342,7 @@ class Coordinator:
             already exist and be active. Use claim() first, then get_context()
             as needed to refresh.
         """
+        self._lease_store.expire_stale_leases()
         now = _utcnow()
 
         # Get existing lease
@@ -399,6 +410,7 @@ class Coordinator:
             cache_state_hash=self._context_cache.state_hash(),
             timestamp=now,
         )
+        lens_payload = dict(lens)
 
         # Record context refresh event
         self._lease_store.record_event(
@@ -406,7 +418,7 @@ class Coordinator:
             event_type="CONTEXT_REFRESH",
             payload={
                 "intent": resolved_intent,
-                "lens_hash": lens.get("lens_hash", ""),
+                "lens_hash": lens_payload.get("lens_hash", ""),
                 "lens_level": lens_level,
             },
         )
@@ -419,7 +431,7 @@ class Coordinator:
 
         return GetContextResponse(
             decision=decision,
-            lens=lens,
+            lens=lens_payload,
             lease=lease,
         )
 
@@ -448,6 +460,8 @@ class Coordinator:
         # Check if event already exists (idempotent - still accepted)
         if self._lease_store.event_exists(event_id):
             return StatusResponse(accepted=True)
+
+        self._lease_store.expire_stale_leases()
 
         # Get and validate lease
         lease = self._lease_store.get_lease(lease_id)
@@ -494,6 +508,7 @@ class Coordinator:
         Returns:
             ClaimAdditionalResponse per claim-additional-response.schema.json.
         """
+        self._lease_store.expire_stale_leases()
         now = _utcnow()
 
         # Get existing lease
@@ -508,6 +523,7 @@ class Coordinator:
             cache_state_hash=self._context_cache.state_hash(),
             timestamp=now,
         )
+        lens_payload = dict(lens)
 
         if lease is None or lease.status != "active":
             decision = make_decision(
@@ -515,7 +531,7 @@ class Coordinator:
                 reason_code="DENY_MISSING_LEASE",
                 rules_fired=["validate_lease"],
             )
-            return ClaimAdditionalResponse(decision=decision, lens=lens)
+            return ClaimAdditionalResponse(decision=decision, lens=lens_payload)
 
         # Check for conflicts on new resources
         conflicts = self._lease_store.get_active_leases_for_resources(resources, mode="write")
@@ -533,7 +549,7 @@ class Coordinator:
                 ),
                 ttl_remaining_s=max(0, int((first_conflict.expires_at - now).total_seconds())),
             )
-            return ClaimAdditionalResponse(decision=decision, lens=lens)
+            return ClaimAdditionalResponse(decision=decision, lens=lens_payload)
 
         # Add resources to lease
         updated_lease = self._lease_store.add_resources_to_lease(lease_id, resources)
@@ -543,7 +559,7 @@ class Coordinator:
                 reason_code="DENY_MISSING_LEASE",
                 rules_fired=["validate_lease"],
             )
-            return ClaimAdditionalResponse(decision=decision, lens=lens)
+            return ClaimAdditionalResponse(decision=decision, lens=lens_payload)
 
         # Record scope change event
         self._lease_store.record_event(
@@ -563,7 +579,7 @@ class Coordinator:
 
         return ClaimAdditionalResponse(
             decision=decision,
-            lens=lens,
+            lens=lens_payload,
             lease=updated_lease,
         )
 
@@ -591,6 +607,7 @@ class Coordinator:
         Returns:
             ReleaseResponse per release-response.schema.json.
         """
+        self._lease_store.expire_stale_leases()
         # Get lease
         lease = self._lease_store.get_lease(lease_id)
 
@@ -665,6 +682,7 @@ class Coordinator:
         Returns:
             ForceReleaseResponse per force-release-response.schema.json.
         """
+        self._lease_store.expire_stale_leases()
         # Find active leases holding this resource
         affected = self._lease_store.get_active_leases_for_resources([resource])
 
@@ -700,3 +718,12 @@ class Coordinator:
         )
 
         return ForceReleaseResponse(decision=decision)
+
+    # =========================================================================
+    # Maintenance
+    # =========================================================================
+
+    def cleanup_stale_leases(self) -> int:
+        """Expire stale leases and return the count."""
+        expired = self._lease_store.expire_stale_leases()
+        return len(expired)

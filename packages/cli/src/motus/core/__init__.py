@@ -17,6 +17,7 @@ from .bootstrap import (
     is_first_run,
     set_instance_name,
 )
+from .claims import DeployStatus, can_deploy
 from .context import RuntimeContext, get_context, reset_context, set_context
 from .database import (
     EXPECTED_SCHEMA_VERSION,
@@ -24,6 +25,7 @@ from .database import (
     configure_connection,
     get_database_path,
     get_db_manager,
+    get_readonly_connection,
     reset_db_manager,
     verify_schema_version,
 )
@@ -38,7 +40,6 @@ from .errors import (
 )
 from .layered_config import ConfigValue, LayeredConfig, get_config, reset_config
 from .migrations import Migration, MigrationRunner
-from .claims import DeployStatus, can_deploy
 from .roadmap import (
     RoadmapAPI,
     RoadmapError,
@@ -67,6 +68,7 @@ __all__ = [
     "configure_connection",
     "get_database_path",
     "get_db_manager",
+    "get_readonly_connection",
     "reset_db_manager",
     "verify_schema_version",
     # Migrations

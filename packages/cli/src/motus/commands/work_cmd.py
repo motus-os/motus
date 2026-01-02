@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any
+from typing import Any, Literal
 
 from rich.console import Console
 
@@ -230,7 +230,7 @@ def cmd_work_release(args: Any) -> int:
     """Handle: mc work release <lease_id> <outcome>"""
     wc = _get_work_compiler()
     as_json = getattr(args, "json", False)
-    rollback = "skip" if getattr(args, "no_rollback", False) else "auto"
+    rollback: Literal["auto", "skip"] = "skip" if getattr(args, "no_rollback", False) else "auto"
 
     result = wc.release_work(
         args.lease_id,
@@ -309,6 +309,24 @@ def cmd_work_status(args: Any) -> int:
     return 0
 
 
+def cmd_work_cleanup(args: Any) -> int:
+    """Handle: mc work cleanup"""
+    wc = _get_work_compiler()
+    as_json = getattr(args, "json", False)
+
+    expired_count = wc.cleanup_leases()
+
+    if as_json:
+        output = {
+            "expired_count": expired_count,
+        }
+        console.print_json(json.dumps(output))
+        return 0
+
+    console.print(f"[green]Expired leases: {expired_count}[/green]")
+    return 0
+
+
 def handle_work_command(args: Any) -> int:
     """Dispatch work subcommand."""
     subcommand = getattr(args, "work_command", None)
@@ -327,8 +345,10 @@ def handle_work_command(args: Any) -> int:
         return cmd_work_release(args)
     elif subcommand == "status":
         return cmd_work_status(args)
+    elif subcommand == "cleanup":
+        return cmd_work_cleanup(args)
     else:
-        console.print("[yellow]Usage: mc work <claim|context|outcome|evidence|decision|release|status>[/yellow]")
+        console.print("[yellow]Usage: mc work <claim|context|outcome|evidence|decision|release|status|cleanup>[/yellow]")
         console.print("\nThe 6-call Work Compiler protocol:")
         console.print("  1. mc work claim <task_id>     - Claim work, get lease")
         console.print("  2. mc work context <lease_id>  - Get context (Lens)")

@@ -18,25 +18,35 @@ logger = get_logger(__name__)
 EXPECTED_SCHEMA_VERSION = 19
 
 
-def configure_connection(conn: sqlite3.Connection, set_row_factory: bool = True) -> None:
+def configure_connection(
+    conn: sqlite3.Connection,
+    *,
+    set_row_factory: bool = True,
+    read_only: bool = False,
+) -> None:
     """Apply standard PRAGMA settings for all Motus SQLite connections.
 
     Use this for ALL SQLite connections to ensure consistent behavior:
-    - WAL mode for concurrent reads during writes
+    - WAL mode for concurrent reads during writes (read-only skips WAL)
     - NORMAL sync for balance of safety and speed
     - Foreign keys ON for referential integrity
-    - 5 second busy timeout to handle contention
+    - 30 second busy timeout to handle contention
     - 64MB cache for better read performance
+    - query_only for read-only connections
 
     Args:
         conn: SQLite connection to configure.
         set_row_factory: If True, set row_factory to sqlite3.Row.
+        read_only: If True, configure the connection for read-only access.
     """
-    conn.execute("PRAGMA journal_mode = WAL")
-    conn.execute("PRAGMA synchronous = NORMAL")
+    if not read_only:
+        conn.execute("PRAGMA journal_mode = WAL")
+        conn.execute("PRAGMA synchronous = NORMAL")
     conn.execute("PRAGMA foreign_keys = ON")
-    conn.execute("PRAGMA busy_timeout = 5000")
+    conn.execute("PRAGMA busy_timeout = 30000")
     conn.execute("PRAGMA cache_size = -64000")
+    if read_only:
+        conn.execute("PRAGMA query_only = ON")
     if set_row_factory:
         conn.row_factory = sqlite3.Row
     from .sqlite_udfs import register_udfs
@@ -103,6 +113,7 @@ class DatabaseManager(DatabaseQueryMixin):
     def __init__(self, db_path: Path | None = None):
         self.db_path = db_path or get_database_path()
         self._connection: sqlite3.Connection | None = None
+        self._ro_connection: sqlite3.Connection | None = None
 
     def ensure_database(self) -> None:
         """Ensure database exists and schema version is valid."""
@@ -115,8 +126,11 @@ class DatabaseManager(DatabaseQueryMixin):
 
         verify_schema_version(conn)
 
-    def get_connection(self) -> sqlite3.Connection:
+    def get_connection(self, *, read_only: bool = False) -> sqlite3.Connection:
         """Get database connection (creates if needed)."""
+        if read_only:
+            return self.get_readonly_connection()
+
         if self._connection is None:
             _secure_database_file(self.db_path)
             try:
@@ -137,14 +151,45 @@ class DatabaseManager(DatabaseQueryMixin):
 
         return self._connection
 
+    def get_readonly_connection(self) -> sqlite3.Connection:
+        """Get a read-only database connection."""
+        if self._ro_connection is None:
+            if not self.db_path.exists():
+                raise DatabaseError(
+                    "[DB-READONLY-001] Database not initialized; cannot open read-only connection."
+                )
+            _secure_database_file(self.db_path)
+            try:
+                ro_uri = f"file:{self.db_path}?mode=ro"
+                self._ro_connection = sqlite3.connect(
+                    ro_uri, uri=True, isolation_level=None, check_same_thread=False
+                )
+                _configure_connection(self._ro_connection, read_only=True)
+            except sqlite3.OperationalError as e:
+                raise DatabaseError.from_sqlite_error(e, "read-only database connection") from e
+            except Exception as e:
+                raise DatabaseError(
+                    f"[DB-ERR-998] Failed to connect to read-only database: {e}"
+                ) from e
+        return self._ro_connection
+
     def release_connection(self, conn: sqlite3.Connection) -> None:
         """Release connection (no-op in single-connection mode)."""
         pass
 
     @contextmanager
-    def connection(self) -> Generator[sqlite3.Connection, None, None]:
+    def connection(self, *, read_only: bool = False) -> Generator[sqlite3.Connection, None, None]:
         """Context manager for database connections."""
-        conn = self.get_connection()
+        conn = self.get_connection(read_only=read_only)
+        try:
+            yield conn
+        finally:
+            self.release_connection(conn)
+
+    @contextmanager
+    def readonly_connection(self) -> Generator[sqlite3.Connection, None, None]:
+        """Context manager for read-only database connections."""
+        conn = self.get_readonly_connection()
         try:
             yield conn
         finally:
@@ -173,6 +218,13 @@ class DatabaseManager(DatabaseQueryMixin):
                 logger.error(f"Error closing database: {e}")
             finally:
                 self._connection = None
+        if self._ro_connection is not None:
+            try:
+                self._ro_connection.close()
+            except Exception as e:
+                logger.error(f"Error closing read-only database: {e}")
+            finally:
+                self._ro_connection = None
 
 
 _db_manager: DatabaseManager | None = None
