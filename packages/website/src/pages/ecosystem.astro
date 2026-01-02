@@ -3,6 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import Chip from '../components/Chip.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import EcosystemFlow from '../components/EcosystemFlow.astro';
 
 import ecosystemMap from '../data/ecosystem-map.json';
 import proofLedger from '../data/proof-ledger.json';
@@ -10,7 +12,8 @@ import proofLedger from '../data/proof-ledger.json';
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
-const withBase = (path) => (path ? `${base}${path.replace(/^\\//, '')}` : null);
+const withBase = (path) => (path ? `${base}${path.replace(/^\/+/, '')}` : null);
+const withLogoBase = (path) => (path ? withBase(path) : null);
 
 const groups = ecosystemMap.groups || [];
 const nodes = ecosystemMap.nodes || [];
@@ -30,19 +33,30 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
 
 <Layout title="Ecosystem Map - Motus">
   <Section tone="dark" class="text-center" innerClass="max-w-3xl">
-    <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Ecosystem Map</p>
-    <h1 class="text-4xl md:text-5xl font-display text-text-primary mt-phi-2">
-      The minimal system for verifiable AI work
-    </h1>
-    <p class="text-lg text-text-secondary mt-phi-3">
-      Every block is tied to documentation, proof, and roadmap status. Nothing is implied.
-    </p>
+    <SectionHeader
+      eyebrow="Ecosystem Map"
+      title="The minimal system for verifiable AI work"
+      subtitle="Every block is tied to documentation, proof, and roadmap status. Nothing is implied."
+      as="h1"
+      size="xl"
+    />
+  </Section>
+
+  <Section tone="light" pad="tight" class="border-t border-line/10">
+    <SectionHeader
+      eyebrow="System Flow"
+      title="How Motus connects the full stack"
+      subtitle="Core execution feeds bundled modules, which strengthen boundary systems. This is the complete flow at a glance."
+      class="mb-phi-4"
+      maxWidth="max-w-3xl"
+    />
+    <EcosystemFlow groups={groups} nodes={nodes} base={base} />
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/10">
     <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-phi-4 items-start">
       <div class="space-y-phi-3">
-        {groups.map((group) => (
+  {groups.map((group) => (
           <Panel size="sm">
             <div class="flex items-start justify-between gap-phi-2">
               <div>
@@ -60,7 +74,7 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
                 >
                   {node.logo ? (
                     <img
-                      src={node.logo}
+                      src={withLogoBase(node.logo)}
                       alt={node.label}
                       class="h-5 w-5 text-text-secondary"
                       loading="lazy"
@@ -81,7 +95,7 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
           <div class="flex items-center gap-phi-2">
             <img
               data-eco-detail="logo"
-              src={defaultNode?.logo || ''}
+              src={defaultNode?.logo ? withLogoBase(defaultNode.logo) : ''}
               alt=""
               class={`h-8 w-8 ${defaultNode?.logo ? '' : 'hidden'}`}
             />
@@ -145,19 +159,19 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
 
   {groups.map((group, index) => (
     <Section tone={index % 2 === 0 ? 'light' : 'muted'} pad="tight">
-      <div class="text-center mb-phi-4">
-        <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{group.id}</p>
-        <h2 class="text-3xl font-display text-text-primary mt-phi-2">{group.label}</h2>
-        <p class="text-text-secondary max-w-measure mx-auto mt-phi-2">
-          {group.description}
-        </p>
-      </div>
+      <SectionHeader
+        eyebrow={group.id}
+        title={group.label}
+        subtitle={group.description}
+        class="mb-phi-4"
+        maxWidth="max-w-measure"
+      />
       <div class="grid md:grid-cols-2 gap-phi-3">
         {(nodesByGroup[group.id] || []).map((node) => (
           <Panel size="sm" class="space-y-phi-2">
             <div class="flex items-center gap-phi-2">
               {node.logo ? (
-                <img src={node.logo} alt={node.label} class="h-6 w-6 text-text-secondary" loading="lazy" />
+                <img src={withLogoBase(node.logo)} alt={node.label} class="h-6 w-6 text-text-secondary" loading="lazy" />
               ) : (
                 <span class="h-2 w-2 rounded-full bg-mint/60"></span>
               )}
@@ -225,7 +239,7 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
       const proofs = JSON.parse(proofEl.textContent);
       const labels = JSON.parse(labelEl.textContent);
       const nodes = new Map((data.nodes || []).map((node) => [node.id, node]));
-      const withBase = (path) => (path ? `${base}${path.replace(/^\\//, '')}` : null);
+      const withBase = (path) => (path ? `${base}${path.replace(/^\/+/, '')}` : null);
 
       const detail = document.querySelector('[data-eco-detail="label"]')?.closest('div');
       const logo = document.querySelector('[data-eco-detail="logo"]');
@@ -242,7 +256,7 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
 
         if (logo) {
           if (node.logo) {
-            logo.src = node.logo;
+            logo.src = withBase(node.logo);
             logo.alt = node.label;
             logo.classList.remove('hidden');
           } else {

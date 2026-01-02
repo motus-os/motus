@@ -12,6 +12,12 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 - Avoid dense grids; keep generous whitespace between blocks.
 - Use `Section` + `Panel` + `Chip` components for layout primitives (no bespoke div styling).
 - Use `Card` for feature/module grids.
+- Use `SectionHeader` for eyebrow + title + subhead blocks.
+- Use `PersonaCard` for persona grids (no custom markup).
+- Use `MetricStat` for stats rows.
+- Use `ProofChipRow` for evidence chip bars.
+- Use `ModuleCard` for module grids.
+- Use `EcosystemFlow` for the ecosystem flowchart (no bespoke flow markup).
 - Use theme tokens only (`surface`, `surface-muted`, `line`, `text-*`, `mint`, `error`) - no raw hex.
 - OKLCH neutral scale is mandatory; tune only the `--n-*` steps, not individual section colors.
 - Type scale uses a 1.25 modular ratio (`--step-*` tokens) with defined line-heights.
@@ -32,6 +38,7 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 
 - Every numeric claim includes a nearby proof link.
 - If a claim cannot be proven, move it to Future or remove it.
+- Prefer proof-claim panels over hero stat rows unless the numbers are benchmarked.
 
 ## CTA discipline
 

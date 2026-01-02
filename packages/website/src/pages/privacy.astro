@@ -2,24 +2,25 @@
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
+import SectionHeader from '../components/SectionHeader.astro';
 
 const lastUpdated = '2025-12-26';
 ---
 
 <Layout title="Privacy Policy">
   <Section tone="light" class="text-center" innerClass="max-w-3xl">
-    <h1 class="text-4xl md:text-5xl font-black text-text-primary mb-6">
-      Privacy Policy
-    </h1>
-    <p class="text-text-secondary">
-      Last updated: {lastUpdated}
-    </p>
+    <SectionHeader
+      title="Privacy Policy"
+      subtitle={`Last updated: ${lastUpdated}`}
+      as="h1"
+      size="xl"
+    />
   </Section>
 
   <Section tone="light" pad="tight" innerClass="max-w-3xl">
-    <div class="space-y-12">
+    <div class="space-y-phi-5">
       <div>
-        <h2 class="text-2xl font-bold text-text-primary mb-4">Overview</h2>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Overview</h2>
         <p class="text-text-secondary leading-relaxed">
           Motus is an open source project. This website is a static site that collects no personal data directly.
           Your privacy matters to us, and we believe in transparency about what happens when you visit our site.
@@ -27,9 +28,9 @@ const lastUpdated = '2025-12-26';
       </div>
 
       <div>
-        <h2 class="text-2xl font-bold text-text-primary mb-4">Data We Collect</h2>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Data We Collect</h2>
         <Panel size="sm">
-          <p class="text-mint font-medium mb-2">None directly.</p>
+          <p class="text-mint font-medium mb-phi-1">None directly.</p>
           <p class="text-text-secondary leading-relaxed">
             This is a static website. We do not collect personal information,
             track user behavior, or store any data about your visit on our servers.
@@ -38,23 +39,23 @@ const lastUpdated = '2025-12-26';
       </div>
 
       <div>
-        <h2 class="text-2xl font-bold text-text-primary mb-4">Third-Party Services</h2>
-        <div class="space-y-4">
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Third-Party Services</h2>
+        <div class="space-y-phi-2">
           <Panel size="sm">
-            <h3 class="text-lg font-bold text-text-primary mb-2">Google Fonts</h3>
-            <p class="text-text-secondary leading-relaxed mb-4">
+            <h3 class="text-lg font-display text-text-primary mb-phi-1">Google Fonts</h3>
+            <p class="text-text-secondary leading-relaxed mb-phi-2">
               We use Google Fonts to serve the JetBrains Mono typeface. When you visit this site,
               your browser connects to Google&apos;s servers to download the font files.
             </p>
-            <p class="text-text-secondary leading-relaxed mb-4">
+            <p class="text-text-secondary leading-relaxed mb-phi-2">
               This connection may transmit certain information to Google, including:
             </p>
-            <ul class="list-disc list-inside text-text-secondary space-y-1 ml-4">
+            <ul class="list-disc list-inside text-text-secondary space-y-phi-1 ml-phi-2">
               <li>Your IP address</li>
               <li>The page you visited</li>
               <li>Browser and device information</li>
             </ul>
-            <p class="text-text-secondary leading-relaxed mt-4">
+            <p class="text-text-secondary leading-relaxed mt-phi-2">
               For more information, see the
               <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
                 Google Privacy Policy
@@ -65,7 +66,7 @@ const lastUpdated = '2025-12-26';
       </div>
 
       <div>
-        <h2 class="text-2xl font-bold text-text-primary mb-4">Cookies</h2>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Cookies</h2>
         <p class="text-text-secondary leading-relaxed">
           This website does not set cookies directly. However, Google Fonts may set cookies
           when your browser fetches font files from their servers. These are subject to
@@ -74,9 +75,9 @@ const lastUpdated = '2025-12-26';
       </div>
 
       <div>
-        <h2 class="text-2xl font-bold text-text-primary mb-4">Open Source Transparency</h2>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Open Source Transparency</h2>
         <Panel size="sm">
-          <p class="text-text-secondary leading-relaxed mb-4">
+          <p class="text-text-secondary leading-relaxed mb-phi-2">
             Motus is open source software licensed under Apache 2.0. The source code for both
             the Motus CLI and this website is publicly available and auditable.
           </p>
@@ -90,7 +91,7 @@ const lastUpdated = '2025-12-26';
       </div>
 
       <div>
-        <h2 class="text-2xl font-bold text-text-primary mb-4">Your Rights</h2>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Your Rights</h2>
         <p class="text-text-secondary leading-relaxed">
           Since we do not collect personal data, there is no personal data to access, correct, or delete.
           For concerns about data collected by third-party services like Google Fonts,
@@ -99,7 +100,7 @@ const lastUpdated = '2025-12-26';
       </div>
 
       <div>
-        <h2 class="text-2xl font-bold text-text-primary mb-4">Changes to This Policy</h2>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Changes to This Policy</h2>
         <p class="text-text-secondary leading-relaxed">
           We may update this privacy policy from time to time. Changes will be posted on this page
           with an updated revision date. If we begin collecting data or add new third-party services,
@@ -108,7 +109,7 @@ const lastUpdated = '2025-12-26';
       </div>
 
       <div>
-        <h2 class="text-2xl font-bold text-text-primary mb-4">Contact</h2>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Contact</h2>
         <p class="text-text-secondary leading-relaxed">
           If you have questions about this privacy policy or our practices, please open an issue at our
           <a href="https://github.com/motus-os/motus/issues" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">

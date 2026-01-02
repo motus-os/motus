@@ -1,0 +1,32 @@
+---
+import Card from './Card.astro';
+
+const {
+  name,
+  focus,
+  summaryLead,
+  summaryRest,
+  bullets = [],
+  href,
+  cta = 'Explore module details',
+} = Astro.props;
+---
+
+<Card>
+  <h3 class="text-2xl md:text-3xl font-display text-mint mb-phi-1">{name}</h3>
+  <p class="text-sm text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Focus: {focus}</p>
+  <p class="text-text-secondary mb-phi-3 leading-relaxed text-base md:text-lg">
+    <span class="text-text-primary font-semibold">{summaryLead}</span> {summaryRest}
+  </p>
+  <ul class="space-y-phi-1 text-base md:text-lg">
+    {bullets.map((bullet) => (
+      <li class="flex items-start gap-phi-1">
+        <span class="text-mint">&#x2022;</span>
+        <span class="text-text-secondary">{bullet}</span>
+      </li>
+    ))}
+  </ul>
+  <a class="mt-phi-3 inline-flex text-sm md:text-base text-mint hover:text-text-primary transition-colors" href={href}>
+    {cta} &#8594;
+  </a>
+</Card>

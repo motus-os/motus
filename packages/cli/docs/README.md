@@ -31,3 +31,4 @@ factually accurate and contextually useful for different roles.
 - [Website Ecosystem Map](website/ecosystem-map.yaml)
 - [Website Proof Ledger](website/proof-ledger.yaml)
 - [Website UI Checklist](website/ui-checklist.md)
+- [Website Review Charter](website/review-charter.md)

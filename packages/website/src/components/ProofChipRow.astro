@@ -1,0 +1,11 @@
+---
+import Chip from './Chip.astro';
+
+const { items = [] } = Astro.props;
+---
+
+<div class="flex flex-wrap justify-center gap-phi-2">
+  {items.map((item) => (
+    <Chip href={item.href}>{item.label}</Chip>
+  ))}
+</div>

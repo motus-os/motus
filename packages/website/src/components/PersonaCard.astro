@@ -1,0 +1,29 @@
+---
+import Panel from './Panel.astro';
+
+const {
+  title,
+  hook,
+  value,
+  href,
+  proofLabel,
+  proofUrl,
+  cta = 'Start here',
+} = Astro.props;
+---
+
+<Panel size="md" class="space-y-phi-2">
+  <div class="text-xs uppercase tracking-[0.3em] text-text-secondary">{title}</div>
+  <h3 class="text-2xl font-display text-text-primary">{hook}</h3>
+  <p class="text-sm text-text-secondary">{value}</p>
+  <div class="flex flex-wrap items-center gap-phi-2 text-sm">
+    <a class="text-mint hover:text-text-primary transition-colors" href={href}>
+      {cta} &#8594;
+    </a>
+    {proofUrl ? (
+      <a class="text-text-secondary hover:text-mint transition-colors" href={proofUrl}>
+        Proof: {proofLabel}
+      </a>
+    ) : null}
+  </div>
+</Panel>

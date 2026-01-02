@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import MetricStat from '../components/MetricStat.astro';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -10,76 +12,69 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 
 <Layout title="How It Works - Motus">
   <Section tone="dark" class="text-center" innerClass="max-w-3xl">
-    <h1 class="text-4xl md:text-5xl font-display text-text-primary mb-phi-3">
-      How It Works
-    </h1>
-    <p class="text-lg text-text-secondary mb-phi-4">
-      Technical credibility in 3 minutes.
-    </p>
+    <SectionHeader
+      title="How It Works"
+      subtitle="Technical credibility in 3 minutes."
+      as="h1"
+      size="xl"
+      class="mb-phi-4"
+    />
     <div class="flex justify-center gap-phi-4 md:gap-phi-5">
-      <div>
-        <span class="text-5xl md:text-6xl font-display text-mint">5</span>
-        <p class="text-text-secondary mt-phi-1">OODA phases</p>
-      </div>
-      <div>
-        <span class="text-5xl md:text-6xl font-display text-mint">6</span>
-        <p class="text-text-secondary mt-phi-1">API calls</p>
-      </div>
-      <div>
-        <span class="text-5xl md:text-6xl font-display text-mint">0</span>
-        <p class="text-text-secondary mt-phi-1">Cloud required</p>
-      </div>
+      <MetricStat value="5" label="OODA phases" />
+      <MetricStat value="6" label="API calls" />
+      <MetricStat value="0" label="Cloud required" />
     </div>
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
-    <h2 class="text-3xl font-display text-text-primary mb-phi-2 text-center">The Work Compiler</h2>
-    <p class="text-text-secondary text-center mb-phi-4 max-w-2xl mx-auto">
-      Every task follows the OODA loop. Observe, Orient, Decide, Act, Verify.
-      Most agents skip Orient. That is where understanding happens.
-    </p>
+    <SectionHeader
+      title="The Work Compiler"
+      subtitle="Every task follows the OODA loop. Observe, Orient, Decide, Act, Verify. Most agents skip Orient. That is where understanding happens."
+      class="mb-phi-4"
+      maxWidth="max-w-2xl"
+    />
 
     <Panel size="lg" class="text-center">
       <div class="flex flex-wrap justify-center items-center gap-phi-2 md:gap-phi-3">
         <div class="flex flex-col items-center">
           <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-bold">O</span>
+            <span class="text-mint font-semibold">O</span>
           </div>
           <span class="text-text-primary font-medium text-sm">OBSERVE</span>
         </div>
 
-        <span class="text-mint text-xl font-bold">&gt;</span>
+        <span class="text-mint text-xl font-semibold">&gt;</span>
 
         <div class="flex flex-col items-center">
           <div class="w-16 h-16 rounded-full bg-mint/20 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-bold">O</span>
+            <span class="text-mint font-semibold">O</span>
           </div>
           <span class="text-text-primary font-medium text-sm">ORIENT</span>
         </div>
 
-        <span class="text-mint text-xl font-bold">&gt;</span>
+        <span class="text-mint text-xl font-semibold">&gt;</span>
 
         <div class="flex flex-col items-center">
           <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-bold">D</span>
+            <span class="text-mint font-semibold">D</span>
           </div>
           <span class="text-text-primary font-medium text-sm">DECIDE</span>
         </div>
 
-        <span class="text-mint text-xl font-bold">&gt;</span>
+        <span class="text-mint text-xl font-semibold">&gt;</span>
 
         <div class="flex flex-col items-center">
           <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-bold">A</span>
+            <span class="text-mint font-semibold">A</span>
           </div>
           <span class="text-text-primary font-medium text-sm">ACT</span>
         </div>
 
-        <span class="text-mint text-xl font-bold">&gt;</span>
+        <span class="text-mint text-xl font-semibold">&gt;</span>
 
         <div class="flex flex-col items-center">
           <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-bold">V</span>
+            <span class="text-mint font-semibold">V</span>
           </div>
           <span class="text-text-primary font-medium text-sm">VERIFY</span>
         </div>
@@ -92,10 +87,12 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   </Section>
 
   <Section tone="muted" pad="tight" innerClass="max-w-5xl">
-    <h2 class="text-3xl font-display text-text-primary mb-phi-2 text-center">The Coordination API</h2>
-    <p class="text-text-secondary text-center mb-phi-4 max-w-2xl mx-auto">
-      Six calls. Simple enough to memorize, powerful enough for production.
-    </p>
+    <SectionHeader
+      title="The Coordination API"
+      subtitle="Six calls. Simple enough to memorize, powerful enough for production."
+      class="mb-phi-4"
+      maxWidth="max-w-2xl"
+    />
 
     <div class="grid md:grid-cols-2 gap-phi-3">
       <Panel size="sm">
@@ -131,23 +128,28 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   </Section>
 
   <Section tone="light" pad="tight" innerClass="max-w-4xl text-center">
-    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-2">
-      Kernel Schema v0.1.3
-    </h2>
-    <p class="text-text-secondary mb-phi-3">
-      The kernel is intentionally small: attempts, decisions, evidence, blockers, and leases.
-      All state lives in <span class="text-text-primary font-medium">~/.motus/coordination.db</span>.
-    </p>
+    <SectionHeader
+      title="Kernel Schema v0.1.3"
+      size="md"
+      class="mb-phi-3"
+    >
+      <span slot="subtitle">
+        The kernel is intentionally small: attempts, decisions, evidence, blockers, and leases.
+        All state lives in <span class="text-text-primary font-medium">~/.motus/coordination.db</span>.
+      </span>
+    </SectionHeader>
     <a href={`${base}schema`} class="text-mint hover:text-text-primary transition-colors font-medium">
       View the schema docs &#8594;
     </a>
   </Section>
 
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
-    <h2 class="text-3xl font-display text-text-primary mb-phi-2 text-center">Real Code</h2>
-    <p class="text-text-secondary text-center mb-phi-4 max-w-2xl mx-auto">
-      Not illustrations. Actual code you can run.
-    </p>
+    <SectionHeader
+      title="Real Code"
+      subtitle="Not illustrations. Actual code you can run."
+      class="mb-phi-4"
+      maxWidth="max-w-2xl"
+    />
 
     <div class="space-y-phi-4">
       <Panel size="sm">
@@ -189,12 +191,10 @@ wc.release_work(result.lease.lease_id, outcome="success")
   </Section>
 
   <Section tone="muted" class="text-center" innerClass="max-w-2xl">
-    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-3">
-      Ready to try it?
-    </h2>
+    <SectionHeader title="Ready to try it?" size="md" class="mb-phi-3" />
     <div class="inline-block bg-surface/70 px-phi-3 py-phi-2 rounded-full border border-mint/20">
       <span class="text-text-secondary text-lg">Coming </span>
-      <span class="text-mint font-bold text-lg">January 1, 2026</span>
+      <span class="text-mint font-semibold text-lg">January 1, 2026</span>
     </div>
     <p class="text-text-secondary mt-phi-3">
       <a href={`${base}strategies`} class="text-mint hover:text-text-primary transition-colors">

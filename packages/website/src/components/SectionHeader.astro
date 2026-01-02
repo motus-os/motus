@@ -1,0 +1,42 @@
+---
+const {
+  eyebrow,
+  title,
+  subtitle,
+  as = 'h2',
+  align = 'center',
+  size = 'lg',
+  class: className = '',
+  maxWidth = 'max-w-2xl',
+  titleClassName = '',
+  subtitleClassName = '',
+} = Astro.props;
+
+const alignClass =
+  align === 'left' ? 'text-left' : align === 'right' ? 'text-right' : 'text-center';
+const titleSizeClass =
+  size === 'xl'
+    ? 'text-4xl md:text-5xl'
+    : size === 'md'
+      ? 'text-2xl md:text-3xl'
+      : 'text-3xl md:text-4xl';
+const subtitleClass = align === 'center' ? `${maxWidth} mx-auto` : maxWidth;
+const hasTitleSlot = Astro.slots.has('title');
+const hasSubtitleSlot = Astro.slots.has('subtitle');
+const titleSpacingClass = eyebrow ? 'mt-phi-2' : '';
+const HeadingTag = as;
+---
+
+<div class={`${alignClass} ${className}`.trim()}>
+  {eyebrow ? (
+    <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">{eyebrow}</p>
+  ) : null}
+  <HeadingTag class={`${titleSizeClass} font-display text-text-primary ${titleSpacingClass} ${titleClassName}`.trim()}>
+    {hasTitleSlot ? <slot name="title" /> : title}
+  </HeadingTag>
+  {(subtitle || hasSubtitleSlot) ? (
+    <p class={`text-text-secondary mt-phi-2 text-base md:text-lg ${subtitleClass} ${subtitleClassName}`.trim()}>
+      {hasSubtitleSlot ? <slot name="subtitle" /> : subtitle}
+    </p>
+  ) : null}
+</div>

@@ -1,0 +1,15 @@
+---
+const {
+  value,
+  label,
+  detail,
+} = Astro.props;
+---
+
+<div class="text-center">
+  <span class="text-5xl md:text-6xl font-display text-mint">{value}</span>
+  <p class="text-text-secondary mt-phi-1">{label}</p>
+  {detail ? (
+    <p class="text-text-secondary/60 text-sm">{detail}</p>
+  ) : null}
+</div>

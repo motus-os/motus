@@ -2,10 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
-import Chip from '../components/Chip.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import GitHubIcon from '../components/GitHubIcon.astro';
-import Card from '../components/Card.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import PersonaCard from '../components/PersonaCard.astro';
+import ModuleCard from '../components/ModuleCard.astro';
 import personaMap from '../data/persona-map.json';
 import proofLedger from '../data/proof-ledger.json';
 
@@ -13,6 +14,68 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]));
+const moduleHighlights = [
+  {
+    name: 'LENS',
+    focus: 'Reading',
+    summary: {
+      lead: 'Precision lensing',
+      rest: 'so agents read only what matters.',
+    },
+    bullets: [
+      'Token compression lens',
+      'Deterministic context slices',
+      'Snapshot provenance',
+    ],
+    href: `${base}implementation`,
+    cta: 'Explore module details',
+  },
+  {
+    name: 'LEASES',
+    focus: 'Coordination',
+    summary: {
+      lead: 'Six-call workflow',
+      rest: 'from claim to release, without collisions.',
+    },
+    bullets: [
+      'Lease-based handoffs',
+      'Conflict detection',
+      'Deterministic releases',
+    ],
+    href: `${base}implementation`,
+    cta: 'Explore module details',
+  },
+  {
+    name: 'RECEIPTS',
+    focus: 'Trust',
+    summary: {
+      lead: 'Receipts for every action',
+      rest: 'Cryptographic evidence, not implied trust.',
+    },
+    bullets: [
+      'Evidence bundles',
+      'Policy gates',
+      'Audit trail integrity',
+    ],
+    href: `${base}implementation`,
+    cta: 'Explore module details',
+  },
+  {
+    name: 'STRATEGIES',
+    focus: 'Reasoning',
+    summary: {
+      lead: 'Reusable strategies',
+      rest: 'Patterns instead of ad-hoc reasoning.',
+    },
+    bullets: [
+      'Decision patterns',
+      'Trigger conditions',
+      'Review heuristics',
+    ],
+    href: `${base}strategies`,
+    cta: 'Explore module details',
+  },
+];
 ---
 
 <Layout title="Motus - The Execution Layer for AI Agents">
@@ -43,37 +106,18 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/10">
-    <div class="flex flex-wrap justify-center gap-phi-2">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-2">
       {proofLedger.claims.map((claim) => (
-        <Chip href={claim.evidence[0].url}>
-          {claim.evidence[0].label}
-        </Chip>
+        <Panel size="sm" class="text-center">
+          <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{claim.evidence[0].label}</p>
+          <p class="text-text-primary mt-phi-2 text-base md:text-lg leading-relaxed">
+            {claim.claim}
+          </p>
+          <a class="text-sm text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex" href={claim.evidence[0].url}>
+            Evidence &#8594;
+          </a>
+        </Panel>
       ))}
-    </div>
-  </Section>
-
-  <Section tone="light">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-phi-4 text-center">
-      <div>
-        <span class="text-5xl md:text-6xl font-display text-mint">6</span>
-        <p class="text-text-secondary mt-phi-1">API calls</p>
-        <p class="text-text-secondary/60 text-sm">Total coordination surface</p>
-      </div>
-      <div>
-        <span class="text-5xl md:text-6xl font-display text-mint">300</span>
-        <p class="text-text-secondary mt-phi-1">Token Lens</p>
-        <p class="text-text-secondary/60 text-sm">vs 50k raw context</p>
-      </div>
-      <div>
-        <span class="text-5xl md:text-6xl font-display text-mint">9</span>
-        <p class="text-text-secondary mt-phi-1">Strategies</p>
-        <p class="text-text-secondary/60 text-sm">Battle-tested patterns</p>
-      </div>
-      <div>
-        <span class="text-5xl md:text-6xl font-display text-mint">100%</span>
-        <p class="text-text-secondary mt-phi-1">Local</p>
-        <p class="text-text-secondary/60 text-sm">Your data stays yours</p>
-      </div>
     </div>
   </Section>
 
@@ -117,150 +161,57 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
     </Panel>
   </Section>
 
-  <Section tone="muted">
-    <div class="text-center mb-phi-5">
-      <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Choose Your Path</p>
-      <h2 class="text-3xl md:text-4xl font-display text-text-primary mt-phi-2">Designed for the journey you are on</h2>
-      <p class="text-text-secondary max-w-2xl mx-auto mt-phi-2">
-        Each path includes a proof link so you can verify what matters before you commit time.
-      </p>
-    </div>
+  <Section tone="light" class="border-t border-line/10">
+    <SectionHeader
+      eyebrow="Choose Your Path"
+      subtitle="Each path includes a proof link so you can verify what matters before you commit time."
+      class="mb-phi-5"
+    >
+      <span slot="title">Designed for the journey you are on</span>
+    </SectionHeader>
     <div class="grid md:grid-cols-2 gap-phi-3">
       {personaMap.personas.map((persona) => {
         const proof = proofIndex.get(persona.proof_id);
         const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
         return (
-          <Panel size="md" class="space-y-phi-2">
-            <div class="text-xs uppercase tracking-[0.3em] text-text-secondary">{persona.title}</div>
-            <h3 class="text-2xl font-display text-text-primary">{persona.hook}</h3>
-            <p class="text-sm text-text-secondary">{persona.value}</p>
-            <div class="flex flex-wrap items-center gap-phi-2 text-sm">
-              <a class="text-mint hover:text-text-primary transition-colors" href={`${base}${path}`}>
-                Start here &#8594;
-              </a>
-              {proof ? (
-                <a class="text-text-secondary hover:text-mint transition-colors" href={proof.evidence[0].url}>
-                  Proof: {proof.evidence[0].label}
-                </a>
-              ) : null}
-            </div>
-          </Panel>
+          <PersonaCard
+            title={persona.title}
+            hook={persona.hook}
+            value={persona.value}
+            href={`${base}${path}`}
+            proofLabel={proof ? proof.evidence[0].label : null}
+            proofUrl={proof ? proof.evidence[0].url : null}
+          />
         );
       })}
     </div>
   </Section>
 
   <Section tone="light">
-    <div class="text-center mb-phi-5">
-      <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-2 display-contrast">
-        <span>Four Modules.</span>
-        <strong> Four Types of Waste Eliminated.</strong>
-      </h2>
-    </div>
+    <SectionHeader
+      subtitle="Each module eliminates a specific category of rework: reading, coordination, trust, and reasoning."
+      class="mb-phi-5"
+      size="xl"
+      titleClassName="display-contrast"
+    >
+      <span slot="title">Four Modules. <strong>Four Types of Waste Eliminated.</strong></span>
+    </SectionHeader>
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-3">
-      <Card>
-        <h3 class="text-2xl font-display text-mint mb-phi-1">LENS</h3>
-        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Focus: Reading</p>
-        <p class="text-text-secondary mb-phi-3 leading-relaxed text-base">
-          300 tokens instead of 50,000. Agents get exactly what&apos;s relevant.
-        </p>
-        <ul class="space-y-phi-1 text-base">
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Token compression</span>
-          </li>
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Deterministic context</span>
-          </li>
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Snapshot provenance</span>
-          </li>
-        </ul>
-        <a class="mt-phi-2 inline-flex text-sm text-mint hover:text-text-primary transition-colors" href={`${base}implementation`}>
-          Explore in Implementation Guide &#8594;
-        </a>
-      </Card>
-
-      <Card>
-        <h3 class="text-2xl font-display text-mint mb-phi-1">LEASES</h3>
-        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Focus: Coordination</p>
-        <p class="text-text-secondary mb-phi-3 leading-relaxed text-base">
-          6 API calls. Safe handoffs, not collision chaos.
-        </p>
-        <ul class="space-y-phi-1 text-base">
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Lease-based handoffs</span>
-          </li>
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Conflict detection</span>
-          </li>
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Deterministic releases</span>
-          </li>
-        </ul>
-        <a class="mt-phi-2 inline-flex text-sm text-mint hover:text-text-primary transition-colors" href={`${base}implementation`}>
-          Explore in Implementation Guide &#8594;
-        </a>
-      </Card>
-
-      <Card>
-        <h3 class="text-2xl font-display text-mint mb-phi-1">RECEIPTS</h3>
-        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Focus: Trust</p>
-        <p class="text-text-secondary mb-phi-3 leading-relaxed text-base">
-          Cryptographic proof instead of hope. Every action recorded.
-        </p>
-        <ul class="space-y-phi-1 text-base">
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Evidence bundles</span>
-          </li>
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Policy gates</span>
-          </li>
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Receipts + audit trail</span>
-          </li>
-        </ul>
-        <a class="mt-phi-2 inline-flex text-sm text-mint hover:text-text-primary transition-colors" href={`${base}implementation`}>
-          Explore in Implementation Guide &#8594;
-        </a>
-      </Card>
-
-      <Card>
-        <h3 class="text-2xl font-display text-mint mb-phi-1">STRATEGIES</h3>
-        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Focus: Reasoning</p>
-        <p class="text-text-secondary mb-phi-3 leading-relaxed text-base">
-          9 battle-tested patterns. Proven approaches, not reinvention.
-        </p>
-        <ul class="space-y-phi-1 text-base">
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Decision patterns</span>
-          </li>
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Trigger conditions</span>
-          </li>
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Review heuristics</span>
-          </li>
-        </ul>
-        <a class="mt-phi-2 inline-flex text-sm text-mint hover:text-text-primary transition-colors" href={`${base}strategies`}>
-          Explore Strategy Library &#8594;
-        </a>
-      </Card>
+      {moduleHighlights.map((module) => (
+        <ModuleCard
+          name={module.name}
+          focus={module.focus}
+          summaryLead={module.summary.lead}
+          summaryRest={module.summary.rest}
+          bullets={module.bullets}
+          href={module.href}
+          cta={module.cta}
+        />
+      ))}
     </div>
   </Section>
 
-  <Section tone="muted" class="text-center border-t border-line/10" innerClass="max-w-4xl">
+  <Section tone="light" class="text-center border-t border-line/10" innerClass="max-w-4xl">
     <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Open Source. Verifiable. Yours.</h2>
     <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
       Boyd gave away OODA because paradigms should be shared.<br class="hidden md:inline" />

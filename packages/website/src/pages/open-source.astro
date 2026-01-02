@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
+import SectionHeader from '../components/SectionHeader.astro';
 
 const openItems = [
   { item: 'Work Compiler spec', description: 'The complete OODA-based execution framework' },
@@ -22,12 +23,12 @@ const paidItems = [
 
 <Layout title="Open Source - Motus">
   <Section tone="dark" class="text-center" innerClass="max-w-3xl">
-    <h1 class="text-4xl md:text-5xl font-display text-text-primary mb-phi-3">
-      Open Source
-    </h1>
-    <p class="text-lg text-text-secondary">
-      Trust through transparency.
-    </p>
+    <SectionHeader
+      title="Open Source"
+      subtitle="Trust through transparency."
+      as="h1"
+      size="xl"
+    />
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-4xl">
@@ -48,7 +49,10 @@ const paidItems = [
   </Section>
 
   <Section tone="muted" pad="tight" innerClass="max-w-5xl">
-    <h2 class="text-3xl font-display text-text-primary mb-phi-4 text-center">What is Open vs Paid</h2>
+    <SectionHeader
+      title="What is Open vs Paid"
+      class="mb-phi-4"
+    />
 
     <div class="grid md:grid-cols-2 gap-phi-3">
       <div>
@@ -88,7 +92,10 @@ const paidItems = [
   </Section>
 
   <Section tone="light" pad="tight" innerClass="max-w-4xl">
-    <h2 class="text-3xl font-display text-text-primary mb-phi-4 text-center">Your Data, Your Control</h2>
+    <SectionHeader
+      title="Your Data, Your Control"
+      class="mb-phi-4"
+    />
 
     <div class="grid md:grid-cols-3 gap-phi-3">
       <Panel size="sm" class="text-center">
@@ -130,7 +137,7 @@ const paidItems = [
   </Section>
 
   <Section tone="muted" pad="tight" innerClass="max-w-4xl text-center">
-    <h2 class="text-3xl font-display text-text-primary mb-phi-3">Contribute</h2>
+    <SectionHeader title="Contribute" class="mb-phi-3" />
     <p class="text-lg text-text-secondary mb-phi-4">
       We welcome contributions. Bug fixes, new strategies, documentation improvements.
       Join us in building the execution layer for AI agents.
@@ -149,12 +156,10 @@ const paidItems = [
   </Section>
 
   <Section tone="light" class="text-center" innerClass="max-w-2xl">
-    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-3">
-      Get Started
-    </h2>
+    <SectionHeader title="Get Started" size="md" class="mb-phi-3" />
     <div class="inline-block bg-surface/70 px-phi-3 py-phi-2 rounded-full border border-mint/20">
       <span class="text-text-secondary text-lg">Coming </span>
-      <span class="text-mint font-bold text-lg">January 1, 2026</span>
+      <span class="text-mint font-semibold text-lg">January 1, 2026</span>
     </div>
   </Section>
 </Layout>

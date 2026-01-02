@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import PersonaCard from '../components/PersonaCard.astro';
 
 import registry from '../data/module-registry.json';
 
@@ -20,15 +22,15 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
 <Layout title="Implementation">
   <Section tone="light" innerClass="max-w-6xl">
     <section class="space-y-phi-3">
-      <div class="space-y-phi-2">
-        <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Implementation Guide</p>
-        <h1 class="text-4xl md:text-5xl font-display text-text-primary">Kernel + Bundled Modules</h1>
-        <p class="text-lg text-text-secondary max-w-3xl">
-          This page documents how to implement Motus correctly. The kernel is the
-          non-negotiable execution layer. Bundled modules add capabilities while
-          preserving kernel invariants.
-        </p>
-      </div>
+      <SectionHeader
+        eyebrow="Implementation Guide"
+        title="Kernel + Bundled Modules"
+        subtitle="This page documents how to implement Motus correctly. The kernel is the non-negotiable execution layer. Bundled modules add capabilities while preserving kernel invariants."
+        as="h1"
+        align="left"
+        size="xl"
+        maxWidth="max-w-3xl"
+      />
 
       <div class="grid md:grid-cols-3 gap-phi-2">
         {Object.entries(registry.status_semantics).map(([key, value]) => (
@@ -41,52 +43,48 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
     </section>
 
     <section class="mt-phi-6 space-y-phi-3">
-      <div class="flex flex-wrap items-center gap-phi-2">
-        <h2 class="text-3xl font-display text-text-primary">Choose Your Path</h2>
-        <span class="text-xs px-3 py-1 rounded-full border border-line/10 text-text-secondary">By role</span>
-      </div>
+      <SectionHeader
+        eyebrow="By role"
+        title="Choose Your Path"
+        align="left"
+        size="md"
+      />
 
       <div class="grid md:grid-cols-2 gap-phi-3">
-        <Panel size="sm">
-          <h3 class="text-lg font-display text-text-primary">Builder / Engineer</h3>
-          <p class="text-sm text-text-secondary">
-            Start with kernel invariants and the module guides. Implement one module at a time.
-          </p>
-          <a class="text-sm text-mint hover:text-text-primary transition-colors" href="#kernel">
-            Go to Kernel Guide &#8594;
-          </a>
-        </Panel>
-        <Panel size="sm">
-          <h3 class="text-lg font-display text-text-primary">Architect / CTO</h3>
-          <p class="text-sm text-text-secondary">
-            Review the module registry and audit mapping to validate boundaries and scope.
-          </p>
-          <a class="text-sm text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/tree/main/packages/cli/docs">
-            Open Docs Index &#8594;
-          </a>
-        </Panel>
-        <Panel size="sm">
-          <h3 class="text-lg font-display text-text-primary">Compliance / Reviewer</h3>
-          <p class="text-sm text-text-secondary">
-            Focus on evidence capture, policy gates, and append-only audit trails.
-          </p>
-          <a class="text-sm text-mint hover:text-text-primary transition-colors" href="#proof-engine">
-            Go to Proof Engine &#8594;
-          </a>
-        </Panel>
-        <Panel size="sm">
-          <h3 class="text-lg font-display text-text-primary">Product / Leadership</h3>
-          <p class="text-sm text-text-secondary">
-            Use the current/building/future semantics to track releases and capability growth.
-          </p>
-          <a class="text-sm text-mint hover:text-text-primary transition-colors" href="#module-manager">
-            Go to Module Manager &#8594;
-          </a>
-        </Panel>
+        <PersonaCard
+          title="Builder / Engineer"
+          hook="Start with kernel invariants."
+          value="Implement one module at a time using the module guides."
+          href="#kernel"
+          cta="Go to Kernel Guide"
+        />
+        <PersonaCard
+          title="Architect / CTO"
+          hook="Audit boundaries and scope."
+          value="Review the module registry and audit mapping to validate boundaries."
+          href="https://github.com/motus-os/motus/tree/main/packages/cli/docs"
+          cta="Open Docs Index"
+        />
+        <PersonaCard
+          title="Compliance / Reviewer"
+          hook="Focus on evidence capture."
+          value="Policy gates and append-only audit trails define the proof engine."
+          href="#proof-engine"
+          cta="Go to Proof Engine"
+        />
+        <PersonaCard
+          title="Product / Leadership"
+          hook="Track releases with status semantics."
+          value="Current, building, and future are defined in the registry."
+          href="#module-manager"
+          cta="Go to Module Manager"
+        />
       </div>
     </section>
 
-    <section id="kernel" class="mt-phi-6 space-y-phi-3">
+    <section class="mt-phi-6 space-y-phi-3">
+      <div id="kernel" class="scroll-mt-24"></div>
+      <div id="proof-engine" class="scroll-mt-24"></div>
       <div class="flex flex-wrap items-center gap-phi-2">
         <h2 class="text-3xl font-display text-text-primary">{kernel.marketing_name}</h2>
         <span class={`text-xs px-3 py-1 rounded-full ${statusClasses[kernel.status]}`}>
@@ -117,11 +115,14 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
     </section>
 
     <section class="mt-phi-6 space-y-phi-3">
-      <h2 class="text-3xl font-display text-text-primary">Bundled Modules</h2>
-      <p class="text-text-secondary max-w-3xl">
-        Bundled modules are optional capabilities that must never violate kernel
-        invariants. Each module has a defined scope, best practices, and roadmap.
-      </p>
+      <div id="module-manager" class="scroll-mt-24"></div>
+      <SectionHeader
+        title="Bundled Modules"
+        subtitle="Bundled modules are optional capabilities that must never violate kernel invariants. Each module has a defined scope, best practices, and roadmap."
+        align="left"
+        size="md"
+        maxWidth="max-w-3xl"
+      />
 
       <div class="grid md:grid-cols-2 gap-phi-3">
         {modules.map((module) => (
@@ -153,11 +154,13 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
     </section>
 
     <section class="mt-phi-6 space-y-phi-2">
-      <h2 class="text-2xl font-display text-text-primary">Docs Reference</h2>
-      <p class="text-sm text-text-secondary">
-        The canonical docs and registry live in the public repo. These links are the
-        source of truth for implementation details.
-      </p>
+      <SectionHeader
+        title="Docs Reference"
+        subtitle="The canonical docs and registry live in the public repo. These links are the source of truth for implementation details."
+        align="left"
+        size="md"
+        maxWidth="max-w-3xl"
+      />
       <div class="flex flex-wrap gap-3 text-sm">
         <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/tree/main/packages/cli/docs">
           Docs Index
