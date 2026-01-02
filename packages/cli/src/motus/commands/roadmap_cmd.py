@@ -243,7 +243,25 @@ def cmd_roadmap_ready(args: Any) -> int:
 
 
 def cmd_roadmap_claim(args: Any) -> int:
-    """Claim an item for work."""
+    """Claim an item for work.
+
+    DEPRECATED: Use `mc work claim` instead for full Work Compiler support.
+    This command will be removed in v0.2.0.
+    """
+    import warnings
+
+    console.print(
+        "[yellow]DEPRECATED: 'mc roadmap claim' will be removed in v0.2.0[/yellow]"
+    )
+    console.print("[yellow]Use 'mc work claim <id> --intent \"...\"' instead[/yellow]")
+    console.print()
+
+    warnings.warn(
+        "mc roadmap claim is deprecated, use mc work claim instead",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
     agent_id = getattr(args, "agent", None) or _get_agent_id()
     api = RoadmapAPI(agent_id)
     response = api.claim(args.item_id)

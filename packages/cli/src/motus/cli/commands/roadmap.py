@@ -52,10 +52,10 @@ def register_roadmap_parsers(
         help="Emit machine-readable JSON",
     )
 
-    # mc roadmap claim <id>
+    # mc roadmap claim <id> - DEPRECATED
     claim_parser = roadmap_subparsers.add_parser(
         "claim",
-        help="Claim an item for work",
+        help="[DEPRECATED] Claim an item (use 'mc work claim' instead)",
     )
     claim_parser.add_argument(
         "item_id",
