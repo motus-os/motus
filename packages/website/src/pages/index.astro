@@ -9,7 +9,9 @@ import Card from '../components/Card.astro';
 import personaMap from '../data/persona-map.json';
 import proofLedger from '../data/proof-ledger.json';
 
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]));
 ---
 

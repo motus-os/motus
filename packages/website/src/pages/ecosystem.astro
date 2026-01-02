@@ -7,6 +7,11 @@ import Chip from '../components/Chip.astro';
 import ecosystemMap from '../data/ecosystem-map.json';
 import proofLedger from '../data/proof-ledger.json';
 
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const withBase = (path) => (path ? `${base}${path.replace(/^\\//, '')}` : null);
+
 const groups = ecosystemMap.groups || [];
 const nodes = ecosystemMap.nodes || [];
 
@@ -114,7 +119,7 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
 
         <div class="mt-phi-3 flex flex-wrap gap-phi-2 text-sm" data-eco-detail="links">
           {defaultNode?.website_path ? (
-            <a class="text-mint hover:text-text-primary transition-colors" href={defaultNode.website_path}>
+            <a class="text-mint hover:text-text-primary transition-colors" href={withBase(defaultNode.website_path)}>
               View on site
             </a>
           ) : null}
@@ -177,7 +182,7 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
             ) : null}
             <div class="flex flex-wrap gap-phi-2 text-sm">
               {node.website_path ? (
-                <a class="text-mint hover:text-text-primary transition-colors" href={node.website_path}>
+                <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
                   Site
                 </a>
               ) : null}
@@ -204,19 +209,23 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
   ))}
 
   <script type="application/json" id="ecosystem-data">{JSON.stringify(ecosystemMap)}</script>
+  <script type="application/json" id="ecosystem-base">{JSON.stringify(base)}</script>
   <script type="application/json" id="ecosystem-proof">{JSON.stringify(proofData)}</script>
   <script type="application/json" id="ecosystem-labels">{JSON.stringify(labelIndex)}</script>
 
   <script>
     const dataEl = document.getElementById('ecosystem-data');
+    const baseEl = document.getElementById('ecosystem-base');
     const proofEl = document.getElementById('ecosystem-proof');
     const labelEl = document.getElementById('ecosystem-labels');
 
     if (dataEl && proofEl && labelEl) {
       const data = JSON.parse(dataEl.textContent);
+      const base = baseEl ? JSON.parse(baseEl.textContent) : '/';
       const proofs = JSON.parse(proofEl.textContent);
       const labels = JSON.parse(labelEl.textContent);
       const nodes = new Map((data.nodes || []).map((node) => [node.id, node]));
+      const withBase = (path) => (path ? `${base}${path.replace(/^\\//, '')}` : null);
 
       const detail = document.querySelector('[data-eco-detail="label"]')?.closest('div');
       const logo = document.querySelector('[data-eco-detail="logo"]');
@@ -250,7 +259,7 @@ const defaultProof = defaultNode && defaultNode.proof_id ? proofIndex.get(defaul
         links.innerHTML = '';
         if (node.website_path) {
           const link = document.createElement('a');
-          link.href = node.website_path;
+          link.href = withBase(node.website_path);
           link.textContent = 'View on site';
           link.className = 'text-mint hover:text-text-primary transition-colors';
           links.append(link);
