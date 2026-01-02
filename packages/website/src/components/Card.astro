@@ -19,7 +19,7 @@ const padClass =
 ---
 <div class={`group relative rounded-2xl border border-line/10 ${toneClass} ${padClass} ${hoverClass}`}>
   {accent ? (
-    <div class="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(120%_120%_at_0%_0%,rgb(var(--mint)_/_0.08),transparent_55%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+    <div class="pointer-events-none absolute inset-0 rounded-2xl bg-[radial-gradient(120%_120%_at_0%_0%,oklch(var(--mint)_/_0.08),transparent_55%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
   ) : null}
   <div class="relative">
     <slot />

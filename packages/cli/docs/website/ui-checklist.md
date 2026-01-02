@@ -13,6 +13,7 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 - Use `Section` + `Panel` + `Chip` components for layout primitives (no bespoke div styling).
 - Use `Card` for feature/module grids.
 - Use theme tokens only (`surface`, `surface-muted`, `line`, `text-*`, `mint`, `error`) - no raw hex.
+- OKLCH neutral scale is mandatory; tune only the `--n-*` steps, not individual section colors.
 - Pair `text-text-primary` with `bg-surface`; reserve `text-text-secondary` for supporting copy.
 
 ## Typography

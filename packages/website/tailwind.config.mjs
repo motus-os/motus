@@ -4,14 +4,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        charcoal: 'rgb(var(--charcoal) / <alpha-value>)',
-        surface: 'rgb(var(--surface) / <alpha-value>)',
-        'surface-muted': 'rgb(var(--surface-muted) / <alpha-value>)',
-        line: 'rgb(var(--line) / <alpha-value>)',
-        mint: 'rgb(var(--mint) / <alpha-value>)',
-        error: 'rgb(var(--error) / <alpha-value>)',
-        'text-primary': 'rgb(var(--text-primary) / <alpha-value>)',
-        'text-secondary': 'rgb(var(--text-secondary) / <alpha-value>)',
+        charcoal: 'oklch(var(--charcoal) / <alpha-value>)',
+        surface: 'oklch(var(--surface) / <alpha-value>)',
+        'surface-muted': 'oklch(var(--surface-muted) / <alpha-value>)',
+        line: 'oklch(var(--line) / <alpha-value>)',
+        mint: 'oklch(var(--mint) / <alpha-value>)',
+        error: 'oklch(var(--error) / <alpha-value>)',
+        'text-primary': 'oklch(var(--text-primary) / <alpha-value>)',
+        'text-secondary': 'oklch(var(--text-secondary) / <alpha-value>)',
       },
       fontFamily: {
         display: ['Sora', 'ui-sans-serif', 'system-ui', 'sans-serif'],
