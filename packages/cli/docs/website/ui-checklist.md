@@ -14,6 +14,10 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 - Use `Card` for feature/module grids.
 - Use theme tokens only (`surface`, `surface-muted`, `line`, `text-*`, `mint`, `error`) - no raw hex.
 - OKLCH neutral scale is mandatory; tune only the `--n-*` steps, not individual section colors.
+- Type scale uses a 1.25 modular ratio (`--step-*` tokens) with defined line-heights.
+- Keep body copy at `max-w-measure` when possible; page width uses `max-w-page`.
+- Rounded corners must use the radius tokens (`sm/md/lg/xl/2xl`).
+- Motion uses `duration-fast/base/slow` + `ease-standard` only.
 - Pair `text-text-primary` with `bg-surface`; reserve `text-text-secondary` for supporting copy.
 
 ## Typography
