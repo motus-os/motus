@@ -70,6 +70,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         --duration-base: 250ms;
         --duration-slow: 400ms;
         --ease-standard: cubic-bezier(0.16, 1, 0.3, 1);
+        --weight-thin: 300;
+        --weight-thick: 600;
       }
 
       .theme-light {
@@ -128,6 +130,14 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 
       p {
         letter-spacing: 0.005em;
+      }
+
+      .display-contrast span {
+        font-weight: var(--weight-thin);
+      }
+
+      .display-contrast strong {
+        font-weight: var(--weight-thick);
       }
     </style>
     <Nav />

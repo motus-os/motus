@@ -152,63 +152,72 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
 
   <Section tone="light">
     <div class="text-center mb-phi-5">
-      <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-2">Four Modules. Four Types of Waste Eliminated.</h2>
+      <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-2 display-contrast">
+        <span>Four Modules.</span>
+        <strong> Four Types of Waste Eliminated.</strong>
+      </h2>
     </div>
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-3">
       <Card>
         <h3 class="text-2xl font-display text-mint mb-phi-1">LENS</h3>
-        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Reading</p>
-        <p class="text-text-secondary mb-phi-3 leading-relaxed">
+        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Focus: Reading</p>
+        <p class="text-text-secondary mb-phi-3 leading-relaxed text-base">
           300 tokens instead of 50,000. Agents get exactly what&apos;s relevant.
         </p>
-        <ul class="space-y-phi-1 text-sm">
+        <ul class="space-y-phi-1 text-base">
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
             <span class="text-text-secondary">Token compression</span>
           </li>
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Cryptographic provenance</span>
+            <span class="text-text-secondary">Deterministic context</span>
           </li>
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Snapshot versioning</span>
+            <span class="text-text-secondary">Snapshot provenance</span>
           </li>
         </ul>
+        <a class="mt-phi-2 inline-flex text-sm text-mint hover:text-text-primary transition-colors" href={`${base}implementation`}>
+          Explore in Implementation Guide &#8594;
+        </a>
       </Card>
 
       <Card>
         <h3 class="text-2xl font-display text-mint mb-phi-1">LEASES</h3>
-        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Coordination</p>
-        <p class="text-text-secondary mb-phi-3 leading-relaxed">
+        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Focus: Coordination</p>
+        <p class="text-text-secondary mb-phi-3 leading-relaxed text-base">
           6 API calls. Safe handoffs, not collision chaos.
         </p>
-        <ul class="space-y-phi-1 text-sm font-mono">
+        <ul class="space-y-phi-1 text-base">
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
-            <code class="text-text-secondary">peek() claim()</code>
-          </li>
-          <li class="flex items-start gap-phi-1">
-            <span class="text-mint">&#x2022;</span>
-            <code class="text-text-secondary">status() release()</code>
+            <span class="text-text-secondary">Lease-based handoffs</span>
           </li>
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
             <span class="text-text-secondary">Conflict detection</span>
           </li>
+          <li class="flex items-start gap-phi-1">
+            <span class="text-mint">&#x2022;</span>
+            <span class="text-text-secondary">Deterministic releases</span>
+          </li>
         </ul>
+        <a class="mt-phi-2 inline-flex text-sm text-mint hover:text-text-primary transition-colors" href={`${base}implementation`}>
+          Explore in Implementation Guide &#8594;
+        </a>
       </Card>
 
       <Card>
         <h3 class="text-2xl font-display text-mint mb-phi-1">RECEIPTS</h3>
-        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Trust</p>
-        <p class="text-text-secondary mb-phi-3 leading-relaxed">
+        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Focus: Trust</p>
+        <p class="text-text-secondary mb-phi-3 leading-relaxed text-base">
           Cryptographic proof instead of hope. Every action recorded.
         </p>
-        <ul class="space-y-phi-1 text-sm">
+        <ul class="space-y-phi-1 text-base">
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">HMAC signing</span>
+            <span class="text-text-secondary">Evidence bundles</span>
           </li>
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
@@ -216,18 +225,21 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
           </li>
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
-            <span class="text-text-secondary">Audit trail</span>
+            <span class="text-text-secondary">Receipts + audit trail</span>
           </li>
         </ul>
+        <a class="mt-phi-2 inline-flex text-sm text-mint hover:text-text-primary transition-colors" href={`${base}implementation`}>
+          Explore in Implementation Guide &#8594;
+        </a>
       </Card>
 
       <Card>
         <h3 class="text-2xl font-display text-mint mb-phi-1">STRATEGIES</h3>
-        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Compresses Reasoning</p>
-        <p class="text-text-secondary mb-phi-3 leading-relaxed">
+        <p class="text-xs text-text-secondary uppercase tracking-[0.3em] mb-phi-2">Focus: Reasoning</p>
+        <p class="text-text-secondary mb-phi-3 leading-relaxed text-base">
           9 battle-tested patterns. Proven approaches, not reinvention.
         </p>
-        <ul class="space-y-phi-1 text-sm">
+        <ul class="space-y-phi-1 text-base">
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
             <span class="text-text-secondary">Decision patterns</span>
@@ -238,9 +250,12 @@ const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]))
           </li>
           <li class="flex items-start gap-phi-1">
             <span class="text-mint">&#x2022;</span>
-            <a href={`${base}strategies`} class="text-mint hover:text-text-primary transition-colors">View all 9 &#8594;</a>
+            <span class="text-text-secondary">Review heuristics</span>
           </li>
         </ul>
+        <a class="mt-phi-2 inline-flex text-sm text-mint hover:text-text-primary transition-colors" href={`${base}strategies`}>
+          Explore Strategy Library &#8594;
+        </a>
       </Card>
     </div>
   </Section>

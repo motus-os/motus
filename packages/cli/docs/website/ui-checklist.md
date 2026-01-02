@@ -18,6 +18,7 @@ Use this checklist to keep the site feeling deliberate, calm, and consistent.
 - Keep body copy at `max-w-measure` when possible; page width uses `max-w-page`.
 - Rounded corners must use the radius tokens (`sm/md/lg/xl/2xl`).
 - Motion uses `duration-fast/base/slow` + `ease-standard` only.
+- For two-part headlines, use `display-contrast` (thin + thick weights).
 - Pair `text-text-primary` with `bg-surface`; reserve `text-text-secondary` for supporting copy.
 
 ## Typography
