@@ -356,13 +356,11 @@ class TestCommandsModule:
 
         assert callable(harness_command)
 
-    def test_harness_command_no_crash_on_empty_dir(self):
+    def test_harness_command_no_crash_on_empty_dir(self, monkeypatch):
         """Test harness_command doesn't crash on empty directory."""
         from motus.commands.harness_cmd import harness_command
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            import os
-
-            os.chdir(tmpdir)
+            monkeypatch.chdir(tmpdir)
             # Should not crash, just print a message
             harness_command(save=False)
