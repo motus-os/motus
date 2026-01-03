@@ -40,6 +40,9 @@ for (const claim of proofLedger.claims) {
   if (claim.status === 'verified' && !claim.method) {
     throw new Error(`Proof ledger claim ${claim.id} missing method.`);
   }
+  if (!claim.momentum) {
+    throw new Error(`Proof ledger claim ${claim.id} missing momentum context.`);
+  }
   if (!claim.evidence || claim.evidence.length === 0 || !claim.evidence[0].url) {
     throw new Error(`Proof ledger claim ${claim.id} missing evidence.`);
   }
@@ -111,10 +114,14 @@ const moduleHighlights = [
 
 <Layout title="Motus - The Execution Layer for AI Agents">
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-4xl">
-    <div class="mb-phi-5">
+    <div class="mb-phi-5 space-y-phi-2">
+      <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Momentum tax</p>
       <span class="text-6xl md:text-[7.5rem] font-display font-semibold text-mint">66%</span>
-      <p class="text-lg md:text-xl text-text-secondary mt-phi-2">
+      <p class="text-lg md:text-xl text-text-secondary">
         of developers spend more time fixing AI code than they saved.<a href="https://survey.stackoverflow.co/2024/ai" target="_blank" rel="noopener noreferrer" class="text-text-secondary/60 hover:text-mint transition-colors align-super text-sm ml-1" title="Stack Overflow 2024 Developer Survey">*</a>
+      </p>
+      <p class="text-sm text-text-secondary/80">
+        Motus is built to turn that drag into forward motion.
       </p>
     </div>
 
@@ -135,7 +142,7 @@ const moduleHighlights = [
       </a>
     </div>
     <p class="text-xs uppercase tracking-[0.3em] text-text-secondary mt-phi-3">
-      Proof-first metrics only &#183; <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">Evidence registry</a>
+      Proof-first momentum signals &#183; <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">Evidence registry</a>
     </p>
   </Section>
 
@@ -160,6 +167,9 @@ const moduleHighlights = [
             <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{claim.evidence[0].label}</p>
             <p class="text-text-primary mt-phi-2 text-base md:text-lg leading-relaxed">
               {claim.claim}
+            </p>
+            <p class="text-sm text-text-secondary mt-phi-1">
+              Momentum: {claim.momentum}
             </p>
             <a class="text-sm text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex" href={evidenceAnchor(claim)}>
               Evidence &#8594;

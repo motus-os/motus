@@ -22,14 +22,14 @@ const workSteps = [
   <Section tone="dark" class="text-center" innerClass="max-w-3xl">
     <SectionHeader
       title="How It Works"
-      subtitle="Technical credibility in 3 minutes."
+      subtitle="Technical credibility without the hand-waving."
       as="h1"
       size="xl"
       class="mb-phi-4"
     />
     <div class="flex flex-wrap justify-center gap-phi-4 md:gap-phi-5">
       <div class="text-center">
-        <MetricStat value="6" label="API calls" detail="Coordination surface" />
+        <MetricStat value="6" label="API calls" detail="Designed for low coordination overhead" />
         <a
           href={`${base}evidence#claim-six_call_api`}
           class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
@@ -38,7 +38,7 @@ const workSteps = [
         </a>
       </div>
       <div class="text-center">
-        <MetricStat value="0" label="Cloud required" detail="Local by default" />
+        <MetricStat value="0" label="Cloud required" detail="Local-first, minimal setup" />
         <a
           href={`${base}evidence#claim-no_cloud_dependency`}
           class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
@@ -47,7 +47,7 @@ const workSteps = [
         </a>
       </div>
       <div class="text-center">
-        <MetricStat value="1" label="Source of truth" detail="coordination.db" />
+        <MetricStat value="1" label="Source of truth" detail="Deterministic work state" />
         <a
           href={`${base}evidence#claim-coordination_db_source`}
           class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
@@ -56,6 +56,9 @@ const workSteps = [
         </a>
       </div>
     </div>
+    <p class="text-sm text-text-secondary mt-phi-3">
+      Momentum guardrails: smaller surface area, local-first, one source of truth.
+    </p>
     <p class="text-sm text-text-secondary mt-phi-3">
       Proof registry for core claims:
       <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">
@@ -83,7 +86,7 @@ const workSteps = [
       </div>
 
       <p class="text-text-secondary text-sm text-center mt-phi-3 pt-phi-3 border-t border-line/10">
-        OODA is the provenance. The product is the 6-call Work Compiler loop.
+        OODA is the provenance. The product is the Work Compiler loop that keeps handoffs reviewable.
       </p>
     </Panel>
   </Section>
@@ -91,7 +94,7 @@ const workSteps = [
   <Section tone="muted" pad="tight" innerClass="max-w-5xl">
     <SectionHeader
       title="The Coordination API"
-      subtitle="Six calls. Simple enough to memorize, powerful enough for production."
+      subtitle="Six calls keep coordination tight and reviewable."
       class="mb-phi-4"
       maxWidth="max-w-2xl"
     />

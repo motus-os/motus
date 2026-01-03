@@ -60,6 +60,7 @@ const statusClass = (status) => (status === 'verified' ? 'status-badge status-cu
             </div>
             <h3 class="text-xl md:text-2xl font-display text-text-primary">{claim.claim}</h3>
             <p class="text-sm text-text-secondary">{claim.method}</p>
+            <p class="text-sm text-text-secondary">Momentum: {claim.momentum}</p>
             <div class="space-y-phi-1 text-sm">
               {claim.evidence.map((item) => (
                 <a

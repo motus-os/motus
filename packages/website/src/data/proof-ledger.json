@@ -7,6 +7,7 @@
       "verified_on": "2026-01-02",
       "method": "Docs-backed: coordination API reference",
       "claim": "Coordination surface is six API calls.",
+      "momentum": "Designed to keep handoffs tight and integration overhead low.",
       "evidence": [
         {
           "label": "Coordination API docs",
@@ -21,6 +22,7 @@
       "verified_on": "2026-01-02",
       "method": "Docs-backed: module registry definitions",
       "claim": "Current/building/future is defined in the module registry.",
+      "momentum": "Status is explicit, so teams can align on what is real versus in progress.",
       "evidence": [
         {
           "label": "Module registry",
@@ -35,6 +37,7 @@
       "verified_on": "2026-01-02",
       "method": "Docs-backed: kernel schema definition",
       "claim": "Kernel schema v0.1.3 defines the authoritative tables.",
+      "momentum": "Stable kernel contracts keep integrations aligned as the system grows.",
       "evidence": [
         {
           "label": "Kernel schema docs",
@@ -49,6 +52,7 @@
       "verified_on": "2026-01-02",
       "method": "CI-backed: registry sync gate",
       "claim": "Docs and website registry are kept in sync.",
+      "momentum": "Prevents drift, so execution guidance stays consistent everywhere.",
       "evidence": [
         {
           "label": "Registry sync gate",
@@ -63,6 +67,7 @@
       "verified_on": "2026-01-03",
       "method": "Docs-backed: architecture principle",
       "claim": "No cloud dependency; data stays local by default.",
+      "momentum": "Local-first keeps setup minimal and data under your control.",
       "evidence": [
         {
           "label": "Architecture doc",
@@ -77,6 +82,7 @@
       "verified_on": "2026-01-03",
       "method": "Docs-backed: kernel invariants",
       "claim": "coordination.db is the single source of truth for work state.",
+      "momentum": "One source of truth keeps work state deterministic and reviewable.",
       "evidence": [
         {
           "label": "Kernel guide",
