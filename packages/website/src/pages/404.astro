@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+const redirectFrom = base.endsWith('/') ? base.slice(0, -1) : base;
+---
+
+<Layout title="Not Found">
+  <main class="min-h-[70vh] flex flex-col items-center justify-center px-6 py-phi-4 text-center">
+    <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">404</p>
+    <h1 class="text-step-4 font-display font-semibold text-text-primary mt-phi-2">Page not found</h1>
+    <p class="text-step-0 text-text-secondary max-w-xl mt-phi-2">
+      The page you tried to reach does not exist. If you were expecting the Motus homepage,
+      use the link below.
+    </p>
+    <a class="mt-phi-3 text-mint hover:text-text-primary transition-colors" href={base}>
+      Back to Motus
+    </a>
+  </main>
+
+  <script is:inline>
+    const redirectFrom = "${redirectFrom}";
+    const redirectTo = "${base}";
+    if (window.location.pathname === redirectFrom) {
+      window.location.replace(redirectTo);
+    }
+  </script>
+</Layout>
