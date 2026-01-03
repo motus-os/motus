@@ -19,9 +19,24 @@ const currentPath = Astro.url.pathname;
 <nav class="border-b border-line/10 relative bg-charcoal/85 backdrop-blur-md">
   <div class="max-w-6xl mx-auto px-6 md:px-10 py-phi-2 flex items-center justify-between">
     <a href={base} class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-      <span class="relative flex items-center">
-        <img src={`${base}brand/motus-mark.svg?v=20260103`} alt="Motus" class="w-8 h-8 text-mint" />
-        <span class="absolute -right-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-mint"></span>
+      <span class="flex items-center">
+        <svg
+          viewBox="0 0 375 375"
+          role="img"
+          aria-label="Motus"
+          class="w-8 h-8 text-mint"
+        >
+          <path
+            d="M 249.890625 -266.328125 L 342.46875 -266.328125 L 342.46875 0 L 284.09375 0 L 284.09375 -207.953125 L 282.421875 -207.953125 L 213.5 0 L 160.5 0 L 91.734375 -207.953125 L 89.890625 -207.953125 L 89.890625 0 L 31.53125 0 L 31.53125 -266.328125 L 124.109375 -266.328125 L 187 -75.46875 Z M 249.890625 -266.328125"
+            transform="translate(-28.866772 315.431495)"
+            fill="currentColor"
+          />
+          <path
+            d="M 28.734375 0 L 28.734375 -50.765625 L 79.0625 -50.765625 L 79.0625 0 Z M 28.734375 0"
+            transform="translate(293.625425 316.314261)"
+            fill="currentColor"
+          />
+        </svg>
       </span>
       <span class="text-lg md:text-xl font-display font-semibold text-text-primary">Motus</span>
     </a>
