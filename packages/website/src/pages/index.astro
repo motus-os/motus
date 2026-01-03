@@ -163,21 +163,21 @@ const moduleHighlights = [
         Evidence Registry
       </a>
     </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-2">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-3">
       {featuredClaims.map((claim) => {
         const statusClass = claim.status === 'verified' ? 'status-current' : 'status-building';
         const statusLabel = claim.status === 'verified' ? 'Verified' : 'Target';
         return (
-          <Panel size="sm" class="text-center">
-            <div class="flex justify-center mb-phi-2">
+          <Panel size="md" class="text-left">
+            <div class="flex justify-start mb-phi-2">
               <span class={`status-badge ${statusClass}`}>{statusLabel}</span>
             </div>
             <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{claim.evidence[0].label}</p>
-            <p class="text-text-primary mt-phi-2 text-base md:text-lg leading-relaxed">
-              {claim.claim}
+            <p class="text-lg font-display text-text-primary mt-phi-2">
+              {claim.momentum}
             </p>
             <p class="text-sm text-text-secondary mt-phi-1">
-              Impact: {claim.momentum}
+              {claim.claim}
             </p>
             <a class="text-sm text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex" href={evidenceAnchor(claim)}>
               Evidence &#8594;
