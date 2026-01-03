@@ -169,8 +169,8 @@ class TestInvalidLeaseIds:
     def test_nonexistent_lease_release(self, coordinator):
         """release with nonexistent lease_id should be idempotent."""
         resp = coordinator.release(lease_id="does-not-exist", outcome="success")
-        assert resp.decision.decision == "GRANTED"
-        assert resp.decision.reason_code == "RELEASED_IDEMPOTENT_REPLAY"
+        assert resp.decision.decision == "DENIED"
+        assert resp.decision.reason_code == "LEASE_NOT_FOUND"
 
     def test_malformed_lease_status(self, coordinator):
         """status with malformed lease_id should return accepted=False."""

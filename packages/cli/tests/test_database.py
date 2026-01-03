@@ -665,7 +665,7 @@ class TestDNACompliance:
         conn = db.get_connection()
 
         result = conn.execute("PRAGMA busy_timeout").fetchone()
-        assert result[0] == 5000  # 5 seconds
+        assert result[0] == 30000  # 30 seconds
 
         db.checkpoint_and_close()
 

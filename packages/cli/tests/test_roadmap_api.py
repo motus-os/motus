@@ -249,23 +249,32 @@ class TestClaim:
 class TestComplete:
     """Tests for complete() - mark item done."""
 
-    def test_complete_own_item(self, api: RoadmapAPI):
-        """Can complete an item assigned to self."""
+    def test_complete_own_item(self, api: RoadmapAPI, monkeypatch):
+        """Reviewer can complete an item assigned to self."""
+        monkeypatch.setenv("MC_REVIEWER", "1")
         api.claim("ITEM-001")
         result = api.complete("ITEM-001")
         assert result.success is True
 
-    def test_complete_unassigned_fails(self, api: RoadmapAPI):
-        """Cannot complete item not assigned."""
+    def test_complete_requires_reviewer(self, api: RoadmapAPI):
+        """Builder cannot complete items directly."""
+        result = api.complete("ITEM-001")
+        assert result.success is False
+        assert "ROAD-010" in result.message
+
+    def test_complete_unassigned_fails(self, api: RoadmapAPI, monkeypatch):
+        """Reviewer cannot complete an unassigned item."""
+        monkeypatch.setenv("MC_REVIEWER", "1")
         result = api.complete("ITEM-002")
         assert result.success is False
         assert "ROAD-006" in result.message
         assert "claim" in result.command.lower()
 
-    def test_complete_others_item_fails(
-        self, api: RoadmapAPI, setup_db: sqlite3.Connection
+    def test_complete_others_item_allowed_for_reviewer(
+        self, api: RoadmapAPI, setup_db: sqlite3.Connection, monkeypatch
     ):
-        """Cannot complete item assigned to another agent."""
+        """Reviewer can complete item assigned to another agent."""
+        monkeypatch.setenv("MC_REVIEWER", "1")
         setup_db.execute(
             """
             INSERT INTO roadmap_assignments (item_id, agent_id, status)
@@ -275,11 +284,11 @@ class TestComplete:
         setup_db.commit()
 
         result = api.complete("ITEM-002")
-        assert result.success is False
-        assert "ROAD-006" in result.message
+        assert result.success is True
 
-    def test_complete_unblocks_dependents(self, api: RoadmapAPI):
-        """Completing blocker shows newly unblocked items."""
+    def test_complete_unblocks_dependents(self, api: RoadmapAPI, monkeypatch):
+        """Reviewer completing blocker shows newly unblocked items."""
+        monkeypatch.setenv("MC_REVIEWER", "1")
         api.claim("ITEM-001")
         result = api.complete("ITEM-001")
         assert result.success is True
