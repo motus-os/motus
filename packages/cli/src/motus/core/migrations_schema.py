@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Schema definitions and audit helpers for migrations."""
 
 from __future__ import annotations
@@ -115,7 +118,7 @@ def _create_updated_at_triggers(conn: sqlite3.Connection, tables: list[str]) -> 
                 UPDATE {table} SET updated_at = datetime('now')
                 WHERE rowid = NEW.rowid;
             END
-            """
+            """  # nosec B608 - table from AUDIT_TABLES constant
         )
 
 
@@ -144,7 +147,7 @@ def _create_audit_insert_triggers(conn: sqlite3.Connection, tables: list[str]) -
                     END
                 WHERE rowid = NEW.rowid;
             END
-            """
+            """  # nosec B608 - table from AUDIT_TABLES constant
         )
 
 
@@ -188,7 +191,7 @@ def _apply_audit_columns(conn: sqlite3.Connection) -> None:
                     updated_at = COALESCE(NULLIF(updated_at, ''), datetime('now'))
                 WHERE created_at IS NULL OR created_at = ''
                     OR updated_at IS NULL OR updated_at = ''
-            """
+            """  # nosec B608 - table from AUDIT_TABLES constant
             )
 
     existing_tables = [t for t in AUDIT_TABLES if _table_exists(conn, t)]

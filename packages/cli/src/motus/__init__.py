@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """
 Motus Command: Command Center for AI Agents
 
@@ -28,14 +31,14 @@ Usage:
 try:
     from importlib.metadata import PackageNotFoundError, version
 
-    __version__ = version("motus")
-except PackageNotFoundError as e:
+    # Try published package name first, then editable install name
+    try:
+        __version__ = version("motusos")
+    except PackageNotFoundError:
+        __version__ = version("motus")
+except PackageNotFoundError:
     # Fallback for editable installs when package metadata unavailable
-    from .logging import get_logger
-
-    logger = get_logger(__name__)
-    logger.debug(f"Failed to get version from package metadata: {e}")
-    __version__ = "0.1.0"  # fallback for editable installs
+    __version__ = "0.1.0"
 
 __author__ = "Motus Contributors"
 

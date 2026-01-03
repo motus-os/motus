@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Database query helpers and metrics tracking."""
 
 import json
@@ -50,7 +53,7 @@ class DatabaseQueryMixin:
                     timestamp, operation, elapsed_ms, {success_column}, metadata
                 )
                 VALUES (datetime('now'), ?, ?, ?, ?)
-                """,
+                """,  # nosec B608 - success_column is hardcoded
                 (
                     operation,
                     float(elapsed_ms),

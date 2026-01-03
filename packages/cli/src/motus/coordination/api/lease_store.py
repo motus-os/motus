@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Lease storage for the Coordination API."""
 
 from __future__ import annotations
@@ -403,7 +406,7 @@ class LeaseStore:
                 UPDATE coordination_leases
                 SET status = 'expired', updated_at = ?
                 WHERE lease_id IN ({placeholders})
-                """,
+                """,  # nosec B608 - placeholders are ?,?,? count
                 [now_iso] + expired_ids,
             )
             self._conn.commit()

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Context Cache store implementation.
 
 SQLite-backed storage for ResourceSpecs, PolicyBundles, ToolSpecs, and Outcomes.
@@ -224,7 +227,7 @@ class ContextCache:
             SELECT name, payload, source_hash, observed_at
             FROM tool_specs
             WHERE name IN ({placeholders})
-            """,
+            """,  # nosec B608 - placeholders are ?,?,? count
             tool_names,
         )
 
@@ -269,7 +272,7 @@ class ContextCache:
             WHERE {conditions}
             ORDER BY occurred_at DESC
             LIMIT ?
-            """,
+            """,  # nosec B608 - conditions are (type=? AND path=?) templates
             params + [limit],
         )
 

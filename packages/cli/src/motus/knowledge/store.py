@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Local knowledge store for agent mesh retrieval."""
 
 from __future__ import annotations
@@ -490,7 +493,9 @@ class KnowledgeStore:
             WHERE from_id IN ({placeholders})
               AND deleted_at IS NULL
             ORDER BY to_id ASC
-            """.format(placeholders=",".join("?" * len(anchor_ids))),
+            """.format(  # nosec B608 - placeholders are ?,?,? count
+                placeholders=",".join("?" * len(anchor_ids))
+            ),
             anchor_ids,
         ).fetchall()
         allowed.update(row[0] for row in rows)
@@ -629,7 +634,7 @@ class KnowledgeStore:
                   AND ki.deleted_at IS NULL
                   AND (ki.expires_at IS NULL OR ki.expires_at > ?)
                 ORDER BY ke.weight DESC, ke.to_id ASC
-                """.format(
+                """.format(  # nosec B608 - placeholders are ?,?,? count
                     placeholders=",".join("?" * len(anchor_ids))
                 ),
                 anchor_ids + [now],
