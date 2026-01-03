@@ -1,21 +1,61 @@
 claims:
   - id: six_call_api
+    featured: true
+    status: verified
+    verified_on: "2026-01-02"
+    method: "Docs-backed: coordination API reference"
     claim: "Coordination surface is six API calls."
+    momentum: "Fewer handoff steps."
     evidence:
       - label: "Coordination API docs"
-        url: https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md
+        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md"
   - id: module_registry
+    featured: true
+    status: verified
+    verified_on: "2026-01-02"
+    method: "Docs-backed: module registry definitions"
     claim: "Current/building/future is defined in the module registry."
+    momentum: "No ambiguity on what ships."
     evidence:
       - label: "Module registry"
-        url: https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml
+        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml"
   - id: kernel_schema
+    featured: true
+    status: verified
+    verified_on: "2026-01-02"
+    method: "Docs-backed: kernel schema definition"
     claim: "Kernel schema v0.1.3 defines the authoritative tables."
+    momentum: "Stable contracts as you scale."
     evidence:
       - label: "Kernel schema docs"
-        url: https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/index.md
+        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/index.md"
   - id: docs_registry_sync
+    featured: true
+    status: verified
+    verified_on: "2026-01-02"
+    method: "CI-backed: registry sync gate"
     claim: "Docs and website registry are kept in sync."
+    momentum: "Docs never drift from source."
     evidence:
       - label: "Registry sync gate"
-        url: https://github.com/motus-os/motus/blob/main/packages/cli/scripts/ci/check_module_registry.py
+        url: "https://github.com/motus-os/motus/blob/main/packages/cli/scripts/ci/check_module_registry.py"
+  - id: no_cloud_dependency
+    featured: false
+    status: verified
+    verified_on: "2026-01-03"
+    method: "Docs-backed: architecture principle"
+    claim: "No cloud dependency; data stays local by default."
+    momentum: "Local-first setup keeps teams moving."
+    evidence:
+      - label: "Architecture doc"
+        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/architecture.md"
+  - id: coordination_db_source
+    featured: false
+    status: verified
+    verified_on: "2026-01-03"
+    method: "Docs-backed: kernel invariants"
+    claim: "coordination.db is the single source of truth for work state."
+    momentum: "Deterministic state stays reviewable."
+    evidence:
+      - label: "Kernel guide"
+        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
