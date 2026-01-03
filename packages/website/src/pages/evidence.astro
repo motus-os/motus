@@ -1,0 +1,80 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Panel from '../components/Panel.astro';
+import proofLedger from '../data/proof-ledger.json';
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const seen = new Set();
+for (const claim of proofLedger.claims) {
+  if (seen.has(claim.id)) {
+    throw new Error(`Duplicate claim id in proof ledger: ${claim.id}`);
+  }
+  seen.add(claim.id);
+}
+
+const statusLabel = (status) => (status === 'verified' ? 'Verified' : 'Target');
+const statusClass = (status) => (status === 'verified' ? 'status-badge status-current' : 'status-badge status-building');
+---
+
+<Layout title="Evidence Registry">
+  <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-3xl">
+    <SectionHeader
+      eyebrow="Evidence Registry"
+      subtitle="Every claim on the site links to a proof artifact. This registry is the canonical index."
+      size="xl"
+    >
+      <span slot="title">Proof-first by default.</span>
+    </SectionHeader>
+    <div class="mt-phi-3 flex flex-wrap justify-center gap-phi-2 text-sm">
+      <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">Implementation guide</a>
+      <a href={`${base}ecosystem`} class="text-mint hover:text-text-primary transition-colors">Ecosystem map</a>
+      <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">GitHub</a>
+    </div>
+  </Section>
+
+  <Section tone="light">
+    <SectionHeader
+      eyebrow="Claims"
+      subtitle="Verified claims link to live artifacts. Target claims describe what is building toward proof."
+      align="left"
+      size="md"
+      class="mb-phi-4"
+      maxWidth="max-w-3xl"
+    />
+    <div class="space-y-phi-3">
+      {proofLedger.claims.map((claim) => (
+        <div id={`claim-${claim.id}`} class="scroll-mt-24">
+          <Panel class="space-y-phi-2">
+            <div class="flex flex-wrap items-center justify-between gap-phi-2">
+              <span class={statusClass(claim.status)}>{statusLabel(claim.status)}</span>
+              {claim.verified_on ? (
+                <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">
+                  Verified {claim.verified_on}
+                </span>
+              ) : null}
+            </div>
+            <h3 class="text-xl md:text-2xl font-display text-text-primary">{claim.claim}</h3>
+            <p class="text-sm text-text-secondary">{claim.method}</p>
+            <div class="space-y-phi-1 text-sm">
+              {claim.evidence.map((item) => (
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener"
+                  class="block text-mint hover:text-text-primary transition-colors"
+                >
+                  {item.label} &#8594;
+                </a>
+              ))}
+            </div>
+          </Panel>
+        </div>
+      ))}
+    </div>
+  </Section>
+</Layout>
