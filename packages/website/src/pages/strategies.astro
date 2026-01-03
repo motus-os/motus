@@ -3,67 +3,32 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
+import strategiesData from '../data/strategies.json';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 
-const strategies = [
-  {
-    name: 'Root Cause Loop',
-    trigger: 'Verification failed',
-    description: 'Keep asking "why" until you hit bedrock. Most fixes address symptoms, not causes.',
-    example: 'Tests failing after auth change? Why? Session expired. Why? Token refresh broken. Why? Date parsing bug.'
-  },
-  {
-    name: 'Progressive Disclosure',
-    trigger: 'Scope unclear',
-    description: 'Expand incrementally. Start with one file, prove it works, then expand.',
-    example: 'Refactoring a module? Start with the main entry point. Get it green. Then follow the imports.'
-  },
-  {
-    name: "Devil's Advocate",
-    trigger: 'High-stakes decision',
-    description: 'Force counter-arguments before committing. What could go wrong?',
-    example: 'Before migrating the database schema, explicitly list three ways it could fail in production.'
-  },
-  {
-    name: 'Parallel Spike',
-    trigger: 'Multiple valid approaches',
-    description: 'Try N approaches in parallel, compare results, pick the winner.',
-    example: 'Performance optimization? Try caching, query optimization, and lazy loading in parallel.'
-  },
-  {
-    name: 'Agent Council',
-    trigger: 'Multi-perspective needed',
-    description: 'Spawn distinct roles to review from different angles.',
-    example: 'Security review: spawn CISO, developer, and attacker perspectives. Compare findings.'
-  },
-  {
-    name: 'Timeboxed Exploration',
-    trigger: 'Unknown territory',
-    description: 'Hard stop after N minutes, then decide with what you have.',
-    example: 'Investigating a bug? Set 20-minute timer. At the bell, decide: fix what you found or escalate.'
-  },
-  {
-    name: 'Checkpoint Recovery',
-    trigger: 'Long-running task',
-    description: 'Save state periodically. Resume safely after interruption.',
-    example: 'Large refactor? Commit after each module. If context window expires, resume from last commit.'
-  },
-  {
-    name: 'Dependency Unwinding',
-    trigger: 'Tangled changes',
-    description: 'Atomic rollback when changes entangle unexpectedly.',
-    example: 'Changed three files and broke five? Roll back to last checkpoint, attack one file at a time.'
-  },
-  {
-    name: 'Consensus Building',
-    trigger: 'Team disagreement',
-    description: 'Structured resolution when multiple agents disagree.',
-    example: 'Two agents propose different architectures? Have each defend their choice, then vote on criteria.'
-  },
-];
+const strategies = strategiesData.strategies;
+const allowedStatuses = new Set(['building', 'current', 'future']);
+const statusClasses = {
+  current: 'status-badge status-current',
+  building: 'status-badge status-building',
+  future: 'status-badge status-future',
+};
+const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1);
+
+for (const strategy of strategies) {
+  if (!strategy.id) {
+    throw new Error('Strategy missing id.');
+  }
+  if (!allowedStatuses.has(strategy.status)) {
+    throw new Error(`Strategy ${strategy.id} has invalid status.`);
+  }
+  if (!strategy.trigger || !strategy.description) {
+    throw new Error(`Strategy ${strategy.id} missing required fields.`);
+  }
+}
 ---
 
 <Layout title="Strategies - Motus">
@@ -82,19 +47,29 @@ const strategies = [
       <p class="text-text-secondary max-w-2xl mx-auto">
         Expert problem-solving patterns, encoded and ready to deploy. Each strategy has a trigger condition and a structured approach.
       </p>
+      <div class="flex flex-wrap justify-center items-center gap-phi-2 text-xs text-text-secondary mt-phi-3">
+        <span class="status-badge status-building">Building</span>
+        <span>Proofs publish to the Evidence Registry as strategies ship.</span>
+        <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">
+          Evidence Registry
+        </a>
+      </div>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-phi-3">
       {strategies.map((strategy) => (
         <Panel size="sm" class="hover:border-mint/30 transition-colors">
+          <div class="flex justify-start mb-phi-2">
+            <span class={statusClasses[strategy.status]}>{statusLabel(strategy.status)}</span>
+          </div>
           <h3 class="text-xl font-display text-mint mb-phi-2">{strategy.name}</h3>
           <div class="mb-phi-2">
             <span class="text-xs uppercase tracking-[0.3em] text-text-secondary">Trigger: </span>
             <span class="text-sm text-text-primary font-medium">{strategy.trigger}</span>
           </div>
-          <p class="text-text-secondary text-sm mb-phi-2">{strategy.description}</p>
+          <p class="text-text-secondary text-base mb-phi-2">{strategy.description}</p>
           <div class="pt-phi-2 border-t border-line/10">
-            <p class="text-text-secondary text-xs italic">{strategy.example}</p>
+            <p class="text-text-secondary text-sm italic">{strategy.example}</p>
           </div>
         </Panel>
       ))}
@@ -115,12 +90,12 @@ const strategies = [
   <Section tone="light" class="text-center" innerClass="max-w-2xl">
     <SectionHeader title="Ready to deploy accumulated wisdom?" size="md" class="mb-phi-3" />
     <div class="inline-block bg-surface/70 px-phi-3 py-phi-2 rounded-full border border-mint/20">
-      <span class="text-text-secondary text-lg">Coming </span>
-      <span class="text-mint font-semibold text-lg">January 1, 2026</span>
+      <span class="text-text-secondary text-lg">Status </span>
+      <span class="text-mint font-semibold text-lg">Building</span>
     </div>
     <p class="text-text-secondary mt-phi-3">
       <a href={`${base}open-source`} class="text-mint hover:text-text-primary transition-colors">
-        Learn about the open source model
+        Learn about the source-available model
       </a>
     </p>
   </Section>

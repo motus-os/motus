@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Panel from '../components/Panel.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+
+const lastUpdated = '2025-12-31';
+---
+
+<Layout title="License">
+  <Section tone="light" class="text-center" innerClass="max-w-3xl">
+    <SectionHeader
+      title="License"
+      subtitle={`Last updated: ${lastUpdated}`}
+      as="h1"
+      size="xl"
+    />
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-3xl">
+    <div class="space-y-phi-5">
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Motus Community Source License (MCSL)</h2>
+        <Panel size="sm">
+          <p class="text-text-secondary leading-relaxed mb-phi-2">
+            Motus is source-available software licensed under the Motus Community Source License (MCSL).
+          </p>
+          <p class="text-text-secondary leading-relaxed">
+            The license text is available at
+            <a href="https://github.com/motus-os/motus/blob/main/LICENSE" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+              github.com/motus-os/motus
+            </a>.
+          </p>
+        </Panel>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">You May</h2>
+        <Panel size="sm">
+          <ul class="list-disc list-inside text-text-secondary space-y-1">
+            <li>Use Motus internally (personal or commercial)</li>
+            <li>Self-host Motus for your team</li>
+            <li>Modify and create derivative works</li>
+            <li>Distribute with license and attribution intact</li>
+          </ul>
+        </Panel>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">You May Not</h2>
+        <Panel size="sm">
+          <ul class="list-disc list-inside text-text-secondary space-y-1">
+            <li>Offer Motus as a hosted service to third parties</li>
+            <li>White-label or remove Motus branding</li>
+            <li>Commercially redistribute Motus where it is the primary component</li>
+            <li>Bypass license key or feature gating mechanisms</li>
+          </ul>
+        </Panel>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Commercial Licensing</h2>
+        <p class="text-text-secondary leading-relaxed">
+          If you want to do any of the restricted activities, contact us for a commercial license:
+          <a href="mailto:licensing@motusos.ai" class="text-mint hover:text-text-primary transition-colors">
+            licensing@motusos.ai
+          </a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">More Details</h2>
+        <p class="text-text-secondary leading-relaxed">
+          See the
+          <a href="https://github.com/motus-os/motus/blob/main/LICENSING.md" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+            licensing FAQ
+          </a>
+          for a plain-English summary and the
+          <a href="https://github.com/motus-os/motus/blob/main/TRADEMARKS.md" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+            trademark policy
+          </a>
+          for branding rules.
+        </p>
+      </div>
+    </div>
+  </Section>
+</Layout>

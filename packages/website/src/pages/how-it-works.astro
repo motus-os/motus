@@ -8,6 +8,14 @@ import MetricStat from '../components/MetricStat.astro';
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+const workSteps = [
+  { label: "claim_work()", note: "Reserve work + lease" },
+  { label: "get_context()", note: "Assemble the Lens" },
+  { label: "put_outcome()", note: "Register deliverables" },
+  { label: "record_evidence()", note: "Attach proof" },
+  { label: "record_decision()", note: "Log rationale" },
+  { label: "release_work()", note: "Finalize + release" },
+];
 ---
 
 <Layout title="How It Works - Motus">
@@ -19,69 +27,69 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       size="xl"
       class="mb-phi-4"
     />
-    <div class="flex justify-center gap-phi-4 md:gap-phi-5">
-      <MetricStat value="6" label="API calls" detail="Coordination surface" />
-      <MetricStat value="Local" label="Execution" detail="No cloud required" />
-      <MetricStat value="Proof" label="Evidence-first" detail="Deterministic outcomes" />
+    <div class="flex flex-wrap justify-center gap-phi-4 md:gap-phi-5">
+      <div class="text-center">
+        <MetricStat value="6" label="API calls" detail="Coordination surface" />
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md"
+          target="_blank"
+          rel="noopener"
+          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
+        >
+          Evidence &#8594;
+        </a>
+      </div>
+      <div class="text-center">
+        <MetricStat value="0" label="Cloud required" detail="Local by default" />
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/architecture.md"
+          target="_blank"
+          rel="noopener"
+          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
+        >
+          Evidence &#8594;
+        </a>
+      </div>
+      <div class="text-center">
+        <MetricStat value="1" label="Source of truth" detail="coordination.db" />
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+          target="_blank"
+          rel="noopener"
+          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
+        >
+          Evidence &#8594;
+        </a>
+      </div>
     </div>
+    <p class="text-sm text-text-secondary mt-phi-3">
+      Proof registry for core claims:
+      <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">
+        Evidence Registry &#8594;
+      </a>
+    </p>
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
     <SectionHeader
       title="The Work Compiler"
-      subtitle="Motus uses a disciplined execution loop so work stays verifiable, not implied."
+      subtitle="Motus makes work verifiable by forcing a tight, six-call execution loop."
       class="mb-phi-4"
       maxWidth="max-w-2xl"
     />
 
     <Panel size="lg" class="text-center">
-      <div class="flex flex-wrap justify-center items-center gap-phi-2 md:gap-phi-3">
-        <div class="flex flex-col items-center">
-          <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-semibold">O</span>
+      <div class="flex flex-wrap justify-center items-center gap-phi-2">
+        {workSteps.map((step) => (
+          <div class="flex flex-col items-center gap-1 rounded-full border border-line/10 bg-surface/70 px-phi-2 py-phi-1">
+            <span class="text-sm font-mono text-text-primary">{step.label}</span>
+            <span class="text-xs text-text-secondary">{step.note}</span>
           </div>
-          <span class="text-text-primary font-medium text-sm">OBSERVE</span>
-        </div>
-
-        <span class="text-mint text-xl font-semibold">&gt;</span>
-
-        <div class="flex flex-col items-center">
-          <div class="w-16 h-16 rounded-full bg-mint/20 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-semibold">O</span>
-          </div>
-          <span class="text-text-primary font-medium text-sm">ORIENT</span>
-        </div>
-
-        <span class="text-mint text-xl font-semibold">&gt;</span>
-
-        <div class="flex flex-col items-center">
-          <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-semibold">D</span>
-          </div>
-          <span class="text-text-primary font-medium text-sm">DECIDE</span>
-        </div>
-
-        <span class="text-mint text-xl font-semibold">&gt;</span>
-
-        <div class="flex flex-col items-center">
-          <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-semibold">A</span>
-          </div>
-          <span class="text-text-primary font-medium text-sm">ACT</span>
-        </div>
-
-        <span class="text-mint text-xl font-semibold">&gt;</span>
-
-        <div class="flex flex-col items-center">
-          <div class="w-16 h-16 rounded-full bg-mint/10 border-2 border-mint flex items-center justify-center mb-2">
-            <span class="text-mint font-semibold">V</span>
-          </div>
-          <span class="text-text-primary font-medium text-sm">VERIFY</span>
-        </div>
+        ))}
       </div>
 
       <p class="text-text-secondary text-sm text-center mt-phi-3 pt-phi-3 border-t border-line/10">
-        Under the hood: OODA-inspired loop (Observe, Orient, Decide, Act, Verify).
+        OODA is the provenance. The product is the 6-call Work Compiler loop.
       </p>
     </Panel>
   </Section>
@@ -153,38 +161,45 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 
     <div class="space-y-phi-4">
       <Panel size="sm">
-        <h3 class="text-xl font-display text-mint mb-phi-2">SCOPE: Bounded Context with Lens</h3>
+        <h3 class="text-xl font-display text-mint mb-phi-2">SCOPE: Claim + Lens Assembly</h3>
         <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
-<code><span class="text-text-secondary"># Get a 300-token lens instead of reading 50k tokens</span>
-<span class="text-mint">from</span> motus <span class="text-mint">import</span> create_lens
-
-lens = create_lens(
-    files=["src/auth.py", "src/users.py"],
-    max_tokens=300
-)
-</code></pre>
-      </Panel>
-
-      <Panel size="sm">
-        <h3 class="text-xl font-display text-mint mb-phi-2">COORDINATE: Safe Multi-Agent Handoff</h3>
-        <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
-<code><span class="text-text-secondary"># Agent 1: Use the 6-call Work Compiler</span>
+<code><span class="text-text-secondary"># Claim work and assemble a deterministic Lens</span>
 <span class="text-mint">from</span> motus.api <span class="text-mint">import</span> WorkCompiler
 
 wc = WorkCompiler()
-result = wc.claim_work(task_id="fix-auth", agent_id="agent-1")
-<span class="text-text-secondary"># Work safely...</span>
-wc.release_work(result.lease.lease_id, outcome="success")
+claim = wc.claim_work(
+    task_id="RI-EX-001",
+    resources=[&#123;"type": "file", "path": "src/auth.py"&#125;],
+    intent="Harden auth flow",
+    agent_id="agent-1",
+)
+ctx = wc.get_context(claim.lease.lease_id, task_id="RI-EX-001")
+lens = ctx.lens
 </code></pre>
       </Panel>
 
       <Panel size="sm">
-        <h3 class="text-xl font-display text-mint mb-phi-2">VERIFY: Cryptographic Work Receipts</h3>
+        <h3 class="text-xl font-display text-mint mb-phi-2">COORDINATE: Outcomes + Evidence</h3>
         <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
-<code><span class="text-text-secondary"># Every action generates a signed receipt</span>
-<span class="text-mint">from</span> motus.policy <span class="text-mint">import</span> verify_receipt
+<code><span class="text-text-secondary"># Attach outcomes, evidence, and decisions</span>
+lease_id = claim.lease.lease_id
 
-<span class="text-mint">assert</span> verify_receipt(receipt)  <span class="text-text-secondary"># Tamper-evident</span>
+wc.put_outcome(lease_id, outcome_type="file", path="src/auth.py")
+wc.record_evidence(lease_id, evidence_type="test_result", test_results=&#123;"passed": 44, "failed": 0&#125;)
+wc.record_decision(lease_id, decision="Ship guardrails", rationale="Stops regressions")
+wc.release_work(lease_id, outcome="success")
+</code></pre>
+      </Panel>
+
+      <Panel size="sm">
+        <h3 class="text-xl font-display text-mint mb-phi-2">VERIFY: Evidence Bundle Check</h3>
+        <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
+<code><span class="text-text-secondary"># Verify a bundle on disk</span>
+<span class="text-mint">from</span> pathlib <span class="text-mint">import</span> Path
+<span class="text-mint">from</span> motus.policy.verify <span class="text-mint">import</span> verify_evidence_bundle
+
+result = verify_evidence_bundle(evidence_dir=Path(".motus/evidence/run-001"))
+<span class="text-mint">assert</span> result.ok
 </code></pre>
       </Panel>
     </div>
@@ -193,8 +208,8 @@ wc.release_work(result.lease.lease_id, outcome="success")
   <Section tone="muted" class="text-center" innerClass="max-w-2xl">
     <SectionHeader title="Ready to try it?" size="md" class="mb-phi-3" />
     <div class="inline-block bg-surface/70 px-phi-3 py-phi-2 rounded-full border border-mint/20">
-      <span class="text-text-secondary text-lg">Coming </span>
-      <span class="text-mint font-semibold text-lg">January 1, 2026</span>
+      <span class="text-text-secondary text-lg">Status </span>
+      <span class="text-mint font-semibold text-lg">Building</span>
     </div>
     <p class="text-text-secondary mt-phi-3">
       <a href={`${base}strategies`} class="text-mint hover:text-text-primary transition-colors">

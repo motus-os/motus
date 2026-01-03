@@ -6,10 +6,11 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 const navItems = [
   { href: `${base}`, label: 'Home' },
   { href: `${base}how-it-works`, label: 'How It Works' },
+  { href: `${base}evidence`, label: 'Evidence' },
   { href: `${base}ecosystem`, label: 'Ecosystem' },
   { href: `${base}implementation`, label: 'Implementation' },
   { href: `${base}strategies`, label: 'Strategies' },
-  { href: `${base}open-source`, label: 'Open Source' },
+  { href: `${base}open-source`, label: 'Source Available' },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -19,7 +20,7 @@ const currentPath = Astro.url.pathname;
   <div class="max-w-6xl mx-auto px-6 md:px-10 py-phi-2 flex items-center justify-between">
     <a href={base} class="flex items-center gap-3 hover:opacity-80 transition-opacity">
       <span class="relative flex items-center">
-        <img src={`${base}brand/motus-mark.svg?v=20260102`} alt="Motus" class="w-8 h-8 text-mint" />
+        <img src={`${base}brand/motus-mark.svg?v=20260102b`} alt="Motus" class="w-8 h-8 text-mint" />
         <span class="absolute -right-2 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-mint"></span>
       </span>
       <span class="text-lg md:text-xl font-display font-semibold text-text-primary">Motus</span>

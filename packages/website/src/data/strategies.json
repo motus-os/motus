@@ -1,0 +1,76 @@
+{
+  "strategies": [
+    {
+      "id": "root-cause-loop",
+      "name": "Root Cause Loop",
+      "status": "building",
+      "trigger": "Verification failed",
+      "description": "Keep asking \"why\" until you hit bedrock. Most fixes address symptoms, not causes.",
+      "example": "Tests failing after auth change? Why? Session expired. Why? Token refresh broken. Why? Date parsing bug."
+    },
+    {
+      "id": "progressive-disclosure",
+      "name": "Progressive Disclosure",
+      "status": "building",
+      "trigger": "Scope unclear",
+      "description": "Expand incrementally. Start with one file, prove it works, then expand.",
+      "example": "Refactoring a module? Start with the main entry point. Get it green. Then follow the imports."
+    },
+    {
+      "id": "devils-advocate",
+      "name": "Devil's Advocate",
+      "status": "building",
+      "trigger": "High-stakes decision",
+      "description": "Force counter-arguments before committing. What could go wrong?",
+      "example": "Before migrating the database schema, explicitly list three ways it could fail in production."
+    },
+    {
+      "id": "parallel-spike",
+      "name": "Parallel Spike",
+      "status": "building",
+      "trigger": "Multiple valid approaches",
+      "description": "Try N approaches in parallel, compare results, pick the winner.",
+      "example": "Performance optimization? Try caching, query optimization, and lazy loading in parallel."
+    },
+    {
+      "id": "agent-council",
+      "name": "Agent Council",
+      "status": "building",
+      "trigger": "Multi-perspective needed",
+      "description": "Spawn distinct roles to review from different angles.",
+      "example": "Security review: spawn CISO, developer, and attacker perspectives. Compare findings."
+    },
+    {
+      "id": "timeboxed-exploration",
+      "name": "Timeboxed Exploration",
+      "status": "building",
+      "trigger": "Unknown territory",
+      "description": "Hard stop after N minutes, then decide with what you have.",
+      "example": "Investigating a bug? Set 20-minute timer. At the bell, decide: fix what you found or escalate."
+    },
+    {
+      "id": "checkpoint-recovery",
+      "name": "Checkpoint Recovery",
+      "status": "building",
+      "trigger": "Long-running task",
+      "description": "Save state periodically. Resume safely after interruption.",
+      "example": "Large refactor? Commit after each module. If context window expires, resume from last commit."
+    },
+    {
+      "id": "dependency-unwinding",
+      "name": "Dependency Unwinding",
+      "status": "building",
+      "trigger": "Tangled changes",
+      "description": "Atomic rollback when changes entangle unexpectedly.",
+      "example": "Changed three files and broke five? Roll back to last checkpoint, attack one file at a time."
+    },
+    {
+      "id": "consensus-building",
+      "name": "Consensus Building",
+      "status": "building",
+      "trigger": "Team disagreement",
+      "description": "Structured resolution when multiple agents disagree.",
+      "example": "Two agents propose different architectures? Have each defend their choice, then vote on criteria."
+    }
+  ]
+}

@@ -14,6 +14,33 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]));
+const allowedProofStatuses = new Set(['verified', 'target']);
+const evidenceAnchor = (claim) => `${base}evidence#claim-${claim.id}`;
+const missingPersonaProofs = (personaMap.personas || [])
+  .filter((persona) => persona.proof_id && !proofIndex.has(persona.proof_id))
+  .map((persona) => persona.proof_id);
+
+if (missingPersonaProofs.length > 0) {
+  throw new Error(`Persona map references missing proof entries: ${missingPersonaProofs.join(', ')}`);
+}
+
+for (const claim of proofLedger.claims) {
+  if (!claim.id) {
+    throw new Error('Proof ledger claim missing id.');
+  }
+  if (!allowedProofStatuses.has(claim.status)) {
+    throw new Error(`Proof ledger claim ${claim.id} has invalid status.`);
+  }
+  if (claim.status === 'verified' && !claim.verified_on) {
+    throw new Error(`Proof ledger claim ${claim.id} missing verified_on date.`);
+  }
+  if (claim.status === 'verified' && !claim.method) {
+    throw new Error(`Proof ledger claim ${claim.id} missing method.`);
+  }
+  if (!claim.evidence || claim.evidence.length === 0 || !claim.evidence[0].url) {
+    throw new Error(`Proof ledger claim ${claim.id} missing evidence.`);
+  }
+}
 const moduleHighlights = [
   {
     name: 'LENS',
@@ -99,25 +126,75 @@ const moduleHighlights = [
 
     <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">
       <InstallCommand />
-      <a href={`${base}how-it-works`} class="text-mint hover:text-text-primary transition-colors px-phi-3 py-phi-2">
-        See How It Works &#8594;
+      <a href={`${base}ecosystem`} class="text-mint hover:text-text-primary transition-colors px-phi-3 py-phi-2">
+        View System Flow &#8594;
+      </a>
+    </div>
+    <p class="text-xs uppercase tracking-[0.3em] text-text-secondary mt-phi-3">
+      Proof-first metrics only &#183; <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">Evidence registry</a>
+    </p>
+  </Section>
+
+  <Section tone="light" pad="tight" class="border-t border-line/10">
+    <div class="flex flex-wrap justify-center items-center gap-phi-2 mb-phi-3 text-sm text-text-secondary">
+      <span class="status-badge status-current">Verified</span>
+      <span class="status-badge status-building">Target</span>
+      <span class="text-text-secondary/60">&#183;</span>
+      <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">
+        Evidence Registry
+      </a>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-2">
+      {proofLedger.claims.map((claim) => {
+        const statusClass = claim.status === 'verified' ? 'status-current' : 'status-building';
+        const statusLabel = claim.status === 'verified' ? 'Verified' : 'Target';
+        return (
+          <Panel size="sm" class="text-center">
+            <div class="flex justify-center mb-phi-2">
+              <span class={`status-badge ${statusClass}`}>{statusLabel}</span>
+            </div>
+            <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{claim.evidence[0].label}</p>
+            <p class="text-text-primary mt-phi-2 text-base md:text-lg leading-relaxed">
+              {claim.claim}
+            </p>
+            <a class="text-sm text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex" href={evidenceAnchor(claim)}>
+              Evidence &#8594;
+            </a>
+          </Panel>
+        );
+      })}
+    </div>
+    <div class="mt-phi-4 text-center">
+      <p class="text-sm text-text-secondary">
+        Every claim links to proof artifacts in the registry.
+      </p>
+      <a href={`${base}evidence`} class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors mt-phi-2">
+        View the Evidence Registry &#8594;
       </a>
     </div>
   </Section>
 
-  <Section tone="light" pad="tight" class="border-t border-line/10">
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-2">
-      {proofLedger.claims.map((claim) => (
-        <Panel size="sm" class="text-center">
-          <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{claim.evidence[0].label}</p>
-          <p class="text-text-primary mt-phi-2 text-base md:text-lg leading-relaxed">
-            {claim.claim}
-          </p>
-          <a class="text-sm text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex" href={claim.evidence[0].url}>
-            Evidence &#8594;
-          </a>
-        </Panel>
-      ))}
+  <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-4xl">
+    <div class="text-center space-y-phi-2">
+      <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Maintained By</p>
+      <h2 class="text-2xl md:text-3xl font-display text-text-primary">Veritas Collaborative, LLC</h2>
+      <p class="text-text-secondary">
+        Source-available, proof-first infrastructure for AI agent execution.
+      </p>
+      <div class="flex flex-wrap justify-center gap-phi-2 text-sm">
+        <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+          GitHub
+        </a>
+        <a href={`${base}license`} class="text-mint hover:text-text-primary transition-colors">
+          License
+        </a>
+        <a href={`${base}trademarks`} class="text-mint hover:text-text-primary transition-colors">
+          Trademarks
+        </a>
+        <a href="mailto:licensing@motusos.ai" class="text-mint hover:text-text-primary transition-colors">
+          Licensing
+        </a>
+      </div>
     </div>
   </Section>
 
@@ -173,6 +250,7 @@ const moduleHighlights = [
       {personaMap.personas.map((persona) => {
         const proof = proofIndex.get(persona.proof_id);
         const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
+        const proofLink = proof ? `${base}evidence#claim-${proof.id}` : null;
         return (
           <PersonaCard
             title={persona.title}
@@ -180,7 +258,7 @@ const moduleHighlights = [
             value={persona.value}
             href={`${base}${path}`}
             proofLabel={proof ? proof.evidence[0].label : null}
-            proofUrl={proof ? proof.evidence[0].url : null}
+            proofUrl={proofLink}
           />
         );
       })}
@@ -212,25 +290,55 @@ const moduleHighlights = [
   </Section>
 
   <Section tone="light" class="text-center border-t border-line/10" innerClass="max-w-4xl">
-    <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Open Source. Verifiable. Yours.</h2>
+    <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Source Available. Verifiable. Yours.</h2>
     <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
       Motus keeps the execution model transparent so teams can verify how work is governed.<br class="hidden md:inline" />
-      We honor that by keeping the Work Compiler open source.<br class="hidden md:inline" />
+      We honor that by keeping the Work Compiler source-available.<br class="hidden md:inline" />
       The infrastructure has a cost. The idea doesn&apos;t.
     </p>
 
     <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center text-left md:text-center">
-      <div class="flex items-center gap-phi-1">
-        <span class="text-mint text-xl">&#10003;</span>
-        <span class="text-text-primary">Your receipts are YOUR data</span>
+      <div class="flex flex-col items-start md:items-center gap-1">
+        <div class="flex items-center gap-phi-1">
+          <span class="text-mint text-xl">&#10003;</span>
+          <span class="text-text-primary">Your receipts are YOUR data</span>
+        </div>
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/manifesto.md"
+          target="_blank"
+          rel="noopener"
+          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
+        >
+          Evidence &#8594;
+        </a>
       </div>
-      <div class="flex items-center gap-phi-1">
-        <span class="text-mint text-xl">&#10003;</span>
-        <span class="text-text-primary">Local by default</span>
+      <div class="flex flex-col items-start md:items-center gap-1">
+        <div class="flex items-center gap-phi-1">
+          <span class="text-mint text-xl">&#10003;</span>
+          <span class="text-text-primary">Local by default</span>
+        </div>
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/architecture.md"
+          target="_blank"
+          rel="noopener"
+          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
+        >
+          Evidence &#8594;
+        </a>
       </div>
-      <div class="flex items-center gap-phi-1">
-        <span class="text-mint text-xl">&#10003;</span>
-        <span class="text-text-primary">Audit every line of code</span>
+      <div class="flex flex-col items-start md:items-center gap-1">
+        <div class="flex items-center gap-phi-1">
+          <span class="text-mint text-xl">&#10003;</span>
+          <span class="text-text-primary">Audit every line of code</span>
+        </div>
+        <a
+          href="https://github.com/motus-os/motus"
+          target="_blank"
+          rel="noopener"
+          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
+        >
+          Evidence &#8594;
+        </a>
       </div>
     </div>
 

@@ -1,40 +1,126 @@
 ---
-const { groups = [], nodes = [], base = '/' } = Astro.props;
+const { groups = [], nodes = [], base = '/', proofIndex = null } = Astro.props;
 
 const nodesByGroup = groups.reduce((acc, group) => {
-  acc[group.id] = nodes.filter((node) => node.group === group.id);
+  acc[group.id] = nodes
+    .filter((node) => node.group === group.id)
+    .map((node) => ({
+      ...node,
+      proof: proofIndex && node.proof_id ? proofIndex.get(node.proof_id) : null,
+    }));
   return acc;
 }, {});
 
 const normalizedBase = base.endsWith('/') ? base : `${base}/`;
 const withBase = (path) => (path ? `${normalizedBase}${path.replace(/^\/+/, '')}` : null);
+const proofHref = (proof) => (proof ? `${normalizedBase}evidence#claim-${proof.id}` : null);
+const statusLabel = (status) => (status === 'external'
+  ? 'External'
+  : status.charAt(0).toUpperCase() + status.slice(1));
+const proofStatusLabel = (status) => (status ? status.charAt(0).toUpperCase() + status.slice(1) : '');
+const statusClass = (status) => {
+  switch (status) {
+    case 'current':
+      return 'status-chip status-current';
+    case 'building':
+      return 'status-chip status-building';
+    case 'future':
+      return 'status-chip status-future';
+    default:
+      return 'status-chip status-external';
+  }
+};
+const statusAccent = (status) => {
+  switch (status) {
+    case 'current':
+      return 'border-l-4 border-text-secondary/70';
+    case 'building':
+      return 'border-l-4 border-mint/70';
+    case 'future':
+      return 'border-l-4 border-future/70';
+    default:
+      return 'border-l-4 border-line/40';
+  }
+};
 ---
 
-<div class="grid gap-phi-3 items-start md:grid-cols-[1fr_auto_1fr_auto_1fr]">
+<div class="space-y-phi-3 md:space-y-0 md:grid md:gap-phi-3 md:items-start md:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr_auto_1fr]">
   {groups.map((group, index) => (
     <>
-      <div class="rounded-2xl border border-line/10 bg-surface p-phi-3 space-y-phi-2">
-        <div>
-          <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{group.label}</p>
-          <p class="text-sm text-text-secondary mt-phi-1">{group.description}</p>
+      <div class="space-y-phi-2">
+        <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
+          <span>Stage {String(index + 1).padStart(2, '0')}</span>
+          <span class="text-text-primary">{group.label}</span>
         </div>
-        <div class="space-y-phi-1">
-          {(nodesByGroup[group.id] || []).map((node) => (
-            <div class="flex items-center gap-phi-2 rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-1 text-sm text-text-secondary">
-              {node.logo ? (
-                <img src={withBase(node.logo)} alt={node.label} class="h-4 w-4" loading="lazy" />
-              ) : (
-                <span class="h-2 w-2 rounded-full bg-mint/60"></span>
-              )}
-              <span class="text-text-primary">{node.label}</span>
-            </div>
-          ))}
+        <div class="rounded-2xl border border-line/10 bg-surface p-phi-3 space-y-phi-2">
+          <div class="space-y-phi-1">
+            <p class="text-sm text-text-secondary">{group.description}</p>
+          </div>
+          <div class="space-y-phi-2">
+            {(nodesByGroup[group.id] || []).map((node) => (
+              <div class={`rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                <div class="flex items-center justify-between gap-phi-2">
+                  <div class="flex items-center gap-phi-2">
+                    {node.logo ? (
+                      <img
+                        src={withBase(node.logo)}
+                        alt={node.label}
+                        class="h-6 w-6 object-contain flex-shrink-0"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span class="h-2.5 w-2.5 rounded-full bg-mint/60"></span>
+                    )}
+                    <span class="text-sm text-text-primary font-medium">{node.label}</span>
+                  </div>
+                  <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                </div>
+                <p class="text-sm text-text-secondary">
+                  {node.flow_note || node.summary}
+                </p>
+                {node.improves?.length ? (
+                  <ul class="text-sm text-text-secondary space-y-phi-1">
+                    {node.improves.slice(0, 2).map((improvement) => (
+                      <li>- {improvement.label}</li>
+                    ))}
+                  </ul>
+                ) : null}
+                <div class="flex flex-wrap gap-phi-1 text-sm">
+                  {node.website_path ? (
+                    <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
+                      Site
+                    </a>
+                  ) : null}
+                  {node.docs_url ? (
+                    <a class="text-mint hover:text-text-primary transition-colors" href={node.docs_url} target="_blank" rel="noopener">
+                      Docs
+                    </a>
+                  ) : null}
+                  {node.proof ? (
+                    <a class="text-mint hover:text-text-primary transition-colors" href={proofHref(node.proof)}>
+                      Proof ({proofStatusLabel(node.proof.status)})
+                    </a>
+                  ) : null}
+                  {node.external_url ? (
+                    <a class="text-text-secondary hover:text-mint transition-colors" href={node.external_url} target="_blank" rel="noopener">
+                      External
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       {index < groups.length - 1 ? (
-        <div class="hidden md:flex items-center justify-center text-mint/70">
-          <span class="text-2xl">&#8594;</span>
-        </div>
+        <>
+          <div class="hidden md:flex items-center justify-center text-text-secondary/60">
+            <span class="text-2xl">&#8594;</span>
+          </div>
+          <div class="flex md:hidden items-center justify-center text-text-secondary/60">
+            <span class="text-2xl">&#8595;</span>
+          </div>
+        </>
       ) : null}
     </>
   ))}

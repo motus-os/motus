@@ -5,12 +5,36 @@ import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 
 const openItems = [
-  { item: 'Work Compiler spec', description: 'The execution framework for verifiable work' },
-  { item: 'Strategy Library core', description: 'The 9 foundational decision patterns' },
-  { item: 'CLI and execution engine', description: 'The full motus command-line tool' },
-  { item: 'All receipt formats', description: 'Work receipts, evidence bundles, manifests' },
-  { item: 'Coordination API', description: 'The 6-call API for multi-agent work' },
-  { item: 'Policy gates', description: 'Governance enforcement primitives' },
+  {
+    item: 'Work Compiler spec',
+    description: 'The execution framework for verifiable work.',
+    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md',
+  },
+  {
+    item: 'Coordination API',
+    description: 'The 6-call API for multi-agent work.',
+    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md',
+  },
+  {
+    item: 'CLI and execution engine',
+    description: 'The full Motus command-line tool.',
+    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md',
+  },
+  {
+    item: 'Policy gates',
+    description: 'Deterministic enforcement + evidence requirements.',
+    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md',
+  },
+  {
+    item: 'Evidence bundles',
+    description: 'Manifested proof artifacts with hashes + signatures.',
+    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md',
+  },
+  {
+    item: 'Module registry',
+    description: 'Current, building, and future scoped in one registry.',
+    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml',
+  },
 ];
 
 const paidItems = [
@@ -21,10 +45,10 @@ const paidItems = [
 ];
 ---
 
-<Layout title="Open Source - Motus">
+<Layout title="Source Available - Motus">
   <Section tone="dark" class="text-center" innerClass="max-w-3xl">
     <SectionHeader
-      title="Open Source"
+      title="Source Available"
       subtitle="Trust through transparency."
       as="h1"
       size="xl"
@@ -39,7 +63,19 @@ const paidItems = [
           Motus keeps the execution model transparent so teams can verify how work is governed.
         </p>
         <p>
-          We honor that by keeping the Work Compiler open source.
+          Motus is source-available under the Motus Community Source License (MCSL).
+          You may self-host, use internally, and modify the software under its terms.
+        </p>
+        <p>
+          See the
+          <a href="https://github.com/motus-os/motus/blob/main/LICENSE" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+            LICENSE
+          </a>
+          and
+          <a href="https://github.com/motus-os/motus/blob/main/LICENSING.md" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+            LICENSING.md
+          </a>
+          for details.
         </p>
         <p class="text-text-primary font-medium">
           The infrastructure has a cost. The idea does not.
@@ -50,7 +86,7 @@ const paidItems = [
 
   <Section tone="muted" pad="tight" innerClass="max-w-5xl">
     <SectionHeader
-      title="What is Open vs Paid"
+      title="What is Source-Available vs Paid"
       class="mb-phi-4"
     />
 
@@ -60,13 +96,23 @@ const paidItems = [
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
           </svg>
-          Open Source (Free Forever)
+          Source Available (Community)
         </h3>
         <div class="space-y-phi-2">
           {openItems.map((item) => (
-            <Panel size="sm">
+            <Panel size="sm" class="space-y-phi-1">
               <p class="text-text-primary font-medium">{item.item}</p>
               <p class="text-text-secondary text-sm">{item.description}</p>
+              {item.docs_url ? (
+                <a
+                  href={item.docs_url}
+                  target="_blank"
+                  rel="noopener"
+                  class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
+                >
+                  Docs &#8594;
+                </a>
+              ) : null}
             </Panel>
           ))}
         </div>
@@ -158,8 +204,8 @@ const paidItems = [
   <Section tone="light" class="text-center" innerClass="max-w-2xl">
     <SectionHeader title="Get Started" size="md" class="mb-phi-3" />
     <div class="inline-block bg-surface/70 px-phi-3 py-phi-2 rounded-full border border-mint/20">
-      <span class="text-text-secondary text-lg">Coming </span>
-      <span class="text-mint font-semibold text-lg">January 1, 2026</span>
+      <span class="text-text-secondary text-lg">Status </span>
+      <span class="text-mint font-semibold text-lg">Building</span>
     </div>
   </Section>
 </Layout>

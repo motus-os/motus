@@ -4,7 +4,7 @@ import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 
-const lastUpdated = '2025-12-26';
+const lastUpdated = '2025-12-31';
 ---
 
 <Layout title="Terms of Service">
@@ -28,30 +28,69 @@ const lastUpdated = '2025-12-26';
       </div>
 
       <div>
-        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Open Source License</h2>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Source-Available License</h2>
         <Panel size="sm">
+          <p class="text-text-secondary leading-relaxed mb-phi-2">
+            Motus is source-available software distributed under the Motus Community Source License (MCSL).
+          </p>
+          <p class="text-text-secondary leading-relaxed mb-phi-2">
+            You may use Motus internally (including commercial), self-host for your team, and modify the software.
+            Distributions must retain license and attribution notices.
+          </p>
+          <p class="text-text-secondary leading-relaxed mb-phi-2">
+            Restrictions: you may not offer Motus as a hosted service, white-label the software, or commercially
+            redistribute it without a separate commercial license.
+          </p>
           <p class="text-text-secondary leading-relaxed">
-            Motus is open source software licensed under Apache 2.0. You are free to use,
-            modify, and distribute the software in accordance with the terms of that license.
+            See the
+            <a href="https://github.com/motus-os/motus/blob/main/LICENSE" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+              LICENSE
+            </a>
+            and
+            <a href="https://github.com/motus-os/motus/blob/main/LICENSING.md" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+              LICENSING.md
+            </a>
+            for full terms.
           </p>
         </Panel>
       </div>
 
       <div>
-        <h2 class="text-2xl font-display text-text-primary mb-phi-2">No Warranty</h2>
-        <p class="text-text-secondary leading-relaxed">
-          The software is provided "as is" without warranty of any kind, express or implied.
-          We do not guarantee that the software will meet your requirements or be error-free.
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Disclaimer of Warranties</h2>
+        <Panel size="sm">
+          <p class="text-text-secondary leading-relaxed uppercase text-sm">
+            The software is provided "as is", without warranty of any kind, express or implied, including but not
+            limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement.
+          </p>
+        </Panel>
+        <p class="text-text-secondary leading-relaxed mt-phi-2">
+          We provide Motus as a tool to help coordinate AI agents, but we cannot guarantee it will meet your
+          requirements or be error-free.
         </p>
       </div>
 
       <div>
         <h2 class="text-2xl font-display text-text-primary mb-phi-2">Limitation of Liability</h2>
         <p class="text-text-secondary leading-relaxed">
-          In no event shall the Motus contributors be liable for any damages arising from the use
-          or inability to use the software, including but not limited to direct, indirect, incidental,
-          or consequential damages.
+          To the maximum extent permitted by law, in no event shall Motus, its contributors,
+          or affiliates be liable for any indirect, incidental, special, consequential, or punitive damages,
+          or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data,
+          use, goodwill, or other intangible losses resulting from your use of the software.
         </p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Paid Services</h2>
+        <Panel size="sm">
+          <p class="text-text-secondary leading-relaxed mb-phi-2">
+            We plan to offer paid hosted services in the future, including cloud infrastructure,
+            team synchronization, and enterprise compliance features.
+          </p>
+          <p class="text-text-secondary leading-relaxed">
+            When paid services become available, additional terms will apply. The community software
+            will remain free under the Motus Community Source License.
+          </p>
+        </Panel>
       </div>
 
       <div>
@@ -59,6 +98,13 @@ const lastUpdated = '2025-12-26';
         <p class="text-text-secondary leading-relaxed">
           We may update these terms from time to time. Changes will be posted on this page
           with an updated revision date.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Governing Law</h2>
+        <p class="text-text-secondary leading-relaxed">
+          These terms are governed by the laws of the State of Delaware, excluding conflict of law principles.
         </p>
       </div>
 

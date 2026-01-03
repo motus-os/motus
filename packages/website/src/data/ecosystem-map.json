@@ -1,11 +1,16 @@
 {
-  "version": "1.0",
+  "version": "1.1",
   "updated": "2026-01-02",
   "groups": [
     {
+      "id": "inputs",
+      "label": "Inputs",
+      "description": "Agents, orchestrators, and systems Motus governs."
+    },
+    {
       "id": "core",
-      "label": "Core Execution",
-      "description": "Minimum primitives that make AI work verifiable."
+      "label": "Motus Core",
+      "description": "Execution kernel + coordination surface."
     },
     {
       "id": "modules",
@@ -13,142 +18,27 @@
       "description": "Optional capabilities that extend the kernel without breaking invariants."
     },
     {
-      "id": "boundary",
-      "label": "Boundary Systems",
-      "description": "Tools and models Motus strengthens with governance and proof."
+      "id": "governance",
+      "label": "Proof + Governance",
+      "description": "Evidence, policy, and decision accountability."
+    },
+    {
+      "id": "future",
+      "label": "Future Economy",
+      "description": "Signed work, IP registries, and brokerage."
     }
   ],
   "nodes": [
     {
-      "id": "kernel",
-      "type": "internal",
-      "group": "core",
-      "label": "Motus Kernel",
-      "status": "current",
-      "registry_id": "kernel",
-      "summary": "Deterministic coordination layer and evidence ledger.",
-      "website_path": "/implementation#kernel",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md",
-      "proof_id": "kernel_schema"
-    },
-    {
-      "id": "coordination-api",
-      "type": "internal",
-      "group": "core",
-      "label": "Coordination API",
-      "status": "current",
-      "summary": "Six-call surface for claiming, updating, and releasing work.",
-      "website_path": "/how-it-works",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md",
-      "proof_id": "six_call_api"
-    },
-    {
-      "id": "roadmap-api",
-      "type": "internal",
-      "group": "core",
-      "label": "Roadmap API",
-      "status": "current",
-      "summary": "Plan, claim, review, and complete work without bypassing the kernel.",
-      "website_path": "/implementation#kernel",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
-    },
-    {
-      "id": "module-sdk",
-      "type": "internal",
-      "group": "modules",
-      "label": "Module SDK",
-      "status": "building",
-      "registry_id": "module-sdk",
-      "summary": "Interfaces and toggle behavior for bundled modules.",
-      "website_path": "/implementation#module-sdk",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/module-sdk.md"
-    },
-    {
-      "id": "capability-matrix",
-      "type": "internal",
-      "group": "modules",
-      "label": "Capability Matrix",
-      "status": "building",
-      "registry_id": "capability-matrix",
-      "summary": "Capability registry + grants with explainable eligibility.",
-      "website_path": "/implementation#capability-matrix",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/capability-matrix.md"
-    },
-    {
-      "id": "contract-compiler",
-      "type": "internal",
-      "group": "modules",
-      "label": "Contract Compiler",
-      "status": "building",
-      "registry_id": "contract-compiler",
-      "summary": "Compile standards into deterministic contracts and hashes.",
-      "website_path": "/implementation#contract-compiler",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/contract-compiler.md"
-    },
-    {
-      "id": "knowledge-engine",
-      "type": "internal",
-      "group": "modules",
-      "label": "Knowledge Engine",
-      "status": "building",
-      "registry_id": "knowledge-engine",
-      "summary": "Hot authority + cold reference with traceable retrieval.",
-      "website_path": "/implementation#knowledge-engine",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/knowledge-engine.md"
-    },
-    {
-      "id": "lens-engine",
-      "type": "internal",
-      "group": "modules",
-      "label": "Lens Engine",
-      "status": "building",
-      "registry_id": "lens-engine",
-      "summary": "Deterministic context assembly from contracts and knowledge.",
-      "website_path": "/implementation#lens-engine",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/lens-engine.md"
-    },
-    {
-      "id": "proof-engine",
-      "type": "internal",
-      "group": "modules",
-      "label": "Proof Engine",
-      "status": "building",
-      "registry_id": "proof-engine",
-      "summary": "Evidence bundles + validators for completion gates.",
-      "website_path": "/implementation#proof-engine",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/proof-engine.md"
-    },
-    {
-      "id": "module-manager",
-      "type": "internal",
-      "group": "modules",
-      "label": "Module Manager",
-      "status": "building",
-      "registry_id": "module-manager",
-      "summary": "Enable/disable modules with explicit config.",
-      "website_path": "/implementation#module-manager",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/module-manager.md"
-    },
-    {
-      "id": "motus-blueprints",
-      "type": "internal",
-      "group": "modules",
-      "label": "Motus Blueprints",
-      "status": "building",
-      "registry_id": "motus-blueprints",
-      "summary": "Deterministic scaffolding for programs and projects.",
-      "website_path": "/implementation#motus-blueprints",
-      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/motus-blueprints.md"
-    },
-    {
       "id": "langchain",
       "type": "external",
-      "group": "boundary",
+      "group": "inputs",
       "label": "LangChain",
       "status": "external",
       "logo": "/brand/ecosystem/langchain.svg",
       "external_url": "https://langchain.com",
       "summary": "Agent framework + tool routing.",
+      "flow_note": "Framework + tool orchestration",
       "improves": [
         {
           "label": "Deterministic context assembly",
@@ -173,12 +63,13 @@
     {
       "id": "n8n",
       "type": "external",
-      "group": "boundary",
+      "group": "inputs",
       "label": "n8n",
       "status": "external",
       "logo": "/brand/ecosystem/n8n.svg",
       "external_url": "https://n8n.io",
       "summary": "Workflow automation and integrations.",
+      "flow_note": "Workflow automation",
       "improves": [
         {
           "label": "Receipts for automation outcomes",
@@ -203,12 +94,13 @@
     {
       "id": "claude",
       "type": "external",
-      "group": "boundary",
+      "group": "inputs",
       "label": "Claude (Anthropic)",
       "status": "external",
       "logo": "/brand/ecosystem/anthropic.svg",
       "external_url": "https://www.anthropic.com/claude",
       "summary": "Foundation model for reasoning and generation.",
+      "flow_note": "Reasoning + generation",
       "improves": [
         {
           "label": "Context compression and grounding",
@@ -233,12 +125,13 @@
     {
       "id": "gemini",
       "type": "external",
-      "group": "boundary",
+      "group": "inputs",
       "label": "Gemini",
       "status": "external",
       "logo": "/brand/ecosystem/googlegemini.svg",
       "external_url": "https://gemini.google.com",
       "summary": "Multimodal model and assistant stack.",
+      "flow_note": "Multimodal assistants",
       "improves": [
         {
           "label": "Deterministic context assembly",
@@ -263,12 +156,13 @@
     {
       "id": "openai",
       "type": "external",
-      "group": "boundary",
+      "group": "inputs",
       "label": "OpenAI",
       "status": "external",
       "logo": "/brand/ecosystem/openai.png",
       "external_url": "https://openai.com",
       "summary": "Model APIs for agent and tool execution.",
+      "flow_note": "Model APIs",
       "improves": [
         {
           "label": "Context compression + Lens",
@@ -289,6 +183,214 @@
           ]
         }
       ]
+    },
+    {
+      "id": "kernel",
+      "type": "internal",
+      "group": "core",
+      "label": "Motus Kernel",
+      "status": "current",
+      "registry_id": "kernel",
+      "summary": "Deterministic coordination layer and evidence ledger.",
+      "flow_note": "Single source of truth",
+      "website_path": "/implementation#kernel",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md",
+      "proof_id": "kernel_schema"
+    },
+    {
+      "id": "work-compiler",
+      "type": "internal",
+      "group": "core",
+      "label": "Work Compiler",
+      "status": "current",
+      "summary": "Six-call loop that turns work into verified outcomes.",
+      "flow_note": "claim -> context -> outcome -> evidence -> decision -> release",
+      "website_path": "/how-it-works",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+    },
+    {
+      "id": "coordination-api",
+      "type": "internal",
+      "group": "core",
+      "label": "Coordination API",
+      "status": "current",
+      "summary": "Six-call surface for claiming, updating, and releasing work.",
+      "flow_note": "Public coordination surface",
+      "website_path": "/how-it-works",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md",
+      "proof_id": "six_call_api"
+    },
+    {
+      "id": "module-sdk",
+      "type": "internal",
+      "group": "modules",
+      "label": "Module SDK",
+      "status": "building",
+      "registry_id": "module-sdk",
+      "summary": "Interfaces and toggle behavior for bundled modules.",
+      "flow_note": "Module interface contracts",
+      "website_path": "/implementation#module-sdk",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/module-sdk.md"
+    },
+    {
+      "id": "capability-matrix",
+      "type": "internal",
+      "group": "modules",
+      "label": "Capability Matrix",
+      "status": "building",
+      "registry_id": "capability-matrix",
+      "summary": "Capability registry + grants with explainable eligibility.",
+      "flow_note": "Eligibility + grants",
+      "website_path": "/implementation#capability-matrix",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/capability-matrix.md"
+    },
+    {
+      "id": "contract-compiler",
+      "type": "internal",
+      "group": "modules",
+      "label": "Contract Compiler",
+      "status": "building",
+      "registry_id": "contract-compiler",
+      "summary": "Compile standards into deterministic contracts and hashes.",
+      "flow_note": "Standards -> contracts",
+      "website_path": "/implementation#contract-compiler",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/contract-compiler.md"
+    },
+    {
+      "id": "knowledge-engine",
+      "type": "internal",
+      "group": "modules",
+      "label": "Knowledge Engine",
+      "status": "building",
+      "registry_id": "knowledge-engine",
+      "summary": "Hot authority + cold reference with traceable retrieval.",
+      "flow_note": "Traceable knowledge",
+      "website_path": "/implementation#knowledge-engine",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/knowledge-engine.md"
+    },
+    {
+      "id": "lens-engine",
+      "type": "internal",
+      "group": "modules",
+      "label": "Lens Engine",
+      "status": "building",
+      "registry_id": "lens-engine",
+      "summary": "Deterministic context assembly from contracts and knowledge.",
+      "flow_note": "Deterministic context",
+      "website_path": "/implementation#lens-engine",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/lens-engine.md"
+    },
+    {
+      "id": "proof-engine",
+      "type": "internal",
+      "group": "modules",
+      "label": "Proof Engine",
+      "status": "building",
+      "registry_id": "proof-engine",
+      "summary": "Evidence bundles + validators for completion gates.",
+      "flow_note": "Evidence bundles",
+      "website_path": "/implementation#proof-engine",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/proof-engine.md"
+    },
+    {
+      "id": "module-manager",
+      "type": "internal",
+      "group": "modules",
+      "label": "Module Manager",
+      "status": "building",
+      "registry_id": "module-manager",
+      "summary": "Enable/disable modules with explicit config.",
+      "flow_note": "Module toggles",
+      "website_path": "/implementation#module-manager",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/module-manager.md"
+    },
+    {
+      "id": "motus-blueprints",
+      "type": "internal",
+      "group": "modules",
+      "label": "Motus Blueprints",
+      "status": "building",
+      "registry_id": "motus-blueprints",
+      "summary": "Deterministic scaffolding for programs and projects.",
+      "flow_note": "Deterministic scaffolds",
+      "website_path": "/implementation#motus-blueprints",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/motus-blueprints.md"
+    },
+    {
+      "id": "policy-gates",
+      "type": "internal",
+      "group": "governance",
+      "label": "Policy Gates",
+      "status": "current",
+      "summary": "Deterministic enforcement + evidence requirements.",
+      "flow_note": "Gate packs + enforcement",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md"
+    },
+    {
+      "id": "evidence-bundles",
+      "type": "internal",
+      "group": "governance",
+      "label": "Evidence Bundles",
+      "status": "current",
+      "summary": "Manifested proof artifacts with hashes and signatures.",
+      "flow_note": "Proof artifacts",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md"
+    },
+    {
+      "id": "decision-log",
+      "type": "internal",
+      "group": "governance",
+      "label": "Decision Log",
+      "status": "current",
+      "summary": "Append-only record of decisions and rationale.",
+      "flow_note": "Why + rationale",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+    },
+    {
+      "id": "roadmap-api",
+      "type": "internal",
+      "group": "governance",
+      "label": "Roadmap API",
+      "status": "current",
+      "summary": "Plan, claim, review, and complete work without bypassing the kernel.",
+      "flow_note": "Plan -> claim -> review",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+    },
+    {
+      "id": "work-ledger",
+      "type": "internal",
+      "group": "future",
+      "label": "Work Ledger",
+      "status": "future",
+      "registry_id": "work-ledger",
+      "summary": "Signed work receipts + provenance ledger for verified execution.",
+      "flow_note": "Signed provenance",
+      "website_path": "/implementation#work-ledger",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/work-ledger.md"
+    },
+    {
+      "id": "asset-registry",
+      "type": "internal",
+      "group": "future",
+      "label": "Asset Registry",
+      "status": "future",
+      "registry_id": "asset-registry",
+      "summary": "Registry of IP assets, owners, license terms, and usage rules.",
+      "flow_note": "IP + license terms",
+      "website_path": "/implementation#asset-registry",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/asset-registry.md"
+    },
+    {
+      "id": "motus-exchange",
+      "type": "internal",
+      "group": "future",
+      "label": "Motus Exchange",
+      "status": "future",
+      "registry_id": "motus-exchange",
+      "summary": "Brokerage layer for licensing IP and routing verified work.",
+      "flow_note": "Brokerage + settlement",
+      "website_path": "/implementation#motus-exchange",
+      "docs_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/motus-exchange.md"
     }
   ]
 }

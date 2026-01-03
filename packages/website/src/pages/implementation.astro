@@ -3,20 +3,51 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
-import PersonaCard from '../components/PersonaCard.astro';
 
 import registry from '../data/module-registry.json';
 
 const kernel = registry.kernel;
 const modules = registry.bundled_modules;
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 
 const statusClasses = {
-  current: 'bg-mint/20 text-mint border border-mint/40',
-  building: 'bg-line/10 text-text-secondary border border-line/10',
-  future: 'bg-line/5 text-text-secondary border border-line/10',
+  current: 'status-chip status-current',
+  building: 'status-chip status-building',
+  future: 'status-chip status-future',
 };
 
 const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1);
+const moduleCounts = modules.reduce(
+  (acc, module) => {
+    acc[module.status] = (acc[module.status] || 0) + 1;
+    return acc;
+  },
+  { current: 0, building: 0, future: 0 },
+);
+const startSteps = [
+  {
+    title: 'Install the CLI',
+    command: 'pip install motusos',
+    note: 'Installs the Motus command line tool.',
+  },
+  {
+    title: 'Prime your agent defaults',
+    command: 'motus install',
+    note: 'Enables protocol defaults and onboarding settings.',
+  },
+  {
+    title: 'Create a Motus workspace',
+    command: 'motus init --lite --path .',
+    note: 'Creates a minimal .motus/ layout in the current repo.',
+  },
+  {
+    title: 'Run health checks',
+    command: 'motus doctor',
+    note: 'Verifies schema, migrations, and local setup.',
+  },
+];
 ---
 
 <Layout title="Implementation">
@@ -31,65 +62,51 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
         size="xl"
         maxWidth="max-w-3xl"
       />
-
-      <div class="grid md:grid-cols-3 gap-phi-2">
-        {Object.entries(registry.status_semantics).map(([key, value]) => (
-          <Panel size="sm">
-            <div class="text-xs uppercase tracking-[0.2em] text-text-secondary">{key}</div>
-            <div class="mt-2 text-sm text-text-primary">{value}</div>
-          </Panel>
-        ))}
-      </div>
     </section>
 
-    <section class="mt-phi-6 space-y-phi-3">
-      <SectionHeader
-        eyebrow="By role"
-        title="Choose Your Path"
-        align="left"
-        size="md"
-      />
-
-      <div class="grid md:grid-cols-2 gap-phi-3">
-        <PersonaCard
-          title="Builder / Engineer"
-          hook="Start with kernel invariants."
-          value="Implement one module at a time using the module guides."
-          href="#kernel"
-          cta="Go to Kernel Guide"
-        />
-        <PersonaCard
-          title="Architect / CTO"
-          hook="Audit boundaries and scope."
-          value="Review the module registry and audit mapping to validate boundaries."
-          href="https://github.com/motus-os/motus/tree/main/packages/cli/docs"
-          cta="Open Docs Index"
-        />
-        <PersonaCard
-          title="Compliance / Reviewer"
-          hook="Focus on evidence capture."
-          value="Policy gates and append-only audit trails define the proof engine."
-          href="#proof-engine"
-          cta="Go to Proof Engine"
-        />
-        <PersonaCard
-          title="Product / Leadership"
-          hook="Track releases with status semantics."
-          value="Current, building, and future are defined in the registry."
-          href="#module-manager"
-          cta="Go to Module Manager"
-        />
-      </div>
+    <section class="mt-phi-5">
+      <Panel size="lg" class="space-y-phi-3">
+        <div class="flex flex-wrap items-start justify-between gap-phi-2">
+          <div class="space-y-phi-1">
+            <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Start Here</p>
+            <h2 class="text-2xl md:text-3xl font-display text-text-primary">
+              Prime your workspace in minutes
+            </h2>
+            <p class="text-text-secondary max-w-xl">
+              Use the <span class="text-text-primary font-medium">motus</span> CLI to prepare a workspace before any agent
+              runs. This is the smallest safe setup.
+            </p>
+          </div>
+          <a
+            href={`${base}ecosystem`}
+            class="text-mint hover:text-text-primary transition-colors text-sm uppercase tracking-[0.2em]"
+          >
+            View System Flow &#8594;
+          </a>
+        </div>
+        <div class="grid md:grid-cols-2 gap-phi-2">
+          {startSteps.map((step, index) => (
+            <Panel size="sm" class="space-y-phi-1">
+              <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Step {index + 1}</p>
+              <p class="text-text-primary font-medium">{step.title}</p>
+              <code class="text-mint font-mono text-sm">{step.command}</code>
+              <p class="text-text-secondary text-sm">{step.note}</p>
+            </Panel>
+          ))}
+        </div>
+        <p class="text-sm text-text-secondary">
+          Use <span class="text-text-primary font-medium">motus</span> as the CLI entrypoint (mc remains as a
+          deprecated alias). Continue with the 6-call execution loop in
+          <a href={`${base}how-it-works`} class="text-mint hover:text-text-primary transition-colors"> How It Works</a>.
+        </p>
+      </Panel>
     </section>
 
     <section class="mt-phi-6 space-y-phi-3">
       <div id="kernel" class="scroll-mt-24"></div>
-      <div id="proof-engine" class="scroll-mt-24"></div>
       <div class="flex flex-wrap items-center gap-phi-2">
         <h2 class="text-3xl font-display text-text-primary">{kernel.marketing_name}</h2>
-        <span class={`text-xs px-3 py-1 rounded-full ${statusClasses[kernel.status]}`}>
-          {statusLabel(kernel.status)}
-        </span>
+        <span class={statusClasses[kernel.status]}>{statusLabel(kernel.status)}</span>
       </div>
 
       <p class="text-text-secondary max-w-3xl">{kernel.description}</p>
@@ -115,40 +132,65 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
     </section>
 
     <section class="mt-phi-6 space-y-phi-3">
-      <div id="module-manager" class="scroll-mt-24"></div>
+      <div id="module-registry" class="scroll-mt-24"></div>
       <SectionHeader
-        title="Bundled Modules"
-        subtitle="Bundled modules are optional capabilities that must never violate kernel invariants. Each module has a defined scope, best practices, and roadmap."
+        title="Module Registry"
+        subtitle="Bundled modules are optional capabilities that extend the kernel without breaking invariants. The registry tracks scope, status, and best practices for each module."
         align="left"
         size="md"
         maxWidth="max-w-3xl"
       />
+      <div class="flex flex-wrap gap-phi-2 text-sm">
+        <span class={statusClasses.current}>Current {moduleCounts.current}</span>
+        <span class={statusClasses.building}>Building {moduleCounts.building}</span>
+        <span class={statusClasses.future}>Future {moduleCounts.future}</span>
+        <span class="text-text-secondary text-xs">
+          Source:
+          <a
+            class="text-mint hover:text-text-primary transition-colors"
+            href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml"
+            target="_blank"
+            rel="noopener"
+          >
+            module-registry.yaml
+          </a>
+        </span>
+      </div>
 
       <div class="grid md:grid-cols-2 gap-phi-3">
         {modules.map((module) => (
-          <Panel size="sm" class="space-y-phi-2">
-            <div class="flex items-center justify-between gap-phi-2">
-              <div>
-                <h3 class="text-lg font-display text-text-primary">{module.marketing_name}</h3>
-                <p class="text-sm text-text-secondary">{module.description}</p>
+          <div id={module.id} class="scroll-mt-24">
+            <Panel size="sm" class="space-y-phi-2">
+              <div class="flex items-start justify-between gap-phi-2">
+                <div>
+                  <h3 class="text-lg font-display text-text-primary">{module.marketing_name}</h3>
+                  <p class="text-sm text-text-secondary">{module.description}</p>
+                </div>
+                <span class={statusClasses[module.status]}>{statusLabel(module.status)}</span>
               </div>
-              <span class={`text-xs px-3 py-1 rounded-full ${statusClasses[module.status]}`}>
-                {statusLabel(module.status)}
-              </span>
-            </div>
-            <div class="text-xs text-text-secondary uppercase tracking-[0.2em]">Best Practices</div>
-            <ul class="space-y-phi-1 text-sm text-text-secondary">
-              {module.best_practices.map((item) => (
-                <li>- {item}</li>
-              ))}
-            </ul>
-            <div class="flex flex-wrap gap-phi-1 text-xs text-text-secondary">
-              <span class="px-2 py-1 rounded-full border border-line/10">{module.scope}</span>
-              {module.roadmap_id ? (
-                <span class="px-2 py-1 rounded-full border border-line/10">{module.roadmap_id}</span>
-              ) : null}
-            </div>
-          </Panel>
+              <ul class="space-y-phi-1 text-sm text-text-secondary">
+                {module.best_practices.slice(0, 2).map((item) => (
+                  <li>- {item}</li>
+                ))}
+              </ul>
+              <div class="flex flex-wrap gap-phi-1 text-xs text-text-secondary">
+                <span class="px-2 py-1 rounded-full border border-line/10">{module.scope}</span>
+                {module.roadmap_id ? (
+                  <span class="px-2 py-1 rounded-full border border-line/10">{module.roadmap_id}</span>
+                ) : null}
+                {module.implementation_guides?.docs ? (
+                  <a
+                    href={`https://github.com/motus-os/motus/blob/main/${module.implementation_guides.docs}`}
+                    class="text-mint hover:text-text-primary transition-colors"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Docs
+                  </a>
+                ) : null}
+              </div>
+            </Panel>
+          </div>
         ))}
       </div>
     </section>
@@ -162,13 +204,19 @@ const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1)
         maxWidth="max-w-3xl"
       />
       <div class="flex flex-wrap gap-3 text-sm">
-        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/tree/main/packages/cli/docs">
+        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/tree/main/packages/cli/docs" target="_blank" rel="noopener">
           Docs Index
         </a>
-        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md">
+        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md" target="_blank" rel="noopener">
+          CLI Reference
+        </a>
+        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md" target="_blank" rel="noopener">
+          Coordination API
+        </a>
+        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md" target="_blank" rel="noopener">
           Kernel Guide
         </a>
-        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml">
+        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml" target="_blank" rel="noopener">
           Module Registry
         </a>
       </div>

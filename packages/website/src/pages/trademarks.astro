@@ -1,0 +1,87 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Panel from '../components/Panel.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+
+const lastUpdated = '2025-12-31';
+---
+
+<Layout title="Trademarks">
+  <Section tone="light" class="text-center" innerClass="max-w-3xl">
+    <SectionHeader
+      title="Trademarks"
+      subtitle={`Last updated: ${lastUpdated}`}
+      as="h1"
+      size="xl"
+    />
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-3xl">
+    <div class="space-y-phi-5">
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Motus Trademark Policy</h2>
+        <Panel size="sm">
+          <p class="text-text-secondary leading-relaxed">
+            "Motus" and Motus logos are trademarks of Veritas Collaborative, LLC.
+          </p>
+        </Panel>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">You May</h2>
+        <Panel size="sm">
+          <ul class="list-disc list-inside text-text-secondary space-y-1">
+            <li>Say "Built with Motus" or "Powered by Motus" in a truthful way</li>
+            <li>Distribute Motus with attribution intact under the community license</li>
+            <li>Reference Motus in documentation, blogs, and education</li>
+            <li>Use Motus in community meetup names (e.g., "Motus Users NYC")</li>
+          </ul>
+        </Panel>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">You May Not</h2>
+        <Panel size="sm">
+          <ul class="list-disc list-inside text-text-secondary space-y-1">
+            <li>Use "Motus" in your product, company, or service name</li>
+            <li>Use Motus logos in your own branding or marketing materials</li>
+            <li>Remove or obscure Motus attribution in UI, CLI, or docs</li>
+            <li>Describe your fork as "official Motus" or imply endorsement</li>
+            <li>Register confusingly similar domain names</li>
+          </ul>
+        </Panel>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Forks</h2>
+        <p class="text-text-secondary leading-relaxed">
+          Forks must use a distinct name and remove Motus branding. You may state
+          "Based on Motus" or "Fork of Motus" for attribution, but you may not use "Motus"
+          in the fork name.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Commercial Use</h2>
+        <p class="text-text-secondary leading-relaxed">
+          If you want to white-label Motus, use "Motus" in your product name, or become a
+          certified partner, contact us at
+          <a href="mailto:licensing@motusos.ai" class="text-mint hover:text-text-primary transition-colors">
+            licensing@motusos.ai
+          </a>.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-display text-text-primary mb-phi-2">Reporting Misuse</h2>
+        <p class="text-text-secondary leading-relaxed">
+          If you see trademark misuse, report it to
+          <a href="mailto:legal@motusos.ai" class="text-mint hover:text-text-primary transition-colors">
+            legal@motusos.ai
+          </a>.
+        </p>
+      </div>
+    </div>
+  </Section>
+</Layout>
