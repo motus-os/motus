@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 from __future__ import annotations
 
 import json
@@ -184,13 +187,13 @@ class AuditLog:
         files_to_scan: list[Path] = []
         if since is not None or until is not None:
             # Scan specific date range
-            # Use reasonable bounds instead of datetime.max to avoid overflow
-            min_date = datetime(1970, 1, 1, tzinfo=timezone.utc)
-            max_date = datetime(9999, 12, 30, tzinfo=timezone.utc)  # Leave room for +1 day
-            start_date = (since or min_date).date()
-            end_date = min((until or max_date).date(), max_date.date())
-            current_date = start_date
+            # Use today as max bound - can't have events from the future
             from datetime import timedelta
+            min_date = datetime(1970, 1, 1, tzinfo=timezone.utc)
+            today = _utcnow().date()
+            start_date = (since or min_date).date()
+            end_date = (until.date() if until is not None else today)
+            current_date = start_date
             while current_date <= end_date:
                 dt = datetime.combine(current_date, datetime.min.time(), tzinfo=timezone.utc)
                 path = self._ledger_path(dt)

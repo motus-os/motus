@@ -229,12 +229,10 @@ class TestFindRelatedTests:
         tests_dir.mkdir()
         (tests_dir / "test_cli.py").write_text("# tests")
 
-        with patch("motus.safety.glob.glob") as mock_glob:
-            mock_glob.return_value = [str(tests_dir / "test_cli.py")]
-
+        with patch("motus.safety.test_harness.Path.cwd", return_value=tmp_path):
             related = find_related_tests("cli.py")
 
-            assert len(related) >= 0  # May find files depending on glob behavior
+            assert str(tests_dir / "test_cli.py") in related
 
 
 class TestMemory:

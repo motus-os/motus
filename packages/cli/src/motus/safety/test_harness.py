@@ -1,6 +1,8 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Test harness detection."""
 
-import glob
 from pathlib import Path
 
 from rich.console import Console
@@ -45,6 +47,7 @@ def find_related_tests(source_file: str) -> list[str]:
     """Find test files related to a source file."""
     source_path = Path(source_file)
     base_name = source_path.stem
+    cwd = Path.cwd()
 
     # Common patterns for test file naming
     patterns = [
@@ -59,7 +62,8 @@ def find_related_tests(source_file: str) -> list[str]:
 
     related = []
     for pattern in patterns:
-        related.extend(glob.glob(pattern, recursive=True))
+        # Use cwd.glob() to bound search to current directory, not entire filesystem
+        related.extend(str(p) for p in cwd.glob(pattern))
 
     return list(set(related))
 
