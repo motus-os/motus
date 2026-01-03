@@ -31,6 +31,9 @@ for (const claim of proofLedger.claims) {
   if (!allowedProofStatuses.has(claim.status)) {
     throw new Error(`Proof ledger claim ${claim.id} has invalid status.`);
   }
+  if (typeof claim.featured !== 'boolean') {
+    throw new Error(`Proof ledger claim ${claim.id} missing featured boolean.`);
+  }
   if (claim.status === 'verified' && !claim.verified_on) {
     throw new Error(`Proof ledger claim ${claim.id} missing verified_on date.`);
   }
@@ -41,6 +44,7 @@ for (const claim of proofLedger.claims) {
     throw new Error(`Proof ledger claim ${claim.id} missing evidence.`);
   }
 }
+const featuredClaims = proofLedger.claims.filter((claim) => claim.featured);
 const moduleHighlights = [
   {
     name: 'LENS',
@@ -145,7 +149,7 @@ const moduleHighlights = [
       </a>
     </div>
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-2">
-      {proofLedger.claims.map((claim) => {
+      {featuredClaims.map((claim) => {
         const statusClass = claim.status === 'verified' ? 'status-current' : 'status-building';
         const statusLabel = claim.status === 'verified' ? 'Verified' : 'Target';
         return (

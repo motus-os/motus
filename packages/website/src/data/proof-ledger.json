@@ -2,6 +2,7 @@
   "claims": [
     {
       "id": "six_call_api",
+      "featured": true,
       "status": "verified",
       "verified_on": "2026-01-02",
       "method": "Docs-backed: coordination API reference",
@@ -15,6 +16,7 @@
     },
     {
       "id": "module_registry",
+      "featured": true,
       "status": "verified",
       "verified_on": "2026-01-02",
       "method": "Docs-backed: module registry definitions",
@@ -28,6 +30,7 @@
     },
     {
       "id": "kernel_schema",
+      "featured": true,
       "status": "verified",
       "verified_on": "2026-01-02",
       "method": "Docs-backed: kernel schema definition",
@@ -41,6 +44,7 @@
     },
     {
       "id": "docs_registry_sync",
+      "featured": true,
       "status": "verified",
       "verified_on": "2026-01-02",
       "method": "CI-backed: registry sync gate",
@@ -49,6 +53,34 @@
         {
           "label": "Registry sync gate",
           "url": "https://github.com/motus-os/motus/blob/main/packages/cli/scripts/ci/check_module_registry.py"
+        }
+      ]
+    },
+    {
+      "id": "no_cloud_dependency",
+      "featured": false,
+      "status": "verified",
+      "verified_on": "2026-01-03",
+      "method": "Docs-backed: architecture principle",
+      "claim": "No cloud dependency; data stays local by default.",
+      "evidence": [
+        {
+          "label": "Architecture doc",
+          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/architecture.md"
+        }
+      ]
+    },
+    {
+      "id": "coordination_db_source",
+      "featured": false,
+      "status": "verified",
+      "verified_on": "2026-01-03",
+      "method": "Docs-backed: kernel invariants",
+      "claim": "coordination.db is the single source of truth for work state.",
+      "evidence": [
+        {
+          "label": "Kernel guide",
+          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
         }
       ]
     }
