@@ -178,11 +178,20 @@ const moduleHighlights = [
     </div>
   </Section>
 
-  <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-4xl">
+  <Section tone="dark" pad="slim" class="border-y border-line/10" innerClass="max-w-4xl">
     <div class="text-center space-y-phi-2">
-      <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Maintained By</p>
-      <h2 class="text-2xl md:text-3xl font-display text-text-primary">Veritas Collaborative, LLC</h2>
-      <p class="text-text-secondary">
+      <div class="flex flex-wrap items-center justify-center gap-phi-2">
+        <img
+          src={`${base}brand/veritas-v-white.svg`}
+          alt="Veritas Collaborative"
+          class="h-7 w-7 md:h-8 md:w-8"
+        />
+        <div class="text-left">
+          <p class="text-[0.62rem] uppercase tracking-[0.35em] text-text-secondary">Maintained By</p>
+          <h2 class="text-lg md:text-xl font-display text-text-primary">Veritas Collaborative, LLC</h2>
+        </div>
+      </div>
+      <p class="text-sm text-text-secondary">
         Source-available, proof-first infrastructure for AI agent execution.
       </p>
       <div class="flex flex-wrap justify-center gap-phi-2 text-sm">
