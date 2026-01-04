@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Extract and summarize errors from session files (`mc errors`)."""
+"""Extract and summarize errors from session files (`motus errors`)."""
 
 from __future__ import annotations
 

@@ -1,11 +1,11 @@
-"""Web UI smoke test using httpx with the running mc web server.
+"""Web UI smoke test using httpx with the running motus web server.
 
 This is a lightweight DOM-level check to ensure key elements are present
 in the dashboard when served with mock data. It does not rely on snapshots
 and is intended to be fast and deterministic.
 
 To run:
-    1) Start the web server (e.g., `mc web` in another terminal)
+    1) Start the web server (e.g., `motus web` in another terminal)
     2) Run this test: `pytest tests/test_web_smoke.py`
 
 Note: This uses httpx to fetch the page and BeautifulSoup to parse it.
@@ -22,7 +22,7 @@ from bs4 import BeautifulSoup
 
 @pytest.fixture(scope="module")
 def dashboard_html():
-    """Fetch the dashboard HTML from a running mc web server.
+    """Fetch the dashboard HTML from a running motus web server.
 
     Assumes the server is running at http://127.0.0.1:4000.
     """

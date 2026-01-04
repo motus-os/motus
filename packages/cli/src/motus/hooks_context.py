@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Context extraction helpers for MC Claude Code hooks."""
+"""Context extraction helpers for Motus Claude Code hooks."""
 
 import json
 from datetime import datetime, timedelta
@@ -26,7 +26,7 @@ def get_project_sessions(
     mc_state_dir: Path | None = None,
     gemini_dir: Path | None = None,
 ) -> list:
-    """Find recent MC sessions for a project directory."""
+    """Find recent Motus sessions for a project directory."""
     sessions = []
     cutoff = datetime.now() - timedelta(hours=max_age_hours)
     claude_dir = claude_dir or CLAUDE_DIR

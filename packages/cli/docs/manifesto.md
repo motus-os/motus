@@ -1,4 +1,4 @@
-# Motus Command Manifesto
+# Motus Manifesto
 
 **The Local-First Agent Kernel for Autonomous AI Systems**
 
@@ -8,7 +8,7 @@ Modern AI agents operate without the foundational primitives every autonomous sy
 
 Cloud vendors cannot — and will not — provide these capabilities locally. Frameworks cannot standardize them because they are built on shifting abstractions.
 
-Motus Command exists to supply the missing layer: **a local-first agent kernel.**
+Motus exists to supply the missing layer: **a local-first agent kernel.**
 
 ---
 
@@ -111,7 +111,7 @@ So Motus provides the kernel — the base layer every agent relies on but none h
 
 ## The Declaration
 
-**Motus Command is the Agent Kernel:** the trace plane, file system, watchdog, syscall layer, and governance substrate upon which reliable autonomous systems can be built.
+**Motus is the Agent Kernel:** the trace plane, file system, watchdog, syscall layer, and governance substrate upon which reliable autonomous systems can be built.
 
 It is the minimal, stable, local-first foundation for the next generation of AI agents.
 

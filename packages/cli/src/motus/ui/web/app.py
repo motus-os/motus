@@ -162,7 +162,7 @@ class MCWebServer:
 
 
 def run_web(port: Optional[int] = None, no_browser: bool = False):
-    """Entry point for mc web command.
+    """Entry point for motus web command.
 
     Args:
         port: Port to run on (None = 4000)

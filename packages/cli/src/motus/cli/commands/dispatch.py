@@ -319,14 +319,14 @@ def dispatch_command(
         console.print("[bold]Motus - Observability for AI agents[/bold]\n")
         console.print("Start the dashboard:")
         console.print(
-            "  mc web        Launch web dashboard at http://127.0.0.1:4000\n",
+            "  motus web     Launch web dashboard at http://127.0.0.1:4000\n",
             markup=False,
         )
         console.print("Commands:")
-        console.print("  mc list       List all sessions", markup=False)
-        console.print("  mc show <id>  Show session details", markup=False)
-        console.print("  mc feed <id>  Show recent event feed", markup=False)
-        console.print("  mc --help     Full command reference\n", markup=False)
+        console.print("  motus list    List all sessions", markup=False)
+        console.print("  motus show <id>  Show session details", markup=False)
+        console.print("  motus feed <id>  Show recent event feed", markup=False)
+        console.print("  motus --help  Full command reference\n", markup=False)
         print_parser_help(console, bundle.parser)
         return
 

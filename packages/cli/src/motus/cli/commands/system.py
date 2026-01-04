@@ -87,7 +87,7 @@ def register_system_parsers(subparsers: argparse._SubParsersAction) -> None:
         help="Repair missing directories and update current pointer (never deletes data)",
     )
 
-    config_parser = subparsers.add_parser("config", help="Manage MC configuration")
+    config_parser = subparsers.add_parser("config", help="Manage Motus configuration")
     config_parser.add_argument(
         "config_args",
         nargs="*",

@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Config management command (`mc config`)."""
+"""Config management command (`motus config`)."""
 
 from __future__ import annotations
 
@@ -144,23 +144,23 @@ def config_command(args: list[str]) -> None:
     """Dispatch config subcommands.
 
     Usage:
-        mc config show          - Show current configuration
-        mc config get <key>     - Get single value
-        mc config set <key> <value> - Set value
-        mc config reset         - Reset to defaults
-        mc config path          - Show config file path
+        motus config show          - Show current configuration
+        motus config get <key>     - Get single value
+        motus config set <key> <value> - Set value
+        motus config reset         - Reset to defaults
+        motus config path          - Show config file path
     """
     if not args or args[0] in ("show", "-h", "--help"):
         if not args or args[0] == "show":
             config_show()
         else:
-            console.print("[bold]mc config[/bold] - Manage MC configuration\n")
+            console.print("[bold]motus config[/bold] - Manage Motus configuration\n")
             console.print("Usage:")
-            console.print("  mc config show              Show current configuration")
-            console.print("  mc config get <key>         Get single value")
-            console.print("  mc config set <key> <value> Set value")
-            console.print("  mc config reset             Reset to defaults")
-            console.print("  mc config path              Show config file path")
+            console.print("  motus config show              Show current configuration")
+            console.print("  motus config get <key>         Get single value")
+            console.print("  motus config set <key> <value> Set value")
+            console.print("  motus config reset             Reset to defaults")
+            console.print("  motus config path              Show config file path")
         return
 
     subcommand_name = args[0]
@@ -168,14 +168,14 @@ def config_command(args: list[str]) -> None:
     if subcommand_name == "get":
         if len(args) < 2:
             console.print("[red]Error:[/red] Missing key argument")
-            console.print("Usage: mc config get <key>")
+            console.print("Usage: motus config get <key>")
             sys.exit(1)
         config_get(args[1])
 
     elif subcommand_name == "set":
         if len(args) < 3:
             console.print("[red]Error:[/red] Missing key or value argument")
-            console.print("Usage: mc config set <key> <value>")
+            console.print("Usage: motus config set <key> <value>")
             sys.exit(1)
         config_set(args[1], args[2])
 

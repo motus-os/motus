@@ -42,7 +42,7 @@ def _write_vault_tree(tmp_path: Path) -> Path:
 
 
 def test_policy_plan_help_exists(capsys) -> None:
-    with patch("sys.argv", ["mc", "policy", "plan", "--help"]):
+    with patch("sys.argv", ["motus", "policy", "plan", "--help"]):
         from motus.cli.core import main
 
         with pytest.raises(SystemExit) as e:
@@ -50,11 +50,11 @@ def test_policy_plan_help_exists(capsys) -> None:
 
     assert e.value.code == 0
     out = capsys.readouterr().out
-    assert "usage: mc policy plan" in out
+    assert "usage: motus policy plan" in out
 
 
 def test_policy_run_help_exists(capsys) -> None:
-    with patch("sys.argv", ["mc", "policy", "run", "--help"]):
+    with patch("sys.argv", ["motus", "policy", "run", "--help"]):
         from motus.cli.core import main
 
         with pytest.raises(SystemExit) as e:
@@ -62,11 +62,11 @@ def test_policy_run_help_exists(capsys) -> None:
 
     assert e.value.code == 0
     out = capsys.readouterr().out
-    assert "usage: mc policy run" in out
+    assert "usage: motus policy run" in out
 
 
 def test_policy_verify_help_exists(capsys) -> None:
-    with patch("sys.argv", ["mc", "policy", "verify", "--help"]):
+    with patch("sys.argv", ["motus", "policy", "verify", "--help"]):
         from motus.cli.core import main
 
         with pytest.raises(SystemExit) as e:
@@ -74,11 +74,11 @@ def test_policy_verify_help_exists(capsys) -> None:
 
     assert e.value.code == 0
     out = capsys.readouterr().out
-    assert "usage: mc policy verify" in out
+    assert "usage: motus policy verify" in out
 
 
 def test_policy_prune_help_exists(capsys) -> None:
-    with patch("sys.argv", ["mc", "policy", "prune", "--help"]):
+    with patch("sys.argv", ["motus", "policy", "prune", "--help"]):
         from motus.cli.core import main
 
         with pytest.raises(SystemExit) as e:
@@ -86,7 +86,7 @@ def test_policy_prune_help_exists(capsys) -> None:
 
     assert e.value.code == 0
     out = capsys.readouterr().out
-    assert "usage: mc policy prune" in out
+    assert "usage: motus policy prune" in out
 
 
 def test_policy_plan_requires_change_input(tmp_path: Path) -> None:
@@ -97,7 +97,7 @@ def test_policy_plan_requires_change_input(tmp_path: Path) -> None:
     with patch(
         "sys.argv",
         [
-            "mc",
+            "motus",
             "policy",
             "plan",
             "--vault-dir",
@@ -123,7 +123,7 @@ def test_policy_plan_outputs_deterministic_plan(tmp_path: Path, capsys) -> None:
     with patch(
         "sys.argv",
         [
-            "mc",
+            "motus",
             "policy",
             "plan",
             "--vault-dir",
@@ -176,7 +176,7 @@ def test_policy_run_exits_with_runner_code(tmp_path: Path) -> None:
         with patch(
             "sys.argv",
             [
-                "mc",
+                "motus",
                 "policy",
                 "run",
                 "--vault-dir",

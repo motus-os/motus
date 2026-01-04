@@ -1,6 +1,6 @@
-# Extending Motus Command
+# Extending Motus
 
-Motus Command is structured around a small set of primitives:
+Motus is structured around a small set of primitives:
 
 - Ingestors (source adapters)
 - Protocols (unified dataclasses + validated schema)

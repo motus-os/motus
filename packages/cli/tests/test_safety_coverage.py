@@ -176,7 +176,7 @@ class TestListCheckpointsCommand:
 
             captured = capsys.readouterr()
             assert "No checkpoints found" in captured.out
-            assert "mc checkpoint" in captured.out
+            assert "motus checkpoint" in captured.out
 
     def test_list_checkpoints_command_with_checkpoints(self, capsys, tmp_path):
         """Test list_checkpoints_command with existing checkpoints."""
@@ -215,7 +215,7 @@ class TestListCheckpointsCommand:
             assert "Checkpoints" in captured.out
             assert "mc-20250115-120000" in captured.out
             assert "recent checkpoint" in captured.out
-            assert "mc rollback" in captured.out
+            assert "motus rollback" in captured.out
 
     def test_list_checkpoints_command_invalid_timestamp(self, capsys, tmp_path):
         """Test list_checkpoints_command with invalid timestamp."""

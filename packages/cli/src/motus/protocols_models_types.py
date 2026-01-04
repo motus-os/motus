@@ -78,7 +78,7 @@ class TeleportBundle:
     """
     Portable context for cross-session transfer.
 
-    Used by `mc teleport` to transfer context between sessions/models.
+    Used by `motus teleport` to transfer context between sessions/models.
     """
 
     source_session: str

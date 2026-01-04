@@ -499,18 +499,18 @@ class TestMainFunction:
 
     def test_main_no_args_shows_help(self, capsys):
         """Test main with no args shows help and suggests web."""
-        with patch("sys.argv", ["mc"]):
+        with patch("sys.argv", ["motus"]):
             from motus.cli.core import main
 
             main()
 
         out = capsys.readouterr().out
-        assert "mc web" in out
+        assert "motus web" in out
         assert "usage:" in out.lower()
 
     def test_main_watch_command(self):
         """Test main dispatches watch command."""
-        with patch("sys.argv", ["mc", "watch"]):
+        with patch("sys.argv", ["motus", "watch"]):
             with patch("motus.cli.core.watch_command") as mock_watch:
                 from motus.cli.core import main
 
@@ -520,7 +520,7 @@ class TestMainFunction:
 
     def test_main_watch_command_with_session_id(self):
         """Test main dispatches watch command with session ID."""
-        with patch("sys.argv", ["mc", "watch", "test-session-123"]):
+        with patch("sys.argv", ["motus", "watch", "test-session-123"]):
             with patch("motus.cli.core.watch_command") as mock_watch:
                 from motus.cli.core import main
 
@@ -532,7 +532,7 @@ class TestMainFunction:
 
     def test_main_list_command(self):
         """Test main dispatches list command."""
-        with patch("sys.argv", ["mc", "list"]):
+        with patch("sys.argv", ["motus", "list"]):
             with patch("motus.cli.core.list_sessions") as mock_list:
                 from motus.cli.core import main
 
@@ -544,7 +544,7 @@ class TestMainFunction:
 
     def test_main_list_command_fast_flag(self):
         """Test main dispatches list command with fast flag."""
-        with patch("sys.argv", ["mc", "list", "--fast"]):
+        with patch("sys.argv", ["motus", "list", "--fast"]):
             with patch("motus.cli.core.list_sessions") as mock_list:
                 from motus.cli.core import main
 
@@ -556,7 +556,7 @@ class TestMainFunction:
 
     def test_main_web_command(self):
         """Test main dispatches web command."""
-        with patch("sys.argv", ["mc", "web"]):
+        with patch("sys.argv", ["motus", "web"]):
             with patch("motus.ui.web.run_web") as mock_web:
                 from motus.cli.core import main
 
@@ -566,7 +566,7 @@ class TestMainFunction:
 
     def test_main_summary_command_no_session_id(self):
         """Test main dispatches summary command without session ID."""
-        with patch("sys.argv", ["mc", "summary"]):
+        with patch("sys.argv", ["motus", "summary"]):
             with patch("motus.cli.core.summary_command") as mock_summary:
                 from motus.cli.core import main
 
@@ -576,7 +576,7 @@ class TestMainFunction:
 
     def test_main_summary_command_with_session_id(self):
         """Test main dispatches summary command with session ID."""
-        with patch("sys.argv", ["mc", "summary", "session-456"]):
+        with patch("sys.argv", ["motus", "summary", "session-456"]):
             with patch("motus.cli.core.summary_command") as mock_summary:
                 from motus.cli.core import main
 
@@ -586,7 +586,7 @@ class TestMainFunction:
 
     def test_main_teleport_command(self):
         """Test main dispatches teleport command."""
-        with patch("sys.argv", ["mc", "teleport", "session-789"]):
+        with patch("sys.argv", ["motus", "teleport", "session-789"]):
             with patch("motus.cli.core.teleport_command") as mock_teleport:
                 from motus.cli.core import main
 
@@ -598,7 +598,7 @@ class TestMainFunction:
 
     def test_main_teleport_command_with_no_docs(self):
         """Test main dispatches teleport command with --no-docs flag."""
-        with patch("sys.argv", ["mc", "teleport", "session-123", "--no-docs"]):
+        with patch("sys.argv", ["motus", "teleport", "session-123", "--no-docs"]):
             with patch("motus.cli.core.teleport_command") as mock_teleport:
                 from motus.cli.core import main
 
@@ -610,7 +610,7 @@ class TestMainFunction:
 
     def test_main_teleport_command_with_output(self):
         """Test main dispatches teleport command with output file."""
-        with patch("sys.argv", ["mc", "teleport", "session-123", "-o", "bundle.json"]):
+        with patch("sys.argv", ["motus", "teleport", "session-123", "-o", "bundle.json"]):
             with patch("motus.cli.core.teleport_command") as mock_teleport:
                 from motus.cli.core import main
 
@@ -621,7 +621,7 @@ class TestMainFunction:
 
     def test_main_init_command(self):
         """Test main dispatches init command."""
-        with patch("sys.argv", ["mc", "init", "--full", "--path", "/tmp"]):
+        with patch("sys.argv", ["motus", "init", "--full", "--path", "/tmp"]):
             with patch("motus.commands.init_cmd.init_command") as mock_init:
                 from motus.cli.core import main
 
@@ -633,7 +633,7 @@ class TestMainFunction:
         """Test main dispatches checkpoint command."""
         from pathlib import Path
 
-        with patch("sys.argv", ["mc", "checkpoint", "before-refactor"]):
+        with patch("sys.argv", ["motus", "checkpoint", "before-refactor"]):
             with patch("motus.checkpoint.create_checkpoint") as mock_create:
                 mock_create.return_value = MagicMock(
                     id="mc-20250101-120000-000",
@@ -654,7 +654,7 @@ class TestMainFunction:
         """Test main dispatches checkpoints command."""
         from pathlib import Path
 
-        with patch("sys.argv", ["mc", "checkpoints"]):
+        with patch("sys.argv", ["motus", "checkpoints"]):
             with patch("motus.checkpoint.list_checkpoints") as mock_list:
                 mock_list.return_value = [
                     MagicMock(
@@ -678,7 +678,7 @@ class TestMainFunction:
         """Test main dispatches rollback command."""
         from pathlib import Path
 
-        with patch("sys.argv", ["mc", "rollback", "mc-20250101-120000-000"]):
+        with patch("sys.argv", ["motus", "rollback", "mc-20250101-120000-000"]):
             with patch("motus.checkpoint.rollback_checkpoint") as mock_rollback:
                 mock_rollback.return_value = MagicMock(
                     id="mc-20250101-120000-000",
@@ -699,7 +699,7 @@ class TestMainFunction:
         """Test main dispatches diff command."""
         from pathlib import Path
 
-        with patch("sys.argv", ["mc", "diff", "mc-20250101-120000-000"]):
+        with patch("sys.argv", ["motus", "diff", "mc-20250101-120000-000"]):
             with patch("motus.checkpoint.diff_checkpoint") as mock_diff:
                 mock_diff.return_value = "diff --git a/foo b/foo\n"
 

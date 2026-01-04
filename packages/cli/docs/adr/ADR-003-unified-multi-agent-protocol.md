@@ -7,7 +7,7 @@ Accepted (retroactive)
 2025-12-18 (documented); retroactive to v0.2.x
 
 ## Context
-Motus Command supports multiple “agent session” sources with different raw formats and conventions:
+Motus supports multiple “agent session” sources with different raw formats and conventions:
 
 - Claude Code (JSONL event stream)
 - OpenAI Codex CLI (JSONL event stream)

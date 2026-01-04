@@ -26,7 +26,7 @@ def test_mcformatter_json_includes_extra_fields(monkeypatch: pytest.MonkeyPatch)
     monkeypatch.setattr(mc_logging, "datetime", _FixedDateTime)
     formatter = mc_logging.MCFormatter(json_format=True)
     record = logging.LogRecord(
-        name="mc.test",
+        name="motus.test",
         level=logging.INFO,
         pathname=__file__,
         lineno=1,
@@ -56,7 +56,7 @@ def test_mcformatter_json_includes_exception(monkeypatch: pytest.MonkeyPatch) ->
         exc_info = sys.exc_info()
 
     record = logging.LogRecord(
-        name="mc.test",
+        name="motus.test",
         level=logging.ERROR,
         pathname=__file__,
         lineno=1,
@@ -76,7 +76,7 @@ def test_mcformatter_console_includes_level_and_message(
     monkeypatch.setattr(mc_logging, "datetime", _FixedDateTime)
     formatter = mc_logging.MCFormatter(json_format=False)
     record = logging.LogRecord(
-        name="mc.test",
+        name="motus.test",
         level=logging.WARNING,
         pathname=__file__,
         lineno=1,

@@ -24,7 +24,7 @@ def test_mc_help_tier_0_shows_only_tier_0_commands(
 ) -> None:
     monkeypatch.setenv("MC_HELP_TIER", "0")
 
-    out = _run_cli_help(monkeypatch, capsys, argv=["mc", "--help"])
+    out = _run_cli_help(monkeypatch, capsys, argv=["motus", "--help"])
 
     assert "Tier 0" in out
     assert "  web" in out
@@ -44,7 +44,7 @@ def test_mc_help_tier_2_includes_policy(
 ) -> None:
     monkeypatch.setenv("MC_HELP_TIER", "2")
 
-    out = _run_cli_help(monkeypatch, capsys, argv=["mc", "--help"])
+    out = _run_cli_help(monkeypatch, capsys, argv=["motus", "--help"])
 
     assert "Tier 2" in out
     assert "  policy" in out
@@ -58,7 +58,7 @@ def test_mc_help_all_shows_advanced_commands(
 ) -> None:
     monkeypatch.setenv("MC_HELP_TIER", "0")
 
-    out = _run_cli_help(monkeypatch, capsys, argv=["mc", "--help-all"])
+    out = _run_cli_help(monkeypatch, capsys, argv=["motus", "--help-all"])
 
     assert "Tier 3" in out
     assert "  orient" in out

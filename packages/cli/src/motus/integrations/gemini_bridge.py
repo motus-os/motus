@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-Gemini Bridge for Motus Command.
+Gemini Bridge for Motus.
 
 Use this script to bridge a running Gemini session (like a CLI or Agent)
 into the Motus observability plane.

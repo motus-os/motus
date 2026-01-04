@@ -7,7 +7,7 @@ Accepted (retroactive)
 2025-12-18 (documented); retroactive to v0.3.x
 
 ## Context
-Motus Command is used in two primary modes:
+Motus is used in two primary modes:
 
 1. **Local developer workflow**: a fast terminal experience that can be run anywhere.
 2. **Dashboards / collaboration**: a browser surface that is easier to share, extend, and integrate.
@@ -22,7 +22,7 @@ Evidence in the repository:
 - Web UI implementation and server:
   - `src/motus/ui/web/*` (FastAPI + WebSocket handlers)
   - `pyproject.toml` includes `fastapi` and `websockets`
-  - CLI exposes web surface (`mc web`) per `README.md`
+  - CLI exposes web surface (`motus web`) per `README.md`
 - Terminal UI implementation (historical / retained in repo):
   - `src/motus/ui/tui/*` (Textual-based TUI)
 

@@ -5,7 +5,7 @@ from motus import messages
 
 def test_session_not_found_formats() -> None:
     assert messages.session_not_found("abc123") == (
-        "Session 'abc123' not found. Run 'mc list' to see available sessions."
+        "Session 'abc123' not found. Run 'motus list' to see available sessions."
     )
 
 

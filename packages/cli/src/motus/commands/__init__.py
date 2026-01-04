@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC CLI Commands Module.
+Motus CLI Commands Module.
 
 Refactored CLI commands extracted from the monolithic cli.py.
 Each command gets its own module for maintainability and testability.

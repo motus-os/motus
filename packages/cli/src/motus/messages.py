@@ -12,7 +12,7 @@ NO_EVENTS = "No events in this session. The session may be idle or just started.
 NO_EVENTS_SHORT = "No events yet"
 
 # Error States
-SESSION_NOT_FOUND = "Session '{session_id}' not found. Run 'mc list' to see available sessions."
+SESSION_NOT_FOUND = "Session '{session_id}' not found. Run 'motus list' to see available sessions."
 SESSION_NOT_FOUND_SHORT = "Session not found"
 PARSE_ERROR = "Failed to parse session data. The session file may be corrupted."
 CONNECTION_ERROR = "Failed to connect. Check that the service is running."

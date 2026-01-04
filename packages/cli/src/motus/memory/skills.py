@@ -86,8 +86,8 @@ def skill_deltas_for_command(command: str) -> dict[str, int]:
 
     deltas: dict[str, int] = {}
 
-    # `mc go` is treated as a verification run that typically emits evidence.
-    if normalized.startswith("mc go") or normalized == "mc go":
+    # `motus go` is treated as a verification run that typically emits evidence.
+    if normalized.startswith("motus go") or normalized == "motus go":
         deltas["first_verification"] = deltas.get("first_verification", 0) + 1
         deltas["evidence_keeper"] = deltas.get("evidence_keeper", 0) + 1
 

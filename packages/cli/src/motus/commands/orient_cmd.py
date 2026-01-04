@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""CLI command: `mc orient` (Cached Orient lookup)."""
+"""CLI command: `motus orient` (Cached Orient lookup)."""
 
 from __future__ import annotations
 
@@ -150,7 +150,7 @@ def iter_orient_events_from_text(text: str):
 
 
 def orient_command(args) -> int:
-    """Argparse-dispatched handler for `mc orient`."""
+    """Argparse-dispatched handler for `motus orient`."""
 
     decision_type = getattr(args, "decision_type", None)
     if decision_type == "stats":
@@ -195,7 +195,7 @@ def orient_command(args) -> int:
         error_console.print(f"Orient failed: {e}", style="red", markup=False)
         return EXIT_USAGE
 
-    # Best-effort local telemetry to support `mc orient stats`.
+    # Best-effort local telemetry to support `motus orient stats`.
     # Telemetry must never change lookup behavior or exit codes.
     if motus_dir is not None:
         try:

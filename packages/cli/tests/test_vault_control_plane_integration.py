@@ -109,7 +109,7 @@ def test_control_plane_happy_path_run_and_verify(tmp_path: Path, monkeypatch) ->
     with patch(
         "sys.argv",
         [
-            "mc",
+            "motus",
             "policy",
             "run",
             "--vault-dir",
@@ -155,7 +155,7 @@ def test_control_plane_fail_closed_writes_evidence(tmp_path: Path, monkeypatch) 
     with patch(
         "sys.argv",
         [
-            "mc",
+            "motus",
             "policy",
             "run",
             "--vault-dir",
@@ -202,7 +202,7 @@ def test_control_plane_scope_creep_detected_by_reconciliation(tmp_path: Path, mo
     with patch(
         "sys.argv",
         [
-            "mc",
+            "motus",
             "policy",
             "run",
             "--vault-dir",
@@ -272,7 +272,7 @@ def test_control_plane_pack_cap_exceeded_is_actionable(tmp_path: Path) -> None:
     with patch(
         "sys.argv",
         [
-            "mc",
+            "motus",
             "policy",
             "plan",
             "--vault-dir",
@@ -304,7 +304,7 @@ def test_control_plane_profile_defaults_change_gate_tier(tmp_path: Path, capsys)
         with patch(
             "sys.argv",
             [
-                "mc",
+                "motus",
                 "policy",
                 "plan",
                 "--vault-dir",

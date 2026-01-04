@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Capabilities Configuration System for Motus Command.
+"""Capabilities Configuration System for Motus.
 
 This module provides access to vault capabilities configuration, enabling
 zero-thinking configuration injection for policy decisions, thresholds,

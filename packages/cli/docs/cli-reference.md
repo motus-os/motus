@@ -2,19 +2,19 @@
 
 ## Overview
 
-Motus Command (`mc`) provides a comprehensive CLI for monitoring AI agent sessions, enforcing policy gates, and managing workspace state.
+Motus (`motus`) provides a comprehensive CLI for monitoring AI agent sessions, enforcing policy gates, and managing workspace state.
 
 ```bash
-mc [COMMAND] [OPTIONS]
+motus [COMMAND] [OPTIONS]
 ```
 
 ## Quick Start
 
 ```bash
-mc web                # Launch web dashboard at http://127.0.0.1:4000
-mc list               # List recent sessions
-mc watch              # Watch active session in real-time
-mc policy plan --files src/main.py  # Plan policy gates for a file
+motus web                # Launch web dashboard at http://127.0.0.1:4000
+motus list               # List recent sessions
+motus watch              # Watch active session in real-time
+motus policy plan --files src/main.py  # Plan policy gates for a file
 ```
 
 ## Commands by Tier
@@ -44,7 +44,7 @@ mc policy plan --files src/main.py  # Plan policy gates for a file
 |---------|-------------|
 | `checkpoint` | Create a state checkpoint |
 | `checkpoints` | List all available checkpoints |
-| `config` | Manage MC configuration |
+| `config` | Manage Motus configuration |
 | `diff` | Show changes between current state and a checkpoint |
 | `errors` | Summarize errors from a session |
 | `explain` | Explain a policy run decision trace |
@@ -70,13 +70,13 @@ mc policy plan --files src/main.py  # Plan policy gates for a file
 
 ## Session Commands
 
-### mc list
+### motus list
 
 List recent AI agent sessions from all sources (Claude, Codex, Gemini, SDK).
 
 **Synopsis:**
 ```bash
-mc list [--fast]
+motus list [--fast]
 ```
 
 **Options:**
@@ -85,10 +85,10 @@ mc list [--fast]
 **Examples:**
 ```bash
 # List sessions from the last 24 hours
-mc list
+motus list
 
 # Fast listing without process detection
-mc list --fast
+motus list --fast
 ```
 
 **Output:**
@@ -96,13 +96,13 @@ Displays a table with status, source, project, session ID, age, size, and last a
 
 ---
 
-### mc watch
+### motus watch
 
 Watch an AI agent session in real-time, showing events as they occur.
 
 **Synopsis:**
 ```bash
-mc watch [session_id]
+motus watch [session_id]
 ```
 
 **Arguments:**
@@ -114,10 +114,10 @@ mc watch [session_id]
 **Examples:**
 ```bash
 # Watch the most recent active session
-mc watch
+motus watch
 
 # Watch a specific session (prefix match supported)
-mc watch abc123
+motus watch abc123
 
 # Exit watching with Ctrl+C
 ```
@@ -130,13 +130,13 @@ mc watch abc123
 
 ---
 
-### mc show
+### motus show
 
 Show detailed information for a specific session.
 
 **Synopsis:**
 ```bash
-mc show <session_id>
+motus show <session_id>
 ```
 
 **Arguments:**
@@ -145,10 +145,10 @@ mc show <session_id>
 **Examples:**
 ```bash
 # Show session details
-mc show abc123
+motus show abc123
 
 # Works with partial session ID
-mc show abc
+motus show abc
 ```
 
 **Output:**
@@ -160,13 +160,13 @@ Displays session metadata including session ID, file path, status, source, proje
 
 ---
 
-### mc feed
+### motus feed
 
 Show recent events for a session (like a log tail).
 
 **Synopsis:**
 ```bash
-mc feed <session_id> [--tail-lines N]
+motus feed <session_id> [--tail-lines N]
 ```
 
 **Arguments:**
@@ -178,10 +178,10 @@ mc feed <session_id> [--tail-lines N]
 **Examples:**
 ```bash
 # Show last 200 lines of events
-mc feed abc123
+motus feed abc123
 
 # Show last 500 lines
-mc feed abc123 --tail-lines 500
+motus feed abc123 --tail-lines 500
 ```
 
 **Output:**
@@ -193,13 +193,13 @@ Prints timestamped events in chronological order with format: `HH:MM:SS [event_t
 
 ---
 
-### mc sync
+### motus sync
 
 Sync session transcripts into SQLite cache for faster access.
 
 **Synopsis:**
 ```bash
-mc sync [--full] [--max-age-hours N]
+motus sync [--full] [--max-age-hours N]
 ```
 
 **Options:**
@@ -209,13 +209,13 @@ mc sync [--full] [--max-age-hours N]
 **Examples:**
 ```bash
 # Incremental sync (default)
-mc sync --full
+motus sync --full
 
 # Sync only sessions modified in last 24 hours
-mc sync --max-age-hours 24
+motus sync --max-age-hours 24
 
 # Full sync of all sessions
-mc sync --full
+motus sync --full
 ```
 
 **Output:**
@@ -227,13 +227,13 @@ Reports number of sessions ingested, files seen, unchanged, partial, corrupted, 
 
 ---
 
-### mc context
+### motus context
 
 Generate context summary for AI agent prompts from the most recent or specified session.
 
 **Synopsis:**
 ```bash
-mc context [session_id]
+motus context [session_id]
 ```
 
 **Arguments:**
@@ -242,10 +242,10 @@ mc context [session_id]
 **Examples:**
 ```bash
 # Generate context for most recent session
-mc context
+motus context
 
 # Generate context for specific session
-mc context abc123
+motus context abc123
 ```
 
 **Output:**
@@ -253,13 +253,13 @@ Displays a markdown panel with session context suitable for AI agent consumption
 
 ---
 
-### mc summary
+### motus summary
 
 Generate a rich summary for CLAUDE.md context injection.
 
 **Synopsis:**
 ```bash
-mc summary [session_id]
+motus summary [session_id]
 ```
 
 **Arguments:**
@@ -268,10 +268,10 @@ mc summary [session_id]
 **Examples:**
 ```bash
 # Summarize most recent session
-mc summary
+motus summary
 
 # Summarize specific session
-mc summary abc123
+motus summary abc123
 ```
 
 **Output:**
@@ -279,19 +279,19 @@ Generates a comprehensive markdown summary of the session including decisions, t
 
 ---
 
-### mc history
+### motus history
 
 Show command history and recent events across all sessions.
 
 **Synopsis:**
 ```bash
-mc history
+motus history
 ```
 
 **Examples:**
 ```bash
 # Show recent activity across all sessions
-mc history
+motus history
 ```
 
 **Output:**
@@ -299,13 +299,13 @@ Displays a table of the 30 most recent events from the last 48 hours, showing ti
 
 ---
 
-### mc teleport
+### motus teleport
 
 Export a session bundle for cross-session context transfer.
 
 **Synopsis:**
 ```bash
-mc teleport <session_id> [--no-docs] [-o OUTPUT]
+motus teleport <session_id> [--no-docs] [-o OUTPUT]
 ```
 
 **Arguments:**
@@ -318,13 +318,13 @@ mc teleport <session_id> [--no-docs] [-o OUTPUT]
 **Examples:**
 ```bash
 # Export session to JSON (stdout)
-mc teleport abc123
+motus teleport abc123
 
 # Export to file
-mc teleport abc123 -o session-bundle.json
+motus teleport abc123 -o session-bundle.json
 
 # Export without planning docs
-mc teleport abc123 --no-docs -o bundle.json
+motus teleport abc123 --no-docs -o bundle.json
 ```
 
 **Output:**
@@ -334,19 +334,19 @@ JSON bundle containing session context, events, and relevant documentation.
 
 ## Web Dashboard
 
-### mc web
+### motus web
 
 Launch interactive web dashboard at http://127.0.0.1:4000
 
 **Synopsis:**
 ```bash
-mc web
+motus web
 ```
 
 **Examples:**
 ```bash
 # Launch web dashboard
-mc web
+motus web
 ```
 
 **Behavior:**
@@ -366,14 +366,14 @@ mc web
 
 ## Policy Commands
 
-### mc policy plan
+### motus policy plan
 
 Compute and print a deterministic gate plan for changed files.
 
 **Synopsis:**
 ```bash
-mc policy plan --files FILE... [OPTIONS]
-mc policy plan --git-diff BASE HEAD [OPTIONS]
+motus policy plan --files FILE... [OPTIONS]
+motus policy plan --git-diff BASE HEAD [OPTIONS]
 ```
 
 **Options:**
@@ -388,13 +388,13 @@ mc policy plan --git-diff BASE HEAD [OPTIONS]
 **Examples:**
 ```bash
 # Plan for specific files
-mc policy plan --files src/main.py src/utils.py
+motus policy plan --files src/main.py src/utils.py
 
 # Plan using git diff
-mc policy plan --git-diff main HEAD
+motus policy plan --git-diff main HEAD
 
 # Plan with specific vault and profile
-mc policy plan --files src/main.py --vault-dir ~/vault --profile team
+motus policy plan --files src/main.py --vault-dir ~/vault --profile team
 ```
 
 **Output:**
@@ -402,14 +402,14 @@ Displays the gate plan showing which gates will run, their tier, and pack assign
 
 ---
 
-### mc policy run
+### motus policy run
 
 Execute required gates and emit an evidence bundle.
 
 **Synopsis:**
 ```bash
-mc policy run --files FILE... [OPTIONS]
-mc policy run --git-diff BASE HEAD [OPTIONS]
+motus policy run --files FILE... [OPTIONS]
+motus policy run --git-diff BASE HEAD [OPTIONS]
 ```
 
 **Options:**
@@ -425,13 +425,13 @@ mc policy run --git-diff BASE HEAD [OPTIONS]
 **Examples:**
 ```bash
 # Run gates for specific files
-mc policy run --files src/main.py
+motus policy run --files src/main.py
 
 # Run gates using git diff
-mc policy run --git-diff main HEAD
+motus policy run --git-diff main HEAD
 
 # Run with custom evidence directory
-mc policy run --files src/main.py --evidence-dir /tmp/evidence
+motus policy run --files src/main.py --evidence-dir /tmp/evidence
 ```
 
 **Output:**
@@ -443,13 +443,13 @@ Executes gates and creates an evidence bundle with manifest.json, summary.txt, a
 
 ---
 
-### mc policy verify
+### motus policy verify
 
 Verify an evidence bundle's cryptographic integrity.
 
 **Synopsis:**
 ```bash
-mc policy verify --evidence PATH [OPTIONS]
+motus policy verify --evidence PATH [OPTIONS]
 ```
 
 **Options:**
@@ -460,10 +460,10 @@ mc policy verify --evidence PATH [OPTIONS]
 **Examples:**
 ```bash
 # Verify evidence bundle
-mc policy verify --evidence .mc/evidence/run_abc123
+motus policy verify --evidence .mc/evidence/run_abc123
 
 # Verify with JSON output
-mc policy verify --evidence .mc/evidence/run_abc123 --json
+motus policy verify --evidence .mc/evidence/run_abc123 --json
 ```
 
 **Output:**
@@ -475,13 +475,13 @@ Reports verification status (PASS/FAIL), reason codes, and any validation messag
 
 ---
 
-### mc policy prune
+### motus policy prune
 
 Prune old evidence bundles to reclaim disk space.
 
 **Synopsis:**
 ```bash
-mc policy prune [--keep N] [--older-than DAYS] [--dry-run]
+motus policy prune [--keep N] [--older-than DAYS] [--dry-run]
 ```
 
 **Options:**
@@ -494,16 +494,16 @@ mc policy prune [--keep N] [--older-than DAYS] [--dry-run]
 **Examples:**
 ```bash
 # Preview what would be deleted
-mc policy prune --dry-run
+motus policy prune --dry-run
 
 # Keep 5 most recent, delete rest
-mc policy prune --keep 5
+motus policy prune --keep 5
 
 # Delete bundles older than 30 days
-mc policy prune --older-than 30
+motus policy prune --older-than 30
 
 # Combine: keep 10 most recent AND delete those older than 90 days
-mc policy prune --keep 10 --older-than 90
+motus policy prune --keep 10 --older-than 90
 ```
 
 **Output:**
@@ -516,14 +516,14 @@ Reports bundles found, kept, deleted, and bytes reclaimed.
 
 ## Error Analysis
 
-### mc errors
+### motus errors
 
 Summarize errors from one or more sessions.
 
 **Synopsis:**
 ```bash
-mc errors [session_id] [OPTIONS]
-mc errors --last N [OPTIONS]
+motus errors [session_id] [OPTIONS]
+motus errors --last N [OPTIONS]
 ```
 
 **Arguments:**
@@ -538,19 +538,19 @@ mc errors --last N [OPTIONS]
 **Examples:**
 ```bash
 # Summarize errors from most recent session
-mc errors
+motus errors
 
 # Summarize errors from specific session
-mc errors abc123
+motus errors abc123
 
 # Summarize errors from last 5 sessions
-mc errors --last 5
+motus errors --last 5
 
 # Show only API errors
-mc errors abc123 --category api
+motus errors abc123 --category api
 
 # JSON output for last 3 sessions
-mc errors --last 3 --json
+motus errors --last 3 --json
 ```
 
 **Output:**
@@ -563,13 +563,13 @@ Groups errors by category and displays error counts, types, and sample messages.
 
 ---
 
-### mc explain
+### motus explain
 
 Explain a policy run decision trace showing the timeline of gate executions.
 
 **Synopsis:**
 ```bash
-mc explain <run_id> [--repo PATH]
+motus explain <run_id> [--repo PATH]
 ```
 
 **Arguments:**
@@ -581,10 +581,10 @@ mc explain <run_id> [--repo PATH]
 **Examples:**
 ```bash
 # Explain policy run
-mc explain run_abc123
+motus explain run_abc123
 
 # Explain from different repo
-mc explain run_abc123 --repo /path/to/repo
+motus explain run_abc123 --repo /path/to/repo
 ```
 
 **Output:**
@@ -599,13 +599,13 @@ Displays a timeline table showing each gate step, status, reason codes, and evid
 
 ## System Commands
 
-### mc doctor
+### motus doctor
 
-Run health checks on the Motus Command installation and database.
+Run health checks on the Motus installation and database.
 
 **Synopsis:**
 ```bash
-mc doctor [--json]
+motus doctor [--json]
 ```
 
 **Options:**
@@ -614,10 +614,10 @@ mc doctor [--json]
 **Examples:**
 ```bash
 # Run health checks
-mc doctor
+motus doctor
 
 # JSON output
-mc doctor --json
+motus doctor --json
 ```
 
 **Output:**
@@ -629,19 +629,19 @@ Reports status of database, WAL size, and other health metrics.
 
 ---
 
-### mc install
+### motus install
 
 Install agent onboarding defaults and enable protocol enforcement.
 
 **Synopsis:**
 ```bash
-mc install
+motus install
 ```
 
 **Examples:**
 ```bash
 # Install agent onboarding
-mc install
+motus install
 ```
 
 **Output:**
@@ -649,15 +649,15 @@ Displays vault pointers, protocol summary, and updates configuration to enable M
 
 ---
 
-### mc init
+### motus init
 
 Initialize a Motus workspace with `.motus/` directory structure.
 
 **Synopsis:**
 ```bash
-mc init --full [--path PATH] [--force]
-mc init --lite [--path PATH] [--force]
-mc init --integrate PATH [--force]
+motus init --full [--path PATH] [--force]
+motus init --lite [--path PATH] [--force]
+motus init --integrate PATH [--force]
 ```
 
 **Options:**
@@ -670,19 +670,19 @@ mc init --integrate PATH [--force]
 **Examples:**
 ```bash
 # Initialize full workspace in current directory
-mc init --full
+motus init --full
 
 # Initialize in specific directory
-mc init --full --path ~/projects/myapp
+motus init --full --path ~/projects/myapp
 
 # Minimal workspace
-mc init --lite
+motus init --lite
 
 # Integrate with existing workspace
-mc init --integrate ~/projects/existing
+motus init --integrate ~/projects/existing
 
 # Repair existing workspace
-mc init --full --force
+motus init --full --force
 ```
 
 **Output:**
@@ -690,17 +690,17 @@ Reports workspace root, mode, Motus directory, and current release pointer.
 
 ---
 
-### mc config
+### motus config
 
-Manage MC configuration settings.
+Manage Motus configuration settings.
 
 **Synopsis:**
 ```bash
-mc config show
-mc config get <key>
-mc config set <key> <value>
-mc config reset
-mc config path
+motus config show
+motus config get <key>
+motus config set <key> <value>
+motus config reset
+motus config path
 ```
 
 **Subcommands:**
@@ -713,30 +713,30 @@ mc config path
 **Examples:**
 ```bash
 # Show all configuration
-mc config show
+motus config show
 
 # Get specific value
-mc config get motus_enabled
+motus config get motus_enabled
 
 # Set value
-mc config set motus_enabled true
+motus config set motus_enabled true
 
 # Reset to defaults
-mc config reset
+motus config reset
 
 # Show config file location
-mc config path
+motus config path
 ```
 
 ---
 
-### mc harness
+### motus harness
 
 Detect test harness commands for the current repository.
 
 **Synopsis:**
 ```bash
-mc harness [--save]
+motus harness [--save]
 ```
 
 **Options:**
@@ -745,10 +745,10 @@ mc harness [--save]
 **Examples:**
 ```bash
 # Detect test harness
-mc harness
+motus harness
 
 # Detect and save
-mc harness --save
+motus harness --save
 ```
 
 **Output:**
@@ -756,13 +756,13 @@ Displays detected commands for test, lint, build, and smoke test with confidence
 
 ---
 
-### mc intent
+### motus intent
 
 Extract and display intent from a session.
 
 **Synopsis:**
 ```bash
-mc intent <session_id> [--save]
+motus intent <session_id> [--save]
 ```
 
 **Arguments:**
@@ -774,27 +774,27 @@ mc intent <session_id> [--save]
 **Examples:**
 ```bash
 # Extract intent
-mc intent abc123
+motus intent abc123
 
 # Extract and save
-mc intent abc123 --save
+motus intent abc123 --save
 ```
 
 ---
 
-### mc mcp
+### motus mcp
 
 Start MCP (Model Context Protocol) server using stdio transport.
 
 **Synopsis:**
 ```bash
-mc mcp
+motus mcp
 ```
 
 **Examples:**
 ```bash
 # Start MCP server
-mc mcp
+motus mcp
 ```
 
 **Behavior:**
@@ -804,14 +804,14 @@ Starts an MCP server that communicates via stdin/stdout, suitable for integratio
 
 ## Advanced Commands
 
-### mc orient
+### motus orient
 
 Lookup a cached decision using the Cached Orient system.
 
 **Synopsis:**
 ```bash
-mc orient <decision_type> --context CONTEXT [OPTIONS]
-mc orient stats [OPTIONS]
+motus orient <decision_type> --context CONTEXT [OPTIONS]
+motus orient stats [OPTIONS]
 ```
 
 **Arguments:**
@@ -833,28 +833,28 @@ mc orient stats [OPTIONS]
 **Examples:**
 ```bash
 # Lookup decision with inline context
-mc orient color_palette --context '{"theme": "dark", "brand": "tech"}'
+motus orient color_palette --context '{"theme": "dark", "brand": "tech"}'
 
 # Lookup with context from file
-mc orient color_palette --context context.json
+motus orient color_palette --context context.json
 
 # Lookup with context from stdin
-echo '{"theme": "dark"}' | mc orient color_palette --context -
+echo '{"theme": "dark"}' | motus orient color_palette --context -
 
 # Lookup with constraints
-mc orient color_palette --context ctx.json --constraints '{"max_colors": 5}'
+motus orient color_palette --context ctx.json --constraints '{"max_colors": 5}'
 
 # Explain decision
-mc orient color_palette --context ctx.json --explain
+motus orient color_palette --context ctx.json --explain
 
 # Show orient statistics
-mc orient stats
+motus orient stats
 
 # Show high-miss decision types
-mc orient stats --high-miss
+motus orient stats --high-miss
 
 # Stats with minimum call threshold
-mc orient stats --min-calls 10 --json
+motus orient stats --min-calls 10 --json
 ```
 
 **Output:**
@@ -866,17 +866,17 @@ JSON output with result (HIT/MISS/CONFLICT), decision data, standard_id, and lay
 
 ---
 
-### mc standards
+### motus standards
 
 Standards and proposal management utilities.
 
 **Synopsis:**
 ```bash
-mc standards validate <path> [OPTIONS]
-mc standards propose --type TYPE --context CTX --output OUT [OPTIONS]
-mc standards list-proposals [OPTIONS]
-mc standards promote <proposal_id> --to LAYER [OPTIONS]
-mc standards reject <proposal_id> --reason REASON [OPTIONS]
+motus standards validate <path> [OPTIONS]
+motus standards propose --type TYPE --context CTX --output OUT [OPTIONS]
+motus standards list-proposals [OPTIONS]
+motus standards promote <proposal_id> --to LAYER [OPTIONS]
+motus standards reject <proposal_id> --reason REASON [OPTIONS]
 ```
 
 **Subcommands:**
@@ -892,8 +892,8 @@ Validate a standard.yaml file against schema.
 
 **Example:**
 ```bash
-mc standards validate /vault/user/standards/color_palette/std_001.yaml
-mc standards validate std.yaml --json
+motus standards validate /vault/user/standards/color_palette/std_001.yaml
+motus standards validate std.yaml --json
 ```
 
 #### propose
@@ -909,7 +909,7 @@ Create a proposal from a slow-path decision.
 
 **Example:**
 ```bash
-mc standards propose \
+motus standards propose \
   --type color_palette \
   --context '{"theme": "dark"}' \
   --output '{"primary": "#007acc"}' \
@@ -927,8 +927,8 @@ List cached proposals.
 
 **Example:**
 ```bash
-mc standards list-proposals
-mc standards list-proposals --type color_palette --status pending
+motus standards list-proposals
+motus standards list-proposals --type color_palette --status pending
 ```
 
 #### promote
@@ -941,8 +941,8 @@ Promote a proposal to an active standard.
 
 **Example:**
 ```bash
-mc standards promote prop_abc123 --to user
-mc standards promote prop_abc123 --to project --json
+motus standards promote prop_abc123 --to user
+motus standards promote prop_abc123 --to project --json
 ```
 
 #### reject
@@ -955,7 +955,7 @@ Reject a proposal.
 
 **Example:**
 ```bash
-mc standards reject prop_abc123 --reason "Conflicts with existing palette"
+motus standards reject prop_abc123 --reason "Conflicts with existing palette"
 ```
 
 **Exit Codes:**
@@ -965,14 +965,14 @@ mc standards reject prop_abc123 --reason "Conflicts with existing palette"
 
 ---
 
-### mc claims
+### motus claims
 
 Coordination claim registry for multi-agent resource locking.
 
 **Synopsis:**
 ```bash
-mc claims acquire --namespace NS --resource RES [OPTIONS]
-mc claims list [OPTIONS]
+motus claims acquire --namespace NS --resource RES [OPTIONS]
+motus claims list [OPTIONS]
 ```
 
 **Subcommands:**
@@ -994,13 +994,13 @@ Acquire a claim on a resource.
 **Example:**
 ```bash
 # Acquire claim
-mc claims acquire \
+motus claims acquire \
   --namespace codebase \
   --resource src/main.py \
   --agent agent-001
 
 # With custom lease
-mc claims acquire \
+motus claims acquire \
   --namespace codebase \
   --resource src/main.py \
   --agent agent-001 \
@@ -1021,13 +1021,13 @@ List active claims.
 **Example:**
 ```bash
 # List all claims
-mc claims list --agent agent-001
+motus claims list --agent agent-001
 
 # List for specific namespace
-mc claims list --agent agent-001 --namespace codebase
+motus claims list --agent agent-001 --namespace codebase
 
 # JSON output
-mc claims list --agent agent-001 --json
+motus claims list --agent agent-001 --json
 ```
 
 **Exit Codes:**
@@ -1039,13 +1039,13 @@ mc claims list --agent agent-001 --json
 
 ## Checkpoint Commands
 
-### mc checkpoint
+### motus checkpoint
 
 Create a state checkpoint for later rollback.
 
 **Synopsis:**
 ```bash
-mc checkpoint <label>
+motus checkpoint <label>
 ```
 
 **Arguments:**
@@ -1054,38 +1054,38 @@ mc checkpoint <label>
 **Examples:**
 ```bash
 # Create checkpoint before major change
-mc checkpoint "before-refactor"
+motus checkpoint "before-refactor"
 
 # Create checkpoint with timestamp
-mc checkpoint "feature-complete-$(date +%Y%m%d)"
+motus checkpoint "feature-complete-$(date +%Y%m%d)"
 ```
 
 ---
 
-### mc checkpoints
+### motus checkpoints
 
 List all available checkpoints.
 
 **Synopsis:**
 ```bash
-mc checkpoints
+motus checkpoints
 ```
 
 **Examples:**
 ```bash
 # List all checkpoints
-mc checkpoints
+motus checkpoints
 ```
 
 ---
 
-### mc rollback
+### motus rollback
 
 Restore state to a previous checkpoint.
 
 **Synopsis:**
 ```bash
-mc rollback <checkpoint_id>
+motus rollback <checkpoint_id>
 ```
 
 **Arguments:**
@@ -1094,18 +1094,18 @@ mc rollback <checkpoint_id>
 **Examples:**
 ```bash
 # Rollback to checkpoint
-mc rollback chk_abc123
+motus rollback chk_abc123
 ```
 
 ---
 
-### mc diff
+### motus diff
 
 Show changes between current state and a checkpoint.
 
 **Synopsis:**
 ```bash
-mc diff <checkpoint_id>
+motus diff <checkpoint_id>
 ```
 
 **Arguments:**
@@ -1114,7 +1114,7 @@ mc diff <checkpoint_id>
 **Examples:**
 ```bash
 # Show changes since checkpoint
-mc diff chk_abc123
+motus diff chk_abc123
 ```
 
 ---
@@ -1141,32 +1141,32 @@ mc diff chk_abc123
 
 ## Configuration
 
-MC stores configuration in `~/.mc/config.yaml`. Use `mc config` to manage settings:
+Motus stores configuration in `~/.mc/config.yaml`. Use `motus config` to manage settings:
 
 ```bash
 # View current config
-mc config show
+motus config show
 
 # Enable Motus
-mc config set motus_enabled true
+motus config set motus_enabled true
 
 # Set protocol enforcement
-mc config set protocol_enforcement strict
+motus config set protocol_enforcement strict
 
 # Reset to defaults
-mc config reset
+motus config reset
 ```
 
 ## Tips
 
-1. **Session IDs**: Most commands support prefix matching, so you can use just the first few characters: `mc watch abc` instead of `mc watch abc123def456`
+1. **Session IDs**: Most commands support prefix matching, so you can use just the first few characters: `motus watch abc` instead of `motus watch abc123def456`
 
-2. **Fast Listing**: Use `mc list --fast` when you just need session IDs without process detection
+2. **Fast Listing**: Use `motus list --fast` when you just need session IDs without process detection
 
-3. **Policy Gates**: Always run `mc policy plan` before `mc policy run` to preview which gates will execute
+3. **Policy Gates**: Always run `motus policy plan` before `motus policy run` to preview which gates will execute
 
-4. **Error Analysis**: Use `mc errors --last 5` to quickly spot patterns across recent sessions
+4. **Error Analysis**: Use `motus errors --last 5` to quickly spot patterns across recent sessions
 
-5. **Real-time Monitoring**: `mc watch` is great for debugging; `mc web` is better for multi-session overview
+5. **Real-time Monitoring**: `motus watch` is great for debugging; `motus web` is better for multi-session overview
 
-6. **Evidence Verification**: Policy evidence bundles are cryptographically signed and can be verified offline with `mc policy verify`
+6. **Evidence Verification**: Policy evidence bundles are cryptographically signed and can be verified offline with `motus policy verify`

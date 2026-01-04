@@ -1,6 +1,6 @@
 # Architecture Decision Records (ADRs)
 
-This directory contains Architecture Decision Records for Motus Command.
+This directory contains Architecture Decision Records for Motus.
 
 ADRs use a Nygard-style template with:
 

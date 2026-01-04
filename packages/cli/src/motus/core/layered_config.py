@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Layered configuration for Motus Command.
+"""Layered configuration for Motus.
 
 Configuration precedence (highest to lowest):
 1. CLI arguments (--flag values)

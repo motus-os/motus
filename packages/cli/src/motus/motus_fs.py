@@ -33,7 +33,7 @@ MOTUS_TREE_DIRS: tuple[str, ...] = (
 DEFAULT_NAMESPACE_ACL_YAML = """\
 # Namespace access control for coordination claim registry.
 #
-# This file is read by `mc claims ...` to isolate claims between workstreams.
+# This file is read by `motus claims ...` to isolate claims between workstreams.
 # Patterns use fnmatch (e.g., "builder-*" matches "builder-2").
 #
 # Customize as needed for your org/project.

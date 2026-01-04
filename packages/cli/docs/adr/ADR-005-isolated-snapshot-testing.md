@@ -13,7 +13,7 @@ UI regression tests are valuable, but “snapshot” style tests are sensitive t
 - Non-deterministic environment differences across machines/CI
 - Interference from other tests in the same process
 
-Motus Command includes Textual snapshot tests for the terminal UI:
+Motus includes Textual snapshot tests for the terminal UI:
 
 - Snapshot tests (planned for v0.1.1, skipped unless `MC_RUN_SNAPSHOTS=1`)
 - Test harness notes in `docs/testing.md` explain why snapshots are isolated

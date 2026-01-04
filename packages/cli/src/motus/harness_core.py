@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-Test Harness Detection for Motus Command v0.3.0.
+Test Harness Detection for Motus v0.3.0.
 
 Auto-detect test, lint, build, and smoke test commands from repository structure.
 Supports multiple build systems: Python, JavaScript/Node, Rust, Make, and CI configs.

@@ -1,4 +1,4 @@
-# Motus Command - Website Design Spec
+# Motus - Website Design Spec
 
 > Design specification for motusos.ai
 
@@ -42,7 +42,7 @@ motusos.ai/
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│ [mc] Motus Command                    [Docs] [GitHub]  │
+│ [motus] Motus                    [Docs] [GitHub]  │
 ├────────────────────────────────────────────────────────┤
 │                    HERO SECTION                         │
 │   "See What Your AI Agents Are Thinking"               │
@@ -111,7 +111,7 @@ code: 14px, font-mono
 Auto-typing effect showing:
 ```
 $ pip install motusos
-$ mc
+$ motus
 ```
 
 Then live feed scrolls with sample events:

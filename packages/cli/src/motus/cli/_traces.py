@@ -14,7 +14,7 @@ from motus.logging import get_logger
 logger = get_logger(__name__)
 
 def find_sdk_traces_in_dir(state_dir: Path) -> list[dict]:
-    """Find SDK trace files under a given MC state directory."""
+    """Find SDK trace files under a given Motus state directory."""
 
     traces: list[dict] = []
     traces_dir = state_dir / "traces"

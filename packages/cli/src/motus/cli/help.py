@@ -161,8 +161,8 @@ def print_top_level_help(console: Console, visible_tier: int) -> None:
         visible_tier: Highest help tier to display.
     """
     console.print("[bold]Motus[/bold]\n")
-    console.print("Usage: mc <command> [args]\n")
-    console.print("Try [cyan]mc web[/cyan] to launch the dashboard.\n")
+    console.print("Usage: motus <command> [args]\n")
+    console.print("Try [cyan]motus web[/cyan] to launch the dashboard.\n")
 
     tiers = [
         (0, "Tier 0 (Instant Value)"),
@@ -180,7 +180,7 @@ def print_top_level_help(console: Console, visible_tier: int) -> None:
         console.print("")
 
     if visible_tier < 3:
-        console.print("Run [cyan]mc --help-all[/cyan] to show all commands.")
+        console.print("Run [cyan]motus --help-all[/cyan] to show all commands.")
 
     console.print("\n[bold]Environment:[/bold]")
     console.print(f"  {_HELP_TIER_ENV}  Visible help tier override (0-3)", markup=False)

@@ -38,5 +38,5 @@ def get_context_hints(files: list[str]) -> str:
         hints.append(f"• Last checkpoint: {checkpoints[0].id} ({checkpoints[0].message})")
 
     if hints:
-        return "[MC Context]\n" + "\n".join(hints)
+        return "[Motus Context]\n" + "\n".join(hints)
     return ""

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-Gemini LLM Client for Motus Command.
+Gemini LLM Client for Motus.
 
 This module provides the integration with Google's Gemini 2.0 Flash model
 for internal Motus reasoning tasks (summarization, drift detection).

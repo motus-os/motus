@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""DNA Configuration System for Motus Command.
+"""DNA Configuration System for Motus.
 
 DEPRECATED: Use motus.capabilities instead.
 

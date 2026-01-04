@@ -1,6 +1,6 @@
 # Protocols and Schemas
 
-Motus Command uses two related representations of “events” and “sessions”:
+Motus uses two related representations of “events” and “sessions”:
 
 1. **Unified dataclasses** (`motus.protocols*`): what ingestors produce and UIs consume.
 2. **Validated Pydantic schema** (`motus.schema.*`): a strict validation layer for correctness and tooling.

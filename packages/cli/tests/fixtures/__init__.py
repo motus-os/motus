@@ -1,4 +1,4 @@
-"""Test fixtures for Motus Command."""
+"""Test fixtures for Motus."""
 
 from .mock_sessions import (
     MOCK_EVENTS,

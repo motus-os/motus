@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""CLI commands: `mc standards ...`."""
+"""CLI commands: `motus standards ...`."""
 
 from __future__ import annotations
 

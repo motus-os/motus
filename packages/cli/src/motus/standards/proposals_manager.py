@@ -221,7 +221,7 @@ class ProposalManager:
         atomic_write_text(dest, content)
         proposal_path.unlink(missing_ok=True)
 
-        # Explicit rebuild of standards index (keeps `mc orient` deterministic + fresh).
+        # Explicit rebuild of standards index (keeps `motus orient` deterministic + fresh).
         StandardsIndex.load_or_build(self._motus_dir, rebuild=True)
 
         return standard, standard_path, updated_proposal, dest

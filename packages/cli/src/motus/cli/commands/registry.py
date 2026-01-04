@@ -41,8 +41,8 @@ def build_parser() -> ParserBundle:
     parser = argparse.ArgumentParser(
         description="""
 Motus: Command Center for AI Agents.
-Run 'mc web' for web dashboard at http://127.0.0.1:4000
-Run 'mc --help' for a list of commands.
+Run 'motus web' for web dashboard at http://127.0.0.1:4000
+Run 'motus --help' for a list of commands.
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )

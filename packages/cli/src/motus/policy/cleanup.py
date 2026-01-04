@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Evidence bundle cleanup utilities for `mc policy`."""
+"""Evidence bundle cleanup utilities for `motus policy`."""
 
 from __future__ import annotations
 

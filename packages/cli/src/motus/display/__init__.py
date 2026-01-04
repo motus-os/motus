@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Display layer for Motus Command.
+"""Display layer for Motus.
 
 Provides pre-escaped, display-ready dataclasses for rendering events and sessions.
 """

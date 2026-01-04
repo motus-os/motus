@@ -181,7 +181,7 @@ def checkpoint_command(message: str = "checkpoint"):
         # Best-effort: checkpoint metadata is still persisted.
         pass
 
-    console.print("[dim]Working state preserved. Use 'mc rollback' to restore.[/dim]")
+    console.print("[dim]Working state preserved. Use 'motus rollback' to restore.[/dim]")
     return True
 
 
@@ -191,7 +191,7 @@ def list_checkpoints_command():
 
     if not checkpoints:
         console.print("[yellow]No checkpoints found[/yellow]")
-        console.print("[dim]Create one with: mc checkpoint 'before refactor'[/dim]")
+        console.print("[dim]Create one with: motus checkpoint 'before refactor'[/dim]")
         return
 
     table = Table(title="Checkpoints")
@@ -219,7 +219,7 @@ def list_checkpoints_command():
         )
 
     console.print(table)
-    console.print("\n[dim]Rollback with: mc rollback <id>[/dim]")
+    console.print("\n[dim]Rollback with: motus rollback <id>[/dim]")
 
 
 def rollback_command(checkpoint_id: Optional[str] = None):
@@ -239,7 +239,7 @@ def rollback_command(checkpoint_id: Optional[str] = None):
         console.print(f"[yellow]Most recent checkpoint: {cp.id}[/yellow]")
         console.print(f"[dim]Message: {cp.message}[/dim]")
         console.print(f"[dim]Files: {', '.join(cp.files_snapshot[:5])}...[/dim]")
-        console.print("\n[dim]To rollback, run: mc rollback {cp.id}[/dim]")
+        console.print("\n[dim]To rollback, run: motus rollback {cp.id}[/dim]")
         return True
 
     # Find the checkpoint

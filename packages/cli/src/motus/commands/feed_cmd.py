@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Print a session's recent events (`mc feed`)."""
+"""Print a session's recent events (`motus feed`)."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ def feed_session(session_id: str, *, tail_lines: int = 200) -> None:
 
     if target is None:
         console.print(f"[red]Session not found:[/red] {escape(session_id)}")
-        console.print("Use `mc list` to see available sessions.")
+        console.print("Use `motus list` to see available sessions.")
         raise SystemExit(EXIT_ERROR)
 
     tail_lines = max(10, min(int(tail_lines), 5000))

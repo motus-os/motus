@@ -214,5 +214,5 @@ def list_sessions(max_age_hours: int = 24, fast: bool = False):
     if active:
         console.print()
         console.print(
-            "[green]💡 Tip:[/green] Run [bold]mc watch[/bold] to monitor the active session"
+            "[green]💡 Tip:[/green] Run [bold]motus watch[/bold] to monitor the active session"
         )

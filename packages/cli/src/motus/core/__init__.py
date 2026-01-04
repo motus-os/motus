@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Core infrastructure for Motus Command.
+"""Core infrastructure for Motus.
 
 This module provides foundational components:
 - Database management with SQLite

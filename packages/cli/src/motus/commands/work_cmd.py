@@ -42,7 +42,7 @@ def _parse_resource(spec: str) -> Resource:
 
 
 def cmd_work_claim(args: Any) -> int:
-    """Handle: mc work claim <task_id>"""
+    """Handle: motus work claim <task_id>"""
     wc = _get_work_compiler()
     agent_id = getattr(args, "agent", None) or _get_agent_id()
     as_json = getattr(args, "json", False)
@@ -80,7 +80,7 @@ def cmd_work_claim(args: Any) -> int:
         console.print(f"[green]Claimed: {args.task_id}[/green]")
         console.print(f"[cyan]Lease ID: {result.lease.lease_id}[/cyan]")
         console.print(f"[dim]Expires: {result.lease.expires_at.isoformat()}[/dim]")
-        console.print(f"\n[dim]Next: mc work context {result.lease.lease_id}[/dim]")
+        console.print(f"\n[dim]Next: motus work context {result.lease.lease_id}[/dim]")
     else:
         console.print(f"[red]{result.decision.human_message}[/red]")
         if result.decision.owner:
@@ -90,7 +90,7 @@ def cmd_work_claim(args: Any) -> int:
 
 
 def cmd_work_context(args: Any) -> int:
-    """Handle: mc work context <lease_id>"""
+    """Handle: motus work context <lease_id>"""
     wc = _get_work_compiler()
     as_json = getattr(args, "json", False)
     intent = getattr(args, "intent", None)
@@ -131,7 +131,7 @@ def cmd_work_context(args: Any) -> int:
 
 
 def cmd_work_outcome(args: Any) -> int:
-    """Handle: mc work outcome <lease_id> <type>"""
+    """Handle: motus work outcome <lease_id> <type>"""
     wc = _get_work_compiler()
     as_json = getattr(args, "json", False)
 
@@ -161,7 +161,7 @@ def cmd_work_outcome(args: Any) -> int:
 
 
 def cmd_work_evidence(args: Any) -> int:
-    """Handle: mc work evidence <lease_id> <type>"""
+    """Handle: motus work evidence <lease_id> <type>"""
     wc = _get_work_compiler()
     as_json = getattr(args, "json", False)
 
@@ -201,7 +201,7 @@ def cmd_work_evidence(args: Any) -> int:
 
 
 def cmd_work_decision(args: Any) -> int:
-    """Handle: mc work decision <lease_id> <text>"""
+    """Handle: motus work decision <lease_id> <text>"""
     wc = _get_work_compiler()
     as_json = getattr(args, "json", False)
 
@@ -230,7 +230,7 @@ def cmd_work_decision(args: Any) -> int:
 
 
 def cmd_work_release(args: Any) -> int:
-    """Handle: mc work release <lease_id> <outcome>"""
+    """Handle: motus work release <lease_id> <outcome>"""
     wc = _get_work_compiler()
     as_json = getattr(args, "json", False)
     rollback: Literal["auto", "skip"] = "skip" if getattr(args, "no_rollback", False) else "auto"
@@ -262,7 +262,7 @@ def cmd_work_release(args: Any) -> int:
 
 
 def cmd_work_status(args: Any) -> int:
-    """Handle: mc work status <lease_id>"""
+    """Handle: motus work status <lease_id>"""
     wc = _get_work_compiler()
     as_json = getattr(args, "json", False)
 
@@ -313,7 +313,7 @@ def cmd_work_status(args: Any) -> int:
 
 
 def cmd_work_cleanup(args: Any) -> int:
-    """Handle: mc work cleanup"""
+    """Handle: motus work cleanup"""
     wc = _get_work_compiler()
     as_json = getattr(args, "json", False)
 
@@ -351,12 +351,12 @@ def handle_work_command(args: Any) -> int:
     elif subcommand == "cleanup":
         return cmd_work_cleanup(args)
     else:
-        console.print("[yellow]Usage: mc work <claim|context|outcome|evidence|decision|release|status|cleanup>[/yellow]")
+        console.print("[yellow]Usage: motus work <claim|context|outcome|evidence|decision|release|status|cleanup>[/yellow]")
         console.print("\nThe 6-call Work Compiler protocol:")
-        console.print("  1. mc work claim <task_id>     - Claim work, get lease")
-        console.print("  2. mc work context <lease_id>  - Get context (Lens)")
-        console.print("  3. mc work outcome <lease_id>  - Register deliverable")
-        console.print("  4. mc work evidence <lease_id> - Record verification")
-        console.print("  5. mc work decision <lease_id> - Log decision")
-        console.print("  6. mc work release <lease_id>  - Release with outcome")
+        console.print("  1. motus work claim <task_id>     - Claim work, get lease")
+        console.print("  2. motus work context <lease_id>  - Get context (Lens)")
+        console.print("  3. motus work outcome <lease_id>  - Register deliverable")
+        console.print("  4. motus work evidence <lease_id> - Record verification")
+        console.print("  5. motus work decision <lease_id> - Log decision")
+        console.print("  6. motus work release <lease_id>  - Release with outcome")
         return 0

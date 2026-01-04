@@ -4,13 +4,13 @@
 """Work command parser registration.
 
 Provides CLI access to the 6-call Work Compiler API:
-- mc work claim <task_id> - Claim work and get lease
-- mc work context <lease_id> - Get/refresh context (Lens)
-- mc work outcome <lease_id> - Register deliverable
-- mc work evidence <lease_id> - Record verification artifact
-- mc work decision <lease_id> - Log decision
-- mc work release <lease_id> - Release with outcome
-- mc work cleanup - Expire stale leases
+- motus work claim <task_id> - Claim work and get lease
+- motus work context <lease_id> - Get/refresh context (Lens)
+- motus work outcome <lease_id> - Register deliverable
+- motus work evidence <lease_id> - Record verification artifact
+- motus work decision <lease_id> - Log decision
+- motus work release <lease_id> - Release with outcome
+- motus work cleanup - Expire stale leases
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     )
     work_subparsers = work_parser.add_subparsers(dest="work_command", help="Work commands")
 
-    # mc work claim <task_id>
+    # motus work claim <task_id>
     claim_parser = work_subparsers.add_parser(
         "claim",
         help="Claim work (get lease)",
@@ -47,7 +47,7 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     claim_parser.add_argument("--ttl", type=int, default=3600, help="Lease TTL in seconds (default: 3600)")
     claim_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
-    # mc work context <lease_id>
+    # motus work context <lease_id>
     context_parser = work_subparsers.add_parser(
         "context",
         help="Get/refresh context (Lens)",
@@ -57,7 +57,7 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     context_parser.add_argument("--intent", "-i", help="Updated intent description")
     context_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
-    # mc work outcome <lease_id>
+    # motus work outcome <lease_id>
     outcome_parser = work_subparsers.add_parser(
         "outcome",
         help="Register deliverable",
@@ -69,7 +69,7 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     outcome_parser.add_argument("--description", "-d", help="Human-readable description")
     outcome_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
-    # mc work evidence <lease_id>
+    # motus work evidence <lease_id>
     evidence_parser = work_subparsers.add_parser(
         "evidence",
         help="Record verification artifact",
@@ -88,7 +88,7 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     evidence_parser.add_argument("--log", help="Relevant log excerpt")
     evidence_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
-    # mc work decision <lease_id>
+    # motus work decision <lease_id>
     decision_parser = work_subparsers.add_parser(
         "decision",
         help="Log decision",
@@ -106,7 +106,7 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     )
     decision_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
-    # mc work release <lease_id>
+    # motus work release <lease_id>
     release_parser = work_subparsers.add_parser(
         "release",
         help="Release with outcome",
@@ -121,7 +121,7 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     release_parser.add_argument("--no-rollback", action="store_true", help="Skip rollback on failure")
     release_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
-    # mc work status <lease_id>
+    # motus work status <lease_id>
     status_parser = work_subparsers.add_parser(
         "status",
         help="Show lease status",
@@ -130,7 +130,7 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     status_parser.add_argument("lease_id", help="Lease ID to check")
     status_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
-    # mc work cleanup
+    # motus work cleanup
     cleanup_parser = work_subparsers.add_parser(
         "cleanup",
         help="Expire stale leases",

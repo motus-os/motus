@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-Motus Command Ingestors
+Motus Ingestors
 
 Source-specific ingestors that implement the SessionBuilder protocol.
 Each ingestor handles one source and produces unified data structures.

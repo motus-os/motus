@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Database connection management for Motus Command."""
+"""Database connection management for Motus."""
 
 import os
 import sqlite3
@@ -89,7 +89,7 @@ def verify_schema_version(conn: sqlite3.Connection) -> None:
     if db_version < EXPECTED_SCHEMA_VERSION:
         raise SchemaError(
             f"[DB-SCHEMA-001] Database schema v{db_version} is older than "
-            f"expected v{EXPECTED_SCHEMA_VERSION}. Re-run `mc` to apply migrations."
+            f"expected v{EXPECTED_SCHEMA_VERSION}. Re-run `motus` to apply migrations."
         )
     if db_version > EXPECTED_SCHEMA_VERSION:
         raise SchemaError(

@@ -2,8 +2,8 @@
 
 ## Overview
 
-Motus Command reads local session logs produced by supported agent CLIs and
-presents them via `mc list` and `mc web`. It does not require any cloud
+Motus reads local session logs produced by supported agent CLIs and
+presents them via `motus list` and `motus web`. It does not require any cloud
 integration or additional SDK for these sources.
 
 Supported sources in this guide:
@@ -35,8 +35,8 @@ ls ~/.claude/projects
 
 **View sessions:**
 ```bash
-mc list
-mc web
+motus list
+motus web
 ```
 
 ## OpenAI Codex CLI
@@ -54,8 +54,8 @@ ls ~/.codex/sessions
 
 **View sessions:**
 ```bash
-mc list
-mc web
+motus list
+motus web
 ```
 
 ## Google Gemini CLI
@@ -72,13 +72,13 @@ ls ~/.gemini/tmp
 
 **View sessions:**
 ```bash
-mc list
-mc web
+motus list
+motus web
 ```
 
 ## Notes
 
 - Motus stores its own logs and traces under `~/.mc/`.
-- Use `mc list --fast` to skip process detection when you only want cached
+- Use `motus list --fast` to skip process detection when you only want cached
   session discovery.
 

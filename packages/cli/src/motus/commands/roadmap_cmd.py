@@ -230,7 +230,7 @@ def cmd_roadmap_ready(args: Any) -> int:
 
     if not response.data:
         console.print("[yellow]No items ready - all have blocking dependencies[/yellow]")
-        console.print("[dim]Run: mc roadmap --phase phase_c[/dim]")
+        console.print("[dim]Run: motus roadmap --phase phase_c[/dim]")
         return 0
 
     table = Table(title=f"Ready to Work ({len(response.data)} items)")
@@ -251,19 +251,19 @@ def cmd_roadmap_ready(args: Any) -> int:
 def cmd_roadmap_claim(args: Any) -> int:
     """Claim an item for work.
 
-    DEPRECATED: Use `mc work claim` instead for full Work Compiler support.
+    DEPRECATED: Use `motus work claim` instead for full Work Compiler support.
     This command will be removed in v0.2.0.
     """
     import warnings
 
     console.print(
-        "[yellow]DEPRECATED: 'mc roadmap claim' will be removed in v0.2.0[/yellow]"
+        "[yellow]DEPRECATED: 'motus roadmap claim' will be removed in v0.2.0[/yellow]"
     )
-    console.print("[yellow]Use 'mc work claim <id> --intent \"...\"' instead[/yellow]")
+    console.print("[yellow]Use 'motus work claim <id> --intent \"...\"' instead[/yellow]")
     console.print()
 
     warnings.warn(
-        "mc roadmap claim is deprecated, use mc work claim instead",
+        "motus roadmap claim is deprecated, use motus work claim instead",
         DeprecationWarning,
         stacklevel=2,
     )
@@ -307,7 +307,7 @@ def cmd_roadmap_my_work(args: Any) -> int:
 
     if not response.data:
         console.print("[dim]No items assigned to you[/dim]")
-        console.print("[dim]Run: mc roadmap ready[/dim]")
+        console.print("[dim]Run: motus roadmap ready[/dim]")
         return 0
 
     table = Table(title=f"Your Work ({len(response.data)} items)")

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Motus Command exposes an MCP server over stdio. It wraps core session
+Motus exposes an MCP server over stdio. It wraps core session
 operations so external tools can list sessions, fetch events, and export
 teleport bundles.
 
@@ -23,7 +23,7 @@ pip install -e ".[mcp]"
 ## Run the server
 
 ```bash
-mc mcp
+motus mcp
 ```
 
 You can also run the module directly:
@@ -32,7 +32,7 @@ You can also run the module directly:
 python -m motus.mcp
 ```
 
-If the MCP extra is not installed, `mc mcp` will exit with an error message
+If the MCP extra is not installed, `motus mcp` will exit with an error message
 prompting you to install `.[mcp]`.
 
 ## Tools

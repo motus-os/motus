@@ -1,6 +1,6 @@
-# Motus Command Examples
+# Motus Examples
 
-Fun, approachable examples demonstrating agent observability with Motus Command.
+Fun, approachable examples demonstrating agent observability with Motus.
 
 These examples show progressively complex uses of the Tracer SDK, from basic logging to multi-agent coordination. All examples use non-proprietary data and demonstrate real value of agent observability.
 
@@ -26,7 +26,7 @@ These examples show progressively complex uses of the Tracer SDK, from basic log
 
 - Basic Tracer SDK setup
 - Logging thinking/reasoning events
-- Viewing traces in real-time with `mc`
+- Viewing traces in real-time with `motus`
 
 ### The Code
 
@@ -68,15 +68,15 @@ tracer.end_session()
 # Run the script
 python dad_joke_bot.py
 
-# Watch it in MC dashboard
-mc
+# Watch it in Motus dashboard
+motus
 
 # Export the session for review
-mc list
-mc summary <session-id>
+motus list
+motus summary <session-id>
 ```
 
-### What You'll See in MC
+### What You'll See in Motus
 
 - Real-time thinking events as the bot "decides"
 - Decision tracking with alternatives considered
@@ -168,14 +168,14 @@ tracer.end_session()
 python recipe_agent.py
 
 # Watch with filtering
-mc
+motus
 # Press 'f' to cycle filters: All -> Thinking -> Tools -> Decisions
 
 # Export the decision trail
-mc teleport <session-id>
+motus teleport <session-id>
 ```
 
-### What You'll See in MC
+### What You'll See in Motus
 
 - Tool calls with input/output and duration
 - Decision tree with alternatives considered
@@ -184,7 +184,7 @@ mc teleport <session-id>
 
 ### Why This Matters
 
-When your recipe agent starts making bad recommendations, MC shows you:
+When your recipe agent starts making bad recommendations, Motus shows you:
 - Which tool calls returned unexpected data
 - What reasoning led to each decision
 - Which alternatives were considered and why they were rejected
@@ -234,7 +234,7 @@ def generate_html(page_name, style):
 </head>
 <body>
     <h1>Hello, World!</h1>
-    <p>Built by an AI agent with Motus Command observability.</p>
+    <p>Built by an AI agent with Motus observability.</p>
 </body>
 </html>"""
     return template
@@ -310,16 +310,16 @@ tracer.end_session()
 # Run the builder
 python site_builder.py
 
-# Watch in MC - notice risk levels
-mc
+# Watch in Motus - notice risk levels
+motus
 # Yellow highlights for medium-risk operations
 # File changes appear in the feed
 
 # Review what files were touched
-mc summary <session-id>
+motus summary <session-id>
 ```
 
-### What You'll See in MC
+### What You'll See in Motus
 
 - Risk escalation: safe (analysis) -> medium (generation) -> medium (file writes)
 - File change events with diff stats
@@ -329,7 +329,7 @@ mc summary <session-id>
 ### Why This Matters
 
 When a site builder goes wrong:
-- MC shows which file operations succeeded/failed
+- Motus shows which file operations succeeded/failed
 - Risk highlighting shows which steps need review
 - File diff stats reveal unexpected changes
 - Decisions show why the agent chose certain approaches
@@ -349,7 +349,7 @@ When a site builder goes wrong:
 - Running multiple tracers simultaneously
 - Logging agent spawns with metadata
 - Parallel agent execution patterns
-- Session comparison in MC
+- Session comparison in Motus
 
 ### The Code
 
@@ -475,9 +475,9 @@ coordinator.decision(
 )
 
 print("\n=== DEBATE COMPLETE ===")
-print("\nView the debate in Motus Command:")
-print("  mc list          # See all 3 sessions")
-print("  mc               # Watch live in TUI")
+print("\nView the debate in Motus:")
+print("  motus list          # See all 3 sessions")
+print("  motus               # Watch live in TUI")
 
 coordinator.end_session()
 ```
@@ -488,17 +488,17 @@ coordinator.end_session()
 # Run the debate
 python debate_agents.py
 
-# Watch all sessions in MC
-mc
+# Watch all sessions in Motus
+motus
 # You'll see 3 sessions: coordinator + 2 debaters
 
 # Compare the sessions
-mc list
-mc watch <pro-cats-session-id>
-mc watch <pro-dogs-session-id>
+motus list
+motus watch <pro-cats-session-id>
+motus watch <pro-dogs-session-id>
 ```
 
-### What You'll See in MC
+### What You'll See in Motus
 
 - Three simultaneous sessions in the sidebar
 - Agent spawn events in coordinator session
@@ -508,7 +508,7 @@ mc watch <pro-dogs-session-id>
 
 ### Why This Matters
 
-Multi-agent systems are complex. MC shows:
+Multi-agent systems are complex. Motus shows:
 - Which agent made which decisions
 - How agents responded to each other
 - Timeline of parallel execution
@@ -737,9 +737,9 @@ if __name__ == "__main__":
     # End and save
     state_file = bot.end_session()
 
-    print("\n🔍 View in Motus Command:")
-    print("  mc                    # Watch live session")
-    print("  mc teleport <id>      # Export full context")
+    print("\n🔍 View in Motus:")
+    print("  motus                    # Watch live session")
+    print("  motus teleport <id>      # Export full context")
     print(f"\n📚 Continue studying:")
     print(f"  python pomodoro_bot.py {state_file}")
 ```
@@ -750,18 +750,18 @@ if __name__ == "__main__":
 # First session
 python pomodoro_bot.py
 
-# Watch in MC
-mc
+# Watch in Motus
+motus
 
 # Continue from saved state
 python pomodoro_bot.py pomodoro_state_20250122.json
 
 # Compare sessions
-mc list
+motus list
 # You'll see how the bot learns from previous sessions
 ```
 
-### What You'll See in MC
+### What You'll See in Motus
 
 - **Long-running sessions** with multiple phases (work -> break -> work)
 - **Context restoration** events showing state recovery
@@ -775,7 +775,7 @@ mc list
 1. **Cross-Session Learning:**
    ```bash
    # Export first session
-   mc teleport <session-1-id> > day1.json
+   motus teleport <session-1-id> > day1.json
 
    # Bot uses day1.json to inform day2 strategy
    python pomodoro_bot.py day1.json
@@ -784,7 +784,7 @@ mc list
 2. **Multi-Day Analysis:**
    ```bash
    # Compare multiple study sessions
-   mc list --max-age 168  # Last 7 days
+   motus list --max-age 168  # Last 7 days
 
    # See productivity trends across sessions
    ```
@@ -792,7 +792,7 @@ mc list
 3. **Teleport for Team Learning:**
    ```bash
    # Share your productive Pomodoro strategy
-   mc teleport <your-session> > productive_pattern.json
+   motus teleport <your-session> > productive_pattern.json
 
    # Teammate imports your rhythm
    python pomodoro_bot.py productive_pattern.json
@@ -800,14 +800,14 @@ mc list
 
 ### Why This Matters
 
-Long-running, stateful agents are the future. MC provides:
+Long-running, stateful agents are the future. Motus provides:
 - **Session continuity** through teleport
 - **Cross-session learning** via context restoration
 - **Health monitoring** for long-running tasks
 - **Audit trail** of decisions over time
 - **Pattern detection** across multiple sessions
 
-When your study bot stops being productive, MC shows:
+When your study bot stops being productive, Motus shows:
 - Which topics caused focus loss
 - How break patterns affected productivity
 - Whether context restoration worked correctly
@@ -820,11 +820,11 @@ When your study bot stops being productive, MC shows:
 ### Prerequisites
 
 ```bash
-# Install Motus Command
+# Install Motus
 pip install motusos
 
 # Verify installation
-mc --version
+motus --version
 ```
 
 ### Quick Start
@@ -837,8 +837,8 @@ cd motus/packages/cli/docs/examples
 # Run any example
 python dad_joke_bot.py
 
-# Watch in MC
-mc
+# Watch in Motus
+motus
 ```
 
 ### Tips for Learning
@@ -899,7 +899,7 @@ tracer.tool("DeleteFile", {...}, risk_level="high")
 tracer.tool("SystemCommand", {...}, risk_level="critical")
 ```
 
-MC color-codes these in the TUI:
+Motus color-codes these in the TUI:
 - 🟢 Green = Safe
 - 🟡 Yellow = Medium
 - 🔴 Red = High
@@ -915,7 +915,7 @@ The Pomodoro Bot demonstrates teleport for:
 
 ```bash
 # Export any session
-mc teleport <session-id> > context.json
+motus teleport <session-id> > context.json
 
 # Use in your agent
 tracer = Tracer("my-agent", context=context.json)
@@ -932,7 +932,7 @@ Use these examples as templates:
 1. Identify a fun agent task
 2. Add Tracer SDK to your code
 3. Log key decisions and tool calls
-4. Watch it work in `mc`
+4. Watch it work in `motus`
 5. Share your example!
 
 ### Learn More
@@ -949,13 +949,13 @@ Found a bug or have a better example? [Open an issue](https://github.com/motus-o
 
 ## Philosophy
 
-These examples follow MC's core principle:
+These examples follow Motus's core principle:
 
 **Observability should be fun, not a chore.**
 
 Each example is:
-- **Entertaining** - You'd run it even without MC
-- **Educational** - Teaches a specific MC concept
+- **Entertaining** - You'd run it even without Motus
+- **Educational** - Teaches a specific Motus concept
 - **Practical** - Patterns transfer to real agents
 - **Progressive** - Builds on previous examples
 

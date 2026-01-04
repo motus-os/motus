@@ -3,12 +3,12 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC Claude Code Hooks
+Motus Claude Code Hooks
 
-These hooks integrate MC with Claude Code to inject observed context
+These hooks integrate Motus with Claude Code to inject observed context
 back into Claude sessions - completing the feedback loop.
 
-Install with: mc install-hooks
+Install with: motus install-hooks
 """
 
 import json
@@ -40,7 +40,7 @@ GEMINI_DIR = Path.home() / ".gemini"
 
 
 def get_project_sessions(cwd: str, max_age_hours: int = 24) -> list:
-    """Find recent MC sessions for a project directory."""
+    """Find recent Motus sessions for a project directory."""
     return _get_project_sessions(
         cwd,
         max_age_hours=max_age_hours,
@@ -126,7 +126,7 @@ def generate_context_injection(cwd: str) -> str:
         else:
             if age < timedelta(hours=24):
                 context_parts.append("### Session Summary Available")
-                context_parts.append("Run `mc summary` to see detailed session analysis")
+                context_parts.append("Run `motus summary` to see detailed session analysis")
                 context_parts.append("")
 
     context_parts.append("</mc-context>")
@@ -179,7 +179,7 @@ def user_prompt_hook():
         prompt = hook_input.get("prompt", "")
         cwd = hook_input.get("cwd", "")
 
-        # Check for keywords that might benefit from MC context
+        # Check for keywords that might benefit from Motus context
         context_keywords = [
             "continue",
             "resume",
@@ -217,7 +217,7 @@ def user_prompt_hook():
 
 
 def get_hook_config() -> dict:
-    """Generate Claude Code hooks configuration for MC."""
+    """Generate Claude Code hooks configuration for Motus."""
     return {
         "hooks": {
             "SessionStart": [

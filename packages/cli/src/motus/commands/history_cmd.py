@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""History command for Motus Command."""
+"""History command for Motus."""
 
 import time
 
@@ -187,7 +187,7 @@ def history_command(max_sessions: int = 10, max_events: int = 50) -> None:
         console.print(
             f"[dim]Showing {min(30, len(all_events))} of {len(all_events)} events from {len(sessions)} sessions[/dim]"
         )
-        console.print("[dim]Use 'mc watch <session_id>' to follow a specific session[/dim]")
+        console.print("[dim]Use 'motus watch <session_id>' to follow a specific session[/dim]")
         success = True
     finally:
         elapsed_ms = (time.perf_counter() - start) * 1000

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC Config Loader.
+Motus Config Loader.
 
 Loads configuration from ~/.motus/config.json with env var overrides and defaults.
 """

@@ -1,6 +1,6 @@
 # CLI Documentation Best Practices
 
-> Research summary for Motus Command documentation
+> Research summary for Motus documentation
 
 ## The Golden Rule
 
@@ -40,12 +40,12 @@
 ### Quick Reference (Week 1)
 
 ```markdown
-# Motus Command Quick Reference
+# Motus Quick Reference
 
 ## Most Common Commands
-mc                    # Launch dashboard
-mc watch abc123       # Watch specific session
-mc list               # List all sessions
+motus                    # Launch dashboard
+motus watch abc123       # Watch specific session
+motus list               # List all sessions
 
 ## Keyboard Shortcuts
 j/k     Navigate
@@ -65,12 +65,12 @@ q       Quit
 **Good:**
 ```bash
 # What this does
-mc watch abc123
+motus watch abc123
 ```
 
 **Bad:**
 ```bash
-mc watch <session-id>  # Too abstract
+motus watch <session-id>  # Too abstract
 ```
 
 ---
@@ -78,11 +78,11 @@ mc watch <session-id>  # Too abstract
 ## CLI Help Text Pattern
 
 ```bash
-$ mc --help
-Motus Command - See what your AI agents are thinking
+$ motus --help
+Motus - See what your AI agents are thinking
 
 USAGE:
-    mc [OPTIONS] [COMMAND]
+    motus [OPTIONS] [COMMAND]
 
 COMMANDS:
     (none)      Launch TUI dashboard
@@ -91,9 +91,9 @@ COMMANDS:
     watch       Watch specific session
 
 EXAMPLES:
-    mc                           # Launch dashboard
-    mc watch abc123              # Watch session
-    mc list --max-age-hours=24   # Recent sessions
+    motus                           # Launch dashboard
+    motus watch abc123              # Watch session
+    motus list --max-age-hours=24   # Recent sessions
 
 See full docs: https://github.com/motus-os/motus
 ```
@@ -109,11 +109,11 @@ Every CLI needs this:
 
 ### "No sessions found"
 - Check if Claude Code has been run: `ls ~/.claude/projects/`
-- Try: `mc list --max-age-hours=168` (1 week)
+- Try: `motus list --max-age-hours=168` (1 week)
 
 ### TUI rendering issues
 - Set `TERM=xterm-256color`
-- Try: `mc --no-color`
+- Try: `motus --no-color`
 ```
 
 ---
@@ -150,7 +150,7 @@ How to test:
 ## Action Items for v0.5.0
 
 ### Pre-Launch
-- [ ] Verify `mc --help` matches README
+- [ ] Verify `motus --help` matches README
 - [ ] Test every command example
 - [ ] Add one screenshot to README
 - [ ] Create TROUBLESHOOTING.md

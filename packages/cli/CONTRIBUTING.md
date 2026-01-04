@@ -1,4 +1,4 @@
-# Contributing to Motus Command
+# Contributing to Motus
 
 ## Development Setup
 
@@ -10,7 +10,7 @@ source venv/bin/activate
 pip install -e ".[dev]"
 
 # Verify installation
-mc --help
+motus --help
 python3 -m pytest tests/ -q
 ```
 

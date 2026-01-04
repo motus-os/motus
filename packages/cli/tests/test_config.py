@@ -366,7 +366,7 @@ class TestConfigCLI:
     """Tests for config CLI commands."""
 
     def test_config_get_valid_key(self, temp_config_path, clean_env, capsys):
-        """Test mc config get with valid key."""
+        """Test motus config get with valid key."""
         from motus.config_loader import load_config, save_config
         from motus.config_schema import MCConfigSchema
 
@@ -386,7 +386,7 @@ class TestConfigCLI:
             config_cmd.load_config = original_load
 
     def test_config_get_invalid_key(self, temp_config_path, clean_env):
-        """Test mc config get with invalid key."""
+        """Test motus config get with invalid key."""
         import motus.commands.config_cmd as config_cmd
         from motus.config_loader import load_config
 
@@ -400,7 +400,7 @@ class TestConfigCLI:
             config_cmd.load_config = original_load
 
     def test_config_set_string_value(self, temp_config_path, clean_env):
-        """Test mc config set with string value."""
+        """Test motus config set with string value."""
         import motus.commands.config_cmd as config_cmd
         from motus.config_loader import load_config, save_config
 
@@ -422,7 +422,7 @@ class TestConfigCLI:
             config_cmd.get_config_path = original_get_path
 
     def test_config_set_bool_value(self, temp_config_path, clean_env):
-        """Test mc config set with boolean value."""
+        """Test motus config set with boolean value."""
         import motus.commands.config_cmd as config_cmd
         from motus.config_loader import load_config, save_config
 
@@ -444,7 +444,7 @@ class TestConfigCLI:
             config_cmd.get_config_path = original_get_path
 
     def test_config_set_int_value(self, temp_config_path, clean_env):
-        """Test mc config set with integer value."""
+        """Test motus config set with integer value."""
         import motus.commands.config_cmd as config_cmd
         from motus.config_loader import load_config, save_config
 

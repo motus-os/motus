@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-CLI module for Motus Command.
+CLI module for Motus.
 
 This module provides backward compatibility by re-exporting all public symbols
 from the split modules. Code importing from motus.cli will continue to work.

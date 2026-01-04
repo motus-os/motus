@@ -2,16 +2,16 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC Exception Classes.
+Motus Exception Classes.
 
-Proper exception hierarchy for error handling throughout MC.
+Proper exception hierarchy for error handling throughout Motus.
 """
 
 from typing import Optional
 
 
 class MCError(Exception):
-    """Base exception for all MC errors."""
+    """Base exception for all Motus errors."""
 
     def __init__(self, message: str, details: Optional[str] = None):
         self.message = message
@@ -130,13 +130,13 @@ class ParseError(MCError):
 
 
 class TracerError(MCError):
-    """Error in the MC tracer/SDK."""
+    """Error in the Motus tracer/SDK."""
 
     pass
 
 
 class HookError(MCError):
-    """Error in MC hooks."""
+    """Error in Motus hooks."""
 
     pass
 

@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Frictionless Roadmap API for Motus Command.
+"""Frictionless Roadmap API for Motus.
 
 Stripe/Spotify-inspired "Pit of Success" design:
 - Every call returns actionable next steps
@@ -170,8 +170,8 @@ class RoadmapAPI:
                         success=True,
                         data=[],
                         message="No items ready - all have blocking dependencies",
-                        action="Check blocked items with: mc roadmap blocked",
-                        command="mc roadmap blocked",
+                        action="Check blocked items with: motus roadmap blocked",
+                        command="motus roadmap blocked",
                     )
 
                 first_item = items[0]
@@ -180,7 +180,7 @@ class RoadmapAPI:
                     data=items,
                     message=f"{len(items)} items ready to work on",
                     action=f"Claim the highest priority item: {first_item.title}",
-                    command=f"mc roadmap claim {first_item.id}",
+                    command=f"motus roadmap claim {first_item.id}",
                 )
 
         except Exception as e:
@@ -189,7 +189,7 @@ class RoadmapAPI:
                 success=False,
                 message=str(e),
                 action="Check database connection",
-                command="mc health",
+                command="motus health",
             )
 
     def claim(self, item_id: str) -> RoadmapResponse:
@@ -224,7 +224,7 @@ class RoadmapAPI:
                         success=False,
                         message=f"[ROAD-001] Item '{item_id}' not found",
                         action="List available items",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 # Check not already claimed
@@ -243,13 +243,13 @@ class RoadmapAPI:
                             data={"item_id": item_id, "status": "already_claimed"},
                             message="Already claimed by you",
                             action="Start working or complete when done",
-                            command=f"mc roadmap complete {item_id}",
+                            command=f"motus roadmap complete {item_id}",
                         )
                     return RoadmapResponse(
                         success=False,
                         message=f"[ROAD-003] Already claimed by {existing['agent_id']}",
                         action="Choose a different item",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 # Check blocking dependencies
@@ -273,7 +273,7 @@ class RoadmapAPI:
                         message=f"[ROAD-002] {len(blockers)} prerequisites not complete",
                         blockers=blocker_list,
                         action=f"Complete blocker first: {first_blocker['prereq_title']}",
-                        command=f"mc roadmap claim {first_blocker['prereq_id']}",
+                        command=f"motus roadmap claim {first_blocker['prereq_id']}",
                     )
 
                 # Create assignment
@@ -300,7 +300,7 @@ class RoadmapAPI:
                     data={"item_id": item_id, "title": item["title"]},
                     message=f"Claimed: {item['title']}",
                     action="Work on this item, then mark complete",
-                    command=f"mc roadmap complete {item_id}",
+                    command=f"motus roadmap complete {item_id}",
                 )
 
         except Exception as e:
@@ -309,7 +309,7 @@ class RoadmapAPI:
                 success=False,
                 message=str(e),
                 action="Check item status",
-                command=f"mc roadmap status {item_id}",
+                command=f"motus roadmap status {item_id}",
             )
 
     def complete(self, item_id: str) -> RoadmapResponse:
@@ -333,10 +333,10 @@ class RoadmapAPI:
                     success=False,
                     message=(
                         "[ROAD-010] Only reviewers can mark items complete. "
-                        "Use 'mc roadmap review' instead."
+                        "Use 'motus roadmap review' instead."
                     ),
                     action="Set MC_REVIEWER=1 if you are the designated reviewer",
-                    command="mc roadmap review <id>",
+                    command="motus roadmap review <id>",
                 )
 
             with self._db.transaction() as conn:
@@ -354,7 +354,7 @@ class RoadmapAPI:
                         success=False,
                         message=f"[ROAD-006] Item '{item_id}' not assigned",
                         action="Claim the item first",
-                        command=f"mc roadmap claim {item_id}",
+                        command=f"motus roadmap claim {item_id}",
                     )
 
                 if assignment["agent_id"] != self.agent_id and not is_reviewer:
@@ -362,7 +362,7 @@ class RoadmapAPI:
                         success=False,
                         message=f"[ROAD-006] Assigned to {assignment['agent_id']}, not you",
                         action="Ask them to complete or release",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 # Update item status
@@ -416,7 +416,7 @@ class RoadmapAPI:
                         },
                         message=f"Completed. {len(unblocked)} items now unblocked.",
                         action=f"Work on unblocked item: {first['title']}",
-                        command=f"mc roadmap claim {first['id']}",
+                        command=f"motus roadmap claim {first['id']}",
                     )
 
                 return RoadmapResponse(
@@ -424,7 +424,7 @@ class RoadmapAPI:
                     data={"item_id": item_id},
                     message="Completed",
                     action="Check what's ready next",
-                    command="mc roadmap ready",
+                    command="motus roadmap ready",
                 )
 
         except Exception as e:
@@ -433,7 +433,7 @@ class RoadmapAPI:
                 success=False,
                 message=str(e),
                 action="Check item status",
-                command=f"mc roadmap status {item_id}",
+                command=f"motus roadmap status {item_id}",
             )
 
     def status(self, item_id: str) -> RoadmapResponse:
@@ -461,7 +461,7 @@ class RoadmapAPI:
                         success=False,
                         message=f"[ROAD-001] Item '{item_id}' not found",
                         action="List available items",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 # Get assignment
@@ -506,7 +506,7 @@ class RoadmapAPI:
                         data=result,
                         message="Item is complete",
                         action="Check what's ready next",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 if incomplete_blockers:
@@ -517,7 +517,7 @@ class RoadmapAPI:
                         blockers=incomplete_blockers,
                         message=f"Blocked by {len(incomplete_blockers)} prerequisites",
                         action="Complete the first blocker",
-                        command=f"mc roadmap claim {first_blocker_id}",
+                        command=f"motus roadmap claim {first_blocker_id}",
                     )
 
                 if assignment:
@@ -527,14 +527,14 @@ class RoadmapAPI:
                             data=result,
                             message="Assigned to you and ready",
                             action="Complete when done",
-                            command=f"mc roadmap complete {item_id}",
+                            command=f"motus roadmap complete {item_id}",
                         )
                     return RoadmapResponse(
                         success=True,
                         data=result,
                         message=f"Assigned to {assignment['agent_id']}",
                         action="Choose a different item",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 return RoadmapResponse(
@@ -542,7 +542,7 @@ class RoadmapAPI:
                     data=result,
                     message="Ready to claim",
                     action="Claim this item",
-                    command=f"mc roadmap claim {item_id}",
+                    command=f"motus roadmap claim {item_id}",
                 )
 
         except Exception as e:
@@ -551,7 +551,7 @@ class RoadmapAPI:
                 success=False,
                 message=str(e),
                 action="Check database connection",
-                command="mc health",
+                command="motus health",
             )
 
     def release(self, item_id: str) -> RoadmapResponse:
@@ -578,7 +578,7 @@ class RoadmapAPI:
                         success=False,
                         message=f"[ROAD-006] Item '{item_id}' not assigned",
                         action="Nothing to release",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 if assignment["agent_id"] != self.agent_id:
@@ -586,7 +586,7 @@ class RoadmapAPI:
                         success=False,
                         message=f"[ROAD-006] Assigned to {assignment['agent_id']}, not you",
                         action="You can't release another agent's claim",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 conn.execute(
@@ -603,7 +603,7 @@ class RoadmapAPI:
                     data={"item_id": item_id},
                     message="Released claim",
                     action="Item is now available for others",
-                    command="mc roadmap ready",
+                    command="motus roadmap ready",
                 )
 
         except Exception as e:
@@ -612,7 +612,7 @@ class RoadmapAPI:
                 success=False,
                 message=str(e),
                 action="Check item status",
-                command=f"mc roadmap status {item_id}",
+                command=f"motus roadmap status {item_id}",
             )
 
     def my_work(self) -> RoadmapResponse:
@@ -654,7 +654,7 @@ class RoadmapAPI:
                         data=[],
                         message="No items assigned to you",
                         action="Claim something to work on",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 first_item = items[0]
@@ -663,7 +663,7 @@ class RoadmapAPI:
                     data=items,
                     message=f"{len(items)} items assigned to you",
                     action=f"Continue working on: {first_item.title}",
-                    command=f"mc roadmap complete {first_item.id}",
+                    command=f"motus roadmap complete {first_item.id}",
                 )
 
         except Exception as e:
@@ -672,7 +672,7 @@ class RoadmapAPI:
                 success=False,
                 message=str(e),
                 action="Check database connection",
-                command="mc health",
+                command="motus health",
             )
 
     def review(self, item_id: str, status: str = "review") -> RoadmapResponse:
@@ -700,7 +700,7 @@ class RoadmapAPI:
                     success=False,
                     message=f"Invalid status '{status}'",
                     action="Use a valid status",
-                    command="mc roadmap review <id> --status review",
+                    command="motus roadmap review <id> --status review",
                 )
 
             if status == "completed" and not is_reviewer:
@@ -708,10 +708,10 @@ class RoadmapAPI:
                     success=False,
                     message=(
                         "[ROAD-010] Only reviewers can mark items complete. "
-                        "Use 'mc roadmap review' instead."
+                        "Use 'motus roadmap review' instead."
                     ),
                     action="Set MC_REVIEWER=1 if you are the designated reviewer",
-                    command="mc roadmap review <id>",
+                    command="motus roadmap review <id>",
                 )
 
             if status != "review" and not is_reviewer:
@@ -719,7 +719,7 @@ class RoadmapAPI:
                     success=False,
                     message="[ROAD-010] Builders can only set status to 'review'.",
                     action="Ask a reviewer to update status or mark complete",
-                    command="mc roadmap review <id> --status review",
+                    command="motus roadmap review <id> --status review",
                 )
 
             with self._db.transaction() as conn:
@@ -737,7 +737,7 @@ class RoadmapAPI:
                         success=False,
                         message=f"[ROAD-001] Item '{item_id}' not found",
                         action="List available items",
-                        command="mc roadmap ready",
+                        command="motus roadmap ready",
                     )
 
                 old_status = item["status_key"]
@@ -752,7 +752,7 @@ class RoadmapAPI:
                         },
                         message=f"Already {status}",
                         action="Check item status",
-                        command=f"mc roadmap status {item_id}",
+                        command=f"motus roadmap status {item_id}",
                     )
 
                 conn.execute(
@@ -774,7 +774,7 @@ class RoadmapAPI:
                     },
                     message=f"[{item_id}] {old_status} -> {status}",
                     action="Check item status",
-                    command=f"mc roadmap status {item_id}",
+                    command=f"motus roadmap status {item_id}",
                 )
 
         except Exception as e:
@@ -783,7 +783,7 @@ class RoadmapAPI:
                 success=False,
                 message=str(e),
                 action="Check item status",
-                command=f"mc roadmap status {item_id}",
+                command=f"motus roadmap status {item_id}",
             )
 
 

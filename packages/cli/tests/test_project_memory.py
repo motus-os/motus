@@ -73,12 +73,12 @@ def test_record_command_unlocks_skills(tmp_path: Path) -> None:
     global_root = tmp_path / ".motus"
     mem = ProjectMemory(tmp_path, global_root=global_root)
     try:
-        mem.record_command("mc go")
+        mem.record_command("motus go")
         unlocked = mem.get_unlocked_skills()
         assert "first_verification" in unlocked
 
         for _ in range(9):
-            mem.record_command("mc go")
+            mem.record_command("motus go")
         unlocked = mem.get_unlocked_skills()
         assert "evidence_keeper" in unlocked
     finally:

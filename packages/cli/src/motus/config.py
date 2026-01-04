@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC Configuration Module.
+Motus Configuration Module.
 
-Centralized configuration for all MC components.
+Centralized configuration for all Motus components.
 All magic numbers and hardcoded values should live here.
 """
 
@@ -16,7 +16,7 @@ from typing import List
 
 @dataclass(frozen=True)
 class PathConfig:
-    """File system paths used by MC."""
+    """File system paths used by Motus."""
 
     # Claude Code paths
     claude_dir: Path = field(default_factory=lambda: Path.home() / ".claude")
@@ -26,7 +26,7 @@ class PathConfig:
         """Claude Code projects directory."""
         return self.claude_dir / "projects"
 
-    # MC state directory
+    # Motus state directory
     state_dir: Path = field(default_factory=lambda: Path.home() / ".mc")
 
     @property
@@ -235,7 +235,7 @@ class GovernanceConfig:
 
 @dataclass
 class MCConfig:
-    """Master configuration for MC."""
+    """Master configuration for Motus."""
 
     paths: PathConfig = field(default_factory=PathConfig)
     sessions: SessionConfig = field(default_factory=SessionConfig)

@@ -1,12 +1,12 @@
-# Motus Command Architecture
+# Motus Architecture
 
-Motus Command is a local-first agent kernel for observability, memory, and governance. The kernel is defined by six primitives that form a stable substrate for multi-agent tooling.
+Motus is a local-first agent kernel for observability, memory, and governance. The kernel is defined by six primitives that form a stable substrate for multi-agent tooling.
 
 ## Kernel Diagram
 
 ```mermaid
 graph TD
-  Kernel[Motus Command Kernel]
+  Kernel[Motus Kernel]
   Kernel --> Trace[Trace Plane]
   Kernel --> Teleport[Teleport]
   Kernel --> Awareness[Awareness]

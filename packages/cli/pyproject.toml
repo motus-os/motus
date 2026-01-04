@@ -64,8 +64,7 @@ gemini = [
 ]
 
 [project.scripts]
-motus = "motus.cli.core:main"  # Primary (v0.1.0+)
-mc = "motus.cli.core:main"      # Alias (deprecated v0.2.0, removed v0.3.0)
+motus = "motus.cli.core:main"
 
 [project.urls]
 Homepage = "https://github.com/motus-os/motus"

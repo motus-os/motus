@@ -45,7 +45,7 @@ def test_cli_claims_acquire_and_list_respects_acl(tmp_path: Path, monkeypatch, c
     with patch(
         "sys.argv",
         [
-            "mc",
+            "motus",
             "claims",
             "acquire",
             "--namespace",
@@ -65,7 +65,7 @@ def test_cli_claims_acquire_and_list_respects_acl(tmp_path: Path, monkeypatch, c
     assert payload["success"] is True
     assert payload["claim"]["namespace"] == "motus-core"
 
-    with patch("sys.argv", ["mc", "claims", "list", "--agent", "builder-1", "--json"]):
+    with patch("sys.argv", ["motus", "claims", "list", "--agent", "builder-1", "--json"]):
         with pytest.raises(SystemExit) as e:
             main()
         assert e.value.code == 0
@@ -78,7 +78,7 @@ def test_cli_claims_acquire_and_list_respects_acl(tmp_path: Path, monkeypatch, c
     with patch(
         "sys.argv",
         [
-            "mc",
+            "motus",
             "claims",
             "acquire",
             "--namespace",

@@ -159,7 +159,7 @@ def watch_command(args):
         watch_module = _get_watch_module()
         console = watch_module.console
         console.print("[yellow]No active session found.[/yellow]")
-        console.print("Use 'mc list' to see available sessions.")
+        console.print("Use 'motus list' to see available sessions.")
         raise SystemExit(EXIT_ERROR)
 
     unified = None
@@ -172,7 +172,7 @@ def watch_command(args):
             watch_module = _get_watch_module()
             console = watch_module.console
             console.print(f"[red]Session not found: {escape(session_id)}[/red]")
-            console.print("Use 'mc list' to see available sessions.")
+            console.print("Use 'motus list' to see available sessions.")
             raise SystemExit(EXIT_ERROR)
     else:
         unified = unified_sessions[0]

@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC Logging Module.
+Motus Logging Module.
 
-Structured logging for all MC components.
+Structured logging for all Motus components.
 """
 
 import json
@@ -65,7 +65,7 @@ class MCFormatter(logging.Formatter):
 
 class MCLogger:
     """
-    Structured logger for MC.
+    Structured logger for Motus.
 
     Usage:
         from motus.logging import get_logger
@@ -76,7 +76,7 @@ class MCLogger:
     """
 
     def __init__(self, name: str, level: int = logging.INFO):
-        self.logger = logging.getLogger(f"mc.{name}")
+        self.logger = logging.getLogger(f"motus.{name}")
         self.logger.setLevel(level)
 
         # Avoid duplicate handlers
@@ -88,7 +88,7 @@ class MCLogger:
             self.logger.addHandler(console_handler)
 
             # File handler - JSON format
-            log_file = config.paths.logs_dir / "mc.log"
+            log_file = config.paths.logs_dir / "motus.log"
             try:
                 file_handler = logging.FileHandler(log_file)
                 file_handler.setLevel(logging.DEBUG)
@@ -182,7 +182,7 @@ def get_logger(name: str) -> MCLogger:
 
 
 def set_log_level(level: int) -> None:
-    """Set log level for all MC loggers."""
+    """Set log level for all Motus loggers."""
     for logger in _loggers.values():
         logger.logger.setLevel(level)
 

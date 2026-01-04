@@ -11,7 +11,7 @@ We release patches for security vulnerabilities for the following versions:
 
 ## Reporting a Vulnerability
 
-We take the security of Motus Command seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+We take the security of Motus seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
@@ -47,10 +47,10 @@ When we receive a security bug report, we will:
 
 ## Security Best Practices
 
-When using Motus Command:
+When using Motus:
 
-* **Session Data**: MC reads Claude Code session files from `~/.claude/projects/`. These may contain sensitive information about your codebase. MC does not transmit this data anywhere.
-* **Hooks**: The `mc install-hooks` command modifies your Claude Code settings. Review the changes before approving.
+* **Session Data**: Motus reads Claude Code session files from `~/.claude/projects/`. These may contain sensitive information about your codebase. Motus does not transmit this data anywhere.
+* **Hooks**: The `motus install-hooks` command modifies your Claude Code settings. Review the changes before approving.
 * **Web Dashboard**: The web dashboard runs on localhost only by default. Do not expose it to public networks.
 * **Trace Files**: SDK trace files stored in `~/.mc/traces/` may contain sensitive information. Secure this directory appropriately.
 

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-Scope Creep Monitor for Motus Command v0.3.
+Scope Creep Monitor for Motus v0.3.
 
 Monitors file touches vs intent to detect scope drift.
 Alerts when an agent is modifying more files than expected.

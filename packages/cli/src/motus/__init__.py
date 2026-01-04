@@ -8,9 +8,9 @@ Real-time observability and memory for AI coding assistants.
 
 Usage:
     # CLI
-    $ mc watch     # Watch active Claude session
-    $ mc list      # List sessions
-    $ mc summary   # Generate AI memory for CLAUDE.md
+    $ motus watch  # Watch active Claude session
+    $ motus list   # List sessions
+    $ motus summary  # Generate AI memory for CLAUDE.md
 
     # SDK (for any Python agent)
     from motus import Tracer

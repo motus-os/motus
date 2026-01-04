@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""CLI command: `mc explain` (decision trace timeline)."""
+"""CLI command: `motus explain` (decision trace timeline)."""
 
 from __future__ import annotations
 

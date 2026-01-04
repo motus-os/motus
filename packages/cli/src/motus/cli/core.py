@@ -105,7 +105,7 @@ def is_claude_process_running(project_path: str = "") -> bool:
 
 
 def archive_session(session_file: Path) -> bool:
-    """Archive a session file to MC state directory archive."""
+    """Archive a session file to Motus state directory archive."""
     return _archive_session(
         session_file,
         archive_dir=ARCHIVE_DIR,

@@ -28,7 +28,7 @@ def register_roadmap_parsers(
         help="Roadmap commands",
     )
 
-    # mc roadmap (default: show all by phase)
+    # motus roadmap (default: show all by phase)
     roadmap_parser.add_argument(
         "--all",
         action="store_true",
@@ -44,7 +44,7 @@ def register_roadmap_parsers(
         help="Emit machine-readable JSON",
     )
 
-    # mc roadmap ready
+    # motus roadmap ready
     ready_parser = roadmap_subparsers.add_parser(
         "ready",
         help="Show items ready to work on (no blocking deps)",
@@ -55,10 +55,10 @@ def register_roadmap_parsers(
         help="Emit machine-readable JSON",
     )
 
-    # mc roadmap claim <id> - DEPRECATED
+    # motus roadmap claim <id> - DEPRECATED
     claim_parser = roadmap_subparsers.add_parser(
         "claim",
-        help="[DEPRECATED] Claim an item (use 'mc work claim' instead)",
+        help="[DEPRECATED] Claim an item (use 'motus work claim' instead)",
     )
     claim_parser.add_argument(
         "item_id",
@@ -69,7 +69,7 @@ def register_roadmap_parsers(
         help="Agent ID (default: MC_AGENT_ID or 'default')",
     )
 
-    # mc roadmap complete <id>
+    # motus roadmap complete <id>
     complete_parser = roadmap_subparsers.add_parser(
         "complete",
         help="Mark item as complete",
@@ -79,7 +79,7 @@ def register_roadmap_parsers(
         help="ID of item to complete",
     )
 
-    # mc roadmap status <id>
+    # motus roadmap status <id>
     status_parser = roadmap_subparsers.add_parser(
         "status",
         help="Get detailed status of an item",
@@ -94,7 +94,7 @@ def register_roadmap_parsers(
         help="Emit machine-readable JSON",
     )
 
-    # mc roadmap release <id>
+    # motus roadmap release <id>
     release_parser = roadmap_subparsers.add_parser(
         "release",
         help="Release claim without completing",
@@ -104,7 +104,7 @@ def register_roadmap_parsers(
         help="ID of item to release",
     )
 
-    # mc roadmap my-work
+    # motus roadmap my-work
     my_work_parser = roadmap_subparsers.add_parser(
         "my-work",
         help="Show items assigned to you",
@@ -115,7 +115,7 @@ def register_roadmap_parsers(
         help="Emit machine-readable JSON",
     )
 
-    # mc roadmap export
+    # motus roadmap export
     export_parser = roadmap_subparsers.add_parser(
         "export",
         help="Export roadmap to markdown (for backup)",
@@ -131,7 +131,7 @@ def register_roadmap_parsers(
         help="Include soft-deleted items in export",
     )
 
-    # mc roadmap delete <id> (soft delete)
+    # motus roadmap delete <id> (soft delete)
     delete_parser = roadmap_subparsers.add_parser(
         "delete",
         help="Soft-delete an item (rebaseline)",

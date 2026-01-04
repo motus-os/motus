@@ -13,7 +13,7 @@ all state stored in `~/.motus/coordination.db`.
 ```bash
 pip install motusos
 motus --help
-motus web  # Opens dashboard at http://127.0.0.1:4000 (mc web alias)
+motus web  # Opens dashboard at http://127.0.0.1:4000
 ```
 
 ## 6-call Coordination API (facade)

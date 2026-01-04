@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Error codes and exception hierarchy for Motus Command.
+"""Error codes and exception hierarchy for Motus.
 
 All errors follow DNA-DB-SQLITE RULE 12 (error sanitization):
 - User-facing messages are sanitized (no paths, no SQL)

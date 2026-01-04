@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC Tracer SDK
+Motus Tracer SDK
 
-Use this to instrument any Python AI agent with MC observability.
+Use this to instrument any Python AI agent with Motus observability.
 
 Example:
     from motus import Tracer
@@ -55,9 +55,9 @@ def get_tracer(name: str = "default") -> "Tracer":
 
 class Tracer:
     """
-    MC Tracer for AI agent observability.
+    Motus Tracer for AI agent observability.
 
-    Logs events to MC state directory (~/.mc/traces/<session_id>.jsonl) for MC to watch.
+    Logs events to Motus state directory (~/.mc/traces/<session_id>.jsonl) for Motus to watch.
     """
 
     def __init__(

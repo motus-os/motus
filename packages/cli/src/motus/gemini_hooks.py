@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC Gemini Hooks
+Motus Gemini Hooks
 
-These hooks integrate MC with Gemini agents to inject observed context
+These hooks integrate Motus with Gemini agents to inject observed context
 back into the session - completing the feedback loop.
 
 Usage:

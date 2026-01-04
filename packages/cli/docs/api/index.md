@@ -1,11 +1,11 @@
-# Motus Command API
+# Motus API
 Status: ACTIVE
 Owner: DOCS_SPECS
 Scope: Public-facing API documentation index
 Version: 0.1
 Date: 2025-12-30
 
-Motus Command is usable both as a CLI (`mc ...`) and as a Python library. This directory documents the *public-ish* Python entry points that are stable enough for integrations and contributor onboarding.
+Motus is usable both as a CLI (`motus ...`) and as a Python library. This directory documents the *public-ish* Python entry points that are stable enough for integrations and contributor onboarding.
 
 If you only want the CLI, start with `README.md`. If you want to integrate Motus into another tool (CI, dashboards, exporters), start here.
 

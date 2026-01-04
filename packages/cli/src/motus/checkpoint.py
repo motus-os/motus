@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-State Checkpoints Module for Motus Command v0.3.
+State Checkpoints Module for Motus v0.3.
 
 Git-based checkpoints that allow safe experimentation and rollback.
 Uses git stash for state storage with a manifest of modified files.

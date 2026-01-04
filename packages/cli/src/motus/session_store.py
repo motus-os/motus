@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Session lifecycle storage for Motus Command."""
+"""Session lifecycle storage for Motus."""
 
 from .session_store_core import (
     DEFAULT_DB_NAME,

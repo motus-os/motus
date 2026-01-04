@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Display-ready dataclasses for Motus Command.
+"""Display-ready dataclasses for Motus.
 
 All string fields are PRE-ESCAPED and safe to render directly.
 Consumers should never need to escape these values.

@@ -1,5 +1,5 @@
 """
-Test configuration for Motus Command.
+Test configuration for Motus.
 
 Determinism Requirements (from Codex QC review):
 - Phase 0B-γ MUST deliver:

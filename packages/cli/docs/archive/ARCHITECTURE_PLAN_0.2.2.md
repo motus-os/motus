@@ -1,4 +1,4 @@
-# Motus Command 0.2.2 - Architectural Plan
+# Motus 0.2.2 - Architectural Plan
 
 ## Philosophy: Builder Pattern with Protocol-Based Design
 
@@ -486,7 +486,7 @@ Each builder can be implemented by a focused sub-agent:
 ## Success Criteria
 
 ### Must Have (0.2.2 Release)
-- [ ] All sources appear in `mc mission-control` (not just Claude)
+- [ ] All sources appear in `motus mission-control` (not just Claude)
 - [ ] Status assignment is uniform (mtime-based for all)
 - [ ] CLI shows session health widget
 - [ ] 379+ tests passing
@@ -626,7 +626,7 @@ class SessionOrchestrator:
 ```
 
 **NOT pulled forward (stay in v0.3):**
-- `mc handoff --to codex` format conversion - future work
+- `motus handoff --to codex` format conversion - future work
 - Interactive handoff prompts
 
 ### 4. File Touch Tracking (v0.3 SessionMetadata.file_touches) → UnifiedSession
@@ -749,7 +749,7 @@ class UnifiedEvent:
 ## Updated Success Criteria
 
 ### Must Have (0.2.2 Release)
-- [ ] All sources appear in `mc mission-control`
+- [ ] All sources appear in `motus mission-control`
 - [ ] Status assignment is uniform (mtime-based)
 - [ ] CLI shows session health widget
 - [ ] Decision extraction from all sources (v0.3 Decision Ledger foundation)
@@ -760,8 +760,8 @@ class UnifiedEvent:
 - [ ] Thinking surrogates for Codex/Gemini
 - [ ] Backfill flag for mission_control
 - [ ] Basic handoff export (v0.3 Session Handoff foundation)
-- [ ] Context API (`mc context --json`)
-- [ ] Redaction helper CLI (`mc redact`)
+- [ ] Context API (`motus context --json`)
+- [ ] Redaction helper CLI (`motus redact`)
 
 ### Nice to Have
 - [ ] Legacy code removed
@@ -769,8 +769,8 @@ class UnifiedEvent:
 - [ ] Documentation updated
 
 ### Stretch (0.2.2)
-- [ ] Teleport command (`mc teleport <src> <dst>`)
-- [ ] Test harness hints (`mc test-hints`)
+- [ ] Teleport command (`motus teleport <src> <dst>`)
+- [ ] Test harness hints (`motus test-hints`)
 
 ---
 
@@ -783,17 +783,17 @@ These are tools agents can call to help themselves, not just observability for u
 | Feature | Implementation | Why Now |
 |---------|---------------|---------|
 | **Thinking Surrogates** | Each builder's `extract_thinking()` generates synthetic thinking for Codex/Gemini | Already in plan, fixes CoT gap |
-| **Context API** | `mc context --json <session_id>` returns decisions, files, hot files as structured data | Builds on existing summary; agents can inject into prompts |
+| **Context API** | `motus context --json <session_id>` returns decisions, files, hot files as structured data | Builds on existing summary; agents can inject into prompts |
 | **Session Tagging** | `UnifiedEvent.source` + `UnifiedSession.source` ensure consistent badges | Already in data structures |
-| **Redaction Helper** | `mc redact <text>` CLI command; `redact(text)` Python API | Already exists in safety.py, just expose it |
-| **Basic Handoff Export** | `mc handoff <session_id>` outputs portable context bundle | Already planned as `export_handoff()` |
+| **Redaction Helper** | `motus redact <text>` CLI command; `redact(text)` Python API | Already exists in safety.py, just expose it |
+| **Basic Handoff Export** | `motus handoff <session_id>` outputs portable context bundle | Already planned as `export_handoff()` |
 
 ### 0.2.2 Stretch (Build on Foundation)
 
 | Feature | Implementation | Dependency |
 |---------|---------------|------------|
-| **Teleport** | `mc teleport <source_session> <target_session>` - inject context from one session into another | Needs handoff export + injection hook |
-| **Test Harness Hints** | `mc test-hints` returns detected test commands for current repo | Simple detection, low risk |
+| **Teleport** | `motus teleport <source_session> <target_session>` - inject context from one session into another | Needs handoff export + injection hook |
+| **Test Harness Hints** | `motus test-hints` returns detected test commands for current repo | Simple detection, low risk |
 
 ### Deferred to 0.3.0 (Needs More Infrastructure)
 
@@ -820,7 +820,7 @@ These are tools agents can call to help themselves, not just observability for u
 
 ```python
 # CLI
-mc teleport <source_session_id> [--to <target_session_id>] [--format markdown|json]
+motus teleport <source_session_id> [--to <target_session_id>] [--format markdown|json]
 
 # If --to is omitted, outputs to stdout (for manual injection)
 # If --to is provided, appends a ThinkingEvent to target session
@@ -886,7 +886,7 @@ class TeleportBundle:
 
 Based on this analysis, there may be **two products** emerging:
 
-### Motus Command (mc) - Observability
+### Motus (motus) - Observability
 - Watch agents work
 - See decisions, tool calls, files touched
 - Health monitoring

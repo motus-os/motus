@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""Show session details (`mc show`)."""
+"""Show session details (`motus show`)."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ def show_session(session_id: str) -> None:
 
     if target is None:
         console.print(f"[red]Session not found:[/red] {escape(session_id)}")
-        console.print("Use `mc list` to see available sessions.")
+        console.print("Use `motus list` to see available sessions.")
         raise SystemExit(EXIT_ERROR)
 
     builder = orchestrator.get_builder(target.source)

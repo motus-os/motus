@@ -61,7 +61,7 @@ def register_standards_parsers(
     orient_parser.add_argument(
         "--json",
         action="store_true",
-        help="(stats) Emit machine-readable JSON for `mc orient stats`",
+        help="(stats) Emit machine-readable JSON for `motus orient stats`",
     )
 
     standards_parser = subparsers.add_parser(

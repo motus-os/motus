@@ -1,6 +1,6 @@
 # Integration Guide
 
-This guide shows a few practical integration patterns for Motus Command as a library.
+This guide shows a few practical integration patterns for Motus as a library.
 
 ## Pattern: validate + store events you already have
 

@@ -186,7 +186,7 @@ class TestReady:
         """ready() includes action and command (Stripe pattern)."""
         result = api.ready()
         assert result.action != ""
-        assert result.command.startswith("mc roadmap")
+        assert result.command.startswith("motus roadmap")
 
     def test_ordered_by_rank(self, api: RoadmapAPI):
         """ready() returns items in rank order."""
@@ -433,7 +433,7 @@ class TestResponseStructure:
     def test_success_has_command(self, api: RoadmapAPI):
         """All success responses include runnable command."""
         result = api.ready()
-        assert result.command.startswith("mc ")
+        assert result.command.startswith("motus ")
 
     def test_failure_has_recovery_action(self, api: RoadmapAPI):
         """Failure responses include recovery action."""

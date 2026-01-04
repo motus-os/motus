@@ -16,7 +16,7 @@ CLAUDE_SETTINGS = Path.home() / ".claude" / "settings.json"
 
 
 def get_mc_hook_config() -> dict:
-    """Generate MC hook configuration for Claude Code."""
+    """Generate Motus hook configuration for Claude Code."""
     return {
         "hooks": {
             "SessionStart": [
@@ -75,7 +75,7 @@ def install_hooks_command():
         if hook_type not in settings["hooks"]:
             settings["hooks"][hook_type] = []
 
-        # Check if MC hook already exists
+        # Check if Motus hook already exists
         existing_commands = [
             h.get("hooks", [{}])[0].get("command", "") for h in settings["hooks"][hook_type]
         ]

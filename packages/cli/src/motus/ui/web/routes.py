@@ -58,7 +58,7 @@ def register_routes(app: FastAPI) -> None:
 
     @app.get("/api/summary/{session_id}")
     async def get_summary(session_id: str):
-        """Generate session summary markdown (same as CLI mc summary).
+        """Generate session summary markdown (same as CLI motus summary).
 
         Args:
             session_id: Session ID to generate summary for

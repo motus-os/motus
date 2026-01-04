@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-Harness detection command for Motus Command v0.3.0.
+Harness detection command for Motus v0.3.0.
 """
 
 import json

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC Safety Features Package.
+Motus Safety Features Package.
 
 This package provides safety features for AI agent interactions:
 - Checkpoint and rollback
@@ -51,7 +51,7 @@ from .test_harness import (
     test_harness_command,
 )
 
-# MC state directory
+# Motus state directory
 MC_DIR = Path.home() / ".mc"
 MC_DIR.mkdir(exist_ok=True)
 

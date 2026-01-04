@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-MC Config Schema.
+Motus Config Schema.
 
 Defines the dataclass model for ~/.motus/config.json settings.
 """
@@ -21,7 +21,7 @@ SENSITIVE_FIELDS = frozenset({
 
 @dataclass
 class MCConfigSchema:
-    """Configuration schema for Motus Command.
+    """Configuration schema for Motus.
 
     This represents the structure of ~/.motus/config.json.
     """

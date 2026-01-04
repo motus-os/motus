@@ -7,7 +7,7 @@ Accepted (retroactive)
 2025-12-18 (documented); retroactive to early v0.x
 
 ## Context
-Motus Command started as a terminal-first dashboard for observing agent sessions (Claude/Codex/Gemini). The UI needed:
+Motus started as a terminal-first dashboard for observing agent sessions (Claude/Codex/Gemini). The UI needed:
 
 - A real layout system (panels, lists, overlays)
 - Keyboard navigation with predictable focus behavior

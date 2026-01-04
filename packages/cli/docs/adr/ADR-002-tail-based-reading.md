@@ -9,9 +9,9 @@ Accepted (retroactive)
 ## Context
 Agent session logs can grow very large (hundreds of MB). Fully reading and parsing entire JSONL transcripts on every refresh creates latency and undermines the “live dashboard” feel.
 
-Motus Command needs a fast “recent activity” view for:
+Motus needs a fast “recent activity” view for:
 
-- `mc feed` and live streaming surfaces
+- `motus feed` and live streaming surfaces
 - MCP tools that return a small tail of events by default
 - Web UI polling and incremental updates
 

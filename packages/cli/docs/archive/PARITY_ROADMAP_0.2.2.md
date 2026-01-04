@@ -1,4 +1,4 @@
-# Motus Command 0.2.2 - Feature Parity Roadmap
+# Motus 0.2.2 - Feature Parity Roadmap
 
 ## Executive Summary
 
@@ -71,7 +71,7 @@
 ### 6. CLI Backfill Flag
 **Problem**: Web backfills recent events on connect; CLI starts fresh.
 
-**Add**: `mc mission-control --backfill 10` to show last N events per session.
+**Add**: `motus mission-control --backfill 10` to show last N events per session.
 
 **Files**: `src/motus/commands/mission_control_cmd.py`
 

@@ -27,7 +27,7 @@ def archive_session(
     move,
     logger,
 ) -> bool:
-    """Archive a session file to MC state directory archive."""
+    """Archive a session file to Motus state directory archive."""
     try:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         archive_name = f"{session_file.stem}_{timestamp}.jsonl"

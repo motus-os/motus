@@ -1,7 +1,7 @@
 # Copyright (c) 2024-2025 Veritas Collaborative, LLC
 # SPDX-License-Identifier: LicenseRef-MCSL
 
-"""CLI command: `mc claims` (coordination claim registry)."""
+"""CLI command: `motus claims` (coordination claim registry)."""
 
 from __future__ import annotations
 
@@ -72,7 +72,7 @@ def _resolve_acl_path(args: Namespace, *, motus_dir: Path) -> Path:
 
 
 def claims_acquire_command(args: Namespace) -> int:
-    """Argparse-dispatched handler for `mc claims acquire`."""
+    """Argparse-dispatched handler for `motus claims acquire`."""
 
     try:
         agent_id = _resolve_agent_id(args)
@@ -159,7 +159,7 @@ def claims_acquire_command(args: Namespace) -> int:
 
 
 def claims_list_command(args: Namespace) -> int:
-    """Argparse-dispatched handler for `mc claims list`."""
+    """Argparse-dispatched handler for `motus claims list`."""
 
     try:
         agent_id = _resolve_agent_id(args)
