@@ -7,7 +7,7 @@
       "verified_on": "2024-05-08",
       "method": "External survey: Stack Overflow 2024 AI",
       "claim": "66% of developers spend more time fixing AI code than they saved.",
-      "momentum": "Baseline drag that Motus removes.",
+      "momentum": "Result: highlights the waste Motus is built to remove.",
       "evidence": [
         {
           "label": "Stack Overflow 2024 AI survey",
@@ -21,8 +21,8 @@
       "status": "verified",
       "verified_on": "2026-01-02",
       "method": "Docs-backed: coordination API reference",
-      "claim": "Six-call loop: claim, context, outcome, evidence, decision, release.",
-      "momentum": "Work moves without coordination sprawl.",
+      "claim": "Six API calls run the full loop: claim, context, outcome, evidence, decision, release.",
+      "momentum": "Result: work stays coordinated without sprawl.",
       "evidence": [
         {
           "label": "Coordination API docs",
@@ -36,8 +36,8 @@
       "status": "verified",
       "verified_on": "2026-01-02",
       "method": "Docs-backed: module registry definitions",
-      "claim": "Registry defines current, building, and future scope.",
-      "momentum": "Teams align on what is real versus in progress.",
+      "claim": "The registry labels what is current, building, and future.",
+      "momentum": "Result: teams align on what is real versus in progress.",
       "evidence": [
         {
           "label": "Module registry",
@@ -51,8 +51,8 @@
       "status": "verified",
       "verified_on": "2026-01-02",
       "method": "Docs-backed: kernel schema definition",
-      "claim": "Kernel schema v0.1.3 defines authoritative tables.",
-      "momentum": "Stable contracts keep integrations aligned.",
+      "claim": "Kernel schema v0.1.3 defines the authoritative tables.",
+      "momentum": "Result: stable contracts keep integrations aligned.",
       "evidence": [
         {
           "label": "Kernel schema docs",
@@ -66,8 +66,8 @@
       "status": "verified",
       "verified_on": "2026-01-02",
       "method": "CI-backed: registry sync gate",
-      "claim": "Registry sync gate keeps docs and website aligned.",
-      "momentum": "Documentation stays in lockstep with release.",
+      "claim": "A registry sync gate keeps docs and website aligned.",
+      "momentum": "Result: published guidance stays in lockstep with releases.",
       "evidence": [
         {
           "label": "Evidence registry entry",
@@ -82,7 +82,7 @@
       "verified_on": "2026-01-03",
       "method": "Docs-backed: architecture principle",
       "claim": "No cloud dependency; data stays local by default.",
-      "momentum": "Local-first setup keeps teams moving.",
+      "momentum": "Result: local-first setup keeps teams moving.",
       "evidence": [
         {
           "label": "Architecture doc",
@@ -97,7 +97,7 @@
       "verified_on": "2026-01-03",
       "method": "Docs-backed: kernel invariants",
       "claim": "coordination.db is the single source of truth for work state.",
-      "momentum": "Deterministic state stays reviewable.",
+      "momentum": "Result: deterministic state stays reviewable.",
       "evidence": [
         {
           "label": "Kernel guide",
@@ -111,7 +111,7 @@
       "status": "target",
       "method": "Docs-backed: phase gate criteria",
       "claim": "Policy gates run before work is released.",
-      "momentum": "Unsafe changes stop before they ship.",
+      "momentum": "Result: unsafe changes stop before they ship.",
       "evidence": [
         {
           "label": "Phase gates criteria",
@@ -125,7 +125,7 @@
       "status": "target",
       "method": "Docs-backed: 6-call loop and gate criteria",
       "claim": "Evidence is required before completion.",
-      "momentum": "Proof travels with every outcome.",
+      "momentum": "Result: proof travels with every outcome.",
       "evidence": [
         {
           "label": "How the loop captures evidence",
@@ -139,7 +139,7 @@
       "status": "target",
       "method": "Docs-backed: decision + evidence requirements",
       "claim": "Completion requires evidence and a logged decision.",
-      "momentum": "Every closeout stays reviewable.",
+      "momentum": "Result: every closeout stays reviewable.",
       "evidence": [
         {
           "label": "Completion gate summary",
