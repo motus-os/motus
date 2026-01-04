@@ -312,6 +312,9 @@ def _compare(baseline: dict[str, Any], current: dict[str, Any], policy: dict[str
     baseline_runtime = baseline.get("tests", {}).get("duration_seconds")
     if baseline_runtime is not None:
         max_runtime = baseline_runtime * (1 + policy["runtime"]["max_delta_pct"] / 100)
+        absolute_limit = policy["runtime"].get("max_seconds")
+        if absolute_limit is not None:
+            max_runtime = max(max_runtime, absolute_limit)
         if runtime > max_runtime:
             failures.append("tests: runtime regression beyond threshold")
 
