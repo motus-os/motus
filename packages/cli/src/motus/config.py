@@ -111,6 +111,9 @@ class WebConfig:
     poll_interval_ms: int = 500  # How often to poll for new events
     reconnect_max_attempts: int = 10
     reconnect_base_delay_ms: int = 1000
+    io_timeout_seconds: int = int(
+        os.environ.get("MC_WS_IO_TIMEOUT", "10")
+    )  # Timeout for blocking I/O work
     session_timeout_seconds: int = int(
         os.environ.get("MC_WS_SESSION_TIMEOUT", "1800")
     )  # WebSocket lifetime cap (0 disables)

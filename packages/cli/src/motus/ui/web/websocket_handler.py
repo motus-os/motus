@@ -35,6 +35,24 @@ class WebSocketHandler:
         self.drift_detector = None
         self._websocket = importlib.import_module("motus.ui.web.websocket")
 
+    async def _run_blocking(
+        self,
+        func,
+        *args,
+        timeout: float,
+        default,
+        context: str,
+        **kwargs,
+    ):
+        try:
+            return await asyncio.wait_for(
+                asyncio.to_thread(func, *args, **kwargs),
+                timeout=timeout,
+            )
+        except asyncio.TimeoutError:
+            logger.warning("Web UI blocking call timed out", operation=context)
+            return default
+
     async def handle_connection(self, websocket: WebSocket):
         """Handle a WebSocket connection lifecycle."""
         # Defense-in-depth: validate origin (server already binds to localhost only)
@@ -55,7 +73,14 @@ class WebSocketHandler:
             # Send initial sessions and track known sessions
             orchestrator = self._websocket.get_orchestrator()
             # SYNC BOUNDARY: session discovery performs filesystem I/O
-            sessions = await asyncio.to_thread(orchestrator.discover_all, max_age_hours=24)
+            io_timeout = config.web.io_timeout_seconds
+            sessions = await self._run_blocking(
+                orchestrator.discover_all,
+                max_age_hours=24,
+                timeout=io_timeout,
+                default=[],
+                context="discover_all",
+            )
             self.ws_manager.set_known_sessions(websocket, {s.session_id for s in sessions[:10]})
 
             # Build session data with last_action for crashed sessions
@@ -72,8 +97,12 @@ class WebSocketHandler:
                     builder = orchestrator.get_builder(s.source)
                     if builder:
                         # SYNC BOUNDARY: last_action may read the filesystem
-                        data["last_action"] = await asyncio.to_thread(
-                            builder.get_last_action, s.file_path
+                        data["last_action"] = await self._run_blocking(
+                            builder.get_last_action,
+                            s.file_path,
+                            timeout=io_timeout,
+                            default=None,
+                            context="get_last_action",
                         )
                 session_data.append(data)
 
@@ -144,12 +173,22 @@ class WebSocketHandler:
     async def _send_session_history(self, websocket: WebSocket, session_id: str, offset: int = 0):
         """Send history for a specific session with fast tail-based loading."""
         # SYNC BOUNDARY: history parsing reads the session file
-        result = await asyncio.to_thread(
+        io_timeout = config.web.io_timeout_seconds
+        result = await self._run_blocking(
             self._websocket.parse_session_history,
             session_id=session_id,
             offset=offset,
             batch_size=200,
             format_callback=self._websocket.format_event_for_client,
+            timeout=io_timeout,
+            default={
+                "error": "Session history timed out",
+                "events": [],
+                "total_events": 0,
+                "has_more": False,
+                "offset": offset,
+            },
+            context="parse_session_history",
         )
 
         if result["error"]:
@@ -173,14 +212,24 @@ class WebSocketHandler:
         """Send historical events to client on connect/refresh."""
         orchestrator = self._websocket.get_orchestrator()
         # SYNC BOUNDARY: session discovery performs filesystem I/O
-        sessions = await asyncio.to_thread(orchestrator.discover_all, max_age_hours=24)
+        io_timeout = config.web.io_timeout_seconds
+        sessions = await self._run_blocking(
+            orchestrator.discover_all,
+            max_age_hours=24,
+            timeout=io_timeout,
+            default=[],
+            context="backfill_discover_all",
+        )
 
         # SYNC BOUNDARY: backfill parsing reads session files
-        backfill_events = await asyncio.to_thread(
+        backfill_events = await self._run_blocking(
             self._websocket.parse_backfill_events,
             sessions=sessions,
             limit=limit,
             format_callback=self._websocket.format_event_for_client,
+            timeout=io_timeout,
+            default=[],
+            context="parse_backfill_events",
         )
 
         await websocket.send_json({"type": "backfill", "events": backfill_events})
@@ -188,7 +237,14 @@ class WebSocketHandler:
     async def _send_session_intents(self, websocket: WebSocket, session_id: str):
         """Extract and send user intents for a session."""
         # SYNC BOUNDARY: intent parsing reads session files
-        result = await asyncio.to_thread(self._websocket.parse_session_intents, session_id)
+        io_timeout = config.web.io_timeout_seconds
+        result = await self._run_blocking(
+            self._websocket.parse_session_intents,
+            session_id,
+            timeout=io_timeout,
+            default={"error": "Session intents timed out"},
+            context="parse_session_intents",
+        )
 
         if result.get("error"):
             logger.warning(

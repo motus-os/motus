@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 import threading
 from dataclasses import dataclass
 from datetime import timedelta
@@ -24,6 +25,7 @@ from .claims_validation import (
 # One lock per namespace to minimize contention
 _namespace_locks: dict[str, threading.Lock] = {}
 _namespace_locks_lock = threading.Lock()
+NAMESPACE_LOCK_TIMEOUT_SECONDS = float(os.environ.get("MC_CLAIM_LOCK_TIMEOUT", "5"))
 
 
 def _get_namespace_lock(namespace: str) -> threading.Lock:
@@ -167,7 +169,13 @@ class ClaimRegistry(_ClaimStorage):
             return existing
 
         # Atomic check-and-claim with namespace-scoped locking
-        with _get_namespace_lock(resolved_namespace):
+        lock = _get_namespace_lock(resolved_namespace)
+        acquired = lock.acquire(timeout=NAMESPACE_LOCK_TIMEOUT_SECONDS)
+        if not acquired:
+            raise ClaimRegistryError(
+                f"timeout acquiring claim lock for namespace {resolved_namespace}"
+            )
+        try:
             # Double-check inside lock (prevents race condition)
             # Two threads with same key could both pass the fast path check
             existing = find_existing_claim_by_key()
@@ -200,6 +208,8 @@ class ClaimRegistry(_ClaimStorage):
             )
             atomic_write_json(self._claim_path(claim_id), record.to_json())
             return record
+        finally:
+            lock.release()
 
     def renew_claim(self, claim_id: str, *, lease_duration_s: int | None = None) -> ClaimRecord:
         now = _utcnow()
