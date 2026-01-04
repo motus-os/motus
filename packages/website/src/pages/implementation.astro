@@ -5,6 +5,7 @@ import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 
 import registry from '../data/module-registry.json';
+import patternsData from '../data/implementation-patterns.json';
 
 const kernel = registry.kernel;
 const modules = registry.bundled_modules;
@@ -26,6 +27,16 @@ const moduleCounts = modules.reduce(
   },
   { current: 0, building: 0, future: 0 },
 );
+const patterns = patternsData.patterns;
+const patternStatusClass = (status) => {
+  if (status === 'verified') return 'status-badge status-current';
+  return 'status-badge status-building';
+};
+const patternStatusLabel = (status) => {
+  if (status === 'verified') return 'Verified';
+  if (status === 'building') return 'Building';
+  return 'Target';
+};
 const trainingSteps = [
   {
     id: 'install',
@@ -282,6 +293,81 @@ const trainingSteps = [
         <span class="text-text-secondary/60"> · </span>
         <a href="#module-registry" class="text-mint hover:text-text-primary transition-colors"> Module registry</a>
       </p>
+    </section>
+
+    <section id="implementation-patterns" class="mt-phi-6 space-y-phi-3 scroll-mt-24">
+      <SectionHeader
+        eyebrow="Proven Patterns"
+        title="Implementation strategies that prevent drift"
+        subtitle="These patterns keep execution deterministic and auditable. Each includes what it is, why it matters, and how to apply it."
+        align="left"
+        size="md"
+        maxWidth="max-w-3xl"
+      />
+      <div class="grid md:grid-cols-2 gap-phi-2">
+        {patterns.map((pattern) => {
+          const proofHref = pattern.proof
+            ? pattern.proof.url.startsWith('http')
+              ? pattern.proof.url
+              : `${base}${pattern.proof.url.replace(/^\/+/, '')}`
+            : null;
+          return (
+            <div id={pattern.id} class="scroll-mt-24">
+              <Panel size="sm" class="space-y-phi-2">
+                <div class="flex items-center justify-between gap-phi-2">
+                  <h3 class="text-lg font-display text-text-primary">{pattern.title}</h3>
+                  <span class={patternStatusClass(pattern.status)}>{patternStatusLabel(pattern.status)}</span>
+                </div>
+                <p class="text-sm text-text-secondary">{pattern.summary}</p>
+                <div class="grid md:grid-cols-3 gap-phi-2 text-sm text-text-secondary">
+                  <div class="space-y-phi-1">
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">What</p>
+                    <p>{pattern.what}</p>
+                  </div>
+                  <div class="space-y-phi-1">
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Why</p>
+                    <p>{pattern.why}</p>
+                  </div>
+                  <div class="space-y-phi-1">
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">How</p>
+                    <ul class="space-y-phi-1">
+                      {pattern.how.map((step) => (
+                        <li>- {step}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                {proofHref ? (
+                  <a
+                    href={proofHref}
+                    class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
+                  >
+                    Proof: {pattern.proof.label} &#8594;
+                  </a>
+                ) : (
+                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">
+                    Status: {patternStatusLabel(pattern.status)}
+                  </p>
+                )}
+              </Panel>
+            </div>
+          );
+        })}
+      </div>
+      <Panel size="sm" class="mt-phi-3 space-y-phi-1">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Quick Reference</p>
+        <ul class="space-y-phi-1 text-sm text-text-secondary">
+          {patterns.map((pattern) => (
+            <li>
+              <a href={`#${pattern.id}`} class="text-mint hover:text-text-primary transition-colors">
+                {pattern.title}
+              </a>
+              <span class="text-text-secondary/60"> — </span>
+              <span>{pattern.quick}</span>
+            </li>
+          ))}
+        </ul>
+      </Panel>
     </section>
 
     <section id="phase-gates" class="mt-phi-6 space-y-phi-3 scroll-mt-24">

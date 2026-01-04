@@ -3,40 +3,30 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
-import strategiesData from '../data/strategies.json';
+import patternsData from '../data/implementation-patterns.json';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 
-const strategies = strategiesData.strategies;
-const allowedStatuses = new Set(['building', 'current', 'future']);
-const statusClasses = {
-  current: 'status-badge status-current',
-  building: 'status-badge status-building',
-  future: 'status-badge status-future',
+const patterns = patternsData.patterns;
+const statusClass = (status) => {
+  if (status === 'verified') return 'status-badge status-current';
+  return 'status-badge status-building';
 };
-const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1);
-
-for (const strategy of strategies) {
-  if (!strategy.id) {
-    throw new Error('Strategy missing id.');
-  }
-  if (!allowedStatuses.has(strategy.status)) {
-    throw new Error(`Strategy ${strategy.id} has invalid status.`);
-  }
-  if (!strategy.trigger || !strategy.description) {
-    throw new Error(`Strategy ${strategy.id} missing required fields.`);
-  }
-}
+const statusLabel = (status) => {
+  if (status === 'verified') return 'Verified';
+  if (status === 'building') return 'Building';
+  return 'Target';
+};
 ---
 
 <Layout title="Strategies - Motus">
   <Section tone="dark" class="text-center" innerClass="max-w-3xl">
     <SectionHeader
-      eyebrow="Strategy Library"
-      title="Reusable decision patterns for high-stakes work"
-      subtitle="Fresh agents start from zero. Motus accumulates wisdom and makes it reusable."
+      eyebrow="Quick Reference"
+      title="Implementation patterns at a glance"
+      subtitle="This page is the short list. Each pattern links to the full guidance in the implementation guide."
       as="h1"
       size="xl"
     />
@@ -45,62 +35,35 @@ for (const strategy of strategies) {
   <Section tone="light" pad="tight" class="border-t border-line/10">
     <div class="text-center mb-phi-4">
       <p class="text-text-secondary max-w-2xl mx-auto">
-        Expert problem-solving patterns, encoded and ready to deploy. Each strategy has a trigger condition and a structured approach.
-      </p>
-      <p class="text-text-secondary text-sm mt-phi-2 flex flex-wrap items-center gap-phi-1">
-        <span class="status-badge status-building">Target</span>
-        <span>Impact: recurring problems resolve faster as patterns compound.</span>
+        Use these patterns to keep implementation deterministic, auditable, and repeatable.
       </p>
       <div class="flex flex-wrap justify-center items-center gap-phi-2 text-xs text-text-secondary mt-phi-3">
+        <span class="status-badge status-current">Verified</span>
         <span class="status-badge status-building">Building</span>
-        <span>Proofs publish to the Evidence Registry as strategies ship.</span>
-        <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">
-          Evidence Registry
+        <span class="status-badge status-building">Target</span>
+        <span class="text-text-secondary/60">&#183;</span>
+        <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
+          Full Implementation Guide
         </a>
       </div>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-phi-3">
-      {strategies.map((strategy) => (
-        <Panel size="sm" class="hover:border-mint/30 transition-colors">
+      {patterns.map((pattern) => (
+        <Panel size="sm" class="hover:border-mint/30 transition-colors space-y-phi-2">
           <div class="flex justify-start mb-phi-2">
-            <span class={statusClasses[strategy.status]}>{statusLabel(strategy.status)}</span>
+            <span class={statusClass(pattern.status)}>{statusLabel(pattern.status)}</span>
           </div>
-          <h3 class="text-xl font-display text-mint mb-phi-2">{strategy.name}</h3>
-          <div class="mb-phi-2">
-            <span class="text-xs uppercase tracking-[0.3em] text-text-secondary">Trigger: </span>
-            <span class="text-sm text-text-primary font-medium">{strategy.trigger}</span>
-          </div>
-          <p class="text-text-secondary text-base mb-phi-2">{strategy.description}</p>
-          <div class="pt-phi-2 border-t border-line/10">
-            <p class="text-text-secondary text-sm italic">{strategy.example}</p>
-          </div>
+          <h3 class="text-xl font-display text-text-primary">{pattern.title}</h3>
+          <p class="text-text-secondary text-base">{pattern.quick}</p>
+          <a
+            href={`${base}implementation#${pattern.id}`}
+            class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
+          >
+            Open guidance &#8594;
+          </a>
         </Panel>
       ))}
     </div>
-  </Section>
-
-  <Section tone="muted" pad="tight" innerClass="max-w-4xl text-center">
-    <SectionHeader title="The Moat" size="md" class="mb-phi-3" />
-    <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
-      Every time an agent solves a hard problem, the pattern can be captured.
-      Over time, Motus builds a library of proven approaches that new agents inherit automatically.
-    </p>
-    <p class="text-text-secondary">
-      Strategies are not prompts. They are structured decision trees with clear triggers, actions, and exit conditions.
-    </p>
-  </Section>
-
-  <Section tone="light" class="text-center" innerClass="max-w-2xl">
-    <SectionHeader title="Ready to deploy accumulated wisdom?" size="md" class="mb-phi-3" />
-    <div class="inline-block bg-surface/70 px-phi-3 py-phi-2 rounded-full border border-mint/20">
-      <span class="text-text-secondary text-lg">Status </span>
-      <span class="text-mint font-semibold text-lg">Building</span>
-    </div>
-    <p class="text-text-secondary mt-phi-3">
-      <a href={`${base}open-source`} class="text-mint hover:text-text-primary transition-colors">
-        Learn about the source-available model
-      </a>
-    </p>
   </Section>
 </Layout>
