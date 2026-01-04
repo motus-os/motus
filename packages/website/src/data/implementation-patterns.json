@@ -14,7 +14,7 @@
       ],
       "proof": {
         "label": "Evidence & Gates",
-        "url": "/gates"
+        "url": "/docs/gates"
       },
       "quick": "No phase proceeds without logged proof."
     },
@@ -60,7 +60,7 @@
       ],
       "proof": {
         "label": "Evidence Registry",
-        "url": "/evidence"
+        "url": "/docs/evidence"
       },
       "quick": "Every claim is labeled Verified, Building, or Target."
     },

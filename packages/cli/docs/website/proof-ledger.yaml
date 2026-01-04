@@ -38,7 +38,7 @@ claims:
     momentum: "Result: stable contracts keep integrations aligned."
     evidence:
       - label: "Kernel schema docs"
-        url: "/schema"
+        url: "/docs/schema"
   - id: docs_registry_sync
     featured: true
     status: verified
@@ -48,7 +48,7 @@ claims:
     momentum: "Result: published guidance stays in lockstep with releases."
     evidence:
       - label: "Evidence registry entry"
-        url: "/evidence#claim-docs_registry_sync"
+        url: "/docs/evidence#claim-docs_registry_sync"
   - id: no_cloud_dependency
     featured: false
     status: verified

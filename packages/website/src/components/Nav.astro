@@ -5,14 +5,14 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 
 const navItems = [
   { href: `${base}`, label: 'Home' },
-  { href: `${base}get-started`, label: 'Get Started' },
   { href: `${base}how-it-works`, label: 'How It Works' },
-  { href: `${base}gates`, label: 'Evidence & Gates' },
-  { href: `${base}ecosystem`, label: 'Ecosystem' },
-  { href: `${base}implementation`, label: 'Implementation' },
-  { href: `${base}strategies`, label: 'Strategies' },
-  { href: `${base}open-source`, label: 'Source Available' },
+  { href: `${base}get-started`, label: 'Get Started' },
+  { href: `${base}docs`, label: 'Docs' },
 ];
+
+const isActive = (href) => (
+  currentPath === href || (href !== base && currentPath.startsWith(href))
+);
 
 const currentPath = Astro.url.pathname;
 ---
@@ -45,7 +45,7 @@ const currentPath = Astro.url.pathname;
             href={item.href}
             class:list={[
               'text-xs uppercase tracking-[0.18em] transition-colors',
-              currentPath === item.href
+              isActive(item.href)
                 ? 'text-mint'
                 : 'text-text-secondary hover:text-mint',
             ]}
@@ -82,7 +82,7 @@ const currentPath = Astro.url.pathname;
             href={item.href}
             class:list={[
               'block text-sm py-2 uppercase tracking-[0.18em] transition-colors',
-              currentPath === item.href
+              isActive(item.href)
                 ? 'text-mint'
                 : 'text-text-secondary hover:text-mint',
             ]}

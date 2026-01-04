@@ -1,8 +1,8 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Section from '../components/Section.astro';
-import SectionHeader from '../components/SectionHeader.astro';
-import Panel from '../components/Panel.astro';
+import Layout from '../../layouts/Layout.astro';
+import Section from '../../components/Section.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import Panel from '../../components/Panel.astro';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -19,7 +19,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       <span slot="title">Gates make execution safe.</span>
     </SectionHeader>
     <div class="mt-phi-3 flex flex-wrap justify-center gap-phi-2 text-sm">
-      <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">Evidence registry</a>
+      <a href={`${base}docs/evidence`} class="text-mint hover:text-text-primary transition-colors">Evidence registry</a>
       <a href={`${base}how-it-works#gates`} class="text-mint hover:text-text-primary transition-colors">How the loop enforces gates</a>
       <a href={`${base}implementation#phase-gates`} class="text-mint hover:text-text-primary transition-colors">Phase gates</a>
     </div>
@@ -42,7 +42,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         <p class="text-sm text-text-secondary">Validates eligibility, scope, and policy packs.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">claim_work → release_work</p>
-        <a href={`${base}evidence#claim-policy_gates`} class="text-sm text-mint hover:text-text-primary transition-colors">
+        <a href={`${base}docs/evidence#claim-policy_gates`} class="text-sm text-mint hover:text-text-primary transition-colors">
           Evidence &#8594;
         </a>
       </Panel>
@@ -52,7 +52,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         <p class="text-sm text-text-secondary">Requires evidence artifacts before release.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_evidence → release_work</p>
-        <a href={`${base}evidence#claim-evidence_gate`} class="text-sm text-mint hover:text-text-primary transition-colors">
+        <a href={`${base}docs/evidence#claim-evidence_gate`} class="text-sm text-mint hover:text-text-primary transition-colors">
           Evidence &#8594;
         </a>
       </Panel>
@@ -62,7 +62,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         <p class="text-sm text-text-secondary">Requires decision log + evidence before release.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_decision → release_work</p>
-        <a href={`${base}evidence#claim-completion_gate`} class="text-sm text-mint hover:text-text-primary transition-colors">
+        <a href={`${base}docs/evidence#claim-completion_gate`} class="text-sm text-mint hover:text-text-primary transition-colors">
           Evidence &#8594;
         </a>
       </Panel>
@@ -83,7 +83,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       <a href={`${base}how-it-works#gates`} class="text-mint hover:text-text-primary transition-colors">
         Loop mapping &#8594;
       </a>
-      <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">
+      <a href={`${base}docs/evidence`} class="text-mint hover:text-text-primary transition-colors">
         Evidence registry &#8594;
       </a>
     </div>

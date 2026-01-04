@@ -56,7 +56,7 @@
       "evidence": [
         {
           "label": "Kernel schema docs",
-          "url": "/schema"
+          "url": "/docs/schema"
         }
       ]
     },
@@ -71,7 +71,7 @@
       "evidence": [
         {
           "label": "Evidence registry entry",
-          "url": "/evidence#claim-docs_registry_sync"
+          "url": "/docs/evidence#claim-docs_registry_sync"
         }
       ]
     },

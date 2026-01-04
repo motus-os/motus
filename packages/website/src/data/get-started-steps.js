@@ -59,7 +59,7 @@ export const trainingSteps = [
     expected: 'A list of ready items with IDs.',
     proof: {
       label: 'Kernel Schema',
-      url: '/schema',
+      url: '/docs/schema',
     },
     failure: 'No ready items listed',
     fix: 'Seed a roadmap item in coordination.db or load a project roadmap.',

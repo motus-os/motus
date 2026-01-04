@@ -22,7 +22,7 @@
       "hook": "Every change has a receipt you can audit.",
       "value": "Append-only evidence and deterministic review gates.",
       "proof_id": "kernel_schema",
-      "next": "/schema"
+      "next": "/docs/schema"
     },
     {
       "id": "product",
