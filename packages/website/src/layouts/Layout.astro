@@ -190,6 +190,11 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         color: oklch(var(--text-secondary));
         border-color: oklch(var(--line) / 0.25);
       }
+
+      .lane-column {
+        max-width: min(calc(var(--page) / 5), 20rem);
+        margin-inline: auto;
+      }
     </style>
     <Nav />
     <main class="w-full">

@@ -164,47 +164,53 @@ const trainingSteps = [
         size="md"
         maxWidth="max-w-3xl"
       />
-      <ol class="space-y-phi-3">
-        {trainingSteps.map((step, index) => (
-          <li id={step.id} class="scroll-mt-24">
-            <Panel size="sm" class="space-y-phi-2">
-              <div class="flex flex-wrap items-center justify-between gap-phi-2">
-                <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
-                  Step {String(index + 1).padStart(2, '0')}
-                </p>
-                {step.proof ? (
-                  <a
-                    href={step.proof.url}
-                    class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Proof: {step.proof.label} &#8594;
-                  </a>
-                ) : null}
-              </div>
-              <h3 class="text-xl font-display text-text-primary">{step.title}</h3>
-              <p class="text-sm text-text-secondary">{step.goal}</p>
-              <div class="grid md:grid-cols-2 gap-phi-2">
-                <div class="space-y-phi-1">
-                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
-                  {step.commands.map((command) => (
-                    <code class="text-mint font-mono text-sm block">{command}</code>
-                  ))}
+      <div class="relative">
+        <span class="absolute left-phi-2 top-0 bottom-0 w-px bg-line/20"></span>
+        <ol class="space-y-phi-3 pl-phi-5">
+          {trainingSteps.map((step, index) => (
+            <li id={step.id} class="relative scroll-mt-24">
+              <span class="absolute left-phi-2 top-phi-2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-line/30 bg-surface text-xs font-mono text-text-secondary">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <Panel size="sm" class="space-y-phi-2">
+                <div class="flex flex-wrap items-center justify-between gap-phi-2">
+                  <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
+                    Step {String(index + 1).padStart(2, '0')}
+                  </p>
+                  {step.proof ? (
+                    <a
+                      href={step.proof.url}
+                      class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      Proof: {step.proof.label} &#8594;
+                    </a>
+                  ) : null}
                 </div>
-                <div class="space-y-phi-1">
-                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>
-                  <p class="text-sm text-text-secondary">{step.expected}</p>
-                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">If it fails</p>
-                  <p class="text-sm text-text-secondary">{step.failure}</p>
-                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">Fix</p>
-                  <p class="text-sm text-text-secondary">{step.fix}</p>
+                <h3 class="text-xl font-display text-text-primary">{step.title}</h3>
+                <p class="text-sm text-text-secondary">{step.goal}</p>
+                <div class="grid md:grid-cols-2 gap-phi-2">
+                  <div class="space-y-phi-1">
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
+                    {step.commands.map((command) => (
+                      <code class="text-mint font-mono text-sm block">{command}</code>
+                    ))}
+                  </div>
+                  <div class="space-y-phi-1">
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>
+                    <p class="text-sm text-text-secondary">{step.expected}</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">If it fails</p>
+                    <p class="text-sm text-text-secondary">{step.failure}</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">Fix</p>
+                    <p class="text-sm text-text-secondary">{step.fix}</p>
+                  </div>
                 </div>
-              </div>
-            </Panel>
-          </li>
-        ))}
-      </ol>
+              </Panel>
+            </li>
+          ))}
+        </ol>
+      </div>
       <p class="text-sm text-text-secondary">
         Use <span class="text-text-primary font-medium">motus</span> as the CLI entrypoint (mc remains as a
         deprecated alias). Continue with the 6-call execution loop in

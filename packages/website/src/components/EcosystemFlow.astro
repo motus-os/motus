@@ -262,7 +262,7 @@ const improveTarget = (improvement) => {
     const clusters = group.id === 'modules' ? moduleClusters : null;
     return (
       <>
-        <div class="space-y-phi-2">
+        <div class="space-y-phi-2 lane-column">
           <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
             <span>Stage {String(index + 1).padStart(2, '0')}</span>
             <span class="text-text-primary">{group.label}</span>
