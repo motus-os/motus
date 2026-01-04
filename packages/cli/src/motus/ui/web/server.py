@@ -1,5 +1,8 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """
-MC Web UI - Health calculation utilities.
+Motus Web UI - Health calculation utilities.
 
 This module now contains only the calculate_health function.
 Other functionality has been split into:

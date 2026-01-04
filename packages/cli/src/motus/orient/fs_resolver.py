@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Filesystem-backed resolver for Cached Orient (v0).
 
 This resolver loads `standard.yaml` files from a Motus workspace `.motus/` tree:

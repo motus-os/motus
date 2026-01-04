@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Analytics for Cached Orient.
 
 Consumes `.motus/state/orient/events.jsonl` to compute hit/conflict rates.

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """SQLite-backed session cache for fast session listing.
 
 Design: JSONL files are the source of truth; SQLite is a cache/index.

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Type definitions for benchmark harness.
 
 All dataclass types used in benchmarking: tasks, results, scopes, outcomes.

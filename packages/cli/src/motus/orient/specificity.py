@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Specificity scoring for Cached Orient standards.
 
 Specificity is CSS-like: more (and more important) predicate keys win over less.

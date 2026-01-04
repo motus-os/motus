@@ -1,5 +1,5 @@
 /**
- * Motus Command Dashboard - Command Center for AI Agents
+ * Motus Dashboard - Command Center for AI Agents
  */
 
 // State management

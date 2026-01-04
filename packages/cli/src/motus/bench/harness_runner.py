@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Benchmark harness to compare baseline vs Motus-enforced runs."""
 
 from __future__ import annotations

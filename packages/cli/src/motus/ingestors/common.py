@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Common utilities shared across builder implementations.
 
 Extracted from claude.py, codex.py, gemini.py to eliminate duplication.

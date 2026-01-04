@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Gate runner for Vault OS / Motus OS evidence bundles."""
 
 from __future__ import annotations

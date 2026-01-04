@@ -1,4 +1,7 @@
-"""Event parsing utilities for MC Web UI.
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
+"""Event parsing utilities for Motus Web UI.
 
 This module handles all event parsing logic extracted from server.py:
 - Reading session files with byte positions

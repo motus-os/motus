@@ -68,7 +68,7 @@ class TestContextCommand:
         mock_session = MagicMock()
         mock_session.session_id = "test-123"
 
-        test_context = "## MC Session Context\n\n**Session ID:** test-123"
+        test_context = "## Motus Session Context\n\n**Session ID:** test-123"
 
         with patch(
             "motus.commands.context_cmd.find_active_session", return_value=mock_session

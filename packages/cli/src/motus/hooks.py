@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """
 MC Claude Code Hooks
 
@@ -73,7 +76,7 @@ def generate_context_injection(cwd: str) -> str:
 
     context_parts = []
     context_parts.append("<mc-context>")
-    context_parts.append("## MC-Observed Context (from recent sessions)")
+    context_parts.append("## Motus-Observed Context (from recent sessions)")
     context_parts.append("")
 
     # Collect decisions from recent sessions

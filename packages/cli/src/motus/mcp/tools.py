@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """MCP tool implementations.
 
 Each tool wraps orchestrator methods with MCP-compatible signatures.
@@ -69,7 +72,7 @@ def list_sessions(
     sources: list[str] = ["claude", "codex", "gemini", "sdk"],
     limit: int = 50,
 ) -> ListSessionsResult:
-    """List recent AI agent sessions observed by Motus Command."""
+    """List recent AI agent sessions observed by Motus."""
     limit = max(1, min(int(limit), 200))
     max_age_hours = max(1, int(max_age_hours))
 

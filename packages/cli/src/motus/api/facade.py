@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """The 6-Call API Facade - canonical Work Compiler interface.
 
 This module provides the public interface for the Motus Work Compiler protocol.

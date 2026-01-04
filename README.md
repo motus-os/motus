@@ -28,4 +28,4 @@ See [packages/cli/README.md](packages/cli/README.md) for the full CLI overview.
 
 ## License
 
-MIT
+Motus Community Source License (MCSL). See `LICENSE`.

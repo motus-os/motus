@@ -1,5 +1,8 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """
-FastAPI application setup for MC Web UI.
+FastAPI application setup for Motus Web UI.
 
 Creates and configures the FastAPI app with middleware and routes.
 """
@@ -40,7 +43,7 @@ STATIC_DIR = UI_DIR / "static"
 
 
 class MCWebServer:
-    """Lightweight WebSocket server for MC Web UI."""
+    """Lightweight WebSocket server for Motus Web UI."""
 
     def __init__(self, port: int = 4000):
         """Initialize web server.
@@ -88,7 +91,7 @@ class MCWebServer:
         if not WEB_AVAILABLE:
             raise RuntimeError("Web dependencies are not installed")
 
-        app = FastAPI(title="MC Web UI")
+        app = FastAPI(title="Motus Web UI")
 
         # Security headers middleware (local-only, but defense in depth)
         @app.middleware("http")
@@ -135,7 +138,7 @@ class MCWebServer:
 
         self.app = self.create_app()
 
-        print(f"🔮 MC Web UI starting on http://localhost:{self.port}")
+        print(f"🔮 Motus Web UI starting on http://localhost:{self.port}")
 
         if open_browser:
             # Open browser after short delay
@@ -153,7 +156,7 @@ class MCWebServer:
                 log_level="warning",
             )
         except KeyboardInterrupt:
-            print("\n👋 MC Web UI stopped")
+            print("\n👋 Motus Web UI stopped")
 
         return True
 

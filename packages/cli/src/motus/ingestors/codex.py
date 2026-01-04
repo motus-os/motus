@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Compatibility shim for Codex builder exports."""
 
 from .codex_session import MAX_FILE_SIZE, CodexBuilder

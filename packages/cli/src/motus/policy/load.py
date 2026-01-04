@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Load and validate Vault OS policy artifacts from a vault directory."""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """DNA Loader for Motus Command.
 
 DEPRECATED: Use motus.capabilities instead.

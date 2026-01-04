@@ -1,5 +1,8 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """
-Event formatting for MC Web UI.
+Event formatting for Motus Web UI.
 
 Handles conversion of ParsedEvent objects to web-friendly JSON format.
 """

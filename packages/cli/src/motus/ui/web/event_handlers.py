@@ -1,4 +1,7 @@
-"""Event-specific handlers for MC Web UI parsing."""
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
+"""Event-specific handlers for Motus Web UI parsing."""
 
 import json
 from typing import Optional

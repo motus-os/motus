@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Dataclass contracts for Vault OS policy artifacts.
 
 These objects are loaded from JSON policy files in a Vault directory.

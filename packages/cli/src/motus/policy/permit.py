@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Permit tokens for binding policy decisions to side effects.
 
 Motus permits are designed to support "no permit, no run" execution:

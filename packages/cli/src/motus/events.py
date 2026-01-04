@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Lightweight event dataclasses for the tracer SDK and tests."""
 
 from __future__ import annotations

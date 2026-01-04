@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Context Cache: The knowledge store that Lens reads from.
 
 The Context Cache stores ResourceSpecs, PolicyBundles, ToolSpecs, and Outcomes.

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Vault OS policy loader and contracts.
 
 This module is intentionally dependency-light and deterministic.

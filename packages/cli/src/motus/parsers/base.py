@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Base parser interface for all agent-specific parsers.
 
 This module defines the abstract base class that all parsers must inherit from.

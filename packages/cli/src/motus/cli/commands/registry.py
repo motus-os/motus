@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Parser construction for CLI commands."""
 
 from __future__ import annotations
@@ -37,13 +40,18 @@ def build_parser() -> ParserBundle:
     """
     parser = argparse.ArgumentParser(
         description="""
-Motus Command: Command Center for AI Agents.
+Motus: Command Center for AI Agents.
 Run 'mc web' for web dashboard at http://127.0.0.1:4000
 Run 'mc --help' for a list of commands.
 """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument("--version", "-V", action="version", version=f"motus {__version__}")
+    parser.add_argument(
+        "--version",
+        "-V",
+        action="version",
+        version=f"motus {__version__} (MCSL)",
+    )
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     register_session_parsers(subparsers)

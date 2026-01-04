@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Evidence bundle verifier (hashing + signature checks)."""
 
 from __future__ import annotations

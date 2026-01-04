@@ -1,5 +1,8 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """
-WebSocket client management for MC Web UI.
+WebSocket client management for Motus Web UI.
 
 Handles client tracking and session awareness.
 Extracted from server.py to separate concerns.

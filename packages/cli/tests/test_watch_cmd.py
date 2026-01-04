@@ -320,7 +320,7 @@ class TestGenerateAgentContext:
             context = generate_agent_context(session_info, unified_session)
 
         assert isinstance(context, str)
-        assert "MC Session Context" in context
+        assert "Motus Session Context" in context
         assert "test-session" in context
         assert "5KB" in context
 

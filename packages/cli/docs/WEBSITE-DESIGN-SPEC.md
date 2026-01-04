@@ -62,7 +62,7 @@ motusos.ai/
 │   [Read the Manifesto →]                               │
 ├────────────────────────────────────────────────────────┤
 │                   FOOTER                                │
-│   MIT License | GitHub | PyPI | Docs                    │
+│   MCSL License | GitHub | PyPI | Docs                   │
 └────────────────────────────────────────────────────────┘
 ```
 

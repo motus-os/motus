@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Compatibility shim for benchmark harness exports."""
 
 from .harness_runner import BenchmarkHarness

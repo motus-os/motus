@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """MCP server for Motus Command.
 
 Exposes session data to MCP-compatible clients like Claude Desktop.

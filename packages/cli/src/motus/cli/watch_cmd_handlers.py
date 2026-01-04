@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Event handlers and callbacks for watch command."""
 
 from __future__ import annotations
@@ -134,7 +137,7 @@ def generate_agent_context(
     """Generate a context summary that can be injected into AI agent prompts."""
     stats = analyze_session(session, unified_session)
 
-    context = f"""## MC Session Context
+    context = f"""## Motus Session Context
 
 **Session ID:** {session.session_id[:12]}
 **Duration:** Since {session.last_modified.strftime("%H:%M:%S")}

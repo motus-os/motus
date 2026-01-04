@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Internal helpers for the vault policy gate runner.
 
 This module exists to keep `motus.policy.run` small and focused on the

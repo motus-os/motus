@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Local telemetry for Cached Orient.
 
 This is workspace-local (stored under `.motus/state/orient/`) so that hit-rate

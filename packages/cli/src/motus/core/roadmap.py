@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Frictionless Roadmap API for Motus Command.
 
 Stripe/Spotify-inspired "Pit of Success" design:

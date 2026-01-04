@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Lens compiler package.
 
 The Lens is assembled knowledge for a specific task. It provides:

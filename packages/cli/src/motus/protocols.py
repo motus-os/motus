@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Motus Command Protocols - public re-exports.
 
 Builders produce these data structures and surfaces consume them. Keep imports

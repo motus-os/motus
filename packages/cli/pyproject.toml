@@ -7,10 +7,10 @@ name = "motusos"
 version = "0.1.0"
 description = "Command Center for AI Agents - Real-time observability for Claude Code, Codex CLI, and AI coding assistants"
 readme = "README.md"
-license = "MIT"
+license = { file = "LICENSE" }
 requires-python = ">=3.10"
 authors = [
-    { name = "Motus Contributors" }
+    { name = "Veritas Collaborative, LLC" }
 ]
 keywords = [
     "ai", "agents", "observability", "claude", "codex", "gemini", "llm",
@@ -20,7 +20,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: Other/Proprietary License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -81,6 +81,10 @@ packages = ["src/motus"]
 
 # Include static files (CSS, JS, HTML) for web UI
 [tool.hatch.build.targets.wheel.shared-data]
+LICENSE = "motus/LICENSE"
+LICENSING.md = "motus/LICENSING.md"
+NOTICE = "motus/NOTICE"
+TRADEMARKS.md = "motus/TRADEMARKS.md"
 
 [tool.hatch.build.targets.wheel.force-include]
 "migrations" = "motus/migrations"
@@ -101,6 +105,9 @@ include = [
     "/migrations",
     "/README.md",
     "/LICENSE",
+    "/LICENSING.md",
+    "/NOTICE",
+    "/TRADEMARKS.md",
 ]
 
 [tool.black]

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Compatibility shim for DNA loader exports.
 
 DEPRECATED: Use motus.capabilities instead.

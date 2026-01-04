@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Resilience utilities for external HTTP APIs (rate limits, retries, backoff)."""
 
 from __future__ import annotations

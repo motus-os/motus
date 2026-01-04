@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Command implementations for CLI (list, context, summary, teleport, etc).
 
 PERFORMANCE: Rich and other heavy imports deferred to function level.

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 from __future__ import annotations
 
 from .audit import AUDIT_EVENT_SCHEMA, AuditEvent

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Cache helpers for DNA loader file reads.
 
 DEPRECATED: Use motus.capabilities.loader_cache instead.

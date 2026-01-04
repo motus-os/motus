@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Stable reason code constants for policy/evidence verification.
 
 The canonical catalog lives in the Vault HOT docs:

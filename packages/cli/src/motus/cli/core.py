@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Entry point, argument parsing, and command dispatch for CLI."""
 
 from __future__ import annotations

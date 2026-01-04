@@ -1,4 +1,7 @@
-"""Parsing helpers for MC Web UI event streams."""
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
+"""Parsing helpers for Motus Web UI event streams."""
 
 from collections.abc import Iterable
 from typing import Any, Callable, Optional

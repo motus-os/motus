@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Standards validation against JSON Schema + decision type constraints."""
 
 from __future__ import annotations

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Coordinator: The 6-call Coordination API implementation."""
 
 from __future__ import annotations

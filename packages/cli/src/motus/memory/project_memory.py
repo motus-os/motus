@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Project + global memory for Motus.
 
 Project memory is stored under `<project_root>/.mc/memory.db`.

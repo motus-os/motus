@@ -1,0 +1,7 @@
+Motus
+Copyright (c) 2024-2025 Veritas Collaborative, LLC.
+
+This software includes third-party components distributed under their own licenses.
+For dependency lists and licensing details, see:
+- packages/cli/pyproject.toml
+- packages/website/package-lock.json

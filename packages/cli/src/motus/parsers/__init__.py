@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Parser module - Abstract base classes for event parsers.
 
 This module provides the base interface that all agent-specific parsers must

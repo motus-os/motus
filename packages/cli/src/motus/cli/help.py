@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """CLI help-tier utilities and formatting."""
 
 from __future__ import annotations
@@ -156,7 +159,7 @@ def print_top_level_help(console: Console, visible_tier: int) -> None:
         console: Rich console for output.
         visible_tier: Highest help tier to display.
     """
-    console.print("[bold]Motus Command[/bold]\n")
+    console.print("[bold]Motus[/bold]\n")
     console.print("Usage: mc <command> [args]\n")
     console.print("Try [cyan]mc web[/cyan] to launch the dashboard.\n")
 

@@ -1,5 +1,8 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """
-MC Web UI package.
+Motus Web UI package.
 
 Exports for backward compatibility with existing imports.
 """

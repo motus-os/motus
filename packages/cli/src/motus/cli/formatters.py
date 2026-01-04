@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Rich formatting utilities for CLI output (tables, panels, colors)."""
 
 try:
@@ -248,7 +251,7 @@ def create_header(session: SessionInfo) -> Panel:
         f"[bold]Session:[/bold] {session.session_id[:12]}...\n"
         f"[bold]File:[/bold] {session.file_path.name}\n"
         f"[dim]Press Ctrl+C to exit[/dim]",
-        title="[bold green]🎯 MC[/bold green]",
+        title="[bold green]🎯 Motus[/bold green]",
         subtitle="[dim]Command Center for AI Agents[/dim]",
         border_style="green",
     )

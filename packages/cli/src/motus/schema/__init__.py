@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Schema module - Pydantic models for event parsing and validation.
 
 This module provides the single source of truth for event data structures

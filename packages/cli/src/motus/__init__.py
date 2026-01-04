@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LicenseRef-MCSL
 
 """
-Motus Command: Command Center for AI Agents
+Motus: Command Center for AI Agents
 
 Real-time observability and memory for AI coding assistants.
 

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Circuit breaker implementation backed by the Motus database.
 
 State is stored in the `circuit_breakers` table (Phase 0 schema).

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Command dispatch for CLI entrypoint."""
 
 from __future__ import annotations
@@ -313,7 +316,7 @@ def dispatch_command(
         raise SystemExit(review_command(args))
 
     if command is None:
-        console.print("[bold]Motus Command - Observability for AI agents[/bold]\n")
+        console.print("[bold]Motus - Observability for AI agents[/bold]\n")
         console.print("Start the dashboard:")
         console.print(
             "  mc web        Launch web dashboard at http://127.0.0.1:4000\n",

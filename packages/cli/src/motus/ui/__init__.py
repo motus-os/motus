@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """UI package for Motus Command.
 
 The Textual-based TUI was removed in v0.5.0. The Web UI is the primary interface.

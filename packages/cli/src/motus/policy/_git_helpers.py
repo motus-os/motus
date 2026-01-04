@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Git helper functions for the vault policy gate runner.
 
 These helpers provide git state detection and delta path extraction.

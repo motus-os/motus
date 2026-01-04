@@ -1,5 +1,8 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """
-State management for MC Web UI.
+State management for Motus Web UI.
 
 Manages session state, caching, and context tracking.
 """

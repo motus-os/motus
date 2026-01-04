@@ -8,9 +8,9 @@
 | How It Works | View the schema docs | `/schema` | Secondary: “Explore strategy library.” |
 | Ecosystem | Detail panel links | Varies per node | No single page-level CTA; links are node-specific. |
 | Implementation | Persona paths | `#kernel`, `#proof-engine`, `#module-manager`, docs | Hub page with role-based CTAs; no single CTA. |
-| Strategies | Learn about the open source model | `/open-source` | CTA at end of page. |
+| Strategies | Learn about the source-available model | `/open-source` | CTA at end of page. |
 | Schema | View KERNEL-SCHEMA.md | GitHub | Direct external link. |
-| Open Source | View on GitHub | GitHub | Contribute CTA. |
+| Source Available | View on GitHub | GitHub | Contribute CTA. |
 | Privacy | Open an issue | GitHub issues | Contact CTA. |
 | Terms | Open an issue | GitHub issues | Contact CTA. |
 

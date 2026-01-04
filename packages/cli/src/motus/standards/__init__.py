@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Standards (Cached Orient) schema + validation.
 
 This package defines the on-disk representation for "standards" (typed cached

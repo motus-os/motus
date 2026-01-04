@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Deterministic glob matching utilities.
 
 We intentionally avoid relying on `Path.match()` because its `**` behavior differs

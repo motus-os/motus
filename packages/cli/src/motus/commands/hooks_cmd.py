@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Hook installation commands."""
 
 import json
@@ -45,8 +48,8 @@ def get_mc_hook_config() -> dict:
 
 
 def install_hooks_command():
-    """Install MC hooks into Claude Code settings."""
-    console.print("[bold]Installing MC hooks...[/bold]")
+    """Install Motus hooks into Claude Code settings."""
+    console.print("[bold]Installing Motus hooks...[/bold]")
 
     # Ensure Claude directory exists
     CLAUDE_SETTINGS.parent.mkdir(parents=True, exist_ok=True)
@@ -90,13 +93,13 @@ def install_hooks_command():
     CLAUDE_SETTINGS.write_text(json.dumps(settings, indent=2))
 
     console.print()
-    console.print("[green]✓ MC hooks installed![/green]")
+    console.print("[green]✓ Motus hooks installed![/green]")
     console.print("[dim]Restart Claude Code to activate.[/dim]")
 
 
 def uninstall_hooks_command():
-    """Remove MC hooks from Claude Code settings."""
-    console.print("[bold]Removing MC hooks...[/bold]")
+    """Remove Motus hooks from Claude Code settings."""
+    console.print("[bold]Removing Motus hooks...[/bold]")
 
     if not CLAUDE_SETTINGS.exists():
         console.print("[yellow]No Claude settings found.[/yellow]")
@@ -130,4 +133,4 @@ def uninstall_hooks_command():
 
     CLAUDE_SETTINGS.write_text(json.dumps(settings, indent=2))
 
-    console.print(f"[green]✓ Removed {removed} MC hooks[/green]")
+    console.print(f"[green]✓ Removed {removed} Motus hooks[/green]")

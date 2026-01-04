@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """SafeRenderer - centralized escaping. ALL user content flows through here."""
 
 import html

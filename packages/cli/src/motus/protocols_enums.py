@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Protocol enums used by ingestors, orchestrator, and UIs."""
 
 from __future__ import annotations

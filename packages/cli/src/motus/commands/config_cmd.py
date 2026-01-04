@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Config management command (`mc config`)."""
 
 from __future__ import annotations
@@ -39,7 +42,7 @@ def config_show() -> None:
 
     json_str = json.dumps(config_dict, indent=2)
     syntax = Syntax(json_str, "json", theme="monokai", line_numbers=False)
-    console.print(Panel(syntax, title="[bold]MC Configuration[/bold]"))
+    console.print(Panel(syntax, title="[bold]Motus Configuration[/bold]"))
 
 
 def config_get(key: str) -> None:

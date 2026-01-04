@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Opt-in telemetry collector (stub).
 
 Phase 0: provide a stable interface without enabling egress by default.

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Graceful shutdown helpers.
 
 Provides a minimal signal-aware shutdown manager that can:

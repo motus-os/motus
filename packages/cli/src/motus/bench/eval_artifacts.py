@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Benchmark evaluation artifacts (run manifests + hash-chained events).
 
 These utilities support Phase 0.1.4 benchmarks where results must be

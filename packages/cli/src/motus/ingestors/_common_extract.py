@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Extractors shared across builder implementations.
 
 These helpers are used by multiple transcript ingestors (Claude/Codex/Gemini) to

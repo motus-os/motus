@@ -1,4 +1,7 @@
-"""WebSocket handler for the MC Web UI."""
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
+"""WebSocket handler for the Motus Web UI."""
 
 import asyncio
 import importlib

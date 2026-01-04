@@ -53,4 +53,4 @@ python examples/hello_agent.py
 - [Contributing](CONTRIBUTING.md)
 
 ## License
-MIT
+Motus Community Source License (MCSL). See `LICENSE`.

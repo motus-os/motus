@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """MCP server implementation using FastMCP (stdio transport)."""
 
 from __future__ import annotations

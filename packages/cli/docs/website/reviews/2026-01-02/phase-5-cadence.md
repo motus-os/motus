@@ -42,7 +42,7 @@ Status: PASS. Flowchart now anchors the mental model before interaction.
 
 Status: PASS. Reads as path selection -> invariants -> modules -> references.
 
-### Schema / Strategies / Open Source
+### Schema / Strategies / Source Available
 - Single narrative blocks with CTA
 
 Status: PASS. No abrupt tone shifts.

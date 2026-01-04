@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Git inspection helpers for benchmark fixtures.
 
 Benchmarks run in temporary git repos. These helpers provide deterministic,

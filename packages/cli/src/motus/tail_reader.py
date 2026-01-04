@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Efficient tail-based reading for large JSONL files.
 
 This module provides fast access to the most recent lines of JSONL session files

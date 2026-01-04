@@ -179,7 +179,7 @@ class TestSummaryRoute:
 
         # Check summary content
         summary = data["summary"]
-        assert "## MC Session Memory" in summary
+        assert "## Motus Session Memory" in summary
         assert "### Session Info" in summary
         assert "### Activity Summary" in summary
         assert "### Files Modified This Session" in summary

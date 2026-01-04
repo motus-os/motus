@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Cached Orient API implementation wrapper.
 
 v0 intentionally supports a "null" resolver; later CRs provide full resolution logic.

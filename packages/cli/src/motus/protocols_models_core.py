@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Core protocol dataclasses used across ingestors and surfaces."""
 
 from __future__ import annotations

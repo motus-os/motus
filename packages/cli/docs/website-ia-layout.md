@@ -15,7 +15,7 @@ Primary CTA: Install (motusos) or See How It Works. Secondary CTA: Implementatio
 
 ## Navigation Structure
 
-Primary nav (top): Home, How It Works, Implementation, Strategies, Open Source
+Primary nav (top): Home, How It Works, Implementation, Strategies, Source Available
 Secondary nav (footer): Privacy, Terms, GitHub
 In-page anchors: Each page supports anchors for long-form content.
 
@@ -56,7 +56,7 @@ In-page anchors: Each page supports anchors for long-form content.
 - Evidence: when to apply + triggers
 - CTA: Apply in workflows
 
-### Open Source
+### Source Available
 
 - Hero: trust, local-first, verifiable
 - Proof: repos + policies

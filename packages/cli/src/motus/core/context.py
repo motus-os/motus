@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Runtime context for dependency injection and deterministic testing.
 
 Provides injectable time, randomness, and configuration for testability.

@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Benchmark harness for measuring protocol impact.
 
 The v0.1 goal is simple: run paired trials (baseline vs Motus-enforced) and emit

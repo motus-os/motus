@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """CLI command: `mc doctor` (health diagnostics)."""
 
 from __future__ import annotations

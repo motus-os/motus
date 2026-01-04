@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Forensics boundary policy for transcript-derived data.
 
 Transcript parsing is never used to drive runtime coordination or enforcement decisions.

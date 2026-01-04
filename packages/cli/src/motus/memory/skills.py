@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Skill progression tracking for Motus.
 
 Skills are intentionally simple in Phase 0: counters with unlock thresholds.

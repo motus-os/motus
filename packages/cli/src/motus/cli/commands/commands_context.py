@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Context command implementation - generates AI agent context summaries.
 
 PERFORMANCE: Rich and other heavy imports deferred to function level.

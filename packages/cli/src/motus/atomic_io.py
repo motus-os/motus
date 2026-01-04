@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Atomic file I/O helpers.
 
 This module provides best-effort atomic write primitives for critical Motus data

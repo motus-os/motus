@@ -1,3 +1,6 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
 """Standards index for Cached Orient.
 
 The index is an on-disk snapshot of parsed standards to avoid re-parsing YAML on
