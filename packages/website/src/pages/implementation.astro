@@ -6,6 +6,7 @@ import SectionHeader from '../components/SectionHeader.astro';
 
 import registry from '../data/module-registry.json';
 import patternsData from '../data/implementation-patterns.json';
+import { validatePatterns } from '../data/validate-patterns.js';
 
 const kernel = registry.kernel;
 const modules = registry.bundled_modules;
@@ -28,6 +29,7 @@ const moduleCounts = modules.reduce(
   { current: 0, building: 0, future: 0 },
 );
 const patterns = patternsData.patterns;
+validatePatterns(patterns);
 const patternStatusClass = (status) => {
   if (status === 'verified') return 'status-badge status-current';
   return 'status-badge status-building';
