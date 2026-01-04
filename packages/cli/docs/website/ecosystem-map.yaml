@@ -118,7 +118,7 @@ nodes:
     summary: "Deterministic coordination layer and evidence ledger."
     flow_note: "Single source of truth"
     website_path: "/implementation#kernel"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+    docs_url: "/implementation#kernel"
     proof_id: kernel_schema
 
   - id: work-compiler
@@ -129,7 +129,7 @@ nodes:
     summary: "Six-call loop that turns work into verified outcomes."
     flow_note: "claim -> context -> outcome -> evidence -> decision -> release"
     website_path: "/how-it-works"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+    docs_url: "/implementation#kernel"
 
   - id: coordination-api
     type: internal
@@ -139,7 +139,7 @@ nodes:
     summary: "Six-call surface for claiming, updating, and releasing work."
     flow_note: "Public coordination surface"
     website_path: "/how-it-works"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md"
+    docs_url: "/how-it-works"
     proof_id: six_call_api
 
   - id: module-sdk
@@ -152,7 +152,7 @@ nodes:
     summary: "Interfaces and toggle behavior for bundled modules."
     flow_note: "Module interface contracts"
     website_path: "/implementation#module-sdk"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/module-sdk.md"
+    docs_url: "/implementation#module-sdk"
 
   - id: capability-matrix
     type: internal
@@ -164,7 +164,7 @@ nodes:
     summary: "Capability registry + grants with explainable eligibility."
     flow_note: "Eligibility + grants"
     website_path: "/implementation#capability-matrix"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/capability-matrix.md"
+    docs_url: "/implementation#capability-matrix"
 
   - id: contract-compiler
     type: internal
@@ -176,7 +176,7 @@ nodes:
     summary: "Compile standards into deterministic contracts and hashes."
     flow_note: "Standards -> contracts"
     website_path: "/implementation#contract-compiler"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/contract-compiler.md"
+    docs_url: "/implementation#contract-compiler"
 
   - id: knowledge-engine
     type: internal
@@ -188,7 +188,7 @@ nodes:
     summary: "Hot authority + cold reference with traceable retrieval."
     flow_note: "Traceable knowledge"
     website_path: "/implementation#knowledge-engine"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/knowledge-engine.md"
+    docs_url: "/implementation#knowledge-engine"
 
   - id: lens-engine
     type: internal
@@ -200,7 +200,7 @@ nodes:
     summary: "Deterministic context assembly from contracts and knowledge."
     flow_note: "Deterministic context"
     website_path: "/implementation#lens-engine"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/lens-engine.md"
+    docs_url: "/implementation#lens-engine"
 
   - id: proof-engine
     type: internal
@@ -212,7 +212,7 @@ nodes:
     summary: "Evidence bundles + validators for completion gates."
     flow_note: "Evidence bundles"
     website_path: "/implementation#proof-engine"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/proof-engine.md"
+    docs_url: "/implementation#proof-engine"
 
   - id: module-manager
     type: internal
@@ -224,7 +224,7 @@ nodes:
     summary: "Enable/disable modules with explicit config."
     flow_note: "Module toggles"
     website_path: "/implementation#module-manager"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/module-manager.md"
+    docs_url: "/implementation#module-manager"
 
   - id: motus-blueprints
     type: internal
@@ -236,7 +236,7 @@ nodes:
     summary: "Deterministic scaffolding for programs and projects."
     flow_note: "Deterministic scaffolds"
     website_path: "/implementation#motus-blueprints"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/motus-blueprints.md"
+    docs_url: "/implementation#motus-blueprints"
 
   - id: policy-gates
     type: internal
@@ -245,7 +245,7 @@ nodes:
     status: current
     summary: "Deterministic enforcement + evidence requirements."
     flow_note: "Gate packs + enforcement"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md"
+    docs_url: "/implementation"
 
   - id: evidence-bundles
     type: internal
@@ -254,7 +254,7 @@ nodes:
     status: current
     summary: "Manifested proof artifacts with hashes and signatures."
     flow_note: "Proof artifacts"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md"
+    docs_url: "/implementation"
 
   - id: decision-log
     type: internal
@@ -263,7 +263,7 @@ nodes:
     status: current
     summary: "Append-only record of decisions and rationale."
     flow_note: "Why + rationale"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+    docs_url: "/implementation#kernel"
 
   - id: roadmap-api
     type: internal
@@ -272,7 +272,7 @@ nodes:
     status: current
     summary: "Plan, claim, review, and complete work without bypassing the kernel."
     flow_note: "Plan -> claim -> review"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+    docs_url: "/implementation#kernel"
 
   - id: work-ledger
     type: internal
@@ -283,7 +283,7 @@ nodes:
     summary: "Signed work receipts + provenance ledger for verified execution."
     flow_note: "Signed provenance"
     website_path: "/implementation#work-ledger"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/work-ledger.md"
+    docs_url: "/implementation#work-ledger"
 
   - id: asset-registry
     type: internal
@@ -294,7 +294,7 @@ nodes:
     summary: "Registry of IP assets, owners, license terms, and usage rules."
     flow_note: "IP + license terms"
     website_path: "/implementation#asset-registry"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/asset-registry.md"
+    docs_url: "/implementation#asset-registry"
 
   - id: motus-exchange
     type: internal
@@ -305,4 +305,4 @@ nodes:
     summary: "Brokerage layer for licensing IP and routing verified work."
     flow_note: "Brokerage + settlement"
     website_path: "/implementation#motus-exchange"
-    docs_url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/modules/motus-exchange.md"
+    docs_url: "/implementation#motus-exchange"

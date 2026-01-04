@@ -34,8 +34,8 @@ const trainingSteps = [
     commands: ['pip install motusos', 'motus --help'],
     expected: 'CLI help prints and lists system + work commands.',
     proof: {
-      label: 'CLI Reference',
-      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md',
+      label: 'PyPI Package',
+      url: 'https://pypi.org/project/motusos/',
     },
     failure: 'motus: command not found',
     fix: 'Activate the Python environment where you installed motusos.',
@@ -47,8 +47,8 @@ const trainingSteps = [
     commands: ['motus install'],
     expected: 'Defaults install without errors.',
     proof: {
-      label: 'CLI Reference',
-      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md',
+      label: 'Quickstart',
+      url: `${base}quickstart`,
     },
     failure: 'Write permission errors',
     fix: 'Run in a writable directory or choose a different path.',
@@ -61,7 +61,7 @@ const trainingSteps = [
     expected: '.motus/ is created in the target repo.',
     proof: {
       label: 'Kernel Guide',
-      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md',
+      url: `${base}implementation#kernel`,
     },
     failure: '.motus exists but is incomplete',
     fix: 'Re-run motus init --force to repair missing directories.',
@@ -73,8 +73,8 @@ const trainingSteps = [
     commands: ['motus doctor'],
     expected: 'Health checks return OK status.',
     proof: {
-      label: 'CLI Reference',
-      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md',
+      label: 'Quickstart',
+      url: `${base}quickstart`,
     },
     failure: 'Schema/migration errors',
     fix: 'Run motus init --force and retry.',
@@ -86,8 +86,8 @@ const trainingSteps = [
     commands: ['motus roadmap ready'],
     expected: 'A list of ready items with IDs.',
     proof: {
-      label: 'Roadmap Schema',
-      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/kernel.md',
+      label: 'Kernel Schema',
+      url: `${base}schema`,
     },
     failure: 'No ready items listed',
     fix: 'Seed a roadmap item in coordination.db or load a project roadmap.',
@@ -100,7 +100,7 @@ const trainingSteps = [
     expected: 'A lease_id is returned.',
     proof: {
       label: 'Coordination API',
-      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md',
+      url: `${base}how-it-works`,
     },
     failure: 'Item not found or blocked',
     fix: 'Use a valid roadmap ID or wait for dependencies.',
@@ -116,7 +116,7 @@ const trainingSteps = [
     expected: 'Context and outcome are recorded against the lease.',
     proof: {
       label: 'Coordination API',
-      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md',
+      url: `${base}how-it-works`,
     },
     failure: 'Lease expired or missing',
     fix: 'Re-claim the work and retry.',
@@ -133,7 +133,7 @@ const trainingSteps = [
     expected: 'Lease released with evidence and decision logged.',
     proof: {
       label: 'Coordination API',
-      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md',
+      url: `${base}how-it-works`,
     },
     failure: 'Missing evidence or decision',
     fix: 'Add at least one evidence entry and decision before release.',
@@ -146,7 +146,7 @@ const trainingSteps = [
     expected: 'Status shows outcome, evidence, and decision entries.',
     proof: {
       label: 'Kernel Guide',
-      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md',
+      url: `${base}implementation#kernel`,
     },
     failure: 'Missing evidence or decision in status output',
     fix: 'Re-run motus work evidence / decision and recheck.',
@@ -345,11 +345,9 @@ const trainingSteps = [
           Source:
           <a
             class="text-mint hover:text-text-primary transition-colors"
-            href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml"
-            target="_blank"
-            rel="noopener"
+            href={`${base}implementation#module-registry`}
           >
-            module-registry.yaml
+            module registry
           </a>
         </span>
       </div>
@@ -385,12 +383,10 @@ const trainingSteps = [
                 ) : null}
                 {module.implementation_guides?.docs ? (
                   <a
-                    href={`https://github.com/motus-os/motus/blob/main/${module.implementation_guides.docs}`}
+                    href={`${base}implementation#${module.id}`}
                     class="text-mint hover:text-text-primary transition-colors"
-                    target="_blank"
-                    rel="noopener"
                   >
-                    Docs
+                    Details
                   </a>
                 ) : null}
               </div>
@@ -409,19 +405,19 @@ const trainingSteps = [
         maxWidth="max-w-3xl"
       />
       <div class="flex flex-wrap gap-3 text-sm">
-        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/tree/main/packages/cli/docs" target="_blank" rel="noopener">
-          Docs Index
+        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}quickstart`}>
+          Quickstart
         </a>
-        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md" target="_blank" rel="noopener">
-          CLI Reference
-        </a>
-        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md" target="_blank" rel="noopener">
+        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}how-it-works`}>
           Coordination API
         </a>
-        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md" target="_blank" rel="noopener">
+        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}schema`}>
+          Kernel Schema
+        </a>
+        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}implementation#kernel`}>
           Kernel Guide
         </a>
-        <a class="text-mint hover:text-text-primary transition-colors" href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml" target="_blank" rel="noopener">
+        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}implementation#module-registry`}>
           Module Registry
         </a>
       </div>

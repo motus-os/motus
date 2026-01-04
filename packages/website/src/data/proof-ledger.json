@@ -11,7 +11,7 @@
       "evidence": [
         {
           "label": "Coordination API docs",
-          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md"
+          "url": "/how-it-works"
         }
       ]
     },
@@ -26,7 +26,7 @@
       "evidence": [
         {
           "label": "Module registry",
-          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml"
+          "url": "/implementation#module-registry"
         }
       ]
     },
@@ -41,7 +41,7 @@
       "evidence": [
         {
           "label": "Kernel schema docs",
-          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/index.md"
+          "url": "/schema"
         }
       ]
     },
@@ -55,8 +55,8 @@
       "momentum": "Docs never drift from source.",
       "evidence": [
         {
-          "label": "Registry sync gate",
-          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/scripts/ci/check_module_registry.py"
+          "label": "Evidence registry entry",
+          "url": "/evidence#claim-docs_registry_sync"
         }
       ]
     },
@@ -71,7 +71,7 @@
       "evidence": [
         {
           "label": "Architecture doc",
-          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/architecture.md"
+          "url": "/how-it-works"
         }
       ]
     },
@@ -86,7 +86,7 @@
       "evidence": [
         {
           "label": "Kernel guide",
-          "url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+          "url": "/implementation#kernel"
         }
       ]
     }

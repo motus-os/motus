@@ -5,6 +5,9 @@ import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 
 const lastUpdated = '2025-12-31';
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 ---
 
 <Layout title="License">
@@ -26,10 +29,15 @@ const lastUpdated = '2025-12-31';
             Motus is source-available software licensed under the Motus Community Source License (MCSL).
           </p>
           <p class="text-text-secondary leading-relaxed">
-            The license text is available at
-            <a href="https://github.com/motus-os/motus/blob/main/LICENSE" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
-              github.com/motus-os/motus
-            </a>.
+            The license text is summarized here and the full policy lives in the
+            <a href={`${base}license`} class="text-mint hover:text-text-primary transition-colors">
+              License
+            </a>
+            and
+            <a href={`${base}trademarks`} class="text-mint hover:text-text-primary transition-colors">
+              Trademarks
+            </a>
+            pages.
           </p>
         </Panel>
       </div>
@@ -72,11 +80,11 @@ const lastUpdated = '2025-12-31';
         <h2 class="text-2xl font-display text-text-primary mb-phi-2">More Details</h2>
         <p class="text-text-secondary leading-relaxed">
           See the
-          <a href="https://github.com/motus-os/motus/blob/main/LICENSING.md" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
-            licensing FAQ
+          <a href={`${base}license`} class="text-mint hover:text-text-primary transition-colors">
+            licensing summary
           </a>
-          for a plain-English summary and the
-          <a href="https://github.com/motus-os/motus/blob/main/TRADEMARKS.md" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
+          and the
+          <a href={`${base}trademarks`} class="text-mint hover:text-text-primary transition-colors">
             trademark policy
           </a>
           for branding rules.

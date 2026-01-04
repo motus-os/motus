@@ -8,7 +8,7 @@ claims:
     momentum: "Fewer handoff steps."
     evidence:
       - label: "Coordination API docs"
-        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md"
+        url: "/how-it-works"
   - id: module_registry
     featured: true
     status: verified
@@ -18,7 +18,7 @@ claims:
     momentum: "No ambiguity on what ships."
     evidence:
       - label: "Module registry"
-        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml"
+        url: "/implementation#module-registry"
   - id: kernel_schema
     featured: true
     status: verified
@@ -28,7 +28,7 @@ claims:
     momentum: "Stable contracts as you scale."
     evidence:
       - label: "Kernel schema docs"
-        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/index.md"
+        url: "/schema"
   - id: docs_registry_sync
     featured: true
     status: verified
@@ -37,8 +37,8 @@ claims:
     claim: "Docs and website registry are kept in sync."
     momentum: "Docs never drift from source."
     evidence:
-      - label: "Registry sync gate"
-        url: "https://github.com/motus-os/motus/blob/main/packages/cli/scripts/ci/check_module_registry.py"
+      - label: "Evidence registry entry"
+        url: "/evidence#claim-docs_registry_sync"
   - id: no_cloud_dependency
     featured: false
     status: verified
@@ -48,7 +48,7 @@ claims:
     momentum: "Local-first setup keeps teams moving."
     evidence:
       - label: "Architecture doc"
-        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/architecture.md"
+        url: "/how-it-works"
   - id: coordination_db_source
     featured: false
     status: verified
@@ -58,4 +58,4 @@ claims:
     momentum: "Deterministic state stays reviewable."
     evidence:
       - label: "Kernel guide"
-        url: "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md"
+        url: "/implementation#kernel"

@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
-import GitHubIcon from '../components/GitHubIcon.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import PersonaCard from '../components/PersonaCard.astro';
 import ModuleCard from '../components/ModuleCard.astro';
@@ -213,8 +212,8 @@ const moduleHighlights = [
         Source-available, proof-first infrastructure for AI agent execution.
       </p>
       <div class="flex flex-wrap justify-center gap-phi-2 text-sm">
-        <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
-          GitHub
+        <a href={`${base}open-source`} class="text-mint hover:text-text-primary transition-colors">
+          Source access
         </a>
         <a href={`${base}license`} class="text-mint hover:text-text-primary transition-colors">
           License
@@ -335,9 +334,7 @@ const moduleHighlights = [
           <span class="text-text-primary">Your receipts are YOUR data</span>
         </div>
         <a
-          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/manifesto.md"
-          target="_blank"
-          rel="noopener"
+          href={`${base}evidence#claim-coordination_db_source`}
           class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
         >
           Evidence &#8594;
@@ -349,9 +346,7 @@ const moduleHighlights = [
           <span class="text-text-primary">Local by default</span>
         </div>
         <a
-          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/architecture.md"
-          target="_blank"
-          rel="noopener"
+          href={`${base}evidence#claim-no_cloud_dependency`}
           class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
         >
           Evidence &#8594;
@@ -363,9 +358,7 @@ const moduleHighlights = [
           <span class="text-text-primary">Audit every line of code</span>
         </div>
         <a
-          href="https://github.com/motus-os/motus"
-          target="_blank"
-          rel="noopener"
+          href={`${base}evidence`}
           class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
         >
           Evidence &#8594;
@@ -374,9 +367,8 @@ const moduleHighlights = [
     </div>
 
     <div class="mt-phi-4">
-      <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors">
-        <GitHubIcon />
-        View on GitHub
+      <a href="https://pypi.org/project/motusos/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors">
+        View on PyPI
       </a>
     </div>
   </Section>

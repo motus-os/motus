@@ -8,6 +8,7 @@ import proofLedger from '../data/proof-ledger.json';
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+const resolveUrl = (url) => (url.startsWith('http') ? url : `${base}${url.replace(/^\/+/, '')}`);
 
 const seen = new Set();
 for (const claim of proofLedger.claims) {
@@ -33,7 +34,7 @@ const statusClass = (status) => (status === 'verified' ? 'status-badge status-cu
     <div class="mt-phi-3 flex flex-wrap justify-center gap-phi-2 text-sm">
       <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">Implementation guide</a>
       <a href={`${base}ecosystem`} class="text-mint hover:text-text-primary transition-colors">Ecosystem map</a>
-      <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">GitHub</a>
+      <a href={`${base}open-source`} class="text-mint hover:text-text-primary transition-colors">Source available</a>
     </div>
   </Section>
 
@@ -64,7 +65,7 @@ const statusClass = (status) => (status === 'verified' ? 'status-badge status-cu
             <div class="space-y-phi-1 text-sm">
               {claim.evidence.map((item) => (
                 <a
-                  href={item.url}
+                  href={resolveUrl(item.url)}
                   target="_blank"
                   rel="noopener"
                   class="block text-mint hover:text-text-primary transition-colors"

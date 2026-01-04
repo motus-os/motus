@@ -4,36 +4,40 @@ import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
 const openItems = [
   {
     item: 'Work Compiler spec',
     description: 'The execution framework for verifiable work.',
-    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md',
+    docs_url: `${base}implementation#kernel`,
   },
   {
     item: 'Coordination API',
     description: 'The 6-call API that keeps coordination overhead low.',
-    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/api/coordination-api.md',
+    docs_url: `${base}how-it-works`,
   },
   {
     item: 'CLI and execution engine',
     description: 'The full Motus command-line tool.',
-    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md',
+    docs_url: `${base}quickstart`,
   },
   {
     item: 'Policy gates',
     description: 'Deterministic enforcement + evidence requirements.',
-    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md',
+    docs_url: `${base}implementation`,
   },
   {
     item: 'Evidence bundles',
     description: 'Manifested proof artifacts with hashes + signatures.',
-    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md',
+    docs_url: `${base}evidence`,
   },
   {
     item: 'Module registry',
     description: 'Current, building, and future scoped in one registry to prevent drift.',
-    docs_url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/module-registry.yaml',
+    docs_url: `${base}implementation#module-registry`,
   },
 ];
 
@@ -68,12 +72,12 @@ const paidItems = [
         </p>
         <p>
           See the
-          <a href="https://github.com/motus-os/motus/blob/main/LICENSE" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
-            LICENSE
+          <a href={`${base}license`} class="text-mint hover:text-text-primary transition-colors">
+            License
           </a>
           and
-          <a href="https://github.com/motus-os/motus/blob/main/LICENSING.md" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
-            LICENSING.md
+          <a href={`${base}trademarks`} class="text-mint hover:text-text-primary transition-colors">
+            Trademarks
           </a>
           for details.
         </p>
@@ -192,15 +196,13 @@ const paidItems = [
       Join us in building the execution layer for AI agents.
     </p>
     <a
-      href="https://github.com/motus-os/motus"
-      target="_blank"
-      rel="noopener"
+      href="mailto:licensing@motusos.ai"
       class="inline-flex items-center gap-2 bg-mint text-charcoal font-semibold px-phi-3 py-phi-2 rounded-full hover:bg-white transition-colors"
     >
       <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
       </svg>
-      View on GitHub
+      Request source access
     </a>
   </Section>
 

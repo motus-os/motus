@@ -5,6 +5,9 @@ import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 
 const lastUpdated = '2025-12-31';
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
 ---
 
 <Layout title="Privacy Policy">
@@ -79,13 +82,14 @@ const lastUpdated = '2025-12-31';
         <Panel size="sm">
           <p class="text-text-secondary leading-relaxed mb-phi-2">
             Motus is source-available software licensed under the Motus Community Source License (MCSL).
-            The source code for both the Motus CLI and this website is publicly available and auditable.
+            The source is available under its license terms.
           </p>
           <p class="text-text-secondary leading-relaxed">
-            You can verify exactly what data is collected (or not collected) by reviewing the code at
-            <a href="https://github.com/motus-os/motus" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
-              github.com/motus-os/motus
-            </a>.
+            See the
+            <a href={`${base}open-source`} class="text-mint hover:text-text-primary transition-colors">
+              source-available policy
+            </a>
+            for access and licensing details.
           </p>
         </Panel>
       </div>
@@ -111,9 +115,9 @@ const lastUpdated = '2025-12-31';
       <div>
         <h2 class="text-2xl font-display text-text-primary mb-phi-2">Contact</h2>
         <p class="text-text-secondary leading-relaxed">
-          If you have questions about this privacy policy or our practices, please open an issue at our
-          <a href="https://github.com/motus-os/motus/issues" target="_blank" rel="noopener" class="text-mint hover:text-text-primary transition-colors">
-            GitHub repository
+          If you have questions about this privacy policy or our practices, contact
+          <a href="mailto:licensing@motusos.ai" class="text-mint hover:text-text-primary transition-colors">
+            licensing@motusos.ai
           </a>.
         </p>
       </div>

@@ -73,8 +73,12 @@ const improveTarget = (improvement) => {
   if (!target) return null;
   return {
     label: target.label,
-    href: target.website_path ? withBase(target.website_path) : target.docs_url,
+    href: target.website_path ? withBase(target.website_path) : normalizeHref(target.docs_url),
   };
+};
+const normalizeHref = (href) => {
+  if (!href) return null;
+  return href.startsWith('http') ? href : withBase(href);
 };
 ---
 
@@ -108,7 +112,11 @@ const improveTarget = (improvement) => {
               <div class="rounded-2xl border border-line/10 bg-surface-muted p-phi-2 space-y-phi-2">
                 <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{cluster.label}</p>
                 <div class="space-y-phi-2">
-                  {cluster.nodes.map((node) => (
+                  {cluster.nodes.map((node) => {
+                    const siteHref = node.website_path ? withBase(node.website_path) : null;
+                    const docsHref = normalizeHref(node.docs_url);
+                    const showSite = siteHref && siteHref !== docsHref;
+                    return (
                     <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
@@ -153,13 +161,13 @@ const improveTarget = (improvement) => {
                         </div>
                       ) : null}
                       <div class="flex flex-wrap gap-phi-1 text-xs">
-                        {node.website_path ? (
-                          <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
+                        {showSite ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={siteHref}>
                             Site
                           </a>
                         ) : null}
-                        {node.docs_url ? (
-                          <a class="text-mint hover:text-text-primary transition-colors" href={node.docs_url} target="_blank" rel="noopener">
+                        {docsHref ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={docsHref} target="_blank" rel="noopener">
                             Docs
                           </a>
                         ) : null}
@@ -175,14 +183,18 @@ const improveTarget = (improvement) => {
                         ) : null}
                       </div>
                     </div>
-                  ))}
+                  );})}
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <div class="space-y-phi-2">
-            {groupNodes.map((node) => (
+            {groupNodes.map((node) => {
+              const siteHref = node.website_path ? withBase(node.website_path) : null;
+              const docsHref = normalizeHref(node.docs_url);
+              const showSite = siteHref && siteHref !== docsHref;
+              return (
               <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                 <div class="flex items-center justify-between gap-phi-2">
                   <div class="flex items-center gap-phi-2">
@@ -227,13 +239,13 @@ const improveTarget = (improvement) => {
                   </div>
                 ) : null}
                 <div class="flex flex-wrap gap-phi-1 text-xs">
-                  {node.website_path ? (
-                    <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
+                  {showSite ? (
+                    <a class="text-mint hover:text-text-primary transition-colors" href={siteHref}>
                       Site
                     </a>
                   ) : null}
-                  {node.docs_url ? (
-                    <a class="text-mint hover:text-text-primary transition-colors" href={node.docs_url} target="_blank" rel="noopener">
+                  {docsHref ? (
+                    <a class="text-mint hover:text-text-primary transition-colors" href={docsHref} target="_blank" rel="noopener">
                       Docs
                     </a>
                   ) : null}
@@ -249,7 +261,7 @@ const improveTarget = (improvement) => {
                   ) : null}
                 </div>
               </div>
-            ))}
+            );})}
           </div>
         )}
 
@@ -304,7 +316,11 @@ const improveTarget = (improvement) => {
                     <div class="rounded-2xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-2">
                       <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{cluster.label}</p>
                       <div class="space-y-phi-2">
-                        {cluster.nodes.map((node) => (
+                        {cluster.nodes.map((node) => {
+                          const siteHref = node.website_path ? withBase(node.website_path) : null;
+                          const docsHref = normalizeHref(node.docs_url);
+                          const showSite = siteHref && siteHref !== docsHref;
+                          return (
                           <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                             <div class="flex items-center justify-between gap-phi-2">
                               <div class="flex items-center gap-phi-2">
@@ -349,13 +365,13 @@ const improveTarget = (improvement) => {
                               </div>
                             ) : null}
                             <div class="flex flex-wrap gap-phi-1 text-sm">
-                              {node.website_path ? (
-                                <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
+                              {showSite ? (
+                                <a class="text-mint hover:text-text-primary transition-colors" href={siteHref}>
                                   Site
                                 </a>
                               ) : null}
-                              {node.docs_url ? (
-                                <a class="text-mint hover:text-text-primary transition-colors" href={node.docs_url} target="_blank" rel="noopener">
+                              {docsHref ? (
+                                <a class="text-mint hover:text-text-primary transition-colors" href={docsHref} target="_blank" rel="noopener">
                                   Docs
                                 </a>
                               ) : null}
@@ -371,14 +387,18 @@ const improveTarget = (improvement) => {
                               ) : null}
                             </div>
                           </div>
-                        ))}
+                        );})}
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
                 <div class="space-y-phi-2">
-                  {groupNodes.map((node) => (
+                  {groupNodes.map((node) => {
+                    const siteHref = node.website_path ? withBase(node.website_path) : null;
+                    const docsHref = normalizeHref(node.docs_url);
+                    const showSite = siteHref && siteHref !== docsHref;
+                    return (
                     <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
@@ -423,13 +443,13 @@ const improveTarget = (improvement) => {
                         </div>
                       ) : null}
                       <div class="flex flex-wrap gap-phi-1 text-sm">
-                        {node.website_path ? (
-                          <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
+                        {showSite ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={siteHref}>
                             Site
                           </a>
                         ) : null}
-                        {node.docs_url ? (
-                          <a class="text-mint hover:text-text-primary transition-colors" href={node.docs_url} target="_blank" rel="noopener">
+                        {docsHref ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={docsHref} target="_blank" rel="noopener">
                             Docs
                           </a>
                         ) : null}
@@ -445,7 +465,7 @@ const improveTarget = (improvement) => {
                         ) : null}
                       </div>
                     </div>
-                  ))}
+                  );})}
                 </div>
               )}
             </div>
