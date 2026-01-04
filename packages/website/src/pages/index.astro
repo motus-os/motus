@@ -6,6 +6,7 @@ import InstallCommand from '../components/InstallCommand.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import PersonaCard from '../components/PersonaCard.astro';
 import ModuleCard from '../components/ModuleCard.astro';
+import DemoLoop from '../components/DemoLoop.astro';
 import personaMap from '../data/persona-map.json';
 import proofLedger from '../data/proof-ledger.json';
 
@@ -155,27 +156,30 @@ const moduleHighlights = [
       maxWidth="max-w-3xl"
       class="mb-phi-4"
     />
-    <div class="grid md:grid-cols-3 gap-phi-3">
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 01</p>
-        <p class="text-sm text-text-secondary">Claim a lease for the task.</p>
-        <code class="text-mint font-mono text-sm block">motus work claim &lt;roadmap_id&gt; --intent &quot;Describe the task&quot;</code>
-        <p class="text-xs text-text-secondary">Expected: lease_id returned.</p>
-      </Panel>
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 02</p>
-        <p class="text-sm text-text-secondary">Attach evidence + decision.</p>
-        <code class="text-mint font-mono text-sm block">motus work evidence &lt;lease_id&gt; test_result --passed 12 --failed 0</code>
-        <code class="text-mint font-mono text-sm block">motus work decision &lt;lease_id&gt; &quot;Decision summary&quot;</code>
-        <p class="text-xs text-text-secondary">Expected: proof and rationale recorded.</p>
-      </Panel>
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 03</p>
-        <p class="text-sm text-text-secondary">Release + verify status.</p>
-        <code class="text-mint font-mono text-sm block">motus work release &lt;lease_id&gt; success</code>
-        <code class="text-mint font-mono text-sm block">motus work status &lt;lease_id&gt;</code>
-        <p class="text-xs text-text-secondary">Expected: receipt shows outcome + evidence.</p>
-      </Panel>
+    <div class="grid lg:grid-cols-[1.1fr_1fr] gap-phi-3">
+      <DemoLoop />
+      <div class="grid md:grid-cols-3 lg:grid-cols-1 gap-phi-3">
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 01</p>
+          <p class="text-sm text-text-secondary">Claim a lease for the task.</p>
+          <code class="text-mint font-mono text-sm block">motus work claim &lt;roadmap_id&gt; --intent &quot;Describe the task&quot;</code>
+          <p class="text-xs text-text-secondary">Expected: lease_id returned.</p>
+        </Panel>
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 02</p>
+          <p class="text-sm text-text-secondary">Attach evidence + decision.</p>
+          <code class="text-mint font-mono text-sm block">motus work evidence &lt;lease_id&gt; test_result --passed 12 --failed 0</code>
+          <code class="text-mint font-mono text-sm block">motus work decision &lt;lease_id&gt; &quot;Decision summary&quot;</code>
+          <p class="text-xs text-text-secondary">Expected: proof and rationale recorded.</p>
+        </Panel>
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 03</p>
+          <p class="text-sm text-text-secondary">Release + verify status.</p>
+          <code class="text-mint font-mono text-sm block">motus work release &lt;lease_id&gt; success</code>
+          <code class="text-mint font-mono text-sm block">motus work status &lt;lease_id&gt;</code>
+          <p class="text-xs text-text-secondary">Expected: receipt shows outcome + evidence.</p>
+        </Panel>
+      </div>
     </div>
     <div class="mt-phi-3 flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
       <span>Need the full walkthrough?</span>

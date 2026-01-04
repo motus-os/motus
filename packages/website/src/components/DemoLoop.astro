@@ -1,0 +1,109 @@
+---
+const steps = [
+  { label: 'claim_work()', detail: 'Reserve the lease' },
+  { label: 'get_context()', detail: 'Assemble the Lens' },
+  { label: 'put_outcome()', detail: 'Attach deliverables' },
+  { label: 'record_evidence()', detail: 'Add proof' },
+  { label: 'record_decision()', detail: 'Log rationale' },
+  { label: 'release_work()', detail: 'Finalize + release' },
+];
+---
+
+<div class="demo-loop">
+  <div class="demo-loop__header">
+    <p class="demo-loop__eyebrow">Loop walkthrough</p>
+    <h3 class="demo-loop__title">The six-call execution trace</h3>
+    <p class="demo-loop__subtitle">
+      A full loop, end to end. Each call lights up in sequence so the flow is easy to follow.
+    </p>
+  </div>
+  <ol class="demo-loop__list">
+    {steps.map((step, index) => (
+      <li class="demo-loop__step" style={`animation-delay: ${index * 1.2}s`}>
+        <div class="demo-loop__label">{step.label}</div>
+        <div class="demo-loop__detail">{step.detail}</div>
+      </li>
+    ))}
+  </ol>
+  <p class="demo-loop__footnote">
+    This walkthrough matches the coordination API. See the proof in the Evidence Registry.
+  </p>
+</div>
+
+<style>
+  .demo-loop {
+    border-radius: var(--radius-lg);
+    border: 1px solid oklch(var(--line) / 0.2);
+    background: oklch(var(--surface) / 0.7);
+    padding: clamp(1.25rem, 2vw, 2rem);
+    box-shadow: var(--shadow-1);
+  }
+
+  .demo-loop__eyebrow {
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: oklch(var(--text-secondary));
+  }
+
+  .demo-loop__title {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 600;
+    margin-top: 0.35rem;
+  }
+
+  .demo-loop__subtitle {
+    font-size: 0.9rem;
+    color: oklch(var(--text-secondary));
+    margin-top: 0.5rem;
+  }
+
+  .demo-loop__list {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .demo-loop__step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid oklch(var(--line) / 0.25);
+    background: oklch(var(--surface) / 0.8);
+    animation: loopPulse 7.2s infinite;
+  }
+
+  .demo-loop__label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.85rem;
+    color: oklch(var(--text-primary));
+  }
+
+  .demo-loop__detail {
+    font-size: 0.8rem;
+    color: oklch(var(--text-secondary));
+  }
+
+  .demo-loop__footnote {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: oklch(var(--text-secondary));
+  }
+
+  @keyframes loopPulse {
+    0%,
+    8% {
+      border-color: oklch(var(--mint) / 0.6);
+      box-shadow: 0 0 0 2px oklch(var(--mint) / 0.12);
+    }
+    12%,
+    100% {
+      border-color: oklch(var(--line) / 0.25);
+      box-shadow: none;
+    }
+  }
+</style>
