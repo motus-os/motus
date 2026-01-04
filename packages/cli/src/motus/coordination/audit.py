@@ -248,14 +248,17 @@ class AuditLog:
         ordered: list[AuditEvent] = []
         visited: set[str] = set()
 
-        def visit(event: AuditEvent) -> None:
-            if event.event_id in visited:
-                return
-            visited.add(event.event_id)
-            ordered.append(event)
-            # Visit children
-            for child in children_map.get(event.event_id, []):
-                visit(child)
+        def visit(start: AuditEvent) -> None:
+            stack = [start]
+            while stack:
+                event = stack.pop()
+                if event.event_id in visited:
+                    continue
+                visited.add(event.event_id)
+                ordered.append(event)
+                children = children_map.get(event.event_id, [])
+                for child in reversed(children):
+                    stack.append(child)
 
         # Start from root events (no parent or parent not in task)
         root_events = children_map.get(None, [])

@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import re
+import os
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
@@ -27,6 +28,7 @@ DECISION_PATTERNS = [
 ]
 
 COMPILED_PATTERNS = [re.compile(p, re.IGNORECASE) for p in DECISION_PATTERNS]
+MAX_DECISION_TEXT_CHARS = int(os.environ.get("MC_DECISION_TEXT_MAX", "4000"))
 
 
 @dataclass
@@ -71,6 +73,8 @@ class DecisionLedger:
 
 def extract_decision_from_text(text: str, context: str = "") -> Optional[Decision]:
     """Extract a decision from a text block if one exists."""
+    if len(text) > MAX_DECISION_TEXT_CHARS:
+        text = text[:MAX_DECISION_TEXT_CHARS]
     for pattern in COMPILED_PATTERNS:
         match = pattern.search(text)
         if not match:

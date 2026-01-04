@@ -10,6 +10,7 @@ Implements ContextCacheReader protocol for the Lens compiler.
 from __future__ import annotations
 
 import hashlib
+import os
 import json
 import sqlite3
 from datetime import datetime, timezone
@@ -220,6 +221,9 @@ class ContextCache:
         """
         if not tool_names:
             return []
+        max_tools = max(1, int(os.environ.get("MC_TOOL_SPECS_MAX", "500")))
+        if len(tool_names) > max_tools:
+            raise ValueError(f"Too many tool names requested (max {max_tools})")
 
         cursor = self._conn.cursor()
         placeholders = ",".join("?" * len(tool_names))
@@ -235,12 +239,14 @@ class ContextCache:
         results: list[dict[str, Any]] = []
         for row in cursor.fetchall():
             payload = json.loads(row["payload"])
-            results.append({
-                "payload": payload,
-                "source_hash": row["source_hash"],
-                "observed_at": row["observed_at"],
-                "source_id": row["name"],
-            })
+            results.append(
+                {
+                    "payload": payload,
+                    "source_hash": row["source_hash"],
+                    "observed_at": row["observed_at"],
+                    "source_id": row["name"],
+                }
+            )
         return results
 
     def get_recent_outcomes(
