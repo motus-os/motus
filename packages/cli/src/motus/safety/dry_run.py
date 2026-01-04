@@ -17,6 +17,9 @@ from motus.subprocess_utils import GIT_SHORT_TIMEOUT_SECONDS, run_subprocess
 
 console = Console()
 
+MAX_RM_SCAN_FILES = int(os.environ.get("MC_RM_MAX_FILES", "20000"))
+MAX_RM_SCAN_DEPTH = int(os.environ.get("MC_RM_MAX_DEPTH", "20"))
+
 
 @dataclass
 class DryRunResult:
@@ -31,46 +34,83 @@ class DryRunResult:
     message: str = ""
     risk: str = "unknown"
 
+class _RmScanBudget:
+    def __init__(self, max_files: int) -> None:
+        self.max_files = max_files
+        self.count = 0
+        self.truncated = False
+        self.files: list[str] = []
+        self.total_size = 0
+
+    def add(self, path: Path) -> None:
+        if self.count >= self.max_files:
+            self.truncated = True
+            return
+        self.count += 1
+        self.files.append(str(path))
+        try:
+            self.total_size += path.stat().st_size
+        except OSError:
+            pass
+
+
+def _walk_dir(path: Path, budget: _RmScanBudget, max_depth: int) -> None:
+    root = path.resolve()
+    root_depth = len(root.parts)
+    for current_root, dirs, files in os.walk(root):
+        depth = len(Path(current_root).parts) - root_depth
+        if depth >= max_depth:
+            dirs[:] = []
+        for name in files:
+            budget.add(Path(current_root) / name)
+            if budget.truncated:
+                return
+        if budget.truncated:
+            return
+
 
 def dry_run_rm(args: list[str]) -> DryRunResult:
     """Simulate rm command."""
-    files = []
+    budget = _RmScanBudget(MAX_RM_SCAN_FILES)
     recursive = "-r" in args or "-rf" in args or "-fr" in args
 
     for arg in args:
         if arg.startswith("-"):
             continue
 
+        if budget.truncated:
+            break
+
         path = Path(arg)
         if path.exists():
             if path.is_dir() and recursive:
-                for f in path.rglob("*"):
-                    if f.is_file():
-                        files.append(str(f))
+                _walk_dir(path, budget, MAX_RM_SCAN_DEPTH)
             elif path.is_file():
-                files.append(str(path))
+                budget.add(path)
         else:
             # Try glob expansion
             for match in glob.glob(arg, recursive=recursive):
+                if budget.truncated:
+                    break
                 p = Path(match)
                 if p.is_file():
-                    files.append(match)
+                    budget.add(p)
                 elif p.is_dir() and recursive:
-                    for f in p.rglob("*"):
-                        if f.is_file():
-                            files.append(str(f))
+                    _walk_dir(p, budget, MAX_RM_SCAN_DEPTH)
 
-    total_size = sum(os.path.getsize(f) for f in files if os.path.exists(f))
+    total_size = budget.total_size
+    count_label = f"{budget.count}+" if budget.truncated else str(budget.count)
+    size_label = f">= {total_size // 1024}KB" if budget.truncated else f"{total_size // 1024}KB"
 
     return DryRunResult(
         supported=True,
         command=f"rm {' '.join(args)}",
         action="DELETE",
-        targets=files[:20],  # Limit display
+        targets=budget.files[:20],  # Limit display
         size_bytes=total_size,
         reversible=False,
-        message=f"Would delete {len(files)} files ({total_size // 1024}KB)",
-        risk="high" if len(files) > 10 or total_size > 10_000_000 else "medium",
+        message=f"Would delete {count_label} files ({size_label})",
+        risk="high" if budget.truncated or budget.count > 10 or total_size > 10_000_000 else "medium",
     )
 
 

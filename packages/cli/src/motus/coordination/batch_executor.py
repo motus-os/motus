@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import replace
+from pathlib import Path
 
 from motus.coordination.schemas import (
     WORK_BATCH_SCHEMA,
@@ -14,12 +16,16 @@ from motus.coordination.schemas import (
 )
 
 from .batch_models import (
+    BatchCoordinatorError,
     InvalidBatchTransitionError,
     ReconciliationError,
     _BatchStorage,
     _compute_batch_hash,
     _utcnow,
 )
+
+MAX_BATCH_LIST_FILES = int(os.environ.get("MC_BATCH_LIST_MAX_FILES", "10000"))
+MAX_BATCH_LIST_DEPTH = int(os.environ.get("MC_BATCH_LIST_MAX_DEPTH", "6"))
 
 
 class BatchCoordinator(_BatchStorage):
@@ -191,7 +197,27 @@ class BatchCoordinator(_BatchStorage):
             for path in sorted(self._active_dir.glob("wb-*.json")):
                 batches.append(WorkBatch.from_json(json.loads(path.read_text(encoding="utf-8"))))
         if include_closed and self._closed_dir.exists():
-            for path in sorted(self._closed_dir.rglob("wb-*.json")):
+            remaining = MAX_BATCH_LIST_FILES - len(batches)
+            if remaining <= 0:
+                raise BatchCoordinatorError("batch listing exceeds maximum file limit")
+            paths = self._bounded_closed_paths(max_files=remaining)
+            for path in sorted(paths):
                 batches.append(WorkBatch.from_json(json.loads(path.read_text(encoding="utf-8"))))
         batches.sort(key=lambda b: b.sequence_number)
         return batches
+
+    def _bounded_closed_paths(self, *, max_files: int) -> list[Path]:
+        root = self._closed_dir.resolve()
+        root_depth = len(root.parts)
+        paths: list[Path] = []
+        for current_root, dirs, files in os.walk(root):
+            depth = len(Path(current_root).parts) - root_depth
+            if depth >= MAX_BATCH_LIST_DEPTH:
+                dirs[:] = []
+            for name in files:
+                if not (name.startswith("wb-") and name.endswith(".json")):
+                    continue
+                paths.append(Path(current_root) / name)
+                if len(paths) >= max_files:
+                    raise BatchCoordinatorError("batch listing exceeds maximum file limit")
+        return paths

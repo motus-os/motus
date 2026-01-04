@@ -6,12 +6,37 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from motus.exceptions import ConfigError
+
+MAX_EVIDENCE_FILES = int(os.environ.get("MC_EVIDENCE_MAX_FILES", "10000"))
+MAX_EVIDENCE_DEPTH = int(os.environ.get("MC_EVIDENCE_MAX_DEPTH", "10"))
+
+
+def _bounded_file_iter(root: Path) -> list[Path]:
+    root = root.resolve()
+    root_depth = len(root.parts)
+    files: list[Path] = []
+    for current_root, dirs, filenames in os.walk(root):
+        depth = len(Path(current_root).parts) - root_depth
+        if depth >= MAX_EVIDENCE_DEPTH:
+            dirs[:] = []
+        for name in filenames:
+            files.append(Path(current_root) / name)
+            if len(files) >= MAX_EVIDENCE_FILES:
+                raise ConfigError(
+                    "Evidence bundle exceeds limits",
+                    details=(
+                        "Increase MC_EVIDENCE_MAX_FILES/MC_EVIDENCE_MAX_DEPTH "
+                        "or prune the bundle."
+                    ),
+                )
+    return files
 
 
 def _parse_iso_datetime(value: str) -> datetime | None:
@@ -31,9 +56,7 @@ def _parse_iso_datetime(value: str) -> datetime | None:
 
 def _dir_total_bytes(path: Path) -> int:
     total = 0
-    for item in path.rglob("*"):
-        if not item.is_file():
-            continue
+    for item in _bounded_file_iter(path):
         try:
             total += item.stat().st_size
         except OSError:

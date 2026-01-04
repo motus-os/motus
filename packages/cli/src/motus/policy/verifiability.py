@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
+import os
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
@@ -18,6 +19,26 @@ from pathlib import Path
 from motus.policy.contracts import ArtifactHash
 
 SIGNATURE_PREFIX_HMAC_SHA256 = "hmac-sha256:"
+MAX_EVIDENCE_FILES = int(os.environ.get("MC_EVIDENCE_MAX_FILES", "10000"))
+MAX_EVIDENCE_DEPTH = int(os.environ.get("MC_EVIDENCE_MAX_DEPTH", "10"))
+
+
+def _bounded_artifact_paths(root: Path) -> list[Path]:
+    root = root.resolve()
+    root_depth = len(root.parts)
+    paths: list[Path] = []
+    for current_root, dirs, files in os.walk(root):
+        depth = len(Path(current_root).parts) - root_depth
+        if depth >= MAX_EVIDENCE_DEPTH:
+            dirs[:] = []
+        for name in files:
+            paths.append(Path(current_root) / name)
+            if len(paths) >= MAX_EVIDENCE_FILES:
+                raise ValueError(
+                    "Evidence directory exceeds limits. "
+                    "Set MC_EVIDENCE_MAX_FILES/MC_EVIDENCE_MAX_DEPTH to override."
+                )
+    return paths
 
 
 def sha256_file(path: Path) -> str:
@@ -38,7 +59,8 @@ def compute_artifact_hashes(
     """
     exclude = exclude_paths or set()
     items: list[ArtifactHash] = []
-    for path in sorted(evidence_dir.rglob("*")):
+    paths = _bounded_artifact_paths(evidence_dir)
+    for path in sorted(paths, key=lambda p: p.relative_to(evidence_dir).as_posix()):
         if not path.is_file():
             continue
         rel = path.relative_to(evidence_dir).as_posix()

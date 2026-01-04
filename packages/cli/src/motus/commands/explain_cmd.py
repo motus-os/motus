@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 from rich.console import Console
@@ -17,6 +18,7 @@ from motus.orient.fs_resolver import find_motus_dir
 from motus.policy._runner_utils import _evidence_base_dir
 
 console = Console()
+MAX_TRACE_BYTES = int(os.environ.get("MC_TRACE_MAX_BYTES", "5242880"))
 
 
 def _find_decision_trace(repo_dir: Path, run_id: str) -> Path | None:
@@ -48,6 +50,19 @@ def explain_command(args) -> int:
             style="red",
             markup=False,
         )
+        return EXIT_ERROR
+
+    try:
+        if trace_path.stat().st_size > MAX_TRACE_BYTES:
+            console.print(
+                "Decision trace too large to load. "
+                "Set MC_TRACE_MAX_BYTES to override.",
+                style="red",
+                markup=False,
+            )
+            return EXIT_ERROR
+    except OSError:
+        console.print("Failed to read decision trace file metadata", style="red", markup=False)
         return EXIT_ERROR
 
     lines = trace_path.read_text(encoding="utf-8").splitlines()
