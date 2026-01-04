@@ -10,6 +10,7 @@ import json
 
 from fastapi import WebSocket
 
+from motus.config import config
 from motus.logging import get_logger
 
 logger = get_logger(__name__)
@@ -96,7 +97,9 @@ async def poll_events(self, websocket: WebSocket):
             )
             self.session_state.set_error(session_id, f"Parsing error: {str(e)[:50]}")
 
-    all_events = []
+    max_events = config.sessions.max_events_displayed
+    all_events: list[dict] = []
+    truncated = False
     for session_id, batch_data in session_event_batches.items():
         for event in batch_data["events"]:
             await update_context(self, websocket, event, session_id, batch_data["project_path"])
@@ -104,7 +107,12 @@ async def poll_events(self, websocket: WebSocket):
                 event, session_id, batch_data["project_path"]
             )
             if formatted:
+                if max_events > 0 and len(all_events) >= max_events:
+                    truncated = True
+                    break
                 all_events.append(formatted)
+        if truncated:
+            break
 
     if all_events:
         await websocket.send_json(

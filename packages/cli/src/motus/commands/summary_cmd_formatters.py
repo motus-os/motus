@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import json
+import os
 import logging
 from pathlib import Path
 
@@ -13,6 +14,7 @@ from rich.markdown import Markdown
 from rich.panel import Panel
 
 logger = logging.getLogger(__name__)
+MAX_DECISION_FILE_BYTES = int(os.environ.get("MC_DECISIONS_MAX_BYTES", "5242880"))
 
 # Decision markers - used across all sources
 DECISION_MARKERS = [
@@ -47,6 +49,14 @@ def extract_decisions(file_path: Path, source: str = "claude") -> list[str]:
     decisions = []
 
     try:
+        try:
+            if file_path.stat().st_size > MAX_DECISION_FILE_BYTES:
+                logger.warning("Decision extraction skipped (file too large): %s", file_path)
+                return []
+        except OSError as e:
+            logger.warning("Decision extraction failed to stat file %s: %s", file_path, e)
+            return []
+
         if source == "gemini":
             with open(file_path, "r") as f:
                 data = json.load(f)

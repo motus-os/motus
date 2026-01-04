@@ -18,6 +18,7 @@ Resolution (v0):
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Literal
@@ -27,6 +28,8 @@ import yaml
 from motus.orient.result import OrientResult
 
 Layer = Literal["user", "project", "system"]
+MAX_STANDARD_FILES = int(os.environ.get("MC_STANDARDS_MAX_FILES", "2000"))
+MAX_STANDARD_DEPTH = int(os.environ.get("MC_STANDARDS_MAX_DEPTH", "6"))
 
 
 def find_motus_dir(start: Path) -> Path | None:
@@ -58,7 +61,20 @@ def _predicate_matches(applies_if: dict[str, Any], context: dict[str, Any]) -> b
 def _iter_standard_files(layer_dir: Path) -> list[Path]:
     if not layer_dir.exists() or not layer_dir.is_dir():
         return []
-    return sorted(p for p in layer_dir.rglob("standard.yaml") if p.is_file())
+    root = layer_dir.resolve()
+    root_depth = len(root.parts)
+    files: list[Path] = []
+    for current_root, dirs, filenames in os.walk(root):
+        depth = len(Path(current_root).parts) - root_depth
+        if depth >= MAX_STANDARD_DEPTH:
+            dirs[:] = []
+        for name in filenames:
+            if name != "standard.yaml":
+                continue
+            files.append(Path(current_root) / name)
+            if len(files) >= MAX_STANDARD_FILES:
+                raise ValueError("Too many standards files for resolver scan")
+    return sorted(files)
 
 
 @dataclass(frozen=True, slots=True)
