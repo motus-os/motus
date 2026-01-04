@@ -5,18 +5,23 @@ groups:
   - id: inputs
     label: "Inputs"
     description: "Agents, orchestrators, and systems Motus governs."
+    relation: "Feeds Motus Core"
   - id: core
     label: "Motus Core"
     description: "Execution kernel + coordination surface."
+    relation: "Center of execution + truth"
   - id: modules
     label: "Bundled Modules"
     description: "Optional capabilities that extend the kernel without breaking invariants."
+    relation: "Extend the Core"
   - id: governance
     label: "Proof + Governance"
     description: "Evidence, policy, and decision accountability."
+    relation: "Wraps execution with proof"
   - id: future
     label: "Future Economy"
     description: "Signed work, IP registries, and brokerage."
+    relation: "Builds on verified work"
 
 nodes:
   - id: langchain

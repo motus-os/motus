@@ -138,6 +138,19 @@ const trainingSteps = [
     failure: 'Missing evidence or decision',
     fix: 'Add at least one evidence entry and decision before release.',
   },
+  {
+    id: 'audit',
+    title: 'Audit the record',
+    goal: 'Confirm the final state is visible and reviewable.',
+    commands: ['motus work status <lease_id>'],
+    expected: 'Status shows outcome, evidence, and decision entries.',
+    proof: {
+      label: 'Kernel Guide',
+      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/kernel.md',
+    },
+    failure: 'Missing evidence or decision in status output',
+    fix: 'Re-run motus work evidence / decision and recheck.',
+  },
 ];
 ---
 
@@ -219,9 +232,61 @@ const trainingSteps = [
     </section>
 
     <section class="mt-phi-6 space-y-phi-3">
+      <SectionHeader
+        eyebrow="Phase Gates"
+        title="Implementation, in order"
+        subtitle="Each phase has a clear exit criteria. Only move forward when the gate is satisfied."
+        align="left"
+        size="md"
+        maxWidth="max-w-3xl"
+      />
+      <div class="grid md:grid-cols-3 gap-phi-2">
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 1</p>
+          <h3 class="text-lg font-display text-text-primary">Kernel Foundation</h3>
+          <p class="text-sm text-text-secondary">
+            Establish the coordination DB and complete the 6-call loop end to end.
+          </p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
+          <ul class="text-sm text-text-secondary space-y-phi-1">
+            <li>- Lease released with outcome</li>
+            <li>- Evidence + decision logged</li>
+            <li>- Status visible via <span class="text-text-primary">motus work status</span></li>
+          </ul>
+        </Panel>
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 2</p>
+          <h3 class="text-lg font-display text-text-primary">Governance + Evidence</h3>
+          <p class="text-sm text-text-secondary">
+            Validate the audit trail and enforce evidence requirements before completion.
+          </p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
+          <ul class="text-sm text-text-secondary space-y-phi-1">
+            <li>- Evidence bundles are stored</li>
+            <li>- Decision log is populated</li>
+            <li>- Policy gates are satisfied</li>
+          </ul>
+        </Panel>
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 3</p>
+          <h3 class="text-lg font-display text-text-primary">Bundled Modules</h3>
+          <p class="text-sm text-text-secondary">
+            Add optional capabilities only after kernel + governance are stable.
+          </p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
+          <ul class="text-sm text-text-secondary space-y-phi-1">
+            <li>- Module dependencies satisfied</li>
+            <li>- Registry status matches release</li>
+            <li>- Module docs + tests exist</li>
+          </ul>
+        </Panel>
+      </div>
+    </section>
+
+    <section class="mt-phi-6 space-y-phi-3">
       <div id="kernel" class="scroll-mt-24"></div>
       <div class="flex flex-wrap items-center gap-phi-2">
-        <h2 class="text-3xl font-display text-text-primary">{kernel.marketing_name}</h2>
+        <h2 class="text-3xl font-display text-text-primary">Phase 1: {kernel.marketing_name}</h2>
         <span class={statusClasses[kernel.status]}>{statusLabel(kernel.status)}</span>
       </div>
 
@@ -245,13 +310,29 @@ const trainingSteps = [
           </ul>
         </Panel>
       </div>
+      <div class="grid md:grid-cols-2 gap-phi-3">
+        <Panel size="sm" class="space-y-phi-1">
+          <h3 class="text-lg font-display text-text-primary">Verify the loop</h3>
+          <p class="text-sm text-text-secondary">
+            The kernel is ready when a lease completes with evidence and a decision.
+          </p>
+          <code class="text-mint font-mono text-sm">motus work status &lt;lease_id&gt;</code>
+        </Panel>
+        <Panel size="sm" class="space-y-phi-1">
+          <h3 class="text-lg font-display text-text-primary">Evidence location</h3>
+          <p class="text-sm text-text-secondary">
+            Evidence and decisions are stored in the kernel ledger for audit review.
+          </p>
+          <code class="text-mint font-mono text-sm">~/.motus/coordination.db</code>
+        </Panel>
+      </div>
     </section>
 
     <section class="mt-phi-6 space-y-phi-3">
       <div id="module-registry" class="scroll-mt-24"></div>
       <SectionHeader
-        title="Module Registry"
-        subtitle="Bundled modules are optional capabilities that extend the kernel without breaking invariants. The registry tracks scope, status, and best practices for each module."
+        title="Phase 3: Module Registry"
+        subtitle="Bundled modules are optional capabilities that extend the kernel without breaking invariants. Only introduce modules once Phase 1 and Phase 2 are stable."
         align="left"
         size="md"
         maxWidth="max-w-3xl"
@@ -272,6 +353,14 @@ const trainingSteps = [
           </a>
         </span>
       </div>
+      <Panel size="sm" class="space-y-phi-1">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Readiness checklist</p>
+        <ul class="text-sm text-text-secondary space-y-phi-1">
+          <li>- Kernel loop passes with evidence + decision</li>
+          <li>- Governance gates are enforced in policy</li>
+          <li>- Module docs and tests are ready</li>
+        </ul>
+      </Panel>
 
       <div class="grid md:grid-cols-2 gap-phi-3">
         {modules.map((module) => (

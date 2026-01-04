@@ -91,8 +91,16 @@ const improveTarget = (improvement) => {
             <span>Layer</span>
             <span class="text-text-primary">{group.label}</span>
           </div>
+          {group.id === 'core' ? (
+            <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">Center</span>
+          ) : null}
         </div>
         <p class="text-sm text-text-secondary">{group.description}</p>
+        {group.relation ? (
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary/70">
+            {group.relation}
+          </p>
+        ) : null}
 
         {clusters ? (
           <div class="space-y-phi-3">
@@ -271,13 +279,23 @@ const improveTarget = (improvement) => {
             : 'md:col-start-2 md:row-start-3';
     return (
       <div class={`space-y-phi-2 lane-column ${placement}`.trim()}>
-          <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
-            <span>Layer</span>
-            <span class="text-text-primary">{group.label}</span>
+          <div class="flex items-center justify-between gap-phi-2">
+            <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
+              <span>Layer</span>
+              <span class="text-text-primary">{group.label}</span>
+            </div>
+            {group.id === 'core' ? (
+              <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">Center</span>
+            ) : null}
           </div>
           <div class="rounded-2xl border border-line/10 bg-surface p-phi-3 space-y-phi-2">
             <div class="space-y-phi-1">
               <p class="text-sm text-text-secondary">{group.description}</p>
+              {group.relation ? (
+                <p class="text-xs uppercase tracking-[0.25em] text-text-secondary/70">
+                  {group.relation}
+                </p>
+              ) : null}
             </div>
             <div class="space-y-phi-2">
               {clusters ? (
