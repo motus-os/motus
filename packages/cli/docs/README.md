@@ -25,7 +25,7 @@ factually accurate and contextually useful for different roles.
 - [API Index](api/index.md)
 - [Kernel Schema](schema/index.md)
 - [CLI Reference](cli-reference.md)
-- [Architecture](architecture.md)
+- [Architecture](../../ARCHITECTURE.md)
 - [Terminology](TERMINOLOGY.md)
 - [Website Publishing](website-publishing.md)
 - [Website Persona Map](website/persona-map.yaml)

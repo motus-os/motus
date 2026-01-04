@@ -938,7 +938,7 @@ Use these examples as templates:
 ### Learn More
 
 - [Tracer SDK Documentation](/docs/api/index.md)
-- [Architecture Overview](/docs/architecture.md)
+- [Architecture Overview](/ARCHITECTURE.md)
 - [Manifesto](/docs/manifesto.md)
 
 ### Contribute

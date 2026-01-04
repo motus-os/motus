@@ -136,5 +136,5 @@ The kernel is not.
 
 ---
 
-*Read the [Architecture Overview](architecture.md) for implementation details.*
+*Read the [Architecture Overview](../../ARCHITECTURE.md) for implementation details.*
 *See the [Roadmap](../ROADMAP.md) for planned development.*

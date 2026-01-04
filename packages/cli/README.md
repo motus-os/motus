@@ -47,10 +47,10 @@ python examples/hello_agent.py
 - [Module Registry](docs/standards/module-registry.yaml)
 - [Docs Index](docs/README.md)
 - [Kernel Schema](docs/schema/index.md)
-- [Architecture](docs/architecture.md)
+- [Architecture](../ARCHITECTURE.md)
 - [CLI Reference](docs/cli-reference.md)
 - [Terminology](docs/TERMINOLOGY.md)
-- [Contributing](CONTRIBUTING.md)
+- [Contributing](../CONTRIBUTING.md)
 
 ## License
 Motus Community Source License (MCSL). See `LICENSE`.
