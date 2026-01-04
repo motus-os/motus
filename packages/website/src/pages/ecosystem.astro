@@ -26,7 +26,7 @@ if (missingProof.length > 0) {
 ---
 
 <Layout title="Ecosystem Map - Motus">
-  <Section tone="dark" pad="none" class="text-center py-phi-3 md:py-phi-4" innerClass="max-w-3xl">
+  <Section tone="dark" pad="none" class="text-center py-phi-2 md:py-phi-3" innerClass="max-w-3xl">
     <SectionHeader
       eyebrow="Ecosystem Blueprint"
       title="The finished system, mapped in one view"
@@ -53,7 +53,10 @@ if (missingProof.length > 0) {
         <EcosystemFlow groups={groups} nodes={nodes} base={base} proofIndex={proofIndex} />
       </div>
     </div>
-    <Panel size="sm" class="mt-phi-4 space-y-phi-2">
+  </Section>
+
+  <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
+    <Panel size="sm" class="space-y-phi-2">
       <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">How to read the map</p>
       <ul class="space-y-phi-1 text-sm text-text-secondary">
         <li>- Motus Core sits at the center of the ecosystem.</li>
@@ -65,13 +68,13 @@ if (missingProof.length > 0) {
       <p class="text-sm text-text-secondary">
         The “Motus adds” line shows the 1+1=3 effect for each integration.
       </p>
+      <p class="text-xs text-text-secondary max-w-3xl">
+        Current items are shipped and verifiable. Building items are in flight with active roadmap IDs. Future items are directional and explicitly labeled.
+      </p>
+      <p class="text-sm text-text-secondary">
+        Future layers are labeled and never implied as shipped.
+      </p>
     </Panel>
-    <p class="text-xs text-text-secondary mt-phi-2 max-w-3xl">
-      Current items are shipped and verifiable. Building items are in flight with active roadmap IDs. Future items are directional and explicitly labeled.
-    </p>
-    <p class="text-sm text-text-secondary mt-phi-2">
-      Future layers are labeled and never implied as shipped.
-    </p>
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
