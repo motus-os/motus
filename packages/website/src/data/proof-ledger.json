@@ -89,6 +89,48 @@
           "url": "/implementation#kernel"
         }
       ]
+    },
+    {
+      "id": "policy_gates",
+      "featured": false,
+      "status": "target",
+      "method": "Docs-backed: phase gate criteria",
+      "claim": "Policy gates run before work is released.",
+      "momentum": "Unsafe changes stop before they ship.",
+      "evidence": [
+        {
+          "label": "Phase gates criteria",
+          "url": "/implementation#phase-gates"
+        }
+      ]
+    },
+    {
+      "id": "evidence_gate",
+      "featured": false,
+      "status": "target",
+      "method": "Docs-backed: 6-call loop and gate criteria",
+      "claim": "Evidence is required before completion.",
+      "momentum": "Proof travels with every outcome.",
+      "evidence": [
+        {
+          "label": "How the loop captures evidence",
+          "url": "/how-it-works#evidence-gates"
+        }
+      ]
+    },
+    {
+      "id": "completion_gate",
+      "featured": false,
+      "status": "target",
+      "method": "Docs-backed: decision + evidence requirements",
+      "claim": "Completion requires evidence and a logged decision.",
+      "momentum": "Every closeout stays reviewable.",
+      "evidence": [
+        {
+          "label": "Completion gate summary",
+          "url": "/how-it-works#gates"
+        }
+      ]
     }
   ]
 }

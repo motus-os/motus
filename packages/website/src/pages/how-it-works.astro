@@ -132,6 +132,66 @@ const workSteps = [
     </div>
   </Section>
 
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <SectionHeader
+      title="Gates keep the loop honest"
+      subtitle="Policy, evidence, and completion gates map directly onto the six-call flow."
+      class="mb-phi-4"
+      maxWidth="max-w-2xl"
+    />
+    <div id="gates" class="grid md:grid-cols-3 gap-phi-3 scroll-mt-24">
+      <Panel size="sm" class="space-y-phi-2">
+        <h3 class="text-lg font-display text-text-primary">Policy gate</h3>
+        <p class="text-sm text-text-secondary">
+          Checked before release. Confirms eligibility, scope, and policy packs.
+        </p>
+        <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
+        <p class="text-sm text-text-secondary">claim_work → release_work</p>
+        <a
+          href={`${base}evidence#claim-policy_gates`}
+          class="text-sm text-mint hover:text-text-primary transition-colors"
+        >
+          Evidence &#8594;
+        </a>
+      </Panel>
+      <Panel size="sm" class="space-y-phi-2">
+        <div id="evidence-gates" class="scroll-mt-24"></div>
+        <h3 class="text-lg font-display text-text-primary">Evidence gate</h3>
+        <p class="text-sm text-text-secondary">
+          Requires proof artifacts before completion.
+        </p>
+        <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
+        <p class="text-sm text-text-secondary">record_evidence → release_work</p>
+        <a
+          href={`${base}evidence#claim-evidence_gate`}
+          class="text-sm text-mint hover:text-text-primary transition-colors"
+        >
+          Evidence &#8594;
+        </a>
+      </Panel>
+      <Panel size="sm" class="space-y-phi-2">
+        <h3 class="text-lg font-display text-text-primary">Completion gate</h3>
+        <p class="text-sm text-text-secondary">
+          Enforces a logged decision plus evidence before release.
+        </p>
+        <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
+        <p class="text-sm text-text-secondary">record_decision → release_work</p>
+        <a
+          href={`${base}evidence#claim-completion_gate`}
+          class="text-sm text-mint hover:text-text-primary transition-colors"
+        >
+          Evidence &#8594;
+        </a>
+      </Panel>
+    </div>
+    <p class="text-sm text-text-secondary mt-phi-3">
+      See the full gate criteria in the
+      <a href={`${base}implementation#phase-gates`} class="text-mint hover:text-text-primary transition-colors">
+        implementation guide
+      </a>.
+    </p>
+  </Section>
+
   <Section tone="light" pad="tight" innerClass="max-w-4xl text-center">
     <SectionHeader
       title="Kernel Schema v0.1.3"
