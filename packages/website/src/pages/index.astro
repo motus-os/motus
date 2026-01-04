@@ -53,8 +53,8 @@ const moduleHighlights = [
     name: 'LENS',
     focus: 'Reading',
     summary: {
-      lead: 'Precision lensing',
-      rest: 'so agents read only what matters.',
+      lead: 'Read only what matters.',
+      rest: 'Deterministic Lens slices keep context tight.',
     },
     bullets: [
       'Token compression lens',
@@ -68,8 +68,8 @@ const moduleHighlights = [
     name: 'LEASES',
     focus: 'Coordination',
     summary: {
-      lead: 'Six-call workflow',
-      rest: 'from claim to release, without collisions.',
+      lead: 'No collision handoffs.',
+      rest: 'Lease-based coordination locks work until release.',
     },
     bullets: [
       'Lease-based handoffs',
@@ -83,8 +83,8 @@ const moduleHighlights = [
     name: 'RECEIPTS',
     focus: 'Trust',
     summary: {
-      lead: 'Receipts for every action',
-      rest: 'Cryptographic evidence, not implied trust.',
+      lead: 'Every action is reviewable.',
+      rest: 'Evidence bundles + policy gates produce receipts.',
     },
     bullets: [
       'Evidence bundles',
@@ -98,8 +98,8 @@ const moduleHighlights = [
     name: 'STRATEGIES',
     focus: 'Reasoning',
     summary: {
-      lead: 'Reusable strategies',
-      rest: 'Patterns instead of ad-hoc reasoning.',
+      lead: 'Reuse decisions, not guesswork.',
+      rest: 'Pattern library captures triggers + reviews.',
     },
     bullets: [
       'Decision patterns',
@@ -139,9 +139,6 @@ const moduleHighlights = [
         View System Flow &#8594;
       </a>
     </div>
-    <p class="text-xs uppercase tracking-[0.3em] text-text-secondary mt-phi-3">
-      Proof-first momentum signals &#183; <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">Evidence registry</a>
-    </p>
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/10">
@@ -183,10 +180,6 @@ const moduleHighlights = [
       <span>Need the full walkthrough?</span>
       <a href={`${base}implementation#quickstart`} class="text-mint hover:text-text-primary transition-colors">
         Quickstart &#8594;
-      </a>
-      <span class="text-text-secondary/60">&#183;</span>
-      <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">
-        Evidence registry &#8594;
       </a>
     </div>
   </Section>
