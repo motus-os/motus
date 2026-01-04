@@ -23,8 +23,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Upgrade pip and setuptools
+        run: python -m pip install --upgrade pip setuptools
       - name: Install CLI dev dependencies
-        run: pip install -e ".[dev]"
+        run: pip install -e ".[dev,mcp]"
       - name: Run health ledger
         run: python scripts/ci/health_ledger.py --output artifacts/health.json
       - name: Upload health ledger artifact
