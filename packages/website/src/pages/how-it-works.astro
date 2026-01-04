@@ -22,7 +22,7 @@ const workSteps = [
   <Section tone="dark" class="text-center" innerClass="max-w-3xl">
     <SectionHeader
       title="How It Works"
-      subtitle="Technical credibility without the hand-waving."
+      subtitle="Outcome: every task ends with a reviewable receipt."
       as="h1"
       size="xl"
       class="mb-phi-4"
@@ -57,10 +57,10 @@ const workSteps = [
       </div>
     </div>
     <p class="text-sm text-text-secondary mt-phi-3">
-      Momentum guardrails: smaller surface area, local-first, one source of truth.
+      Mechanism: six-call loop, local-first state, one source of truth.
     </p>
     <p class="text-sm text-text-secondary mt-phi-3">
-      Proof registry for core claims:
+      Proof registry:
       <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">
         Evidence Registry &#8594;
       </a>
@@ -70,7 +70,7 @@ const workSteps = [
   <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
     <SectionHeader
       title="The Work Compiler"
-      subtitle="Motus makes work verifiable by forcing a tight, six-call execution loop."
+      subtitle="Outcome: reviewable handoffs. Mechanism: six-call loop with evidence + decisions."
       class="mb-phi-4"
       maxWidth="max-w-2xl"
     />
@@ -86,7 +86,7 @@ const workSteps = [
       </div>
 
       <p class="text-text-secondary text-sm text-center mt-phi-3 pt-phi-3 border-t border-line/10">
-        OODA is the provenance. The product is the Work Compiler loop that keeps handoffs reviewable.
+        Outcome: every lease closes with outcome, evidence, and decision.
       </p>
     </Panel>
   </Section>
@@ -94,7 +94,7 @@ const workSteps = [
   <Section tone="muted" pad="tight" innerClass="max-w-5xl">
     <SectionHeader
       title="The Coordination API"
-      subtitle="Six calls keep coordination tight and reviewable."
+      subtitle="Outcome: minimal surface, full audit trail."
       class="mb-phi-4"
       maxWidth="max-w-2xl"
     />
@@ -102,32 +102,32 @@ const workSteps = [
     <div class="grid md:grid-cols-2 gap-phi-3">
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">claim_work()</code>
-        <p class="text-text-secondary mt-2">Claim a resource. Get a lease, a Lens, and a snapshot.</p>
+        <p class="text-text-secondary mt-2">Outcome: lease reserved with a Lens snapshot.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">get_context()</code>
-        <p class="text-text-secondary mt-2">Refresh understanding mid-task. Get the latest Lens.</p>
+        <p class="text-text-secondary mt-2">Outcome: refreshed Lens snapshot mid-task.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">put_outcome()</code>
-        <p class="text-text-secondary mt-2">Register deliverables. Files, artifacts, results.</p>
+        <p class="text-text-secondary mt-2">Outcome: deliverables registered to the lease.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">record_evidence()</code>
-        <p class="text-text-secondary mt-2">Attach test results, diffs, verification artifacts.</p>
+        <p class="text-text-secondary mt-2">Outcome: proof artifacts attached.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">record_decision()</code>
-        <p class="text-text-secondary mt-2">Log reasoning. Why you chose this approach.</p>
+        <p class="text-text-secondary mt-2">Outcome: decision rationale logged.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">release_work()</code>
-        <p class="text-text-secondary mt-2">Finalize the work. Attach proof. Hand back the lease.</p>
+        <p class="text-text-secondary mt-2">Outcome: lease closed with a receipt.</p>
       </Panel>
     </div>
   </Section>
@@ -135,16 +135,21 @@ const workSteps = [
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
     <SectionHeader
       title="Gates keep the loop honest"
-      subtitle="Policy, evidence, and completion gates map directly onto the six-call flow."
+      subtitle="Outcome: work cannot close without proof and decision."
       class="mb-phi-4"
       maxWidth="max-w-2xl"
     />
     <div id="gates" class="grid md:grid-cols-3 gap-phi-3 scroll-mt-24">
       <Panel size="sm" class="space-y-phi-2">
         <h3 class="text-lg font-display text-text-primary">Policy gate</h3>
-        <p class="text-sm text-text-secondary">
-          Checked before release. Confirms eligibility, scope, and policy packs.
-        </p>
+        <div class="space-y-phi-1 text-sm text-text-secondary">
+          <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Outcome</p>
+          <p>Only eligible work can proceed.</p>
+        </div>
+        <div class="space-y-phi-1 text-sm text-text-secondary">
+          <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Mechanism</p>
+          <p>Validates eligibility, scope, and policy packs.</p>
+        </div>
         <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">claim_work → release_work</p>
         <a
@@ -157,9 +162,14 @@ const workSteps = [
       <Panel size="sm" class="space-y-phi-2">
         <div id="evidence-gates" class="scroll-mt-24"></div>
         <h3 class="text-lg font-display text-text-primary">Evidence gate</h3>
-        <p class="text-sm text-text-secondary">
-          Requires proof artifacts before completion.
-        </p>
+        <div class="space-y-phi-1 text-sm text-text-secondary">
+          <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Outcome</p>
+          <p>Completion cannot happen without proof.</p>
+        </div>
+        <div class="space-y-phi-1 text-sm text-text-secondary">
+          <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Mechanism</p>
+          <p>Requires evidence artifacts before release.</p>
+        </div>
         <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_evidence → release_work</p>
         <a
@@ -171,9 +181,14 @@ const workSteps = [
       </Panel>
       <Panel size="sm" class="space-y-phi-2">
         <h3 class="text-lg font-display text-text-primary">Completion gate</h3>
-        <p class="text-sm text-text-secondary">
-          Enforces a logged decision plus evidence before release.
-        </p>
+        <div class="space-y-phi-1 text-sm text-text-secondary">
+          <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Outcome</p>
+          <p>Every release includes evidence + decision.</p>
+        </div>
+        <div class="space-y-phi-1 text-sm text-text-secondary">
+          <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Mechanism</p>
+          <p>Requires decision log + evidence before release.</p>
+        </div>
         <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_decision → release_work</p>
         <a
@@ -199,8 +214,9 @@ const workSteps = [
       class="mb-phi-3"
     >
       <span slot="subtitle">
-        The kernel is intentionally small: attempts, decisions, evidence, blockers, and leases.
-        All state lives in <span class="text-text-primary font-medium">~/.motus/coordination.db</span>.
+        Outcome: audit-ready state in one database.
+        Mechanism: attempts, decisions, evidence, blockers, and leases in
+        <span class="text-text-primary font-medium"> ~/.motus/coordination.db</span>.
       </span>
     </SectionHeader>
     <a href={`${base}schema`} class="text-mint hover:text-text-primary transition-colors font-medium">
@@ -211,14 +227,14 @@ const workSteps = [
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
     <SectionHeader
       title="Real Code"
-      subtitle="Not illustrations. Actual code you can run."
+      subtitle="Outcome-focused examples you can run."
       class="mb-phi-4"
       maxWidth="max-w-2xl"
     />
 
     <div class="space-y-phi-4">
       <Panel size="sm">
-        <h3 class="text-xl font-display text-mint mb-phi-2">SCOPE: Claim + Lens Assembly</h3>
+        <h3 class="text-xl font-display text-mint mb-phi-2">Outcome: deterministic Lens snapshot</h3>
         <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
 <code><span class="text-text-secondary"># Claim work and assemble a deterministic Lens</span>
 <span class="text-mint">from</span> motus.api <span class="text-mint">import</span> WorkCompiler
@@ -236,7 +252,7 @@ lens = ctx.lens
       </Panel>
 
       <Panel size="sm">
-        <h3 class="text-xl font-display text-mint mb-phi-2">COORDINATE: Outcomes + Evidence</h3>
+        <h3 class="text-xl font-display text-mint mb-phi-2">Outcome: receipt with outcome + evidence</h3>
         <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
 <code><span class="text-text-secondary"># Attach outcomes, evidence, and decisions</span>
 lease_id = claim.lease.lease_id
@@ -249,7 +265,7 @@ wc.release_work(lease_id, outcome="success")
       </Panel>
 
       <Panel size="sm">
-        <h3 class="text-xl font-display text-mint mb-phi-2">VERIFY: Evidence Bundle Check</h3>
+        <h3 class="text-xl font-display text-mint mb-phi-2">Outcome: evidence bundle verified</h3>
         <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
 <code><span class="text-text-secondary"># Verify a bundle on disk</span>
 <span class="text-mint">from</span> pathlib <span class="text-mint">import</span> Path
@@ -263,15 +279,17 @@ result = verify_evidence_bundle(evidence_dir=Path(".motus/evidence/run-001"))
   </Section>
 
   <Section tone="muted" class="text-center" innerClass="max-w-2xl">
-    <SectionHeader title="Ready to try it?" size="md" class="mb-phi-3" />
-    <div class="inline-block bg-surface/70 px-phi-3 py-phi-2 rounded-full border border-mint/20">
-      <span class="text-text-secondary text-lg">Status </span>
-      <span class="text-mint font-semibold text-lg">Building</span>
-    </div>
-    <p class="text-text-secondary mt-phi-3">
-      <a href={`${base}strategies`} class="text-mint hover:text-text-primary transition-colors">
-        Or explore the strategy library
-      </a>
+    <SectionHeader title="Start the loop" size="md" class="mb-phi-3" />
+    <p class="text-text-secondary">
+      Run the six-call loop in your repo, then verify the receipt.
     </p>
+    <div class="flex flex-wrap justify-center gap-phi-2 text-sm mt-phi-3">
+      <a href={`${base}implementation#quickstart`} class="text-mint hover:text-text-primary transition-colors">
+        Quickstart &#8594;
+      </a>
+      <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
+        Implementation guide &#8594;
+      </a>
+    </div>
   </Section>
 </Layout>
