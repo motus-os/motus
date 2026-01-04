@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import Panel from '../components/Panel.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+
+const steps = [
+  {
+    title: 'Install Motus',
+    goal: 'Install the CLI and confirm it runs in your environment.',
+    commands: ['pip install motusos', 'motus --help'],
+    expected: 'CLI help prints and lists system + work commands.',
+    proof: {
+      label: 'CLI Reference',
+      url: `${base}implementation`,
+    },
+  },
+  {
+    title: 'Initialize your workspace',
+    goal: 'Create the local .motus layout and validate the kernel.',
+    commands: ['motus init --lite --path .', 'motus doctor'],
+    expected: 'Local state and schema checks return OK.',
+    proof: {
+      label: 'Kernel Guide',
+      url: `${base}implementation#kernel`,
+    },
+  },
+  {
+    title: 'Run the 6-call loop',
+    goal: 'Claim work, attach evidence, and release the lease.',
+    commands: [
+      'motus work claim <roadmap_id> --intent "Describe the task"',
+      'motus work context <lease_id>',
+      'motus work outcome <lease_id> file --path src/example.py --description "Deliverable"',
+      'motus work evidence <lease_id> test_result --passed 12 --failed 0',
+      'motus work decision <lease_id> "Decision summary" --rationale "Why this path"',
+      'motus work release <lease_id> success',
+      'motus work status <lease_id>',
+    ],
+    expected: 'Lease released with outcome, evidence, and decision recorded.',
+    proof: {
+      label: 'Coordination API',
+      url: `${base}how-it-works`,
+    },
+  },
+];
+---
+
+<Layout title="Quickstart">
+  <Section tone="light" innerClass="max-w-5xl">
+    <SectionHeader
+      eyebrow="Quickstart"
+      title="First success in minutes"
+      subtitle="This is the shortest path from install to a verified work receipt. Each step shows the exact command, expected result, and proof link."
+      as="h1"
+      align="left"
+      size="xl"
+      maxWidth="max-w-3xl"
+    />
+
+    <div class="mt-phi-5 space-y-phi-3">
+      {steps.map((step, index) => (
+        <Panel size="sm" class="space-y-phi-2">
+          <div class="flex flex-wrap items-center justify-between gap-phi-2">
+            <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
+              Step {String(index + 1).padStart(2, '0')}
+            </p>
+            <a
+              href={step.proof.url}
+              class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
+            >
+              Proof: {step.proof.label} &#8594;
+            </a>
+          </div>
+          <h2 class="text-2xl font-display text-text-primary">{step.title}</h2>
+          <p class="text-sm text-text-secondary">{step.goal}</p>
+          <div class="grid md:grid-cols-2 gap-phi-2">
+            <div class="space-y-phi-1">
+              <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
+              {step.commands.map((command) => (
+                <code class="text-mint font-mono text-sm block">{command}</code>
+              ))}
+            </div>
+            <div class="space-y-phi-1">
+              <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>
+              <p class="text-sm text-text-secondary">{step.expected}</p>
+            </div>
+          </div>
+        </Panel>
+      ))}
+    </div>
+
+    <div class="mt-phi-4 flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
+      <span>Need the full playbook?</span>
+      <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
+        Open the Implementation Guide &#8594;
+      </a>
+    </div>
+  </Section>
+</Layout>
