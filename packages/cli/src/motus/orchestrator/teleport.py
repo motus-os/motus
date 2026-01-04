@@ -9,6 +9,7 @@ cross-session context transfer, including planning document detection.
 """
 
 from datetime import datetime
+import os
 from pathlib import Path
 from typing import Dict, List
 
@@ -16,6 +17,23 @@ from ..logging import get_logger
 from ..protocols import EventType, TeleportBundle, UnifiedEvent, UnifiedSession
 
 logger = get_logger(__name__)
+MAX_TELEPORT_DOC_BYTES = int(os.environ.get("MC_TELEPORT_MAX_BYTES", "1048576"))
+
+
+def _safe_read_text(path: Path) -> str | None:
+    try:
+        if path.stat().st_size > MAX_TELEPORT_DOC_BYTES:
+            logger.debug("Skipping large doc file", doc_file=str(path))
+            return None
+    except OSError as e:
+        logger.debug(
+            "Failed to stat doc file",
+            doc_file=str(path),
+            error_type=type(e).__name__,
+            error=str(e),
+        )
+        return None
+    return path.read_text(encoding="utf-8", errors="ignore")
 
 
 def detect_planning_docs(project_path: str) -> Dict[str, str]:
@@ -62,7 +80,9 @@ def detect_planning_docs(project_path: str) -> Dict[str, str]:
                                 )
                                 continue
 
-                        content = doc_file.read_text(encoding="utf-8", errors="ignore")
+                        content = _safe_read_text(doc_file)
+                        if content is None:
+                            continue
                         # Get first 500 chars or first section
                         preview = extract_doc_summary(content)
                         planning_docs[doc_file.name] = preview
@@ -90,7 +110,9 @@ def detect_planning_docs(project_path: str) -> Dict[str, str]:
                             )
                             continue
 
-                    content = doc_file.read_text(encoding="utf-8", errors="ignore")
+                    content = _safe_read_text(doc_file)
+                    if content is None:
+                        continue
                     preview = extract_doc_summary(content)
                     planning_docs[doc_file.name] = preview
                 except Exception as e:
@@ -121,7 +143,9 @@ def detect_planning_docs(project_path: str) -> Dict[str, str]:
                             )
                             continue
 
-                    content = cmd_file.read_text(encoding="utf-8", errors="ignore")
+                    content = _safe_read_text(cmd_file)
+                    if content is None:
+                        continue
                     # Extract just the first line or first 100 chars
                     first_line = content.split("\n")[0] if "\n" in content else content[:100]
                     command_summary += f"- `/{cmd_file.stem}`: {first_line[:100]}\n"
@@ -149,10 +173,14 @@ def detect_planning_docs(project_path: str) -> Dict[str, str]:
                         resolved=str(resolved),
                     )
                 else:
-                    content = intent_file.read_text(encoding="utf-8", errors="ignore")
+                    content = _safe_read_text(intent_file)
+                    if content is None:
+                        return planning_docs
                     planning_docs["intent.yaml"] = content[:500]
             else:
-                content = intent_file.read_text(encoding="utf-8", errors="ignore")
+                content = _safe_read_text(intent_file)
+                if content is None:
+                    return planning_docs
                 planning_docs["intent.yaml"] = content[:500]
         except Exception as e:
             logger.debug(

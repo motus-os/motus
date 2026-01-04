@@ -11,6 +11,7 @@ standards.
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, Mapping
@@ -23,6 +24,8 @@ from motus.standards.schema import Standard
 Layer = Literal["user", "project", "system"]
 
 INDEX_SCHEMA_VERSION = 1
+MAX_STANDARD_FILES = int(os.environ.get("MC_STANDARDS_MAX_FILES", "2000"))
+MAX_STANDARD_DEPTH = int(os.environ.get("MC_STANDARDS_MAX_DEPTH", "6"))
 
 
 def infer_layer(path: Path) -> Layer:
@@ -41,7 +44,20 @@ def infer_layer(path: Path) -> Layer:
 def _iter_standard_files(base: Path) -> list[Path]:
     if not base.exists() or not base.is_dir():
         return []
-    return sorted(p for p in base.rglob("standard.yaml") if p.is_file())
+    root = base.resolve()
+    root_depth = len(root.parts)
+    files: list[Path] = []
+    for current_root, dirs, filenames in os.walk(root):
+        depth = len(Path(current_root).parts) - root_depth
+        if depth >= MAX_STANDARD_DEPTH:
+            dirs[:] = []
+        for name in filenames:
+            if name != "standard.yaml":
+                continue
+            files.append(Path(current_root) / name)
+            if len(files) >= MAX_STANDARD_FILES:
+                raise ValueError("Too many standards files for index scan")
+    return sorted(files)
 
 
 def _require_mapping(raw: Any, *, path: Path) -> Mapping[str, Any]:
