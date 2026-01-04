@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import socket
 from datetime import datetime, timezone
+import os
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -189,10 +190,13 @@ class AuditLog:
             # Scan specific date range
             # Use today as max bound - can't have events from the future
             from datetime import timedelta
+            max_days = max(1, int(os.environ.get("MC_AUDIT_MAX_DAYS", "3650")))
             min_date = datetime(1970, 1, 1, tzinfo=timezone.utc)
             today = _utcnow().date()
             start_date = (since or min_date).date()
             end_date = (until.date() if until is not None else today)
+            if (end_date - start_date).days > max_days:
+                start_date = end_date - timedelta(days=max_days)
             current_date = start_date
             while current_date <= end_date:
                 dt = datetime.combine(current_date, datetime.min.time(), tzinfo=timezone.utc)

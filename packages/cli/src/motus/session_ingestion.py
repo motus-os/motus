@@ -177,12 +177,10 @@ def sync_session_cache(
                     error=str(e),
                     error_type=type(e).__name__,
                 )
-        files = list(
-            _iter_claude_session_files(
-                projects_dir, full=full, max_age_hours=max_age_hours
-            )
+        files_iter = _iter_claude_session_files(
+            projects_dir, full=full, max_age_hours=max_age_hours
         )
-        files_seen = len(files)
+        files_seen = 0
         with db.connection() as conn:
             existing = {
                 row["file_path"]: int(row["file_mtime_ns"])
@@ -193,7 +191,8 @@ def sync_session_cache(
             }
         ingested = unchanged = partial = corrupted = skipped = 0
         with db.transaction() as conn:
-            for file_path, project_path in files:
+            for file_path, project_path in files_iter:
+                files_seen += 1
                 session_id = file_path.stem
                 file_path_str = str(file_path)
                 try:
