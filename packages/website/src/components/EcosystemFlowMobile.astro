@@ -33,7 +33,7 @@ const toHref = (path) => {
 
 const proofHref = (proofId) => {
   if (!proofId || !proofIndex || !proofIndex.has(proofId)) return null;
-  return `${base}evidence#claim-${proofId}`;
+  return `${base}docs/evidence#claim-${proofId}`;
 };
 ---
 

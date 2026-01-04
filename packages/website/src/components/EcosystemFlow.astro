@@ -15,7 +15,7 @@ const nodesByGroup = groups.reduce((acc, group) => {
 
 const normalizedBase = base.endsWith('/') ? base : `${base}/`;
 const withBase = (path) => (path ? `${normalizedBase}${path.replace(/^\/+/, '')}` : null);
-const proofHref = (proof) => (proof ? `${normalizedBase}evidence#claim-${proof.id}` : null);
+const proofHref = (proof) => (proof ? `${normalizedBase}docs/evidence#claim-${proof.id}` : null);
 const statusLabel = (status) => (status === 'external'
   ? 'External'
   : status.charAt(0).toUpperCase() + status.slice(1));
