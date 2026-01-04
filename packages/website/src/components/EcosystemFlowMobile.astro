@@ -1,0 +1,114 @@
+---
+import Panel from './Panel.astro';
+
+const { groups = [], nodes = [], base = '/', proofIndex } = Astro.props;
+
+const nodeIndex = new Map((nodes || []).map((node) => [node.id, node]));
+
+const statusClass = (status) => {
+  switch (status) {
+    case 'current':
+      return 'status-badge status-current';
+    case 'building':
+      return 'status-badge status-building';
+    case 'future':
+      return 'status-badge status-future';
+    case 'external':
+      return 'status-badge status-external';
+    default:
+      return 'status-badge status-current';
+  }
+};
+
+const statusLabel = (status) => {
+  if (!status) return 'Current';
+  return status.charAt(0).toUpperCase() + status.slice(1);
+};
+
+const toHref = (path) => {
+  if (!path) return null;
+  if (path.startsWith('http')) return path;
+  return `${base}${path.replace(/^\/+/, '')}`;
+};
+
+const proofHref = (proofId) => {
+  if (!proofId || !proofIndex || !proofIndex.has(proofId)) return null;
+  return `${base}evidence#claim-${proofId}`;
+};
+---
+
+<div class="space-y-phi-4">
+  {groups.map((group) => {
+    const groupNodes = nodes.filter((node) => node.group === group.id);
+    return (
+      <div class="space-y-phi-2">
+        <div>
+          <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{group.label}</p>
+          <h3 class="text-lg font-display text-text-primary">{group.description}</h3>
+          <p class="text-xs text-text-secondary">{group.relation}</p>
+        </div>
+        <div class="grid gap-phi-2">
+          {groupNodes.map((node) => {
+            const siteHref = toHref(node.website_path || node.docs_url);
+            const proofLink = proofHref(node.proof_id);
+            return (
+              <Panel size="sm" class="space-y-phi-2">
+                <div class="flex items-center gap-phi-2">
+                  {node.logo ? (
+                    <img src={toHref(node.logo)} alt={`${node.label} logo`} class="h-5 w-5" loading="lazy" />
+                  ) : null}
+                  <h4 class="text-base font-display text-text-primary">{node.label}</h4>
+                  <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                </div>
+                <p class="text-sm text-text-secondary">{node.summary}</p>
+                {node.flow_note ? (
+                  <p class="text-xs text-text-secondary/80">Flow: {node.flow_note}</p>
+                ) : null}
+                {node.type === 'external' && node.improves ? (
+                  <div class="space-y-phi-1 text-sm text-text-secondary">
+                    <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Motus adds</p>
+                    <ul class="space-y-phi-1">
+                      {node.improves.map((improve) => {
+                        const targetId = (improve.motus_nodes || [])[0];
+                        const targetNode = targetId ? nodeIndex.get(targetId) : null;
+                        const targetHref = targetNode ? toHref(targetNode.website_path || targetNode.docs_url) : null;
+                        return (
+                          <li>
+                            {targetHref ? (
+                              <a href={targetHref} class="text-mint hover:text-text-primary transition-colors">
+                                {improve.label} &#8594;
+                              </a>
+                            ) : (
+                              <span>{improve.label}</span>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ) : null}
+                <div class="flex flex-wrap gap-phi-2 text-sm">
+                  {siteHref ? (
+                    <a href={siteHref} class="text-mint hover:text-text-primary transition-colors">
+                      View details &#8594;
+                    </a>
+                  ) : null}
+                  {proofLink ? (
+                    <a href={proofLink} class="text-mint hover:text-text-primary transition-colors">
+                      Evidence &#8594;
+                    </a>
+                  ) : null}
+                  {node.external_url ? (
+                    <a href={node.external_url} target="_blank" rel="noopener" class="text-text-secondary hover:text-mint transition-colors">
+                      External site &#8594;
+                    </a>
+                  ) : null}
+                </div>
+              </Panel>
+            );
+          })}
+        </div>
+      </div>
+    );
+  })}
+</div>

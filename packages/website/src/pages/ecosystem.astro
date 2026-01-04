@@ -4,6 +4,7 @@ import Section from '../components/Section.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import Panel from '../components/Panel.astro';
 import EcosystemFlow from '../components/EcosystemFlow.astro';
+import EcosystemFlowMobile from '../components/EcosystemFlowMobile.astro';
 
 import ecosystemMap from '../data/ecosystem-map.json';
 import proofLedger from '../data/proof-ledger.json';
@@ -45,7 +46,12 @@ if (missingProof.length > 0) {
       <span class="status-chip status-external">External</span>
     </div>
     <div class="max-w-6xl mx-auto">
-      <EcosystemFlow groups={groups} nodes={nodes} base={base} proofIndex={proofIndex} />
+      <div class="md:hidden">
+        <EcosystemFlowMobile groups={groups} nodes={nodes} base={base} proofIndex={proofIndex} />
+      </div>
+      <div class="hidden md:block">
+        <EcosystemFlow groups={groups} nodes={nodes} base={base} proofIndex={proofIndex} />
+      </div>
     </div>
     <Panel size="sm" class="mt-phi-4 space-y-phi-2">
       <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">How to read the map</p>
