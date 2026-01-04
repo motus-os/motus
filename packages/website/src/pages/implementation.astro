@@ -408,18 +408,23 @@ const quickstartSteps = [
                   <h3 class="text-lg font-display text-text-primary">{pattern.title}</h3>
                   <span class={patternStatusClass(pattern.status)}>{patternStatusLabel(pattern.status)}</span>
                 </div>
-                <p class="text-sm text-text-secondary">{pattern.summary}</p>
-                <div class="grid md:grid-cols-3 gap-phi-2 text-sm text-text-secondary">
+                <div class="space-y-phi-2 text-sm text-text-secondary">
                   <div class="space-y-phi-1">
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">What</p>
-                    <p>{pattern.what}</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Outcome</p>
+                    <p>{pattern.summary}</p>
+                  </div>
+                  <div class="grid md:grid-cols-2 gap-phi-2">
+                    <div class="space-y-phi-1">
+                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Mechanism</p>
+                      <p>{pattern.what}</p>
+                    </div>
+                    <div class="space-y-phi-1">
+                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Guardrail</p>
+                      <p>{pattern.why}</p>
+                    </div>
                   </div>
                   <div class="space-y-phi-1">
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Why</p>
-                    <p>{pattern.why}</p>
-                  </div>
-                  <div class="space-y-phi-1">
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">How</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Apply</p>
                     <ul class="space-y-phi-1">
                       {pattern.how.map((step) => (
                         <li>- {step}</li>
