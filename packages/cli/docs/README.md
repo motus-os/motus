@@ -17,6 +17,7 @@ factually accurate and contextually useful for different roles.
 - [Module Guides](implementation/modules/)
 - [Module Registry (canonical)](standards/module-registry.yaml)
 - [Module Audit (surface mapping)](quality/module-audit.yaml)
+- [Health Ledger](quality/health-ledger.md)
 
 ## Reference
 

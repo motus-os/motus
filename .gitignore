@@ -25,6 +25,7 @@ node_modules/
 .pytest_cache/
 .coverage
 htmlcov/
+packages/cli/artifacts/
 
 # Environment
 .env

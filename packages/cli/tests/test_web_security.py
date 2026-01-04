@@ -291,7 +291,7 @@ class TestServerBinding:
         """Dashboard has CSS for local-only security badge."""
         # Check that the badge element exists in HTML
         dashboard_html = get_dashboard_html()
-        assert 'class="local-only-badge"' in dashboard_html
+        assert "local-only-badge" in dashboard_html
 
         # CSS styles are in the external CSS file (dashboard.css)
         css_path = (

@@ -1,0 +1,24 @@
+{
+  "tests": {
+    "max_failures": 0
+  },
+  "security": {
+    "max_new_high": 0,
+    "max_new_critical": 0
+  },
+  "runtime": {
+    "max_delta_pct": 10
+  },
+  "coverage": {
+    "min_delta_pct": -2
+  },
+  "policy_run": {
+    "max_delta_pct": 20
+  },
+  "lint": {
+    "max_errors": 0
+  },
+  "typecheck": {
+    "max_errors": 0
+  }
+}

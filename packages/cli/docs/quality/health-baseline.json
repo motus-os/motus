@@ -1,0 +1,33 @@
+{
+  "coverage": {
+    "core_percent": null,
+    "overall_percent": 65.14,
+    "secondary_percent": null
+  },
+  "lint": {
+    "errors": 8
+  },
+  "policy_run": {
+    "count": 0,
+    "latest": null,
+    "max_ms": null,
+    "p95_ms": null
+  },
+  "security": {
+    "critical": 0,
+    "high": 0,
+    "skipped": true,
+    "total": 0
+  },
+  "tests": {
+    "duration_seconds": 36.46,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 4,
+    "tests": 1923
+  },
+  "timestamp": "2026-01-04T14:53:41Z",
+  "typecheck": {
+    "errors": 70
+  }
+}

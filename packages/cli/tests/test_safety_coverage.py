@@ -1044,11 +1044,11 @@ class TestGetContextHints:
         ):
             hints = get_context_hints(["src/utils.py"])
 
-            assert "[MC Context]" in hints
-            assert "Related tests" in hints
-            assert "Memory" in hints
-            assert "Test command" in hints
-            assert "Last checkpoint" in hints
+        assert "[Motus Context]" in hints
+        assert "Related tests" in hints
+        assert "Memory" in hints
+        assert "Test command" in hints
+        assert "Last checkpoint" in hints
 
 
 class TestDryRunResultDataclass:
