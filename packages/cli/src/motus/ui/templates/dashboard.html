@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motus - Command Center</title>
-    <link rel="stylesheet" href="/static/dashboard.css?v=20251204">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Sora:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="/static/dashboard.css?v=20260104">
 </head>
 <body>
-    <!-- Local Only Security Badge -->
-    <div class="local-only-badge">Local Only (127.0.0.1)</div>
-    <!-- Version Badge -->
-    <div class="version-badge" id="version-badge">v{{ version }}</div>
-
     <!-- Keyboard Shortcuts Help Modal -->
     <div class="shortcuts-overlay" id="shortcuts-overlay" role="dialog" aria-modal="true" aria-labelledby="shortcuts-header">
         <div class="shortcuts-modal">
@@ -67,18 +68,15 @@
         </div>
     </div>
 
-    <!-- Floating Orbs Background -->
-    <div class="orb-container">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-        <div class="orb orb-4"></div>
-        <div class="orb orb-5"></div>
-        <div class="orb orb-6"></div>
-    </div>
-    <div class="container" style="position:relative;z-index:1;">
+    <div class="container">
         <header class="header">
-            <div class="logo">🎯 MC</div>
+            <div class="header-left">
+                <div class="logo">Motus</div>
+                <div class="badge-group">
+                    <span class="badge local-only-badge">Local Only (127.0.0.1)</span>
+                    <span class="badge version-badge" id="version-badge">v{{ version }}</span>
+                </div>
+            </div>
             <div class="breadcrumbs" id="breadcrumbs">
                 <span class="breadcrumb active">All Sessions</span>
             </div>
@@ -200,6 +198,6 @@
 	        </div>
 	    </div>
 
-    <script src="/static/dashboard.js?v=20251204"></script>
+    <script src="/static/dashboard.js?v=20260104"></script>
 </body>
 </html>
