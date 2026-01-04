@@ -1,6 +1,21 @@
 {
   "claims": [
     {
+      "id": "momentum_tax_survey",
+      "featured": true,
+      "status": "verified",
+      "verified_on": "2024-05-08",
+      "method": "External survey: Stack Overflow 2024 AI",
+      "claim": "66% of developers spend more time fixing AI code than they saved.",
+      "momentum": "Baseline drag that Motus removes.",
+      "evidence": [
+        {
+          "label": "Stack Overflow 2024 AI survey",
+          "url": "https://survey.stackoverflow.co/2024/ai"
+        }
+      ]
+    },
+    {
       "id": "six_call_api",
       "featured": true,
       "status": "verified",
