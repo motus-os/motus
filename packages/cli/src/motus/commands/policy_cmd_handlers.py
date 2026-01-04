@@ -92,6 +92,7 @@ def policy_run_command(args) -> int:
     """Execute required gates and emit an evidence bundle. Returns an exit code."""
 
     start = time.perf_counter()
+    timings_ms: dict[str, float] = {}
     gates_run = 0
     gates_passed = 0
     gates_failed = 0
@@ -105,8 +106,14 @@ def policy_run_command(args) -> int:
         evidence_dir_arg = getattr(args, "evidence_dir", None)
         evidence_dir = Path(evidence_dir_arg).expanduser().resolve() if evidence_dir_arg else None
 
+        t0 = time.perf_counter()
         policy = load_vault_policy(vault_dir)
+        t1 = time.perf_counter()
+        timings_ms["load_policy_ms"] = (t1 - t0) * 1000
+
         changed_files, source = _resolve_changed_files(args, repo_dir)
+        t2 = time.perf_counter()
+        timings_ms["resolve_changed_ms"] = (t2 - t1) * 1000
 
         plan = compute_gate_plan(
             changed_files=changed_files,
@@ -114,6 +121,8 @@ def policy_run_command(args) -> int:
             profile_id=getattr(args, "profile", None),
             pack_cap=getattr(args, "pack_cap", None),
         )
+        t3 = time.perf_counter()
+        timings_ms["plan_ms"] = (t3 - t2) * 1000
         gates_run = len(plan.gates)
 
         from motus.policy.runner import run_gate_plan
@@ -127,10 +136,14 @@ def policy_run_command(args) -> int:
             evidence_dir=evidence_dir,
             policy=policy,
         )
+        t4 = time.perf_counter()
+        timings_ms["run_ms"] = (t4 - t3) * 1000
 
         gates_run, gates_passed, gates_failed = _gate_counts_from_manifest(
             result.manifest_path, gates_run
         )
+        t5 = time.perf_counter()
+        timings_ms["gate_counts_ms"] = (t5 - t4) * 1000
         success = result.exit_code == 0
 
         if getattr(args, "json", False):
@@ -152,6 +165,7 @@ def policy_run_command(args) -> int:
                 "gates_run": gates_run,
                 "gates_passed": gates_passed,
                 "gates_failed": gates_failed,
+                **timings_ms,
             },
         )
 
