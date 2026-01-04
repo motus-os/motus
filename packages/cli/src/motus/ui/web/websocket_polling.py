@@ -19,7 +19,15 @@ logger = get_logger(__name__)
 async def poll_events(self, websocket: WebSocket):
     """Poll for new events from Claude sessions."""
     # SYNC BOUNDARY: cached session refresh uses filesystem I/O via discover_all()
-    sessions = await asyncio.to_thread(self.session_state.get_cached_sessions)
+    io_timeout = config.web.io_timeout_seconds
+    try:
+        sessions = await asyncio.wait_for(
+            asyncio.to_thread(self.session_state.get_cached_sessions),
+            timeout=io_timeout,
+        )
+    except asyncio.TimeoutError:
+        logger.warning("Web UI session discovery timed out")
+        return
 
     current_session_ids = {s.session_id for s in sessions[:10]}
 
@@ -63,13 +71,20 @@ async def poll_events(self, websocket: WebSocket):
 
         try:
             # SYNC BOUNDARY: incremental parsing reads session files
-            events, new_pos = await asyncio.to_thread(
-                self._websocket.parse_incremental_events,
-                session=session,
-                last_pos=last_pos,
-                line_callback=None,
-                format_callback=None,
-            )
+            try:
+                events, new_pos = await asyncio.wait_for(
+                    asyncio.to_thread(
+                        self._websocket.parse_incremental_events,
+                        session=session,
+                        last_pos=last_pos,
+                        line_callback=None,
+                        format_callback=None,
+                    ),
+                    timeout=io_timeout,
+                )
+            except asyncio.TimeoutError:
+                logger.warning("Web UI session parse timed out", session_id=session_id)
+                continue
 
             if new_pos != last_pos:
                 self.session_state.set_position(session_id, new_pos)
