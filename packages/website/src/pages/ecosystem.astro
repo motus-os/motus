@@ -25,18 +25,20 @@ if (missingProof.length > 0) {
 ---
 
 <Layout title="Ecosystem Map - Motus">
-  <Section tone="dark" pad="slim" class="text-center" innerClass="max-w-3xl">
+  <Section tone="dark" pad="none" class="text-center py-phi-3 md:py-phi-4" innerClass="max-w-3xl">
     <SectionHeader
       eyebrow="Ecosystem Blueprint"
       title="The finished system, mapped in one view"
       subtitle="Motus Core is the center. Colors show what is current, building, and future."
       as="h1"
       size="md"
+      titleClassName="text-3xl md:text-4xl"
+      subtitleClassName="text-sm md:text-base"
     />
   </Section>
 
   <Section tone="light" pad="slim" class="border-t border-line/10">
-    <div class="flex flex-wrap items-center gap-phi-2 text-xs mb-phi-3">
+    <div class="flex flex-wrap items-center gap-phi-2 text-xs mb-phi-2">
       <span class="status-chip status-current">Current</span>
       <span class="status-chip status-building">Building</span>
       <span class="status-chip status-future">Future</span>
