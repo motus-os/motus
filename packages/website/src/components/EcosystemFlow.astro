@@ -276,7 +276,7 @@ const normalizeHref = (href) => {
   })}
 </div>
 
-<div class="hidden md:grid md:gap-phi-2 md:items-start md:grid-cols-3 md:grid-rows-3">
+<div class="hidden md:grid md:gap-phi-1 md:items-start md:grid-cols-3 md:grid-rows-3">
   {groups.map((group) => {
     const groupNodes = nodesByGroup[group.id] || [];
     const clusters = group.id === 'modules' ? moduleClusters : null;
@@ -290,7 +290,7 @@ const normalizeHref = (href) => {
             ? 'md:col-start-3 md:row-start-2'
             : 'md:col-start-2 md:row-start-3';
     return (
-      <div class={`space-y-phi-2 lane-column ${placement}`.trim()}>
+      <div class={`space-y-phi-1 lane-column ${placement}`.trim()}>
           <div class="flex items-center justify-between gap-phi-2">
             <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
               <span>Layer</span>
@@ -300,7 +300,7 @@ const normalizeHref = (href) => {
               <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">Center</span>
             ) : null}
           </div>
-          <div class="rounded-2xl border border-line/10 bg-surface-muted p-phi-2 space-y-phi-2">
+          <div class="rounded-2xl border border-line/10 bg-surface-muted p-phi-1 space-y-phi-1">
             <div class="space-y-phi-1">
               <p class="text-sm text-text-secondary">{group.description}</p>
               {group.relation ? (
@@ -309,19 +309,19 @@ const normalizeHref = (href) => {
                 </p>
               ) : null}
             </div>
-            <div class="space-y-phi-2">
+            <div class="space-y-phi-1">
               {clusters ? (
-                <div class="space-y-phi-2">
+                <div class="space-y-phi-1">
                   {clusters.map((cluster) => (
-                    <div class="rounded-2xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-2">
+                    <div class="rounded-2xl border border-line/10 bg-surface px-phi-2 py-phi-1 space-y-phi-1">
                       <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{cluster.label}</p>
-                      <div class="space-y-phi-2">
+                      <div class="space-y-phi-1">
                         {cluster.nodes.map((node) => {
                           const siteHref = node.website_path ? withBase(node.website_path) : null;
                           const docsHref = normalizeHref(node.docs_url);
                           const showSite = siteHref && siteHref !== docsHref;
                           return (
-                          <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                          <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                             <div class="flex items-center justify-between gap-phi-2">
                               <div class="flex items-center gap-phi-2">
                                 {node.logo ? (
@@ -393,13 +393,13 @@ const normalizeHref = (href) => {
                   ))}
                 </div>
               ) : (
-                <div class="space-y-phi-2">
+                <div class="space-y-phi-1">
                   {groupNodes.map((node) => {
                     const siteHref = node.website_path ? withBase(node.website_path) : null;
                     const docsHref = normalizeHref(node.docs_url);
                     const showSite = siteHref && siteHref !== docsHref;
                     return (
-                    <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                    <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
                           {node.logo ? (
