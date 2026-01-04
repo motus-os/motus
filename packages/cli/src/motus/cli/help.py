@@ -37,6 +37,7 @@ _COMMAND_HELP_TIERS: dict[str, int] = {
     "policy": 2,
     "intent": 2,
     "explain": 2,
+    "claude": 2,
     # Tier 3: advanced / power users
     "orient": 3,
     "standards": 3,
@@ -82,6 +83,7 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     "verify": "Verification utilities",
     "handoffs": "Handoff hygiene utilities",
     "activity": "Activity proof ledger utilities",
+    "claude": "Manage CLAUDE.md instructions safely",
 }
 
 

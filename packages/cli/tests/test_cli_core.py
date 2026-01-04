@@ -629,6 +629,19 @@ class TestMainFunction:
 
             mock_init.assert_called_once()
 
+    def test_main_claude_command(self):
+        """Test main dispatches claude command."""
+        with patch("sys.argv", ["motus", "claude", "--path", "/tmp"]):
+            with patch("motus.commands.claude_cmd.claude_command", return_value=0) as mock_claude:
+                from motus.cli.core import main
+
+                try:
+                    main()
+                except SystemExit as exc:
+                    assert exc.code == 0
+
+            mock_claude.assert_called_once()
+
     def test_main_checkpoint_command(self, capsys):
         """Test main dispatches checkpoint command."""
         from pathlib import Path

@@ -299,6 +299,10 @@ def dispatch_command(
 
         config_command(getattr(args, "config_args", []))
         return
+    if command == "claude":
+        from motus.commands.claude_cmd import claude_command
+
+        raise SystemExit(claude_command(args))
     if command == "policy":
         from motus.commands.policy_cmd import (
             policy_plan_command,

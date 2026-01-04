@@ -93,3 +93,42 @@ def register_system_parsers(subparsers: argparse._SubParsersAction) -> None:
         nargs="*",
         help="Subcommand and args (show/get/set/reset/path)",
     )
+
+    claude_parser = subparsers.add_parser(
+        "claude",
+        help="Manage CLAUDE.md instructions safely",
+    )
+    claude_parser.add_argument(
+        "--path",
+        default=".",
+        help="Target repository root (default: .)",
+    )
+    claude_parser.add_argument(
+        "--claude-path",
+        help="Override CLAUDE.md path (default: <root>/CLAUDE.md)",
+    )
+    claude_parser.add_argument(
+        "--docs-path",
+        default="docs/AGENT-INSTRUCTIONS.md",
+        help="Path for agent instructions (default: docs/AGENT-INSTRUCTIONS.md)",
+    )
+    claude_parser.add_argument(
+        "--no-docs",
+        action="store_true",
+        help="Skip writing docs/AGENT-INSTRUCTIONS.md",
+    )
+    claude_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show actions without writing files",
+    )
+    claude_parser.add_argument(
+        "--stdout",
+        action="store_true",
+        help="Print updated CLAUDE.md to stdout without writing files",
+    )
+    claude_parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Overwrite managed blocks if modified",
+    )
