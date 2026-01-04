@@ -197,7 +197,7 @@ const moduleHighlights = [
     <SectionHeader
       eyebrow="Momentum Signals"
       title="Claims tied to forward motion"
-      subtitle="Lead with the outcome, then verify the claim."
+      subtitle="Lead with the outcome, then verify the mechanism."
       size="md"
       class="mb-phi-4"
       maxWidth="max-w-3xl"
@@ -215,20 +215,26 @@ const moduleHighlights = [
         const statusClass = claim.status === 'verified' ? 'status-current' : 'status-building';
         const statusLabel = claim.status === 'verified' ? 'Verified' : 'Target';
         return (
-          <Panel size="md" class="text-left">
-            <div class="flex justify-start mb-phi-2">
+          <Panel size="md" class="text-left space-y-phi-2">
+            <div class="flex justify-start">
               <span class={`status-badge ${statusClass}`}>{statusLabel}</span>
             </div>
-            <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">
-              {claim.evidence[0].label}
-            </p>
-            <p class="text-lg font-display text-text-primary mt-phi-2">
-              {claim.momentum}
-            </p>
-            <p class="text-sm text-text-secondary mt-phi-1">
-              {claim.claim}
-            </p>
-            <a class="text-sm text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex" href={evidenceAnchor(claim)}>
+            <div>
+              <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
+              <p class="text-lg font-display text-text-primary mt-phi-1">
+                {claim.momentum}
+              </p>
+            </div>
+            <div>
+              <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Mechanism</p>
+              <p class="text-sm text-text-secondary mt-phi-1">
+                {claim.claim}
+              </p>
+            </div>
+            <a
+              class="text-sm text-mint hover:text-text-primary transition-colors inline-flex"
+              href={evidenceAnchor(claim)}
+            >
               Evidence &#8594;
             </a>
           </Panel>
