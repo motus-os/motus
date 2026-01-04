@@ -39,53 +39,17 @@ const statusClass = (status) => (status === 'verified' ? 'status-badge status-cu
   </Section>
 
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
-    <SectionHeader
-      eyebrow="Gates"
-      title="Enforcement, in three checks"
-      subtitle="Policy, evidence, and completion gates keep work reviewable before it ships."
-      align="left"
-      size="md"
-      class="mb-phi-4"
-      maxWidth="max-w-3xl"
-    />
-    <div class="grid md:grid-cols-3 gap-phi-3">
-      <Panel size="sm" class="space-y-phi-2">
-        <h3 class="text-lg font-display text-text-primary">Policy gates</h3>
+    <Panel size="sm" class="flex flex-col md:flex-row md:items-center md:justify-between gap-phi-2">
+      <div class="space-y-phi-1">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Looking for gates?</p>
         <p class="text-sm text-text-secondary">
-          Validate eligibility, scope, and policy packs before completion.
+          Policy, evidence, and completion gates live in the dedicated gates guide.
         </p>
-        <a
-          href={`${base}evidence#claim-policy_gates`}
-          class="text-sm text-mint hover:text-text-primary transition-colors"
-        >
-          Evidence &#8594;
-        </a>
-      </Panel>
-      <Panel size="sm" class="space-y-phi-2">
-        <h3 class="text-lg font-display text-text-primary">Evidence gates</h3>
-        <p class="text-sm text-text-secondary">
-          Require proof artifacts before a lease can close.
-        </p>
-        <a
-          href={`${base}evidence#claim-evidence_gate`}
-          class="text-sm text-mint hover:text-text-primary transition-colors"
-        >
-          Evidence &#8594;
-        </a>
-      </Panel>
-      <Panel size="sm" class="space-y-phi-2">
-        <h3 class="text-lg font-display text-text-primary">Completion gates</h3>
-        <p class="text-sm text-text-secondary">
-          Verify evidence plus a logged decision before release.
-        </p>
-        <a
-          href={`${base}evidence#claim-completion_gate`}
-          class="text-sm text-mint hover:text-text-primary transition-colors"
-        >
-          Evidence &#8594;
-        </a>
-      </Panel>
-    </div>
+      </div>
+      <a href={`${base}gates`} class="text-mint hover:text-text-primary transition-colors">
+        Open the Gates Guide &#8594;
+      </a>
+    </Panel>
   </Section>
 
   <Section tone="light">
