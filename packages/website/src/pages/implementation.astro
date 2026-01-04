@@ -209,7 +209,7 @@ const quickstartSteps = [
 
 <Layout title="Implementation">
   <Section tone="light" innerClass="max-w-6xl">
-    <section class="space-y-phi-3">
+    <section class="space-y-phi-2 md:space-y-phi-3">
       <SectionHeader
         eyebrow="Implementation Guide"
         title="Implement Motus in 9 steps"
@@ -221,7 +221,7 @@ const quickstartSteps = [
       />
     </section>
 
-    <section id="quickstart" class="mt-phi-5 space-y-phi-3 scroll-mt-24">
+    <section id="quickstart" class="mt-phi-4 md:mt-phi-5 space-y-phi-2 md:space-y-phi-3 scroll-mt-24">
       <SectionHeader
         eyebrow="Quickstart"
         title="First success in minutes"
@@ -230,7 +230,7 @@ const quickstartSteps = [
         size="md"
         maxWidth="max-w-3xl"
       />
-      <div class="space-y-phi-3">
+      <div class="space-y-phi-2 md:space-y-phi-3">
         {quickstartSteps.map((step, index) => (
           <Panel size="sm" class="space-y-phi-2">
             <div class="flex flex-wrap items-center justify-between gap-phi-2">
@@ -246,7 +246,7 @@ const quickstartSteps = [
             </div>
             <h2 class="text-2xl font-display text-text-primary">{step.title}</h2>
             <p class="text-sm text-text-secondary">{step.goal}</p>
-            <div class="grid md:grid-cols-2 gap-phi-2">
+            <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
               <div class="space-y-phi-1">
                 <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
                 {step.commands.map((command) => (
@@ -269,7 +269,7 @@ const quickstartSteps = [
       </div>
     </section>
 
-    <section id="start-here" class="mt-phi-5 space-y-phi-3 scroll-mt-24">
+    <section id="start-here" class="mt-phi-4 md:mt-phi-5 space-y-phi-2 md:space-y-phi-3 scroll-mt-24">
       <SectionHeader
         eyebrow="Start Here"
         title="Implementation as a training path"
@@ -278,7 +278,7 @@ const quickstartSteps = [
         size="md"
         maxWidth="max-w-3xl"
       />
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-2">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-1 md:gap-phi-2">
         <Panel size="sm" class="space-y-phi-2">
           <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Stage 1</p>
           <h3 class="text-lg font-display text-text-primary">Setup + Prime</h3>
@@ -316,7 +316,7 @@ const quickstartSteps = [
       </div>
     </section>
 
-    <section id="step-by-step" class="mt-phi-5 space-y-phi-3">
+    <section id="step-by-step" class="mt-phi-4 md:mt-phi-5 space-y-phi-2 md:space-y-phi-3">
       <SectionHeader
         eyebrow="Implementation Path"
         title="Step-by-step commands"
@@ -327,7 +327,7 @@ const quickstartSteps = [
       />
       <div class="relative">
         <span class="absolute left-phi-2 top-0 bottom-0 w-px bg-line/20"></span>
-        <ol class="space-y-phi-3 pl-phi-5">
+        <ol class="space-y-phi-2 md:space-y-phi-3 pl-phi-4 md:pl-phi-5">
           {trainingSteps.map((step, index) => (
             <li id={step.id} class="relative scroll-mt-24">
               <span class="absolute left-phi-2 top-phi-2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-line/30 bg-surface text-xs font-mono text-text-secondary">
@@ -351,7 +351,7 @@ const quickstartSteps = [
                 </div>
                 <h3 class="text-xl font-display text-text-primary">{step.title}</h3>
                 <p class="text-sm text-text-secondary">{step.goal}</p>
-                <div class="grid md:grid-cols-2 gap-phi-2">
+                <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
                   <div class="space-y-phi-1">
                     <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
                     {step.commands.map((command) => (
@@ -385,7 +385,7 @@ const quickstartSteps = [
       </p>
     </section>
 
-    <section id="implementation-patterns" class="mt-phi-6 space-y-phi-3 scroll-mt-24">
+    <section id="implementation-patterns" class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3 scroll-mt-24">
       <SectionHeader
         eyebrow="Proven Patterns"
         title="Implementation strategies that prevent drift"
@@ -394,7 +394,7 @@ const quickstartSteps = [
         size="md"
         maxWidth="max-w-3xl"
       />
-      <div class="grid md:grid-cols-2 gap-phi-2">
+      <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
         {patterns.map((pattern) => {
           const proofHref = pattern.proof
             ? pattern.proof.url.startsWith('http')
@@ -444,7 +444,7 @@ const quickstartSteps = [
           );
         })}
       </div>
-      <Panel size="sm" class="mt-phi-3 space-y-phi-1">
+      <Panel size="sm" class="mt-phi-2 md:mt-phi-3 space-y-phi-1">
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Quick Reference</p>
         <ul class="space-y-phi-1 text-sm text-text-secondary">
           {patterns.map((pattern) => (
@@ -460,7 +460,7 @@ const quickstartSteps = [
       </Panel>
     </section>
 
-    <section id="phase-gates" class="mt-phi-6 space-y-phi-3 scroll-mt-24">
+    <section id="phase-gates" class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3 scroll-mt-24">
       <SectionHeader
         eyebrow="Phase Gates"
         title="Implementation, in order"
@@ -469,7 +469,7 @@ const quickstartSteps = [
         size="md"
         maxWidth="max-w-3xl"
       />
-      <div class="grid md:grid-cols-3 gap-phi-2">
+      <div class="grid md:grid-cols-3 gap-phi-1 md:gap-phi-2">
         <Panel size="sm" class="space-y-phi-2">
           <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 1</p>
           <h3 class="text-lg font-display text-text-primary">Kernel Foundation</h3>
@@ -512,7 +512,7 @@ const quickstartSteps = [
       </div>
     </section>
 
-    <section class="mt-phi-6 space-y-phi-3">
+    <section class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3">
       <div id="kernel" class="scroll-mt-24"></div>
       <SectionHeader
         eyebrow="Reference"
@@ -529,7 +529,7 @@ const quickstartSteps = [
 
       <p class="text-text-secondary max-w-3xl">{kernel.description}</p>
 
-      <div class="grid md:grid-cols-2 gap-phi-3">
+      <div class="grid md:grid-cols-2 gap-phi-2 md:gap-phi-3">
         <Panel size="sm">
           <h3 class="text-lg font-display text-text-primary">Primary Surfaces</h3>
           <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary">
@@ -547,7 +547,7 @@ const quickstartSteps = [
           </ul>
         </Panel>
       </div>
-      <div class="grid md:grid-cols-2 gap-phi-3">
+      <div class="grid md:grid-cols-2 gap-phi-2 md:gap-phi-3">
         <Panel size="sm" class="space-y-phi-1">
           <h3 class="text-lg font-display text-text-primary">Verify the loop</h3>
           <p class="text-sm text-text-secondary">
@@ -565,7 +565,7 @@ const quickstartSteps = [
       </div>
     </section>
 
-    <section class="mt-phi-6 space-y-phi-3">
+    <section class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3">
       <div id="module-registry" class="scroll-mt-24"></div>
       <SectionHeader
         eyebrow="Reference"
@@ -598,7 +598,7 @@ const quickstartSteps = [
         </ul>
       </Panel>
 
-      <div class="grid md:grid-cols-2 gap-phi-3">
+      <div class="grid md:grid-cols-2 gap-phi-2 md:gap-phi-3">
         {modules.map((module) => (
           <div id={module.id} class="scroll-mt-24">
             <Panel size="sm" class="space-y-phi-2">
@@ -634,7 +634,7 @@ const quickstartSteps = [
       </div>
     </section>
 
-    <section class="mt-phi-6 space-y-phi-2">
+    <section class="mt-phi-5 md:mt-phi-6 space-y-phi-2">
       <SectionHeader
         title="Docs Reference"
         subtitle="The canonical docs and registry live in the public repo. These links are the source of truth for implementation details."
