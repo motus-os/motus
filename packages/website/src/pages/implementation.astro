@@ -159,8 +159,8 @@ const trainingSteps = [
     <section class="space-y-phi-3">
       <SectionHeader
         eyebrow="Implementation Guide"
-        title="Kernel + Bundled Modules"
-        subtitle="This page documents how to implement Motus correctly. The kernel is the non-negotiable execution layer. Bundled modules add capabilities while preserving kernel invariants."
+        title="Implement Motus in 9 steps"
+        subtitle="Start with the training path below. Reference sections follow if you need kernel or module details."
         as="h1"
         align="left"
         size="xl"
@@ -276,6 +276,12 @@ const trainingSteps = [
         deprecated alias). Continue with the 6-call execution loop in
         <a href={`${base}how-it-works`} class="text-mint hover:text-text-primary transition-colors"> How It Works</a>.
       </p>
+      <p class="text-sm text-text-secondary">
+        Reference details:
+        <a href="#kernel" class="text-mint hover:text-text-primary transition-colors"> Kernel foundation</a>
+        <span class="text-text-secondary/60"> · </span>
+        <a href="#module-registry" class="text-mint hover:text-text-primary transition-colors"> Module registry</a>
+      </p>
     </section>
 
     <section id="phase-gates" class="mt-phi-6 space-y-phi-3 scroll-mt-24">
@@ -332,6 +338,14 @@ const trainingSteps = [
 
     <section class="mt-phi-6 space-y-phi-3">
       <div id="kernel" class="scroll-mt-24"></div>
+      <SectionHeader
+        eyebrow="Reference"
+        title="Kernel foundation (Phase 1)"
+        subtitle="Use after the step-by-step path if you need deeper kernel detail."
+        align="left"
+        size="md"
+        maxWidth="max-w-3xl"
+      />
       <div class="flex flex-wrap items-center gap-phi-2">
         <h2 class="text-3xl font-display text-text-primary">Phase 1: {kernel.marketing_name}</h2>
         <span class={statusClasses[kernel.status]}>{statusLabel(kernel.status)}</span>
@@ -378,8 +392,9 @@ const trainingSteps = [
     <section class="mt-phi-6 space-y-phi-3">
       <div id="module-registry" class="scroll-mt-24"></div>
       <SectionHeader
-        title="Phase 3: Module Registry"
-        subtitle="Bundled modules are optional capabilities that extend the kernel without breaking invariants. Only introduce modules once Phase 1 and Phase 2 are stable."
+        eyebrow="Reference"
+        title="Module registry (Phase 3)"
+        subtitle="Bundled modules are optional capabilities that extend the kernel without breaking invariants."
         align="left"
         size="md"
         maxWidth="max-w-3xl"
