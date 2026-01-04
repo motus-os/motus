@@ -14,8 +14,8 @@ claims:
     status: verified
     verified_on: "2026-01-02"
     method: "Docs-backed: coordination API reference"
-    claim: "Coordination surface is six API calls."
-    momentum: "Handoffs collapse into a six-call loop."
+    claim: "Six-call loop: claim, context, outcome, evidence, decision, release."
+    momentum: "Work moves without coordination sprawl."
     evidence:
       - label: "Coordination API docs"
         url: "/how-it-works"
@@ -24,8 +24,8 @@ claims:
     status: verified
     verified_on: "2026-01-02"
     method: "Docs-backed: module registry definitions"
-    claim: "Current/building/future is defined in the module registry."
-    momentum: "Everyone aligns on what ships now vs later."
+    claim: "Registry defines current, building, and future scope."
+    momentum: "Teams align on what is real versus in progress."
     evidence:
       - label: "Module registry"
         url: "/implementation#module-registry"
@@ -34,8 +34,8 @@ claims:
     status: verified
     verified_on: "2026-01-02"
     method: "Docs-backed: kernel schema definition"
-    claim: "Kernel schema v0.1.3 defines the authoritative tables."
-    momentum: "Stable contracts stop integration drift."
+    claim: "Kernel schema v0.1.3 defines authoritative tables."
+    momentum: "Stable contracts keep integrations aligned."
     evidence:
       - label: "Kernel schema docs"
         url: "/schema"
@@ -44,8 +44,8 @@ claims:
     status: verified
     verified_on: "2026-01-02"
     method: "CI-backed: registry sync gate"
-    claim: "Docs and website registry are kept in sync."
-    momentum: "Docs stay in lockstep with reality."
+    claim: "Registry sync gate keeps docs and website aligned."
+    momentum: "Documentation stays in lockstep with release."
     evidence:
       - label: "Evidence registry entry"
         url: "/evidence#claim-docs_registry_sync"
