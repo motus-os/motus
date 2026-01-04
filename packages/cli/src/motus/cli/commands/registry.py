@@ -11,12 +11,15 @@ from dataclasses import dataclass
 from motus import __version__
 
 from .claims import register_claims_parsers
+from .handoffs import register_handoffs_parsers
+from .health import register_health_parsers
 from .policy import register_policy_parsers
 from .review import register_review_parsers
 from .roadmap import register_roadmap_parsers
 from .sessions import register_session_parsers
 from .standards import register_standards_parsers
 from .system import register_system_parsers
+from .verify import register_verify_parsers
 from .work import register_work_parsers
 
 
@@ -30,6 +33,9 @@ class ParserBundle:
     policy_parser: argparse.ArgumentParser
     roadmap_parser: argparse.ArgumentParser
     work_parser: argparse.ArgumentParser
+    health_parser: argparse.ArgumentParser
+    verify_parser: argparse.ArgumentParser
+    handoffs_parser: argparse.ArgumentParser
 
 
 def build_parser() -> ParserBundle:
@@ -60,6 +66,9 @@ Run 'motus --help' for a list of commands.
     policy_parser = register_policy_parsers(subparsers)
     roadmap_parser = register_roadmap_parsers(subparsers)
     work_parser = register_work_parsers(subparsers)
+    health_parser = register_health_parsers(subparsers)
+    verify_parser = register_verify_parsers(subparsers)
+    handoffs_parser = register_handoffs_parsers(subparsers)
     register_review_parsers(subparsers)
     register_system_parsers(subparsers)
 
@@ -70,4 +79,7 @@ Run 'motus --help' for a list of commands.
         policy_parser=policy_parser,
         roadmap_parser=roadmap_parser,
         work_parser=work_parser,
+        health_parser=health_parser,
+        verify_parser=verify_parser,
+        handoffs_parser=handoffs_parser,
     )

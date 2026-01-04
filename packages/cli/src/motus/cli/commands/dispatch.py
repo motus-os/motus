@@ -300,6 +300,49 @@ def dispatch_command(
 
         print_parser_help(console, bundle.policy_parser)
         raise SystemExit(EXIT_USAGE)
+    if command == "health":
+        from motus.commands.health_cmd import (
+            health_capture_command,
+            health_compare_command,
+            health_history_command,
+        )
+
+        health_cmd = getattr(args, "health_command", None)
+        if health_cmd == "capture":
+            raise SystemExit(health_capture_command(args))
+        if health_cmd == "compare":
+            raise SystemExit(health_compare_command(args))
+        if health_cmd == "history":
+            raise SystemExit(health_history_command(args))
+
+        print_parser_help(console, bundle.health_parser)
+        raise SystemExit(EXIT_USAGE)
+    if command == "verify":
+        from motus.commands.verify_cmd import verify_clean_command
+
+        verify_cmd = getattr(args, "verify_command", None)
+        if verify_cmd == "clean":
+            raise SystemExit(verify_clean_command(args))
+
+        print_parser_help(console, bundle.verify_parser)
+        raise SystemExit(EXIT_USAGE)
+    if command == "handoffs":
+        from motus.commands.handoffs_cmd import (
+            handoffs_archive_command,
+            handoffs_check_command,
+            handoffs_list_command,
+        )
+
+        handoffs_cmd = getattr(args, "handoffs_command", None)
+        if handoffs_cmd == "list":
+            raise SystemExit(handoffs_list_command(args))
+        if handoffs_cmd == "check":
+            raise SystemExit(handoffs_check_command(args))
+        if handoffs_cmd == "archive":
+            raise SystemExit(handoffs_archive_command(args))
+
+        print_parser_help(console, bundle.handoffs_parser)
+        raise SystemExit(EXIT_USAGE)
     if command == "roadmap":
         from motus.commands.roadmap_cmd import handle_roadmap_command
 

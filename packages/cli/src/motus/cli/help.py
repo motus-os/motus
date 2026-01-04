@@ -45,6 +45,9 @@ _COMMAND_HELP_TIERS: dict[str, int] = {
     "init": 3,
     "summary": 3,
     "harness": 3,
+    "health": 3,
+    "verify": 3,
+    "handoffs": 3,
 }
 
 _COMMAND_HELP_TEXTS: dict[str, str] = {
@@ -74,6 +77,9 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     "mcp": "Start MCP server (stdio transport)",
     "init": "Initialize a Motus workspace (.motus/)",
     "explain": "Explain a policy run decision trace",
+    "health": "Health baseline utilities",
+    "verify": "Verification utilities",
+    "handoffs": "Handoff hygiene utilities",
 }
 
 
