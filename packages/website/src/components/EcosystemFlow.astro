@@ -78,7 +78,7 @@ const improveTarget = (improvement) => {
 };
 ---
 
-<div class="md:hidden space-y-phi-5">
+<div class="md:hidden space-y-phi-4">
   {groups.map((group, index) => {
     const groupNodes = nodesByGroup[group.id] || [];
     const nextLane = groups[index + 1]?.label;
@@ -103,13 +103,13 @@ const improveTarget = (improvement) => {
         ) : null}
 
         {clusters ? (
-          <div class="space-y-phi-3">
+          <div class="space-y-phi-2">
             {clusters.map((cluster) => (
-              <div class="rounded-2xl border border-line/10 bg-surface p-phi-3 space-y-phi-2">
+              <div class="rounded-2xl border border-line/10 bg-surface-muted p-phi-2 space-y-phi-2">
                 <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{cluster.label}</p>
                 <div class="space-y-phi-2">
                   {cluster.nodes.map((node) => (
-                    <div class={`rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                    <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
                           {node.logo ? (
@@ -183,7 +183,7 @@ const improveTarget = (improvement) => {
         ) : (
           <div class="space-y-phi-2">
             {groupNodes.map((node) => (
-              <div class={`rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+              <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                 <div class="flex items-center justify-between gap-phi-2">
                   <div class="flex items-center gap-phi-2">
                     {node.logo ? (
@@ -264,7 +264,7 @@ const improveTarget = (improvement) => {
   })}
 </div>
 
-<div class="hidden md:grid md:gap-phi-3 md:items-start md:grid-cols-3 md:grid-rows-3">
+<div class="hidden md:grid md:gap-phi-2 md:items-start md:grid-cols-3 md:grid-rows-3">
   {groups.map((group) => {
     const groupNodes = nodesByGroup[group.id] || [];
     const clusters = group.id === 'modules' ? moduleClusters : null;
@@ -288,7 +288,7 @@ const improveTarget = (improvement) => {
               <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">Center</span>
             ) : null}
           </div>
-          <div class="rounded-2xl border border-line/10 bg-surface p-phi-3 space-y-phi-2">
+          <div class="rounded-2xl border border-line/10 bg-surface-muted p-phi-2 space-y-phi-2">
             <div class="space-y-phi-1">
               <p class="text-sm text-text-secondary">{group.description}</p>
               {group.relation ? (
@@ -301,11 +301,11 @@ const improveTarget = (improvement) => {
               {clusters ? (
                 <div class="space-y-phi-2">
                   {clusters.map((cluster) => (
-                    <div class="rounded-2xl border border-line/10 bg-surface/70 px-phi-2 py-phi-2 space-y-phi-2">
+                    <div class="rounded-2xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-2">
                       <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{cluster.label}</p>
                       <div class="space-y-phi-2">
                         {cluster.nodes.map((node) => (
-                          <div class={`rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                          <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                             <div class="flex items-center justify-between gap-phi-2">
                               <div class="flex items-center gap-phi-2">
                                 {node.logo ? (
@@ -379,7 +379,7 @@ const improveTarget = (improvement) => {
               ) : (
                 <div class="space-y-phi-2">
                   {groupNodes.map((node) => (
-                    <div class={`rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                    <div class={`rounded-xl border border-line/10 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
                           {node.logo ? (
