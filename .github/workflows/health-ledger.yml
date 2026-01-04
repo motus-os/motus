@@ -1,4 +1,5 @@
 name: Health Ledger
+# CI verification run (no functional changes).
 
 on:
   pull_request:
