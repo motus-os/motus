@@ -168,11 +168,58 @@ const trainingSteps = [
       />
     </section>
 
-    <section class="mt-phi-5 space-y-phi-3">
+    <section id="start-here" class="mt-phi-5 space-y-phi-3 scroll-mt-24">
+      <SectionHeader
+        eyebrow="Start Here"
+        title="Implementation as a training path"
+        subtitle="Follow four stages: setup, first success, proof, then scale. Each stage has a clear outcome before you move on."
+        align="left"
+        size="md"
+        maxWidth="max-w-3xl"
+      />
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-2">
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Stage 1</p>
+          <h3 class="text-lg font-display text-text-primary">Setup + Prime</h3>
+          <p class="text-sm text-text-secondary">Install Motus and prime defaults for local execution.</p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
+          <p class="text-sm text-text-secondary">CLI runs and .motus/ is created.</p>
+        </Panel>
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Stage 2</p>
+          <h3 class="text-lg font-display text-text-primary">First Success</h3>
+          <p class="text-sm text-text-secondary">Claim a lease, fetch context, and register an outcome.</p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
+          <p class="text-sm text-text-secondary">Lease ID returned with outcome attached.</p>
+        </Panel>
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Stage 3</p>
+          <h3 class="text-lg font-display text-text-primary">Proof + Release</h3>
+          <p class="text-sm text-text-secondary">Attach evidence, log a decision, and release the lease.</p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
+          <p class="text-sm text-text-secondary">Receipt shows evidence + rationale.</p>
+        </Panel>
+        <Panel size="sm" class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Stage 4</p>
+          <h3 class="text-lg font-display text-text-primary">Scale Safely</h3>
+          <p class="text-sm text-text-secondary">Add governance gates and bundled modules with discipline.</p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
+          <p class="text-sm text-text-secondary">Registry status matches release.</p>
+        </Panel>
+      </div>
+      <div class="flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
+        <span>Ready for the exact commands?</span>
+        <a href="#step-by-step" class="text-mint hover:text-text-primary transition-colors">
+          Jump to step-by-step &#8594;
+        </a>
+      </div>
+    </section>
+
+    <section id="step-by-step" class="mt-phi-5 space-y-phi-3">
       <SectionHeader
         eyebrow="Implementation Path"
-        title="Start from the basics"
-        subtitle="Follow the steps in order. Each step includes the exact command, expected result, and the proof link behind it."
+        title="Step-by-step commands"
+        subtitle="Follow each step in order. Every step includes the exact command, expected result, and proof link."
         align="left"
         size="md"
         maxWidth="max-w-3xl"
