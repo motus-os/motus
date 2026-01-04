@@ -9,9 +9,11 @@ Structured logging for all MC components.
 
 import json
 import logging
+import os
 import sys
+from collections import OrderedDict
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any
 
 from .config import config
 
@@ -145,8 +147,10 @@ class MCLogger:
         self._log(logging.ERROR, msg, **kwargs)
 
 
-# Logger cache
-_loggers: Dict[str, MCLogger] = {}
+LOGGER_CACHE_MAX = max(1, int(os.environ.get("MC_LOGGER_CACHE_MAX", "512")))
+
+# Logger cache (LRU)
+_loggers: "OrderedDict[str, MCLogger]" = OrderedDict()
 
 
 def get_logger(name: str) -> MCLogger:
@@ -159,9 +163,22 @@ def get_logger(name: str) -> MCLogger:
     Returns:
         MCLogger instance
     """
-    if name not in _loggers:
-        _loggers[name] = MCLogger(name)
-    return _loggers[name]
+    if name in _loggers:
+        logger = _loggers.pop(name)
+        _loggers[name] = logger
+        return logger
+
+    logger = MCLogger(name)
+    _loggers[name] = logger
+    if len(_loggers) > LOGGER_CACHE_MAX:
+        _, evicted = _loggers.popitem(last=False)
+        for handler in list(evicted.logger.handlers):
+            try:
+                handler.close()
+            except Exception:
+                pass
+            evicted.logger.removeHandler(handler)
+    return logger
 
 
 def set_log_level(level: int) -> None:

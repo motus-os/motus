@@ -226,3 +226,4 @@ async def track_tool_use(self, websocket: WebSocket, event, session_id: str, ctx
         filename = path.split("/")[-1] if "/" in path else path
         if filename and filename not in ctx["files_modified"]:
             ctx["files_modified"].append(filename)
+            ctx["files_modified"] = ctx["files_modified"][-10:]
