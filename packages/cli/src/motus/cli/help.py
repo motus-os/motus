@@ -95,6 +95,7 @@ def _get_cli_run_count() -> int | None:
 
         from ..core.database import configure_connection, get_database_path
 
+        max_sample = 20
         db_path = get_database_path()
         if not db_path.exists():
             return 0
@@ -103,10 +104,10 @@ def _get_cli_run_count() -> int | None:
         configure_connection(conn, set_row_factory=False)
         try:
             row = conn.execute(
-                "SELECT COUNT(*) FROM audit_log WHERE event_type = ? AND action = ?",
-                ("cli", "invoke"),
-            ).fetchone()
-            return int(row[0]) if row and row[0] is not None else 0
+                "SELECT 1 FROM audit_log WHERE event_type = ? AND action = ? LIMIT ?",
+                ("cli", "invoke", max_sample),
+            ).fetchall()
+            return len(row)
         finally:
             conn.close()
     except Exception:

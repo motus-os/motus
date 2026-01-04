@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import os
 import sqlite3
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -35,6 +36,8 @@ _OUTCOME_STATUS_MAP = {
     "cancelled": "abandoned",
     "canceled": "abandoned",
 }
+
+MAX_SESSION_RESULTS = max(1, int(os.environ.get("MC_SESSION_MAX_RESULTS", "5000")))
 
 
 def _normalize_outcome(outcome: str) -> str:
@@ -86,15 +89,16 @@ class SessionStoreQueries:
     def get_active_sessions(self) -> list[SessionRecord]:
         with self._connection() as conn:
             rows = conn.execute(
-                "SELECT * FROM sessions WHERE status = ? ORDER BY created_at DESC",
-                ("active",),
+                "SELECT * FROM sessions WHERE status = ? ORDER BY created_at DESC LIMIT ?",
+                ("active", MAX_SESSION_RESULTS),
             ).fetchall()
         return [SessionRecord.from_row(row) for row in rows]
 
     def get_all_sessions(self) -> list[SessionRecord]:
         with self._connection() as conn:
             rows = conn.execute(
-                "SELECT * FROM sessions ORDER BY updated_at DESC"
+                "SELECT * FROM sessions ORDER BY updated_at DESC LIMIT ?",
+                (MAX_SESSION_RESULTS,),
             ).fetchall()
         return [SessionRecord.from_row(row) for row in rows]
 
@@ -110,8 +114,9 @@ class SessionStoreQueries:
                 SELECT * FROM sessions
                 WHERE status = ? AND updated_at < mc_date_add(mc_now_iso(), ?)
                 ORDER BY updated_at ASC
+                LIMIT ?
                 """,
-                ("active", offset_seconds),
+                ("active", offset_seconds, MAX_SESSION_RESULTS),
             ).fetchall()
 
         return [SessionRecord.from_row(row) for row in rows]
