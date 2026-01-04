@@ -119,10 +119,10 @@ def cmd_roadmap_list(args: Any) -> int:
 
     with db.connection() as conn:
         query = """
-            SELECT id, title, phase_key, status_key, item_type, deleted_at,
-                   (SELECT COUNT(*) FROM roadmap_dependencies rd
-                    WHERE rd.item_id = ri.id) as dep_count
+            SELECT ri.id, ri.title, ri.phase_key, ri.status_key, ri.item_type, ri.deleted_at,
+                   COUNT(rd.depends_on_id) as dep_count
             FROM roadmap_items ri
+            LEFT JOIN roadmap_dependencies rd ON rd.item_id = ri.id
             WHERE 1=1
         """
         params: list[Any] = []
@@ -134,7 +134,10 @@ def cmd_roadmap_list(args: Any) -> int:
             query += " AND phase_key = ?"
             params.append(phase_filter)
 
-        query += " ORDER BY phase_key, status_key, id"
+        query += """
+            GROUP BY ri.id, ri.title, ri.phase_key, ri.status_key, ri.item_type, ri.deleted_at
+            ORDER BY ri.phase_key, ri.status_key, ri.id
+        """
 
         rows = conn.execute(query, params).fetchall()
 

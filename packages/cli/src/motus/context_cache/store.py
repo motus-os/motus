@@ -9,6 +9,7 @@ Implements ContextCacheReader protocol for the Lens compiler.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sqlite3
 from datetime import datetime, timezone
@@ -280,9 +281,7 @@ class ContextCache:
         for row in cursor.fetchall():
             payload = json.loads(row["payload"])
             payload_json = json.dumps(payload, sort_keys=True, separators=(",", ":"))
-            source_hash = self._conn.execute(
-                "SELECT mc_sha256(?)", (payload_json,)
-            ).fetchone()[0]
+            source_hash = hashlib.sha256(payload_json.encode("utf-8")).hexdigest()
             results.append({
                 "payload": payload,
                 "source_hash": source_hash,

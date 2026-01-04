@@ -656,19 +656,29 @@ class KnowledgeStore:
                     )
 
         search_ids = self._search(normalized_intent, exclude=seen, allowed_ids=allowed_ids)
+        trust_by_id: dict[str, str] = {}
+        if search_ids:
+            id_list = [knowledge_id for knowledge_id, _ in search_ids]
+            placeholders = ",".join("?" * len(id_list))
+            trust_rows = self._conn.execute(
+                """
+                SELECT id, trust_level
+                FROM knowledge_items
+                WHERE id IN ({placeholders})
+                  AND deleted_at IS NULL
+                  AND (expires_at IS NULL OR expires_at > ?)
+                """.format(  # nosec B608 - placeholders are ?,?,? count
+                    placeholders=placeholders
+                ),
+                id_list + [now],
+            ).fetchall()
+            trust_by_id = {row["id"]: row["trust_level"] for row in trust_rows}
+
         for knowledge_id, rationale in search_ids:
             if knowledge_id in seen:
                 continue
-            row = self._conn.execute(
-                """
-                SELECT trust_level
-                FROM knowledge_items
-                WHERE id = ? AND deleted_at IS NULL
-                  AND (expires_at IS NULL OR expires_at > ?)
-                """,
-                (knowledge_id, now),
-            ).fetchone()
-            if row is None or not is_allowed(row):
+            trust_level = trust_by_id.get(knowledge_id)
+            if trust_level is None or not is_allowed({"trust_level": trust_level}):
                 continue
             results.append(KnowledgeResult(knowledge_id, rationale))
             seen.add(knowledge_id)
