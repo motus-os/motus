@@ -37,22 +37,22 @@ const proofHref = (proofId) => {
 };
 ---
 
-<div class="space-y-phi-4">
+<div class="space-y-phi-3">
   {groups.map((group) => {
     const groupNodes = nodes.filter((node) => node.group === group.id);
     return (
-      <div class="space-y-phi-2">
+      <div class="space-y-phi-1">
         <div>
           <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{group.label}</p>
           <h3 class="text-lg font-display text-text-primary">{group.description}</h3>
           <p class="text-xs text-text-secondary">{group.relation}</p>
         </div>
-        <div class="grid gap-phi-2">
+        <div class="grid gap-phi-1">
           {groupNodes.map((node) => {
             const siteHref = toHref(node.website_path || node.docs_url);
             const proofLink = proofHref(node.proof_id);
             return (
-              <Panel size="sm" class="space-y-phi-2">
+              <Panel size="sm" class="space-y-phi-1">
                 <div class="flex items-center gap-phi-2">
                   {node.logo ? (
                     <img src={toHref(node.logo)} alt={`${node.label} logo`} class="h-5 w-5" loading="lazy" />

@@ -45,8 +45,10 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         --line: var(--n-6);
         --text-primary: var(--n-9);
         --text-secondary: var(--n-8);
-        --mint: 82% 0.14 170;
-        --future: 72% 0.16 315;
+        --mint-base: 60% 0.16 170;
+        --future-base: 58% 0.2 315;
+        --mint: var(--mint-base);
+        --future: var(--future-base);
         --error: 70% 0.18 25;
         --step--2: 0.64rem;
         --step--1: 0.8rem;
@@ -88,8 +90,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         --line: var(--n-6);
         --text-primary: var(--n-9);
         --text-secondary: var(--n-8);
-        --mint: 60% 0.16 170;
-        --future: 58% 0.2 315;
+        --mint: var(--mint-base);
+        --future: var(--future-base);
         --error: 58% 0.2 25;
         color-scheme: light;
       }
@@ -107,8 +109,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         --line: var(--n-6);
         --text-primary: var(--n-9);
         --text-secondary: var(--n-8);
-        --mint: 82% 0.14 170;
-        --future: 72% 0.16 315;
+        --mint: var(--mint-base);
+        --future: var(--future-base);
         --error: 70% 0.18 25;
         color-scheme: dark;
       }
