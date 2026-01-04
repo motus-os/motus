@@ -48,6 +48,7 @@ _COMMAND_HELP_TIERS: dict[str, int] = {
     "health": 3,
     "verify": 3,
     "handoffs": 3,
+    "activity": 3,
 }
 
 _COMMAND_HELP_TEXTS: dict[str, str] = {
@@ -80,6 +81,7 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     "health": "Health baseline utilities",
     "verify": "Verification utilities",
     "handoffs": "Handoff hygiene utilities",
+    "activity": "Activity proof ledger utilities",
 }
 
 

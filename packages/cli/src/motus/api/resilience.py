@@ -13,6 +13,8 @@ from typing import Callable, Mapping, TypeVar
 
 import httpx
 
+from motus.observability.io_capture import record_network_call
+
 T = TypeVar("T")
 
 
@@ -143,11 +145,35 @@ def call_with_backoff(
             result = fn()
             if isinstance(result, httpx.Response):
                 handle_rate_limit_headers(provider, result.headers)
+                try:
+                    request = result.request
+                    record_network_call(
+                        url=str(request.url),
+                        method=request.method,
+                        status_code=result.status_code,
+                        bytes_in=len(result.content) if result.content is not None else None,
+                        bytes_out=None,
+                        source=what,
+                    )
+                except Exception:
+                    pass
             return result
         except httpx.HTTPStatusError as e:
             status = int(getattr(e.response, "status_code", 0) or 0)
             if isinstance(getattr(e, "response", None), httpx.Response):
                 handle_rate_limit_headers(provider, e.response.headers)
+                try:
+                    request = e.response.request
+                    record_network_call(
+                        url=str(request.url),
+                        method=request.method,
+                        status_code=status,
+                        bytes_in=len(e.response.content) if e.response.content is not None else None,
+                        bytes_out=None,
+                        source=what,
+                    )
+                except Exception:
+                    pass
 
             if status not in status_codes:
                 raise SystemExit(f"{what}: HTTP {status}") from e
@@ -178,6 +204,18 @@ def call_with_backoff(
             continue
         except httpx.RequestError as e:
             last_error = e
+            try:
+                request = getattr(e, "request", None)
+                record_network_call(
+                    url=str(request.url) if request is not None else "unknown",
+                    method=getattr(request, "method", None) if request is not None else None,
+                    status_code=None,
+                    bytes_in=None,
+                    bytes_out=None,
+                    source=what,
+                )
+            except Exception:
+                pass
             delay = transient_base_delay_seconds * (2**attempt)
             emit(
                 f"{what}: request error, waiting {delay:.1f}s (attempt {attempt + 1}/{max_retries})"

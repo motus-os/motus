@@ -17,6 +17,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from motus.observability.io_capture import record_file_write
+
 
 def _fsync_dir(path: Path) -> None:
     """Best-effort fsync on a directory (durability for rename/replace)."""
@@ -68,6 +70,7 @@ def atomic_write_text(path: Path, content: str, *, encoding: str = "utf-8") -> N
 
         os.replace(tmp_path, path)
         _fsync_dir(path.parent)
+        record_file_write(path, bytes_written=len(content.encode(encoding)), source="atomic_write_text")
     except Exception:
         try:
             tmp_path.unlink(missing_ok=True)

@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from motus import __version__
 
 from .claims import register_claims_parsers
+from .activity import register_activity_parsers
 from .handoffs import register_handoffs_parsers
 from .health import register_health_parsers
 from .policy import register_policy_parsers
@@ -36,6 +37,7 @@ class ParserBundle:
     health_parser: argparse.ArgumentParser
     verify_parser: argparse.ArgumentParser
     handoffs_parser: argparse.ArgumentParser
+    activity_parser: argparse.ArgumentParser
 
 
 def build_parser() -> ParserBundle:
@@ -61,6 +63,7 @@ Run 'motus --help' for a list of commands.
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     register_session_parsers(subparsers)
+    activity_parser = register_activity_parsers(subparsers)
     standards_parser = register_standards_parsers(subparsers)
     claims_parser = register_claims_parsers(subparsers)
     policy_parser = register_policy_parsers(subparsers)
@@ -82,4 +85,5 @@ Run 'motus --help' for a list of commands.
         health_parser=health_parser,
         verify_parser=verify_parser,
         handoffs_parser=handoffs_parser,
+        activity_parser=activity_parser,
     )

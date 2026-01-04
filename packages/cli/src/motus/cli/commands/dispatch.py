@@ -13,6 +13,7 @@ from motus import __version__
 from motus.cli.exit_codes import EXIT_ERROR, EXIT_USAGE
 from motus.cli.help import format_cli_resource_id, print_parser_help
 from motus.core.errors import DatabaseError, MigrationError
+from motus.observability.activity import ActivityLedger
 
 
 def dispatch_command(
@@ -85,6 +86,20 @@ def dispatch_command(
             )
         except (DatabaseError, ImportError, TypeError, ValueError, sqlite3.OperationalError):
             pass
+        try:
+            ActivityLedger().emit(
+                actor="user",
+                category="cli",
+                action="invoke",
+                subject={
+                    "command": command,
+                    "resource_id": format_cli_resource_id(command, args),
+                    "cwd": str(Path.cwd()),
+                    "version": __version__,
+                },
+            )
+        except Exception:
+            pass
 
     if command == "harness":
         from motus.commands.harness_cmd import harness_command
@@ -121,6 +136,16 @@ def dispatch_command(
         if standards_cmd == "reject":
             raise SystemExit(standards_reject_command(args))
         print_parser_help(console, bundle.standards_parser)
+        raise SystemExit(EXIT_USAGE)
+    if command == "activity":
+        from motus.commands.activity_cmd import activity_list_command, activity_status_command
+
+        activity_cmd = getattr(args, "activity_command", None)
+        if activity_cmd == "list":
+            raise SystemExit(activity_list_command(args))
+        if activity_cmd == "status":
+            raise SystemExit(activity_status_command(args))
+        print_parser_help(console, bundle.activity_parser)
         raise SystemExit(EXIT_USAGE)
     if command == "claims":
         from motus.commands.claims_cmd import claims_acquire_command, claims_list_command

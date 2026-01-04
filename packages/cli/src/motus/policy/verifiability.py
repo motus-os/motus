@@ -17,6 +17,7 @@ from datetime import datetime
 from pathlib import Path
 
 from motus.policy.contracts import ArtifactHash
+from motus.observability.io_capture import record_file_read
 
 SIGNATURE_PREFIX_HMAC_SHA256 = "hmac-sha256:"
 MAX_EVIDENCE_FILES = int(os.environ.get("MC_EVIDENCE_MAX_FILES", "10000"))
@@ -44,9 +45,12 @@ def _bounded_artifact_paths(root: Path) -> list[Path]:
 def sha256_file(path: Path) -> str:
     """Return the SHA-256 hex digest for a file."""
     h = hashlib.sha256()
+    bytes_read = 0
     with path.open("rb") as f:
         for chunk in iter(lambda: f.read(1024 * 64), b""):
             h.update(chunk)
+            bytes_read += len(chunk)
+    record_file_read(path, bytes_read=bytes_read, source="sha256_file")
     return h.hexdigest()
 
 
