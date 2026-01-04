@@ -20,9 +20,9 @@ Stripe/Spotify-inspired "Pit of Success" design:
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..governance.roles import Role, get_agent_role
 from motus.logging import get_logger
 
+from ..governance.roles import Role, get_agent_role
 from .database_connection import get_db_manager
 from .errors import MotusError
 

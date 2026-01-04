@@ -10,8 +10,8 @@ Implements ContextCacheReader protocol for the Lens compiler.
 from __future__ import annotations
 
 import hashlib
-import os
 import json
+import os
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path

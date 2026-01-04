@@ -8,8 +8,8 @@ This module handles the creation of TeleportBundle objects for
 cross-session context transfer, including planning document detection.
 """
 
-from datetime import datetime
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List
 

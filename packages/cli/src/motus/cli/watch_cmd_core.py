@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING, Optional
 from rich.markup import escape
 
 from motus.config import config
+
 from .exit_codes import EXIT_ERROR
 from .formatters import create_header, create_summary_table
 from .output import (
