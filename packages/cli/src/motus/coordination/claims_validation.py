@@ -6,15 +6,18 @@ from __future__ import annotations
 import json
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
-from typing import Any
 
 from motus.atomic_io import atomic_write_text
 from motus.coordination.namespace_acl import NamespaceACL
 from motus.coordination.schemas import ClaimedResource, ClaimRecord
+from motus.file_lock import FileLockError, file_lock
 
 
 class ClaimRegistryError(Exception):
     pass
+
+
+_LOCK_TIMEOUT_SECONDS = 5.0
 
 
 def _utcnow() -> datetime:
@@ -54,7 +57,6 @@ class _ClaimStorage:
     def __init__(self, root_dir: str | Path, *, namespace_acl: NamespaceACL | None = None) -> None:
         self._root = Path(root_dir)
         self._sequence_path = self._root / "SEQUENCE"
-        self._lock_path = self._root / "SEQUENCE.lock"
         self._acl = namespace_acl
 
     def _claim_path(self, claim_id: str) -> Path:
@@ -78,36 +80,22 @@ class _ClaimStorage:
     def _is_expired(self, claim: ClaimRecord, *, now: datetime) -> bool:
         return now >= claim.expires_at
 
-    def _acquire_sequence_lock(self) -> Any:
-        self._root.mkdir(parents=True, exist_ok=True)
-        f = self._lock_path.open("a+", encoding="utf-8")
-
-        try:
-            import fcntl  # type: ignore[import-not-found]
-
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-        except Exception:
-            # Best-effort: on platforms without fcntl (e.g., Windows), proceed unlocked.
-            pass
-
-        return f
-
     def _next_sequence(self) -> int:
-        lock_f = self._acquire_sequence_lock()
+        self._root.mkdir(parents=True, exist_ok=True)
         try:
-            current = 0
-            try:
-                text = self._sequence_path.read_text(encoding="utf-8").strip()
-                if text:
-                    current = int(text)
-            except FileNotFoundError:
+            with file_lock(self._sequence_path, timeout=_LOCK_TIMEOUT_SECONDS):
                 current = 0
+                try:
+                    text = self._sequence_path.read_text(encoding="utf-8").strip()
+                    if text:
+                        current = int(text)
+                except FileNotFoundError:
+                    current = 0
 
-            next_value = current + 1
-            atomic_write_text(self._sequence_path, f"{next_value}\n")
-            return next_value
-        finally:
-            try:
-                lock_f.close()
-            except OSError:
-                pass
+                next_value = current + 1
+                atomic_write_text(self._sequence_path, f"{next_value}\n")
+                return next_value
+        except FileLockError as exc:
+            raise ClaimRegistryError(
+                f"failed to lock claim sequence file: {self._sequence_path}"
+            ) from exc

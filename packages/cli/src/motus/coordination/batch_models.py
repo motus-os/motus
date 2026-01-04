@@ -13,6 +13,7 @@ from typing import Any, Iterable
 from motus.atomic_io import atomic_write_json, atomic_write_text
 from motus.coordination.audit import AuditLog
 from motus.coordination.schemas import ReconciliationReport, WorkBatch
+from motus.file_lock import FileLockError, file_lock
 
 
 class BatchCoordinatorError(Exception):
@@ -32,6 +33,9 @@ class ReconciliationError(BatchCoordinatorError):
         super().__init__(f"batch reconciliation failed: {batch_id}")
         self.batch_id = batch_id
         self.report = report
+
+
+_LOCK_TIMEOUT_SECONDS = 5.0
 
 
 ALLOWED_STATUS_TRANSITIONS: dict[str, set[str]] = {
@@ -69,7 +73,6 @@ class _BatchStorage:
         self._active_dir = self._root / "active"
         self._closed_dir = self._root / "closed"
         self._sequence_path = self._root / "SEQUENCE"
-        self._lock_path = self._root / "SEQUENCE.lock"
         self._audit = AuditLog(self._root.parent / "ledger")
 
     def _batch_path_active(self, batch_id: str) -> Path:
@@ -79,34 +82,24 @@ class _BatchStorage:
         month = created_at.strftime("%Y-%m")
         return self._closed_dir / month / f"{batch_id}.json"
 
-    def _acquire_sequence_lock(self) -> Any:
-        self._root.mkdir(parents=True, exist_ok=True)
-        f = self._lock_path.open("a+", encoding="utf-8")
-        try:
-            import fcntl  # type: ignore[import-not-found]
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-        except Exception:
-            pass
-        return f
-
     def _next_sequence(self) -> int:
-        lock_f = self._acquire_sequence_lock()
+        self._root.mkdir(parents=True, exist_ok=True)
         try:
-            current = 0
-            try:
-                text = self._sequence_path.read_text(encoding="utf-8").strip()
-                if text:
-                    current = int(text)
-            except FileNotFoundError:
+            with file_lock(self._sequence_path, timeout=_LOCK_TIMEOUT_SECONDS):
                 current = 0
-            next_value = current + 1
-            atomic_write_text(self._sequence_path, f"{next_value}\n")
-            return next_value
-        finally:
-            try:
-                lock_f.close()
-            except OSError:
-                pass
+                try:
+                    text = self._sequence_path.read_text(encoding="utf-8").strip()
+                    if text:
+                        current = int(text)
+                except FileNotFoundError:
+                    current = 0
+                next_value = current + 1
+                atomic_write_text(self._sequence_path, f"{next_value}\n")
+                return next_value
+        except FileLockError as exc:
+            raise BatchCoordinatorError(
+                f"failed to lock batch sequence file: {self._sequence_path}"
+            ) from exc
 
     def _find_any_batch_path(self, batch_id: str) -> Path | None:
         active = self._batch_path_active(batch_id)

@@ -111,6 +111,9 @@ class WebConfig:
     poll_interval_ms: int = 500  # How often to poll for new events
     reconnect_max_attempts: int = 10
     reconnect_base_delay_ms: int = 1000
+    session_timeout_seconds: int = int(
+        os.environ.get("MC_WS_SESSION_TIMEOUT", "1800")
+    )  # WebSocket lifetime cap (0 disables)
 
     # Auto-open browser
     auto_open_browser: bool = os.environ.get("MC_NO_BROWSER", "").lower() != "true"
@@ -123,6 +126,9 @@ class TUIConfig:
     # Refresh intervals
     feed_refresh_interval: float = 1.0  # Seconds between feed updates
     sessions_refresh_interval: float = 5.0  # Seconds between session list refresh
+    watch_max_seconds: int = int(
+        os.environ.get("MC_WATCH_MAX_SECONDS", "3600")
+    )  # Watch duration cap (0 disables)
 
     # Display settings
     max_activity_blocks: int = 50  # Maximum activity blocks to keep in memory

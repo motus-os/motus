@@ -5,9 +5,11 @@
 
 import asyncio
 import importlib
+import time
 
 from fastapi import WebSocket, WebSocketDisconnect
 
+from motus.config import config
 from motus.logging import get_logger
 from motus.ui.web import websocket_polling
 from motus.ui.web.state import SessionState
@@ -82,8 +84,17 @@ class WebSocketHandler:
                 }
             )
 
+            timeout_seconds = config.web.session_timeout_seconds
+            deadline = None
+            if timeout_seconds > 0:
+                deadline = time.monotonic() + timeout_seconds
+
             # Handle messages
             while True:
+                if deadline is not None and time.monotonic() >= deadline:
+                    logger.info("WebSocket session timed out")
+                    await websocket.close(code=1001, reason="Session timeout")
+                    break
                 try:
                     data = await asyncio.wait_for(websocket.receive_json(), timeout=1.0)
                     await self._handle_client_message(websocket, data)

@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Optional
 
 from rich.markup import escape
 
+from motus.config import config
 from .exit_codes import EXIT_ERROR
 from .formatters import create_header, create_summary_table
 from .output import (
@@ -83,11 +84,20 @@ def watch_session(
     console.print(rule("[bold green]Watching for new activity[/bold green]", style="green"))
     console.print()
 
+    watch_timeout_seconds = config.tui.watch_max_seconds
+    deadline = None
+    if watch_timeout_seconds > 0:
+        deadline = time.monotonic() + watch_timeout_seconds
+
     poll_count = 0
     is_active = False
+    timed_out = False
 
     try:
         while True:
+            if deadline is not None and time.monotonic() >= deadline:
+                timed_out = True
+                break
             has_new_content = False
             new_events = []
 
@@ -125,6 +135,11 @@ def watch_session(
         console.print(create_summary_table(stats))
         success = True
     finally:
+        if timed_out:
+            console.print("\n")
+            console.print(rule("[dim]Watch timeout reached[/dim]"))
+            console.print(create_summary_table(stats))
+            success = True
         elapsed_ms = (time.perf_counter() - start) * 1000
         duration_seconds = int(elapsed_ms / 1000)
         record_watch_metric(elapsed_ms, session.session_id, duration_seconds, success)
