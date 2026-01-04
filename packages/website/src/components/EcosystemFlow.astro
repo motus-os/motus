@@ -1,6 +1,8 @@
 ---
 const { groups = [], nodes = [], base = '/', proofIndex = null } = Astro.props;
 
+const nodeIndex = new Map(nodes.map((node) => [node.id, node]));
+
 const nodesByGroup = groups.reduce((acc, group) => {
   acc[group.id] = nodes
     .filter((node) => node.group === group.id)
@@ -42,22 +44,138 @@ const statusAccent = (status) => {
       return 'border-l-4 border-line/40';
   }
 };
+
+const moduleNodes = nodesByGroup.modules || [];
+const clusterOrder = [
+  'Standards + Contracts',
+  'Knowledge + Context',
+  'Proof + Validation',
+  'Runtime Control',
+  'Scaffolds',
+];
+const moduleClusters = clusterOrder
+  .map((label) => ({
+    label,
+    nodes: moduleNodes.filter((node) => node.cluster === label),
+  }))
+  .filter((cluster) => cluster.nodes.length > 0);
+const clusteredIds = new Set(
+  moduleClusters.flatMap((cluster) => cluster.nodes.map((node) => node.id)),
+);
+const ungroupedModules = moduleNodes.filter((node) => !clusteredIds.has(node.id));
+if (ungroupedModules.length) {
+  moduleClusters.push({ label: 'Other', nodes: ungroupedModules });
+}
+
+const improveTarget = (improvement) => {
+  const targetId = (improvement.motus_nodes || [])[0];
+  const target = targetId ? nodeIndex.get(targetId) : null;
+  if (!target) return null;
+  return {
+    label: target.label,
+    href: target.website_path ? withBase(target.website_path) : target.docs_url,
+  };
+};
 ---
 
-<div class="space-y-phi-3 md:space-y-0 md:grid md:gap-phi-3 md:items-start md:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr_auto_1fr]">
-  {groups.map((group, index) => (
-    <>
-      <div class="space-y-phi-2">
-        <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
-          <span>Stage {String(index + 1).padStart(2, '0')}</span>
-          <span class="text-text-primary">{group.label}</span>
-        </div>
-        <div class="rounded-2xl border border-line/10 bg-surface p-phi-3 space-y-phi-2">
-          <div class="space-y-phi-1">
-            <p class="text-sm text-text-secondary">{group.description}</p>
+<div class="md:hidden space-y-phi-5">
+  {groups.map((group, index) => {
+    const groupNodes = nodesByGroup[group.id] || [];
+    const nextLane = groups[index + 1]?.label;
+    const clusters = group.id === 'modules' ? moduleClusters : null;
+
+    return (
+      <section class="space-y-phi-2">
+        <div class="flex items-center justify-between gap-phi-2">
+          <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
+            <span>Stage {String(index + 1).padStart(2, '0')}</span>
+            <span class="text-text-primary">{group.label}</span>
           </div>
+          <span class="status-chip status-external">{group.id === 'inputs' ? 'External' : 'Lane'}</span>
+        </div>
+        <p class="text-sm text-text-secondary">{group.description}</p>
+
+        {clusters ? (
+          <div class="space-y-phi-3">
+            {clusters.map((cluster) => (
+              <div class="rounded-2xl border border-line/10 bg-surface p-phi-3 space-y-phi-2">
+                <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{cluster.label}</p>
+                <div class="space-y-phi-2">
+                  {cluster.nodes.map((node) => (
+                    <div class={`rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                      <div class="flex items-center justify-between gap-phi-2">
+                        <div class="flex items-center gap-phi-2">
+                          {node.logo ? (
+                            <img
+                              src={withBase(node.logo)}
+                              alt={node.label}
+                              class="h-7 w-7 object-contain flex-shrink-0"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span class="h-2.5 w-2.5 rounded-full bg-mint/60"></span>
+                          )}
+                          <span class="text-sm text-text-primary font-medium">{node.label}</span>
+                        </div>
+                        <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                      </div>
+                      <p class="text-sm text-text-secondary">
+                        {node.flow_note || node.summary}
+                      </p>
+                      {node.improves?.length ? (
+                        <div class="space-y-phi-1">
+                          <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Motus adds</p>
+                          <ul class="text-sm text-text-secondary space-y-phi-1">
+                            {node.improves.slice(0, 2).map((improvement) => {
+                              const target = improveTarget(improvement);
+                              return (
+                                <li>
+                                  <span>{improvement.label}</span>
+                                  {target ? (
+                                    <>
+                                      <span class="text-text-secondary/60"> · </span>
+                                      <a class="text-mint hover:text-text-primary transition-colors" href={target.href}>
+                                        {target.label}
+                                      </a>
+                                    </>
+                                  ) : null}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      ) : null}
+                      <div class="flex flex-wrap gap-phi-1 text-xs">
+                        {node.website_path ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
+                            Site
+                          </a>
+                        ) : null}
+                        {node.docs_url ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={node.docs_url} target="_blank" rel="noopener">
+                            Docs
+                          </a>
+                        ) : null}
+                        {node.proof ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={proofHref(node.proof)}>
+                            Proof ({proofStatusLabel(node.proof.status)})
+                          </a>
+                        ) : null}
+                        {node.external_url ? (
+                          <a class="text-text-secondary hover:text-mint transition-colors" href={node.external_url} target="_blank" rel="noopener">
+                            External
+                          </a>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
           <div class="space-y-phi-2">
-            {(nodesByGroup[group.id] || []).map((node) => (
+            {groupNodes.map((node) => (
               <div class={`rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
                 <div class="flex items-center justify-between gap-phi-2">
                   <div class="flex items-center gap-phi-2">
@@ -65,7 +183,7 @@ const statusAccent = (status) => {
                       <img
                         src={withBase(node.logo)}
                         alt={node.label}
-                        class="h-6 w-6 object-contain flex-shrink-0"
+                        class="h-7 w-7 object-contain flex-shrink-0"
                         loading="lazy"
                       />
                     ) : (
@@ -79,13 +197,29 @@ const statusAccent = (status) => {
                   {node.flow_note || node.summary}
                 </p>
                 {node.improves?.length ? (
-                  <ul class="text-sm text-text-secondary space-y-phi-1">
-                    {node.improves.slice(0, 2).map((improvement) => (
-                      <li>- {improvement.label}</li>
-                    ))}
-                  </ul>
+                  <div class="space-y-phi-1">
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Motus adds</p>
+                    <ul class="text-sm text-text-secondary space-y-phi-1">
+                      {node.improves.slice(0, 2).map((improvement) => {
+                        const target = improveTarget(improvement);
+                        return (
+                          <li>
+                            <span>{improvement.label}</span>
+                            {target ? (
+                              <>
+                                <span class="text-text-secondary/60"> · </span>
+                                <a class="text-mint hover:text-text-primary transition-colors" href={target.href}>
+                                  {target.label}
+                                </a>
+                              </>
+                            ) : null}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
                 ) : null}
-                <div class="flex flex-wrap gap-phi-1 text-sm">
+                <div class="flex flex-wrap gap-phi-1 text-xs">
                   {node.website_path ? (
                     <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
                       Site
@@ -110,18 +244,194 @@ const statusAccent = (status) => {
               </div>
             ))}
           </div>
+        )}
+
+        {nextLane ? (
+          <div class="text-xs uppercase tracking-[0.3em] text-text-secondary flex items-center gap-phi-2">
+            <span class="text-text-secondary/60">&#8595;</span>
+            <span>Outputs feed {nextLane}</span>
+          </div>
+        ) : null}
+      </section>
+    );
+  })}
+</div>
+
+<div class="hidden md:grid md:gap-phi-3 md:items-start md:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr_auto_1fr]">
+  {groups.map((group, index) => {
+    const groupNodes = nodesByGroup[group.id] || [];
+    const clusters = group.id === 'modules' ? moduleClusters : null;
+    return (
+      <>
+        <div class="space-y-phi-2">
+          <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
+            <span>Stage {String(index + 1).padStart(2, '0')}</span>
+            <span class="text-text-primary">{group.label}</span>
+          </div>
+          <div class="rounded-2xl border border-line/10 bg-surface p-phi-3 space-y-phi-2">
+            <div class="space-y-phi-1">
+              <p class="text-sm text-text-secondary">{group.description}</p>
+            </div>
+            <div class="space-y-phi-2">
+              {clusters ? (
+                <div class="space-y-phi-2">
+                  {clusters.map((cluster) => (
+                    <div class="rounded-2xl border border-line/10 bg-surface/70 px-phi-2 py-phi-2 space-y-phi-2">
+                      <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{cluster.label}</p>
+                      <div class="space-y-phi-2">
+                        {cluster.nodes.map((node) => (
+                          <div class={`rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                            <div class="flex items-center justify-between gap-phi-2">
+                              <div class="flex items-center gap-phi-2">
+                                {node.logo ? (
+                                  <img
+                                    src={withBase(node.logo)}
+                                    alt={node.label}
+                                    class="h-6 w-6 object-contain flex-shrink-0"
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <span class="h-2.5 w-2.5 rounded-full bg-mint/60"></span>
+                                )}
+                                <span class="text-sm text-text-primary font-medium">{node.label}</span>
+                              </div>
+                              <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                            </div>
+                            <p class="text-sm text-text-secondary">
+                              {node.flow_note || node.summary}
+                            </p>
+                            {node.improves?.length ? (
+                              <div class="space-y-phi-1">
+                                <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Motus adds</p>
+                                <ul class="text-sm text-text-secondary space-y-phi-1">
+                                  {node.improves.slice(0, 2).map((improvement) => {
+                                    const target = improveTarget(improvement);
+                                    return (
+                                      <li>
+                                        <span>{improvement.label}</span>
+                                        {target ? (
+                                          <>
+                                            <span class="text-text-secondary/60"> · </span>
+                                            <a class="text-mint hover:text-text-primary transition-colors" href={target.href}>
+                                              {target.label}
+                                            </a>
+                                          </>
+                                        ) : null}
+                                      </li>
+                                    );
+                                  })}
+                                </ul>
+                              </div>
+                            ) : null}
+                            <div class="flex flex-wrap gap-phi-1 text-sm">
+                              {node.website_path ? (
+                                <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
+                                  Site
+                                </a>
+                              ) : null}
+                              {node.docs_url ? (
+                                <a class="text-mint hover:text-text-primary transition-colors" href={node.docs_url} target="_blank" rel="noopener">
+                                  Docs
+                                </a>
+                              ) : null}
+                              {node.proof ? (
+                                <a class="text-mint hover:text-text-primary transition-colors" href={proofHref(node.proof)}>
+                                  Proof ({proofStatusLabel(node.proof.status)})
+                                </a>
+                              ) : null}
+                              {node.external_url ? (
+                                <a class="text-text-secondary hover:text-mint transition-colors" href={node.external_url} target="_blank" rel="noopener">
+                                  External
+                                </a>
+                              ) : null}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div class="space-y-phi-2">
+                  {groupNodes.map((node) => (
+                    <div class={`rounded-xl border border-line/10 bg-surface/80 px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                      <div class="flex items-center justify-between gap-phi-2">
+                        <div class="flex items-center gap-phi-2">
+                          {node.logo ? (
+                            <img
+                              src={withBase(node.logo)}
+                              alt={node.label}
+                              class="h-6 w-6 object-contain flex-shrink-0"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <span class="h-2.5 w-2.5 rounded-full bg-mint/60"></span>
+                          )}
+                          <span class="text-sm text-text-primary font-medium">{node.label}</span>
+                        </div>
+                        <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                      </div>
+                      <p class="text-sm text-text-secondary">
+                        {node.flow_note || node.summary}
+                      </p>
+                      {node.improves?.length ? (
+                        <div class="space-y-phi-1">
+                          <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Motus adds</p>
+                          <ul class="text-sm text-text-secondary space-y-phi-1">
+                            {node.improves.slice(0, 2).map((improvement) => {
+                              const target = improveTarget(improvement);
+                              return (
+                                <li>
+                                  <span>{improvement.label}</span>
+                                  {target ? (
+                                    <>
+                                      <span class="text-text-secondary/60"> · </span>
+                                      <a class="text-mint hover:text-text-primary transition-colors" href={target.href}>
+                                        {target.label}
+                                      </a>
+                                    </>
+                                  ) : null}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      ) : null}
+                      <div class="flex flex-wrap gap-phi-1 text-sm">
+                        {node.website_path ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={withBase(node.website_path)}>
+                            Site
+                          </a>
+                        ) : null}
+                        {node.docs_url ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={node.docs_url} target="_blank" rel="noopener">
+                            Docs
+                          </a>
+                        ) : null}
+                        {node.proof ? (
+                          <a class="text-mint hover:text-text-primary transition-colors" href={proofHref(node.proof)}>
+                            Proof ({proofStatusLabel(node.proof.status)})
+                          </a>
+                        ) : null}
+                        {node.external_url ? (
+                          <a class="text-text-secondary hover:text-mint transition-colors" href={node.external_url} target="_blank" rel="noopener">
+                            External
+                          </a>
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-      {index < groups.length - 1 ? (
-        <>
-          <div class="hidden md:flex items-center justify-center text-text-secondary/60">
+        {index < groups.length - 1 ? (
+          <div class="flex items-center justify-center text-text-secondary/60">
             <span class="text-2xl">&#8594;</span>
           </div>
-          <div class="flex md:hidden items-center justify-center text-text-secondary/60">
-            <span class="text-2xl">&#8595;</span>
-          </div>
-        </>
-      ) : null}
-    </>
-  ))}
+        ) : null}
+      </>
+    );
+  })}
 </div>
