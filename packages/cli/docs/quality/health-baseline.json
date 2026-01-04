@@ -19,13 +19,13 @@
     "total": 0
   },
   "tests": {
-    "duration_seconds": 36.43,
+    "duration_seconds": 36.28,
     "errors": 0,
     "failures": 0,
     "skipped": 4,
     "tests": 1923
   },
-  "timestamp": "2026-01-04T16:53:16Z",
+  "timestamp": "2026-01-04T17:05:44Z",
   "typecheck": {
     "errors": 70
   }
