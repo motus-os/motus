@@ -80,10 +80,23 @@ const trainingSteps = [
     fix: 'Run motus init --force and retry.',
   },
   {
+    id: 'roadmap',
+    title: 'Find a roadmap item',
+    goal: 'Identify a ready item you can claim.',
+    commands: ['motus roadmap ready'],
+    expected: 'A list of ready items with IDs.',
+    proof: {
+      label: 'Roadmap Schema',
+      url: 'https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/kernel.md',
+    },
+    failure: 'No ready items listed',
+    fix: 'Seed a roadmap item in coordination.db or load a project roadmap.',
+  },
+  {
     id: 'claim',
     title: 'Claim work',
     goal: 'Start a lease for the task you are about to execute.',
-    commands: ['motus work claim RI-000 --intent "Describe the task"'],
+    commands: ['motus work claim <roadmap_id> --intent "Describe the task"'],
     expected: 'A lease_id is returned.',
     proof: {
       label: 'Coordination API',
