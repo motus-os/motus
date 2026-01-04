@@ -7,7 +7,7 @@
       "verified_on": "2026-01-02",
       "method": "Docs-backed: coordination API reference",
       "claim": "Coordination surface is six API calls.",
-      "momentum": "Fewer handoff steps.",
+      "momentum": "Faster handoffs with less coordination.",
       "evidence": [
         {
           "label": "Coordination API docs",
@@ -22,7 +22,7 @@
       "verified_on": "2026-01-02",
       "method": "Docs-backed: module registry definitions",
       "claim": "Current/building/future is defined in the module registry.",
-      "momentum": "No ambiguity on what ships.",
+      "momentum": "Teams align on what ships now vs later.",
       "evidence": [
         {
           "label": "Module registry",
@@ -37,7 +37,7 @@
       "verified_on": "2026-01-02",
       "method": "Docs-backed: kernel schema definition",
       "claim": "Kernel schema v0.1.3 defines the authoritative tables.",
-      "momentum": "Stable contracts as you scale.",
+      "momentum": "Stable contracts reduce rework as you scale.",
       "evidence": [
         {
           "label": "Kernel schema docs",
@@ -52,7 +52,7 @@
       "verified_on": "2026-01-02",
       "method": "CI-backed: registry sync gate",
       "claim": "Docs and website registry are kept in sync.",
-      "momentum": "Docs never drift from source.",
+      "momentum": "Docs cannot drift from the source of truth.",
       "evidence": [
         {
           "label": "Evidence registry entry",
