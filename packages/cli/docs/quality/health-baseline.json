@@ -1,11 +1,11 @@
 {
   "coverage": {
     "core_percent": 78.65,
-    "overall_percent": 65.14,
-    "secondary_percent": 84.57
+    "overall_percent": 65.12,
+    "secondary_percent": 84.46
   },
   "lint": {
-    "errors": 8
+    "errors": 0
   },
   "policy_run": {
     "count": 0,
@@ -16,17 +16,16 @@
   "security": {
     "critical": 0,
     "high": 0,
-    "skipped": true,
     "total": 0
   },
   "tests": {
-    "duration_seconds": 36.04,
+    "duration_seconds": 36.43,
     "errors": 0,
     "failures": 0,
     "skipped": 4,
     "tests": 1923
   },
-  "timestamp": "2026-01-04T14:58:57Z",
+  "timestamp": "2026-01-04T16:53:16Z",
   "typecheck": {
     "errors": 70
   }
