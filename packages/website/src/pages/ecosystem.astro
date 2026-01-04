@@ -30,7 +30,7 @@ if (missingProof.length > 0) {
     <SectionHeader
       eyebrow="Ecosystem Blueprint"
       title="The finished system, mapped in one view"
-      subtitle="Motus Core is the center. Colors show what is current, building, and future."
+      subtitle="Outcome: see what ships now, what is building, and what is next. Mechanism: status-coded nodes with proof links."
       as="h1"
       size="md"
       titleClassName="text-3xl md:text-4xl"
@@ -58,22 +58,24 @@ if (missingProof.length > 0) {
   <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
     <Panel size="sm" class="space-y-phi-2">
       <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">How to read the map</p>
-      <ul class="space-y-phi-1 text-sm text-text-secondary">
-        <li>- Motus Core sits at the center of the ecosystem.</li>
-        <li>- Inputs are external systems Motus upgrades (logos).</li>
-        <li>- Modules extend the core without breaking invariants.</li>
-        <li>- Governance wraps execution and records proof.</li>
-        <li>- Future economy builds on signed, verifiable work.</li>
-      </ul>
-      <p class="text-sm text-text-secondary">
-        The “Motus adds” line shows the 1+1=3 effect for each integration.
-      </p>
-      <p class="text-xs text-text-secondary max-w-3xl">
-        Current items are shipped and verifiable. Building items are in flight with active roadmap IDs. Future items are directional and explicitly labeled.
-      </p>
-      <p class="text-sm text-text-secondary">
-        Future layers are labeled and never implied as shipped.
-      </p>
+      <div class="space-y-phi-2 text-sm text-text-secondary">
+        <div class="space-y-phi-1">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
+          <p>Know what is real now, in flight, or directional in one view.</p>
+        </div>
+        <div class="space-y-phi-1">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Mechanism</p>
+          <ul class="space-y-phi-1">
+            <li>- Motus Core is centered; inputs, modules, governance, and future layers fan out.</li>
+            <li>- The “Motus adds” line shows the lift per integration.</li>
+            <li>- Status chips mark current, building, future, and external.</li>
+          </ul>
+        </div>
+        <div class="space-y-phi-1">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Proof</p>
+          <p>Nodes link to evidence or roadmap status. Future items are labeled and never implied as shipped.</p>
+        </div>
+      </div>
     </Panel>
   </Section>
 
@@ -81,7 +83,7 @@ if (missingProof.length > 0) {
     <SectionHeader
       eyebrow="Implementation Path"
       title="Build the ecosystem in phases"
-      subtitle="Start with the kernel loop, then governance, then bundled modules. Each phase has a clear exit criteria."
+      subtitle="Outcome: scale without drift. Mechanism: kernel → governance → modules, each with exit criteria."
       class="mb-phi-3"
       maxWidth="max-w-3xl"
     />
@@ -89,9 +91,10 @@ if (missingProof.length > 0) {
       <Panel size="sm" class="space-y-phi-2">
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 1</p>
         <h3 class="text-lg font-display text-text-primary">Kernel Foundation</h3>
-        <p class="text-sm text-text-secondary">
-          Establish the coordination DB and complete the 6-call loop end to end.
-        </p>
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
+        <p class="text-sm text-text-secondary">Lease closes with outcome, evidence, and decision.</p>
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Mechanism</p>
+        <p class="text-sm text-text-secondary">Coordination DB + six-call loop.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
         <ul class="text-sm text-text-secondary space-y-phi-1">
           <li>- Lease released with outcome</li>
@@ -102,9 +105,10 @@ if (missingProof.length > 0) {
       <Panel size="sm" class="space-y-phi-2">
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 2</p>
         <h3 class="text-lg font-display text-text-primary">Governance + Evidence</h3>
-        <p class="text-sm text-text-secondary">
-          Validate the audit trail and enforce evidence requirements before completion.
-        </p>
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
+        <p class="text-sm text-text-secondary">Audit trail is complete before completion.</p>
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Mechanism</p>
+        <p class="text-sm text-text-secondary">Evidence bundles + decision log + policy gates.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
         <ul class="text-sm text-text-secondary space-y-phi-1">
           <li>- Evidence bundles are stored</li>
@@ -115,9 +119,10 @@ if (missingProof.length > 0) {
       <Panel size="sm" class="space-y-phi-2">
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 3</p>
         <h3 class="text-lg font-display text-text-primary">Bundled Modules</h3>
-        <p class="text-sm text-text-secondary">
-          Add optional capabilities only after kernel + governance are stable.
-        </p>
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
+        <p class="text-sm text-text-secondary">Capabilities scale without breaking invariants.</p>
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Mechanism</p>
+        <p class="text-sm text-text-secondary">Module registry + dependency checks.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
         <ul class="text-sm text-text-secondary space-y-phi-1">
           <li>- Module dependencies satisfied</li>
@@ -133,7 +138,7 @@ if (missingProof.length > 0) {
       </a>
     </div>
     <Panel size="sm" class="mt-phi-3 space-y-phi-2">
-      <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Ecosystem Outcomes</p>
+      <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Future Outcome</p>
       <div class="flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
         <span class="text-text-primary">Signed work receipts</span>
         <span class="text-text-secondary/60">&#8594;</span>
@@ -141,18 +146,10 @@ if (missingProof.length > 0) {
         <span class="text-text-secondary/60">&#8594;</span>
         <span class="text-text-primary">Motus Exchange</span>
       </div>
-      <p class="text-text-secondary text-sm">
-        These future layers are explicit in the registry and always labeled as future until shipped.
-      </p>
+      <p class="text-text-secondary text-sm">These layers remain future until verified and promoted in the registry.</p>
       <div class="flex flex-wrap gap-phi-2 text-sm">
         <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
           See future module definitions &#8594;
-        </a>
-        <a
-          href={`${base}open-source`}
-          class="text-mint hover:text-text-primary transition-colors"
-        >
-          Source available &#8594;
         </a>
       </div>
     </Panel>
