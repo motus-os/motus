@@ -83,9 +83,9 @@ packages = ["src/motus"]
 # Include static files (CSS, JS, HTML) for web UI
 [tool.hatch.build.targets.wheel.shared-data]
 LICENSE = "motus/LICENSE"
-LICENSING.md = "motus/LICENSING.md"
+"LICENSING.md" = "motus/LICENSING.md"
 NOTICE = "motus/NOTICE"
-TRADEMARKS.md = "motus/TRADEMARKS.md"
+"TRADEMARKS.md" = "motus/TRADEMARKS.md"
 
 [tool.hatch.build.targets.wheel.force-include]
 "migrations" = "motus/migrations"
