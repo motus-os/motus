@@ -115,24 +115,22 @@ const moduleHighlights = [
 <Layout title="Motus - The Execution Layer for AI Agents">
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-4xl">
     <div class="mb-phi-5 space-y-phi-2">
-      <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Momentum tax</p>
+      <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Baseline drag</p>
       <span class="text-6xl md:text-[7.5rem] font-display font-semibold text-mint">66%</span>
       <p class="text-lg md:text-xl text-text-secondary">
         of developers spend more time fixing AI code than they saved.<a href={`${base}evidence#claim-momentum_tax_survey`} class="text-text-secondary/60 hover:text-mint transition-colors align-super text-sm ml-1" title="Stack Overflow 2024 Developer Survey">*</a>
       </p>
-      <p class="text-sm text-text-secondary/80">
-        Motus is built to turn that drag into forward motion.
-      </p>
+      <p class="text-sm text-text-secondary/80">Outcome: every task ends with a reviewable receipt.</p>
     </div>
 
     <div class="w-32 h-px bg-mint/70 mx-auto mb-phi-5"></div>
 
-    <p class="text-sm uppercase tracking-[0.35em] text-text-secondary mb-phi-2">The problem is waste</p>
+    <p class="text-sm uppercase tracking-[0.35em] text-text-secondary mb-phi-2">Outcome</p>
     <h1 class="text-4xl md:text-6xl font-display text-text-primary mb-phi-2">
-      Workflow Compression
+      Reviewable execution.
     </h1>
     <p class="text-lg md:text-2xl text-text-secondary mb-phi-5">
-      Agents re-read, re-reason, re-work. Motus eliminates the redundancy.
+      Mechanism: a six-call loop with evidence + decisions.
     </p>
 
     <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">
@@ -150,7 +148,7 @@ const moduleHighlights = [
     <SectionHeader
       eyebrow="Demo"
       title="Run a verified loop locally"
-      subtitle="Claim work, attach evidence, log a decision, and release a receipt. No cloud required."
+      subtitle="Outcome: a receipt with evidence + decision. Mechanism: claim → evidence → decision → release. No cloud required."
       size="md"
       align="left"
       maxWidth="max-w-3xl"
@@ -292,9 +290,8 @@ const moduleHighlights = [
           Implementation Guide
         </h2>
         <p class="text-lg text-text-secondary">
-          Learn how the kernel works and how bundled modules extend it without
-          breaking invariants. This is the fastest path from curiosity to
-          correct implementation.
+          Outcome: implement without drift. Mechanism: kernel invariants, module
+          boundaries, status semantics, and roadmap IDs.
         </p>
         <a
           href={`${base}implementation`}
@@ -327,7 +324,7 @@ const moduleHighlights = [
   <Section tone="light" class="border-t border-line/10">
     <SectionHeader
       eyebrow="Choose Your Path"
-      subtitle="Each path includes a proof link so you can verify what matters before you commit time."
+      subtitle="Outcome: pick the right entry point with proof."
       class="mb-phi-5"
     >
       <span slot="title">Designed for the journey you are on</span>
@@ -353,7 +350,7 @@ const moduleHighlights = [
 
   <Section tone="light">
     <SectionHeader
-      subtitle="Each module eliminates a specific category of rework: reading, coordination, trust, and reasoning."
+      subtitle="Outcome: eliminate rework in reading, coordination, trust, and reasoning."
       class="mb-phi-5"
       size="xl"
       titleClassName="display-contrast"
@@ -378,9 +375,8 @@ const moduleHighlights = [
   <Section tone="light" class="text-center border-t border-line/10" innerClass="max-w-4xl">
     <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Source Available. Verifiable. Yours.</h2>
     <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
-      Motus keeps the execution model transparent so teams can verify how work is governed.<br class="hidden md:inline" />
-      We honor that by keeping the Work Compiler source-available.<br class="hidden md:inline" />
-      The infrastructure has a cost. The idea doesn&apos;t.
+      Outcome: audit the execution model and keep receipts local.<br class="hidden md:inline" />
+      Mechanism: source-available Work Compiler + local-first storage.
     </p>
 
     <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center text-left md:text-center">
