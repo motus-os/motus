@@ -59,11 +59,12 @@ def compute_artifact_hashes(
     """
     exclude = exclude_paths or set()
     items: list[ArtifactHash] = []
-    paths = _bounded_artifact_paths(evidence_dir)
-    for path in sorted(paths, key=lambda p: p.relative_to(evidence_dir).as_posix()):
+    evidence_dir_resolved = Path(os.path.realpath(evidence_dir))
+    paths = [Path(os.path.realpath(p)) for p in _bounded_artifact_paths(evidence_dir_resolved)]
+    for path in sorted(paths, key=lambda p: p.relative_to(evidence_dir_resolved).as_posix()):
         if not path.is_file():
             continue
-        rel = path.relative_to(evidence_dir).as_posix()
+        rel = path.relative_to(evidence_dir_resolved).as_posix()
         if rel in exclude:
             continue
         items.append(ArtifactHash(path=rel, sha256=sha256_file(path)))

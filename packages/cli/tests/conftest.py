@@ -14,6 +14,7 @@ Determinism Requirements (from Codex QC review):
 from __future__ import annotations
 
 import os
+import sys
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -29,6 +30,21 @@ from tests.fixtures.constants import (
 )
 
 CLAIMS_TRACKING_ENABLED = os.environ.get("MOTUS_TRACK_CLAIMS", "0") == "1"
+
+# Ensure tests import the local package, not a globally installed motus.
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_PATH = PROJECT_ROOT / "src"
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+
+# If an installed motus package is already imported, purge it so tests
+# exercise the local source tree under src/.
+for name, module in list(sys.modules.items()):
+    if not name.startswith("motus"):
+        continue
+    module_file = getattr(module, "__file__", "") or ""
+    if module_file and str(SRC_PATH) not in module_file:
+        sys.modules.pop(name, None)
 
 # ============================================================================
 # Determinism Fixtures

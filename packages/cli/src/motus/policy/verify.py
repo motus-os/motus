@@ -146,8 +146,8 @@ def verify_evidence_bundle(
             message_parts.append(f"Path traversal rejected (absolute): {rel}")
             continue
 
-        path = (evidence_dir / rel).resolve()
-        evidence_dir_resolved = evidence_dir.resolve()
+        path = Path(os.path.realpath(evidence_dir / rel))
+        evidence_dir_resolved = Path(os.path.realpath(evidence_dir))
 
         # Python 3.9+ is_relative_to check
         try:
