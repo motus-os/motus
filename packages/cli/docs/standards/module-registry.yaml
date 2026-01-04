@@ -174,3 +174,59 @@ bundled_modules:
     implementation_guides:
       website: "/implementation#motus-blueprints"
       docs: "packages/cli/docs/implementation/modules/motus-blueprints.md"
+
+  - id: work-ledger
+    marketing_name: "Work Ledger"
+    scope: bundled
+    status: future
+    roadmap_id: "RI-IP-002"
+    target_release: null
+    description: "Signed work receipts + provenance ledger for verified execution."
+    dependencies:
+      - "proof-engine"
+    best_practices:
+      - "Receipts are immutable and append-only."
+      - "Ledger entries reference evidence bundle hashes."
+      - "Signing keys are rotated and auditable."
+      - "Ledger writes flow through kernel APIs."
+    implementation_guides:
+      website: "/implementation#work-ledger"
+      docs: "packages/cli/docs/implementation/modules/work-ledger.md"
+
+  - id: asset-registry
+    marketing_name: "Asset Registry"
+    scope: bundled
+    status: future
+    roadmap_id: "RI-IP-001"
+    target_release: null
+    description: "Registry of IP assets, owners, license terms, and usage rules."
+    dependencies:
+      - "work-ledger"
+      - "module-manager"
+    best_practices:
+      - "Asset IDs are stable and namespace-scoped."
+      - "License terms are machine-readable."
+      - "Usage attribution references ledger entries."
+      - "Access policies are enforced by proof gates."
+    implementation_guides:
+      website: "/implementation#asset-registry"
+      docs: "packages/cli/docs/implementation/modules/asset-registry.md"
+
+  - id: motus-exchange
+    marketing_name: "Motus Exchange"
+    scope: bundled
+    status: future
+    roadmap_id: "RI-IP-005"
+    target_release: null
+    description: "Brokerage layer for licensing IP and routing verified work."
+    dependencies:
+      - "asset-registry"
+      - "work-ledger"
+    best_practices:
+      - "Transactions reference asset and ledger entries."
+      - "Pricing and usage terms are explicit."
+      - "Execution proofs are required for settlement."
+      - "No exchange writes bypass policy gates."
+    implementation_guides:
+      website: "/implementation#motus-exchange"
+      docs: "packages/cli/docs/implementation/modules/motus-exchange.md"
