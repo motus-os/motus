@@ -4,139 +4,37 @@ import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import SectionHeader from '../components/SectionHeader.astro';
-import PersonaCard from '../components/PersonaCard.astro';
-import ModuleCard from '../components/ModuleCard.astro';
 import DemoLoop from '../components/DemoLoop.astro';
-import personaMap from '../data/persona-map.json';
-import proofLedger from '../data/proof-ledger.json';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
-const proofIndex = new Map(proofLedger.claims.map((claim) => [claim.id, claim]));
-const allowedProofStatuses = new Set(['verified', 'target']);
-const evidenceAnchor = (claim) => `${base}evidence#claim-${claim.id}`;
-const missingPersonaProofs = (personaMap.personas || [])
-  .filter((persona) => persona.proof_id && !proofIndex.has(persona.proof_id))
-  .map((persona) => persona.proof_id);
-
-if (missingPersonaProofs.length > 0) {
-  throw new Error(`Persona map references missing proof entries: ${missingPersonaProofs.join(', ')}`);
-}
-
-for (const claim of proofLedger.claims) {
-  if (!claim.id) {
-    throw new Error('Proof ledger claim missing id.');
-  }
-  if (!allowedProofStatuses.has(claim.status)) {
-    throw new Error(`Proof ledger claim ${claim.id} has invalid status.`);
-  }
-  if (typeof claim.featured !== 'boolean') {
-    throw new Error(`Proof ledger claim ${claim.id} missing featured boolean.`);
-  }
-  if (claim.status === 'verified' && !claim.verified_on) {
-    throw new Error(`Proof ledger claim ${claim.id} missing verified_on date.`);
-  }
-  if (claim.status === 'verified' && !claim.method) {
-    throw new Error(`Proof ledger claim ${claim.id} missing method.`);
-  }
-  if (!claim.momentum) {
-    throw new Error(`Proof ledger claim ${claim.id} missing momentum context.`);
-  }
-  if (!claim.evidence || claim.evidence.length === 0 || !claim.evidence[0].url) {
-    throw new Error(`Proof ledger claim ${claim.id} missing evidence.`);
-  }
-}
-const featuredClaims = proofLedger.claims.filter((claim) => claim.featured);
-const moduleHighlights = [
-  {
-    name: 'LENS',
-    focus: 'Reading',
-    summary: {
-      lead: 'Read only what matters.',
-      rest: 'Deterministic Lens slices keep context tight.',
-    },
-    bullets: [
-      'Token compression lens',
-      'Deterministic context slices',
-      'Snapshot provenance',
-    ],
-    href: `${base}implementation`,
-    cta: 'Explore module details',
-  },
-  {
-    name: 'LEASES',
-    focus: 'Coordination',
-    summary: {
-      lead: 'No collision handoffs.',
-      rest: 'Lease-based coordination locks work until release.',
-    },
-    bullets: [
-      'Lease-based handoffs',
-      'Conflict detection',
-      'Deterministic releases',
-    ],
-    href: `${base}implementation`,
-    cta: 'Explore module details',
-  },
-  {
-    name: 'RECEIPTS',
-    focus: 'Trust',
-    summary: {
-      lead: 'Every action is reviewable.',
-      rest: 'Evidence bundles + policy gates produce receipts.',
-    },
-    bullets: [
-      'Evidence bundles',
-      'Policy gates',
-      'Audit trail integrity',
-    ],
-    href: `${base}implementation`,
-    cta: 'Explore module details',
-  },
-  {
-    name: 'STRATEGIES',
-    focus: 'Reasoning',
-    summary: {
-      lead: 'Reuse decisions, not guesswork.',
-      rest: 'Pattern library captures triggers + reviews.',
-    },
-    bullets: [
-      'Decision patterns',
-      'Trigger conditions',
-      'Review heuristics',
-    ],
-    href: `${base}strategies`,
-    cta: 'Explore module details',
-  },
-];
 ---
 
 <Layout title="Motus - The Execution Layer for AI Agents">
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-4xl">
     <div class="mb-phi-5 space-y-phi-2">
-      <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Baseline drag</p>
+      <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">Your AI agents waste</p>
       <span class="text-6xl md:text-[7.5rem] font-display font-semibold text-mint">66%</span>
       <p class="text-lg md:text-xl text-text-secondary">
-        of developers spend more time fixing AI code than they saved.<a href={`${base}evidence#claim-momentum_tax_survey`} class="text-text-secondary/60 hover:text-mint transition-colors align-super text-sm ml-1" title="Stack Overflow 2024 Developer Survey">*</a>
+        of developers spend more time fixing AI code than they saved. Motus makes every action verifiable.<a href={`${base}evidence#claim-momentum_tax_survey`} class="text-text-secondary/60 hover:text-mint transition-colors align-super text-sm ml-1" title="Stack Overflow 2024 Developer Survey">*</a>
       </p>
-      <p class="text-sm text-text-secondary/80">Outcome: every task ends with a reviewable receipt.</p>
     </div>
 
     <div class="w-32 h-px bg-mint/70 mx-auto mb-phi-5"></div>
 
-    <p class="text-sm uppercase tracking-[0.35em] text-text-secondary mb-phi-2">Outcome</p>
+    <p class="text-sm uppercase tracking-[0.35em] text-text-secondary mb-phi-2">The fix</p>
     <h1 class="text-4xl md:text-6xl font-display text-text-primary mb-phi-2">
-      Reviewable execution.
+      Claim work. Prove it&apos;s done.
     </h1>
     <p class="text-lg md:text-2xl text-text-secondary mb-phi-5">
-      Mechanism: a six-call loop with evidence + decisions.
+      One API. Ship receipts, not trust.
     </p>
 
     <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">
       <InstallCommand />
-      <a href={`${base}ecosystem`} class="text-mint hover:text-text-primary transition-colors px-phi-3 py-phi-2">
-        View System Flow &#8594;
+      <a href={`${base}get-started`} class="text-mint hover:text-text-primary transition-colors px-phi-3 py-phi-2">
+        See it work &#8594;
       </a>
     </div>
   </Section>
@@ -145,7 +43,7 @@ const moduleHighlights = [
     <SectionHeader
       eyebrow="Demo"
       title="Run a verified loop locally"
-      subtitle="Outcome: a receipt with evidence + decision. Mechanism: claim → evidence → decision → release. No cloud required."
+      subtitle="Get a receipt with evidence and decision in minutes. No cloud required."
       size="md"
       align="left"
       maxWidth="max-w-3xl"
@@ -178,237 +76,38 @@ const moduleHighlights = [
     </div>
     <div class="mt-phi-3 flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
       <span>Need the full walkthrough?</span>
-      <a href={`${base}implementation#quickstart`} class="text-mint hover:text-text-primary transition-colors">
-        Quickstart &#8594;
+      <a href={`${base}get-started`} class="text-mint hover:text-text-primary transition-colors">
+        Get Started &#8594;
       </a>
-    </div>
-  </Section>
-
-  <Section tone="light" pad="tight" class="border-t border-line/10">
-    <SectionHeader
-      eyebrow="Momentum Signals"
-      title="Claims tied to forward motion"
-      subtitle="Lead with the outcome, then verify the mechanism."
-      size="md"
-      class="mb-phi-4"
-      maxWidth="max-w-3xl"
-    />
-    <div class="flex flex-wrap justify-center items-center gap-phi-2 mb-phi-3 text-sm text-text-secondary">
-      <span class="status-badge status-current">Verified</span>
-      <span class="status-badge status-building">Target</span>
-      <span class="text-text-secondary/60">&#183;</span>
-      <a href={`${base}evidence`} class="text-mint hover:text-text-primary transition-colors">
-        Evidence Registry
-      </a>
-    </div>
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-3">
-      {featuredClaims.map((claim) => {
-        const statusClass = claim.status === 'verified' ? 'status-current' : 'status-building';
-        const statusLabel = claim.status === 'verified' ? 'Verified' : 'Target';
-        return (
-          <Panel size="md" class="text-left space-y-phi-2">
-            <div class="flex justify-start">
-              <span class={`status-badge ${statusClass}`}>{statusLabel}</span>
-            </div>
-            <div>
-              <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
-              <p class="text-lg font-display text-text-primary mt-phi-1">
-                {claim.momentum}
-              </p>
-            </div>
-            <div>
-              <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Mechanism</p>
-              <p class="text-sm text-text-secondary mt-phi-1">
-                {claim.claim}
-              </p>
-            </div>
-            <a
-              class="text-sm text-mint hover:text-text-primary transition-colors inline-flex"
-              href={evidenceAnchor(claim)}
-            >
-              Evidence &#8594;
-            </a>
-          </Panel>
-        );
-      })}
-    </div>
-    <div class="mt-phi-4 text-center">
-      <p class="text-sm text-text-secondary">
-        Every claim links to proof artifacts in the registry.
-      </p>
-      <a href={`${base}evidence`} class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors mt-phi-2">
-        View the Evidence Registry &#8594;
-      </a>
-    </div>
-  </Section>
-
-  <Section tone="dark" pad="slim" class="border-y border-line/10" innerClass="max-w-4xl">
-    <div class="text-center space-y-phi-2">
-      <div class="flex flex-wrap items-center justify-center gap-phi-2">
-        <img
-          src={`${base}brand/veritas-v-white.svg`}
-          alt="Veritas Collaborative"
-          class="h-7 w-7 md:h-8 md:w-8"
-        />
-        <div class="text-left">
-          <p class="text-[0.62rem] uppercase tracking-[0.35em] text-text-secondary">Maintained By</p>
-          <h2 class="text-lg md:text-xl font-display text-text-primary">Veritas Collaborative, LLC</h2>
-        </div>
-      </div>
-      <p class="text-sm text-text-secondary">
-        Source-available, proof-first infrastructure for AI agent execution.
-      </p>
-      <div class="flex flex-wrap justify-center gap-phi-2 text-sm">
-        <a href={`${base}open-source`} class="text-mint hover:text-text-primary transition-colors">
-          Source access
-        </a>
-        <a href={`${base}license`} class="text-mint hover:text-text-primary transition-colors">
-          License
-        </a>
-        <a href={`${base}trademarks`} class="text-mint hover:text-text-primary transition-colors">
-          Trademarks
-        </a>
-        <a href="mailto:licensing@motusos.ai" class="text-mint hover:text-text-primary transition-colors">
-          Licensing
-        </a>
-      </div>
-    </div>
-  </Section>
-
-  <Section tone="light">
-    <Panel tone="light" size="lg" class="grid md:grid-cols-2 gap-phi-5 items-center">
-      <div class="space-y-phi-2">
-        <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">For Builders</p>
-        <h2 class="text-3xl md:text-4xl font-display text-text-primary">
-          Implementation Guide
-        </h2>
-        <p class="text-lg text-text-secondary">
-          Outcome: implement without drift. Mechanism: kernel invariants, module
-          boundaries, status semantics, and roadmap IDs.
-        </p>
-        <a
-          href={`${base}implementation`}
-          class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors"
-        >
-          View Implementation Guide &#8594;
-        </a>
-      </div>
-      <Panel size="md" class="space-y-phi-2 text-sm text-text-secondary">
-        <div class="flex items-start gap-phi-2">
-          <span class="text-mint">&#x2022;</span>
-          <span>Kernel invariants and data paths</span>
-        </div>
-        <div class="flex items-start gap-phi-2">
-          <span class="text-mint">&#x2022;</span>
-          <span>Bundled module boundaries + best practices</span>
-        </div>
-        <div class="flex items-start gap-phi-2">
-          <span class="text-mint">&#x2022;</span>
-          <span>Status semantics: current vs building vs future</span>
-        </div>
-        <div class="flex items-start gap-phi-2">
-          <span class="text-mint">&#x2022;</span>
-          <span>Roadmap IDs tied to implementation detail</span>
-        </div>
-      </Panel>
-    </Panel>
-  </Section>
-
-  <Section tone="light" class="border-t border-line/10">
-    <SectionHeader
-      eyebrow="Choose Your Path"
-      subtitle="Outcome: pick the right entry point with proof."
-      class="mb-phi-5"
-    >
-      <span slot="title">Designed for the journey you are on</span>
-    </SectionHeader>
-    <div class="grid md:grid-cols-2 gap-phi-3">
-      {personaMap.personas.map((persona) => {
-        const proof = proofIndex.get(persona.proof_id);
-        const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
-        const proofLink = proof ? `${base}evidence#claim-${proof.id}` : null;
-        return (
-          <PersonaCard
-            title={persona.title}
-            hook={persona.hook}
-            value={persona.value}
-            href={`${base}${path}`}
-            proofLabel={proof ? proof.evidence[0].label : null}
-            proofUrl={proofLink}
-          />
-        );
-      })}
-    </div>
-  </Section>
-
-  <Section tone="light">
-    <SectionHeader
-      subtitle="Outcome: eliminate rework in reading, coordination, trust, and reasoning."
-      class="mb-phi-5"
-      size="xl"
-      titleClassName="display-contrast"
-    >
-      <span slot="title">Four Modules. <strong>Four Types of Waste Eliminated.</strong></span>
-    </SectionHeader>
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-3">
-      {moduleHighlights.map((module) => (
-        <ModuleCard
-          name={module.name}
-          focus={module.focus}
-          summaryLead={module.summary.lead}
-          summaryRest={module.summary.rest}
-          bullets={module.bullets}
-          href={module.href}
-          cta={module.cta}
-        />
-      ))}
     </div>
   </Section>
 
   <Section tone="light" class="text-center border-t border-line/10" innerClass="max-w-4xl">
     <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Source Available. Verifiable. Yours.</h2>
     <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
-      Outcome: audit the execution model and keep receipts local.<br class="hidden md:inline" />
-      Mechanism: source-available Work Compiler + local-first storage.
+      Audit the execution model and keep receipts local.<br class="hidden md:inline" />
+      Source-available Work Compiler + local-first storage.
     </p>
 
     <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center text-left md:text-center">
-      <div class="flex flex-col items-start md:items-center gap-1">
-        <div class="flex items-center gap-phi-1">
-          <span class="text-mint text-xl">&#10003;</span>
-          <span class="text-text-primary">Your receipts are YOUR data</span>
+        <div class="flex flex-col items-start md:items-center gap-1">
+          <div class="flex items-center gap-phi-1">
+            <span class="text-mint text-xl">&#10003;</span>
+            <span class="text-text-primary">Your receipts are your data</span>
+          </div>
         </div>
-        <a
-          href={`${base}evidence#claim-coordination_db_source`}
-          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
-        >
-          Evidence &#8594;
-        </a>
-      </div>
-      <div class="flex flex-col items-start md:items-center gap-1">
-        <div class="flex items-center gap-phi-1">
-          <span class="text-mint text-xl">&#10003;</span>
-          <span class="text-text-primary">Local by default</span>
+        <div class="flex flex-col items-start md:items-center gap-1">
+          <div class="flex items-center gap-phi-1">
+            <span class="text-mint text-xl">&#10003;</span>
+            <span class="text-text-primary">Local by default</span>
+          </div>
         </div>
-        <a
-          href={`${base}evidence#claim-no_cloud_dependency`}
-          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
-        >
-          Evidence &#8594;
-        </a>
-      </div>
-      <div class="flex flex-col items-start md:items-center gap-1">
-        <div class="flex items-center gap-phi-1">
-          <span class="text-mint text-xl">&#10003;</span>
-          <span class="text-text-primary">Audit every line of code</span>
+        <div class="flex flex-col items-start md:items-center gap-1">
+          <div class="flex items-center gap-phi-1">
+            <span class="text-mint text-xl">&#10003;</span>
+            <span class="text-text-primary">Audit the full workflow</span>
+          </div>
         </div>
-        <a
-          href={`${base}evidence`}
-          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors"
-        >
-          Evidence &#8594;
-        </a>
-      </div>
     </div>
 
     <div class="mt-phi-4">

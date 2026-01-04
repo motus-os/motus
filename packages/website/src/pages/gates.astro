@@ -13,7 +13,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-3xl">
     <SectionHeader
       eyebrow="Evidence & Gates"
-      subtitle="Outcome: work cannot close without evidence and decision."
+      subtitle="Work cannot close without evidence and decision."
       size="xl"
     >
       <span slot="title">Gates make execution safe.</span>
@@ -29,7 +29,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     <SectionHeader
       eyebrow="Gate Types"
       title="Three checks, one outcome"
-      subtitle="Outcome first, mechanism next. Each gate maps to the six-call loop."
+      subtitle="Each gate maps to the six-call loop."
       align="left"
       size="md"
       class="mb-phi-4"
@@ -38,14 +38,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     <div class="grid md:grid-cols-3 gap-phi-3">
       <Panel size="sm" class="space-y-phi-2">
         <h3 class="text-lg font-display text-text-primary">Policy gate</h3>
-        <div class="space-y-phi-1 text-sm text-text-secondary">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
-          <p>Only eligible work can proceed.</p>
-        </div>
-        <div class="space-y-phi-1 text-sm text-text-secondary">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Mechanism</p>
-          <p>Validates eligibility, scope, and policy packs.</p>
-        </div>
+        <p class="text-sm text-text-secondary">Only eligible work can proceed.</p>
+        <p class="text-sm text-text-secondary">Validates eligibility, scope, and policy packs.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">claim_work → release_work</p>
         <a href={`${base}evidence#claim-policy_gates`} class="text-sm text-mint hover:text-text-primary transition-colors">
@@ -54,14 +48,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       </Panel>
       <Panel size="sm" class="space-y-phi-2">
         <h3 class="text-lg font-display text-text-primary">Evidence gate</h3>
-        <div class="space-y-phi-1 text-sm text-text-secondary">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
-          <p>Completion cannot happen without proof.</p>
-        </div>
-        <div class="space-y-phi-1 text-sm text-text-secondary">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Mechanism</p>
-          <p>Requires evidence artifacts before release.</p>
-        </div>
+        <p class="text-sm text-text-secondary">Completion cannot happen without proof.</p>
+        <p class="text-sm text-text-secondary">Requires evidence artifacts before release.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_evidence → release_work</p>
         <a href={`${base}evidence#claim-evidence_gate`} class="text-sm text-mint hover:text-text-primary transition-colors">
@@ -70,14 +58,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       </Panel>
       <Panel size="sm" class="space-y-phi-2">
         <h3 class="text-lg font-display text-text-primary">Completion gate</h3>
-        <div class="space-y-phi-1 text-sm text-text-secondary">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
-          <p>Every release includes evidence + decision.</p>
-        </div>
-        <div class="space-y-phi-1 text-sm text-text-secondary">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Mechanism</p>
-          <p>Requires decision log + evidence before release.</p>
-        </div>
+        <p class="text-sm text-text-secondary">Every release includes evidence + decision.</p>
+        <p class="text-sm text-text-secondary">Requires decision log + evidence before release.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_decision → release_work</p>
         <a href={`${base}evidence#claim-completion_gate`} class="text-sm text-mint hover:text-text-primary transition-colors">

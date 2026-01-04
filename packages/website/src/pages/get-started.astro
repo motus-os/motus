@@ -1,0 +1,172 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Section from '../components/Section.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Panel from '../components/Panel.astro';
+import InstallCommand from '../components/InstallCommand.astro';
+import PersonaCard from '../components/PersonaCard.astro';
+
+import { quickstartSteps, trainingSteps } from '../data/get-started-steps.js';
+import personaMap from '../data/persona-map.json';
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<Layout title="Get Started - Motus">
+  <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-3xl">
+    <SectionHeader
+      eyebrow="Get Started"
+      title="Run the six-call loop in minutes"
+      subtitle="Install, initialize, claim work, attach proof, and release a receipt."
+      size="xl"
+    />
+    <div class="mt-phi-3 flex flex-col items-center gap-phi-3">
+      <InstallCommand />
+      <a
+        href={`${base}how-it-works`}
+        class="text-mint hover:text-text-primary transition-colors text-sm"
+      >
+        See how the loop works &#8594;
+      </a>
+    </div>
+  </Section>
+
+  <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
+    <SectionHeader
+      eyebrow="Quickstart"
+      title="Three steps to a receipt"
+      subtitle="Copy, run, and verify. This is the shortest path to a recorded outcome."
+      align="left"
+      size="md"
+      class="mb-phi-4"
+      maxWidth="max-w-3xl"
+    />
+    <div class="space-y-phi-3">
+      {quickstartSteps.map((step, index) => (
+        <Panel size="sm" class="space-y-phi-2">
+          <div class="flex flex-wrap items-center justify-between gap-phi-2">
+            <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
+              Step {String(index + 1).padStart(2, '0')}
+            </p>
+          </div>
+          <h2 class="text-2xl font-display text-text-primary">{step.title}</h2>
+          <p class="text-sm text-text-secondary">{step.goal}</p>
+          <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
+            <div class="space-y-phi-1">
+              <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
+              {step.commands.map((command) => (
+                <code class="text-mint font-mono text-sm block">{command}</code>
+              ))}
+            </div>
+            <div class="space-y-phi-1">
+              <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>
+              <p class="text-sm text-text-secondary">{step.expected}</p>
+            </div>
+          </div>
+        </Panel>
+      ))}
+    </div>
+  </Section>
+
+  <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
+    <SectionHeader
+      eyebrow="Step by Step"
+      title="Full loop, end to end"
+      subtitle="Use these commands if you want every gate, proof, and receipt in place."
+      align="left"
+      size="md"
+      class="mb-phi-4"
+      maxWidth="max-w-3xl"
+    />
+    <div class="relative">
+      <span class="absolute left-phi-2 top-0 bottom-0 w-px bg-line/20"></span>
+      <ol class="space-y-phi-2 md:space-y-phi-3 pl-phi-4 md:pl-phi-5">
+        {trainingSteps.map((step, index) => (
+          <li id={step.id} class="relative scroll-mt-24">
+            <span class="absolute left-phi-2 top-phi-2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-line/30 bg-surface text-xs font-mono text-text-secondary">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <Panel size="sm" class="space-y-phi-2">
+              <div class="flex flex-wrap items-center justify-between gap-phi-2">
+                <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
+                  Step {String(index + 1).padStart(2, '0')}
+                </p>
+                {step.proof ? (
+                  <a
+                    href={step.proof.url.startsWith('http') ? step.proof.url : `${base}${step.proof.url.replace(/^\/+/, '')}`}
+                    class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
+                    target={step.proof.url.startsWith('http') ? '_blank' : undefined}
+                    rel={step.proof.url.startsWith('http') ? 'noopener' : undefined}
+                  >
+                    Learn more &#8594;
+                  </a>
+                ) : null}
+              </div>
+              <h3 class="text-xl font-display text-text-primary">{step.title}</h3>
+              <p class="text-sm text-text-secondary">{step.goal}</p>
+              <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
+                <div class="space-y-phi-1">
+                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
+                  {step.commands.map((command) => (
+                    <code class="text-mint font-mono text-sm block">{command}</code>
+                  ))}
+                </div>
+                <div class="space-y-phi-1">
+                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>
+                  <p class="text-sm text-text-secondary">{step.expected}</p>
+                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">If it fails</p>
+                  <p class="text-sm text-text-secondary">{step.failure}</p>
+                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">Fix</p>
+                  <p class="text-sm text-text-secondary">{step.fix}</p>
+                </div>
+              </div>
+            </Panel>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-4xl text-center">
+    <SectionHeader
+      title="Next steps"
+      subtitle="When you finish the loop, move into the deeper implementation reference."
+      size="md"
+      class="mb-phi-3"
+    />
+    <div class="flex flex-wrap justify-center gap-phi-2 text-sm">
+      <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
+        Implementation Guide &#8594;
+      </a>
+      <a href={`${base}how-it-works`} class="text-mint hover:text-text-primary transition-colors">
+        How it Works &#8594;
+      </a>
+    </div>
+  </Section>
+
+  <Section tone="light" class="border-t border-line/10">
+    <SectionHeader
+      eyebrow="Choose Your Path"
+      subtitle="Pick the entry point that matches your role."
+      class="mb-phi-5"
+    >
+      <span slot="title">Designed for the journey you are on</span>
+    </SectionHeader>
+    <div class="grid md:grid-cols-2 gap-phi-3">
+      {personaMap.personas.map((persona) => {
+        const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
+        return (
+          <PersonaCard
+            title={persona.title}
+            hook={persona.hook}
+            value={persona.value}
+            href={`${base}${path}`}
+            cta="Start here"
+          />
+        );
+      })}
+    </div>
+  </Section>
+</Layout>

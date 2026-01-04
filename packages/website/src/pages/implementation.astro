@@ -39,172 +39,6 @@ const patternStatusLabel = (status) => {
   if (status === 'building') return 'Building';
   return 'Target';
 };
-const trainingSteps = [
-  {
-    id: 'install',
-    title: 'Install Motus',
-    goal: 'Install the CLI and verify it runs in your environment.',
-    commands: ['pip install motusos', 'motus --help'],
-    expected: 'CLI help prints and lists system + work commands.',
-    proof: {
-      label: 'PyPI Package',
-      url: 'https://pypi.org/project/motusos/',
-    },
-    failure: 'motus: command not found',
-    fix: 'Activate the Python environment where you installed motusos.',
-  },
-  {
-    id: 'prime',
-    title: 'Prime agent defaults',
-    goal: 'Install onboarding defaults before any agent runs.',
-    commands: ['motus install'],
-    expected: 'Defaults install without errors.',
-    proof: {
-      label: 'Quickstart',
-      url: `${base}quickstart`,
-    },
-    failure: 'Write permission errors',
-    fix: 'Run in a writable directory or choose a different path.',
-  },
-  {
-    id: 'init',
-    title: 'Initialize a workspace',
-    goal: 'Create the .motus layout for local state.',
-    commands: ['motus init --lite --path .'],
-    expected: '.motus/ is created in the target repo.',
-    proof: {
-      label: 'Kernel Guide',
-      url: `${base}implementation#kernel`,
-    },
-    failure: '.motus exists but is incomplete',
-    fix: 'Re-run motus init --force to repair missing directories.',
-  },
-  {
-    id: 'doctor',
-    title: 'Run health checks',
-    goal: 'Validate schema and migrations before execution.',
-    commands: ['motus doctor'],
-    expected: 'Health checks return OK status.',
-    proof: {
-      label: 'Quickstart',
-      url: `${base}quickstart`,
-    },
-    failure: 'Schema/migration errors',
-    fix: 'Run motus init --force and retry.',
-  },
-  {
-    id: 'roadmap',
-    title: 'Find a roadmap item',
-    goal: 'Identify a ready item you can claim.',
-    commands: ['motus roadmap ready'],
-    expected: 'A list of ready items with IDs.',
-    proof: {
-      label: 'Kernel Schema',
-      url: `${base}schema`,
-    },
-    failure: 'No ready items listed',
-    fix: 'Seed a roadmap item in coordination.db or load a project roadmap.',
-  },
-  {
-    id: 'claim',
-    title: 'Claim work',
-    goal: 'Start a lease for the task you are about to execute.',
-    commands: ['motus work claim <roadmap_id> --intent "Describe the task"'],
-    expected: 'A lease_id is returned.',
-    proof: {
-      label: 'Coordination API',
-      url: `${base}how-it-works`,
-    },
-    failure: 'Item not found or blocked',
-    fix: 'Use a valid roadmap ID or wait for dependencies.',
-  },
-  {
-    id: 'context-outcome',
-    title: 'Context + outcome',
-    goal: 'Fetch fresh context and register the deliverable.',
-    commands: [
-      'motus work context <lease_id>',
-      'motus work outcome <lease_id> file --path src/example.py --description "Deliverable"',
-    ],
-    expected: 'Context and outcome are recorded against the lease.',
-    proof: {
-      label: 'Coordination API',
-      url: `${base}how-it-works`,
-    },
-    failure: 'Lease expired or missing',
-    fix: 'Re-claim the work and retry.',
-  },
-  {
-    id: 'verify-release',
-    title: 'Evidence, decision, release',
-    goal: 'Attach proof, log the decision, and release the lease.',
-    commands: [
-      'motus work evidence <lease_id> test_result --passed 12 --failed 0',
-      'motus work decision <lease_id> "Decision summary" --rationale "Why this path"',
-      'motus work release <lease_id> success',
-    ],
-    expected: 'Lease released with evidence and decision logged.',
-    proof: {
-      label: 'Coordination API',
-      url: `${base}how-it-works`,
-    },
-    failure: 'Missing evidence or decision',
-    fix: 'Add at least one evidence entry and decision before release.',
-  },
-  {
-    id: 'audit',
-    title: 'Audit the record',
-    goal: 'Confirm the final state is visible and reviewable.',
-    commands: ['motus work status <lease_id>'],
-    expected: 'Status shows outcome, evidence, and decision entries.',
-    proof: {
-      label: 'Kernel Guide',
-      url: `${base}implementation#kernel`,
-    },
-    failure: 'Missing evidence or decision in status output',
-    fix: 'Re-run motus work evidence / decision and recheck.',
-  },
-];
-const quickstartSteps = [
-  {
-    title: 'Install Motus',
-    goal: 'Install the CLI and confirm it runs in your environment.',
-    commands: ['pip install motusos', 'motus --help'],
-    expected: 'CLI help prints and lists system + work commands.',
-    proof: {
-      label: 'CLI Reference',
-      url: `${base}implementation#step-by-step`,
-    },
-  },
-  {
-    title: 'Initialize your workspace',
-    goal: 'Create the local .motus layout and validate the kernel.',
-    commands: ['motus init --lite --path .', 'motus doctor'],
-    expected: 'Local state and schema checks return OK.',
-    proof: {
-      label: 'Kernel Guide',
-      url: `${base}implementation#kernel`,
-    },
-  },
-  {
-    title: 'Run the 6-call loop',
-    goal: 'Claim work, attach evidence, and release the lease.',
-    commands: [
-      'motus work claim <roadmap_id> --intent \"Describe the task\"',
-      'motus work context <lease_id>',
-      'motus work outcome <lease_id> file --path src/example.py --description \"Deliverable\"',
-      'motus work evidence <lease_id> test_result --passed 12 --failed 0',
-      'motus work decision <lease_id> \"Decision summary\" --rationale \"Why this path\"',
-      'motus work release <lease_id> success',
-      'motus work status <lease_id>',
-    ],
-    expected: 'Lease released with outcome, evidence, and decision recorded.',
-    proof: {
-      label: 'Coordination API',
-      url: `${base}how-it-works`,
-    },
-  },
-];
 ---
 
 <Layout title="Implementation">
@@ -212,188 +46,30 @@ const quickstartSteps = [
     <section class="space-y-phi-2 md:space-y-phi-3">
       <SectionHeader
         eyebrow="Implementation Guide"
-        title="Implement Motus in 9 steps"
-        subtitle="Start with the training path below. Reference sections follow if you need kernel or module details."
+        title="Implementation reference"
+        subtitle="Start with Get Started for the hands-on loop. Use this page for deeper reference and patterns."
         as="h1"
         align="left"
         size="xl"
         maxWidth="max-w-3xl"
       />
-    </section>
-
-    <section id="quickstart" class="mt-phi-4 md:mt-phi-5 space-y-phi-2 md:space-y-phi-3 scroll-mt-24">
-      <SectionHeader
-        eyebrow="Quickstart"
-        title="First success in minutes"
-        subtitle="The shortest path from install to a verified work receipt. Each step shows commands, expected output, and proof."
-        align="left"
-        size="md"
-        maxWidth="max-w-3xl"
-      />
-      <div class="space-y-phi-2 md:space-y-phi-3">
-        {quickstartSteps.map((step, index) => (
-          <Panel size="sm" class="space-y-phi-2">
-            <div class="flex flex-wrap items-center justify-between gap-phi-2">
-              <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
-                Step {String(index + 1).padStart(2, '0')}
-              </p>
-              <a
-                href={step.proof.url}
-                class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
-              >
-                Proof: {step.proof.label} &#8594;
-              </a>
-            </div>
-            <h2 class="text-2xl font-display text-text-primary">{step.title}</h2>
-            <p class="text-sm text-text-secondary">{step.goal}</p>
-            <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
-              <div class="space-y-phi-1">
-                <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
-                {step.commands.map((command) => (
-                  <code class="text-mint font-mono text-sm block">{command}</code>
-                ))}
-              </div>
-              <div class="space-y-phi-1">
-                <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>
-                <p class="text-sm text-text-secondary">{step.expected}</p>
-              </div>
-            </div>
-          </Panel>
-        ))}
-      </div>
       <div class="flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
-        <span>Want the full training path?</span>
-        <a href="#start-here" class="text-mint hover:text-text-primary transition-colors">
-          Continue to Implementation Path &#8594;
+        <span>New here?</span>
+        <a href={`${base}get-started`} class="text-mint hover:text-text-primary transition-colors">
+          Go to Get Started &#8594;
         </a>
       </div>
-    </section>
-
-    <section id="start-here" class="mt-phi-4 md:mt-phi-5 space-y-phi-2 md:space-y-phi-3 scroll-mt-24">
-      <SectionHeader
-        eyebrow="Start Here"
-        title="Implementation as a training path"
-        subtitle="Follow four stages: setup, first success, proof, then scale. Each stage has a clear outcome before you move on."
-        align="left"
-        size="md"
-        maxWidth="max-w-3xl"
-      />
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-phi-1 md:gap-phi-2">
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Stage 1</p>
-          <h3 class="text-lg font-display text-text-primary">Setup + Prime</h3>
-          <p class="text-sm text-text-secondary">Install Motus and prime defaults for local execution.</p>
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
-          <p class="text-sm text-text-secondary">CLI runs and .motus/ is created.</p>
-        </Panel>
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Stage 2</p>
-          <h3 class="text-lg font-display text-text-primary">First Success</h3>
-          <p class="text-sm text-text-secondary">Claim a lease, fetch context, and register an outcome.</p>
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
-          <p class="text-sm text-text-secondary">Lease ID returned with outcome attached.</p>
-        </Panel>
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Stage 3</p>
-          <h3 class="text-lg font-display text-text-primary">Proof + Release</h3>
-          <p class="text-sm text-text-secondary">Attach evidence, log a decision, and release the lease.</p>
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
-          <p class="text-sm text-text-secondary">Receipt shows evidence + rationale.</p>
-        </Panel>
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Stage 4</p>
-          <h3 class="text-lg font-display text-text-primary">Scale Safely</h3>
-          <p class="text-sm text-text-secondary">Add governance gates and bundled modules with discipline.</p>
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Outcome</p>
-          <p class="text-sm text-text-secondary">Registry status matches release.</p>
-        </Panel>
-      </div>
-      <div class="flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
-        <span>Ready for the exact commands?</span>
-        <a href="#step-by-step" class="text-mint hover:text-text-primary transition-colors">
-          Jump to step-by-step &#8594;
-        </a>
-      </div>
-    </section>
-
-    <section id="step-by-step" class="mt-phi-4 md:mt-phi-5 space-y-phi-2 md:space-y-phi-3">
-      <SectionHeader
-        eyebrow="Implementation Path"
-        title="Step-by-step commands"
-        subtitle="Follow each step in order. Every step includes the exact command, expected result, and proof link."
-        align="left"
-        size="md"
-        maxWidth="max-w-3xl"
-      />
-      <div class="relative">
-        <span class="absolute left-phi-2 top-0 bottom-0 w-px bg-line/20"></span>
-        <ol class="space-y-phi-2 md:space-y-phi-3 pl-phi-4 md:pl-phi-5">
-          {trainingSteps.map((step, index) => (
-            <li id={step.id} class="relative scroll-mt-24">
-              <span class="absolute left-phi-2 top-phi-2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-line/30 bg-surface text-xs font-mono text-text-secondary">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <Panel size="sm" class="space-y-phi-2">
-                <div class="flex flex-wrap items-center justify-between gap-phi-2">
-                  <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
-                    Step {String(index + 1).padStart(2, '0')}
-                  </p>
-                  {step.proof ? (
-                    <a
-                      href={step.proof.url}
-                      class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
-                      target="_blank"
-                      rel="noopener"
-                    >
-                      Proof: {step.proof.label} &#8594;
-                    </a>
-                  ) : null}
-                </div>
-                <h3 class="text-xl font-display text-text-primary">{step.title}</h3>
-                <p class="text-sm text-text-secondary">{step.goal}</p>
-                <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
-                  <div class="space-y-phi-1">
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
-                    {step.commands.map((command) => (
-                      <code class="text-mint font-mono text-sm block">{command}</code>
-                    ))}
-                  </div>
-                  <div class="space-y-phi-1">
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>
-                    <p class="text-sm text-text-secondary">{step.expected}</p>
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">If it fails</p>
-                    <p class="text-sm text-text-secondary">{step.failure}</p>
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">Fix</p>
-                    <p class="text-sm text-text-secondary">{step.fix}</p>
-                  </div>
-                </div>
-              </Panel>
-            </li>
-          ))}
-        </ol>
-      </div>
-      <p class="text-sm text-text-secondary">
-        Use <span class="text-text-primary font-medium">motus</span> as the CLI entrypoint (mc remains as a
-        deprecated alias). Continue with the 6-call execution loop in
-        <a href={`${base}how-it-works`} class="text-mint hover:text-text-primary transition-colors"> How It Works</a>.
-      </p>
-      <p class="text-sm text-text-secondary">
-        Reference details:
-        <a href="#kernel" class="text-mint hover:text-text-primary transition-colors"> Kernel foundation</a>
-        <span class="text-text-secondary/60"> · </span>
-        <a href="#module-registry" class="text-mint hover:text-text-primary transition-colors"> Module registry</a>
-      </p>
     </section>
 
     <section id="implementation-patterns" class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3 scroll-mt-24">
-      <SectionHeader
-        eyebrow="Proven Patterns"
-        title="Implementation strategies that prevent drift"
-        subtitle="These patterns keep execution deterministic and auditable. Each includes what it is, why it matters, and how to apply it."
-        align="left"
-        size="md"
-        maxWidth="max-w-3xl"
-      />
+    <SectionHeader
+      eyebrow="Proven Patterns"
+      title="Implementation strategies that prevent drift"
+      subtitle="These patterns keep execution deterministic and auditable."
+      align="left"
+      size="md"
+      maxWidth="max-w-3xl"
+    />
       <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
         {patterns.map((pattern) => {
           const proofHref = pattern.proof
@@ -410,16 +86,16 @@ const quickstartSteps = [
                 </div>
                 <div class="space-y-phi-2 text-sm text-text-secondary">
                   <div class="space-y-phi-1">
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Outcome</p>
+                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Result</p>
                     <p>{pattern.summary}</p>
                   </div>
                   <div class="grid md:grid-cols-2 gap-phi-2">
                     <div class="space-y-phi-1">
-                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Mechanism</p>
+                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">How it works</p>
                       <p>{pattern.what}</p>
                     </div>
                     <div class="space-y-phi-1">
-                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Guardrail</p>
+                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Why it holds</p>
                       <p>{pattern.why}</p>
                     </div>
                   </div>
@@ -642,14 +318,14 @@ const quickstartSteps = [
     <section class="mt-phi-5 md:mt-phi-6 space-y-phi-2">
       <SectionHeader
         title="Docs Reference"
-        subtitle="The canonical docs and registry live in the public repo. These links are the source of truth for implementation details."
+        subtitle="Use these references after you complete Get Started."
         align="left"
         size="md"
         maxWidth="max-w-3xl"
       />
       <div class="flex flex-wrap gap-3 text-sm">
-        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}implementation#quickstart`}>
-          Quickstart
+        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}get-started`}>
+          Get Started
         </a>
         <a class="text-mint hover:text-text-primary transition-colors" href={`${base}how-it-works`}>
           Coordination API
