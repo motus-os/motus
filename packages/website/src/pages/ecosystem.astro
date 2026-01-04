@@ -35,15 +35,24 @@ if (missingProof.length > 0) {
     />
   </Section>
 
-  <Section tone="light" pad="tight" class="border-t border-line/10">
+  <Section tone="light" pad="slim" class="border-t border-line/10">
     <SectionHeader
       eyebrow="System Map"
       title="Built as a complete ecosystem"
       subtitle="External inputs feed the core, modules extend capability, governance wraps execution, and the future economy builds on verified proof."
-      class="mb-phi-4"
-      maxWidth="max-w-3xl"
+      class="mb-phi-3"
+      maxWidth="max-w-2xl"
     />
-    <Panel size="sm" class="mb-phi-4 space-y-phi-2">
+    <div class="flex flex-wrap items-center gap-phi-2 text-xs mb-phi-3">
+      <span class="status-chip status-current">Current</span>
+      <span class="status-chip status-building">Building</span>
+      <span class="status-chip status-future">Future</span>
+      <span class="status-chip status-external">External</span>
+    </div>
+    <div class="max-w-6xl mx-auto">
+      <EcosystemFlow groups={groups} nodes={nodes} base={base} proofIndex={proofIndex} />
+    </div>
+    <Panel size="sm" class="mt-phi-4 space-y-phi-2">
       <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">How to read the map</p>
       <ul class="space-y-phi-1 text-sm text-text-secondary">
         <li>- Motus Core sits at the center of the ecosystem.</li>
@@ -56,48 +65,68 @@ if (missingProof.length > 0) {
         The “Motus adds” line shows the 1+1=3 effect for each integration.
       </p>
     </Panel>
-    <div class="flex flex-wrap items-center gap-phi-2 text-xs mb-phi-4">
-      <span class="status-chip status-current">Current</span>
-      <span class="status-chip status-building">Building</span>
-      <span class="status-chip status-future">Future</span>
-      <span class="status-chip status-external">External</span>
-    </div>
-    <p class="text-xs text-text-secondary mb-phi-4 max-w-3xl">
+    <p class="text-xs text-text-secondary mt-phi-2 max-w-3xl">
       Current items are shipped and verifiable. Building items are in flight with active roadmap IDs. Future items are directional and explicitly labeled.
     </p>
-    <div class="max-w-6xl mx-auto">
-      <EcosystemFlow groups={groups} nodes={nodes} base={base} proofIndex={proofIndex} />
-    </div>
-    <p class="text-sm text-text-secondary mt-phi-3">
+    <p class="text-sm text-text-secondary mt-phi-2">
       Future layers are labeled and never implied as shipped.
     </p>
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
-    <div class="grid md:grid-cols-2 gap-phi-3">
+    <SectionHeader
+      eyebrow="Implementation Path"
+      title="Build the ecosystem in phases"
+      subtitle="Start with the kernel loop, then governance, then bundled modules. Each phase has a clear exit criteria."
+      class="mb-phi-3"
+      maxWidth="max-w-3xl"
+    />
+    <div class="grid md:grid-cols-3 gap-phi-2">
       <Panel size="sm" class="space-y-phi-2">
-        <h3 class="text-xl font-display text-text-primary">Build from the inside out</h3>
-        <p class="text-text-secondary text-sm">
-          Start with the kernel and the 6-call loop. Then layer modules only after the core is stable.
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 1</p>
+        <h3 class="text-lg font-display text-text-primary">Kernel Foundation</h3>
+        <p class="text-sm text-text-secondary">
+          Establish the coordination DB and complete the 6-call loop end to end.
         </p>
-        <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors text-sm">
-          Go to Implementation Guide &#8594;
-        </a>
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
+        <ul class="text-sm text-text-secondary space-y-phi-1">
+          <li>- Lease released with outcome</li>
+          <li>- Evidence + decision logged</li>
+          <li>- Status visible via <span class="text-text-primary">motus work status</span></li>
+        </ul>
       </Panel>
       <Panel size="sm" class="space-y-phi-2">
-        <h3 class="text-xl font-display text-text-primary">Keep claims verifiable</h3>
-        <p class="text-text-secondary text-sm">
-          Every node points to docs, proof, or a roadmap ID. That is the contract for the public website.
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 2</p>
+        <h3 class="text-lg font-display text-text-primary">Governance + Evidence</h3>
+        <p class="text-sm text-text-secondary">
+          Validate the audit trail and enforce evidence requirements before completion.
         </p>
-        <a
-          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/website/ecosystem-map.yaml"
-          class="text-mint hover:text-text-primary transition-colors text-sm"
-          target="_blank"
-          rel="noopener"
-        >
-          View ecosystem source &#8594;
-        </a>
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
+        <ul class="text-sm text-text-secondary space-y-phi-1">
+          <li>- Evidence bundles are stored</li>
+          <li>- Decision log is populated</li>
+          <li>- Policy gates are satisfied</li>
+        </ul>
       </Panel>
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 3</p>
+        <h3 class="text-lg font-display text-text-primary">Bundled Modules</h3>
+        <p class="text-sm text-text-secondary">
+          Add optional capabilities only after kernel + governance are stable.
+        </p>
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
+        <ul class="text-sm text-text-secondary space-y-phi-1">
+          <li>- Module dependencies satisfied</li>
+          <li>- Registry status matches release</li>
+          <li>- Module docs + tests exist</li>
+        </ul>
+      </Panel>
+    </div>
+    <div class="mt-phi-3 flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
+      <span>Need the step-by-step commands?</span>
+      <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
+        Open the Implementation Guide &#8594;
+      </a>
     </div>
     <Panel size="sm" class="mt-phi-3 space-y-phi-2">
       <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Ecosystem Outcomes</p>
@@ -111,9 +140,19 @@ if (missingProof.length > 0) {
       <p class="text-text-secondary text-sm">
         These future layers are explicit in the registry and always labeled as future until shipped.
       </p>
-      <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors text-sm">
-        See future module definitions &#8594;
-      </a>
+      <div class="flex flex-wrap gap-phi-2 text-sm">
+        <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
+          See future module definitions &#8594;
+        </a>
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/website/ecosystem-map.yaml"
+          class="text-mint hover:text-text-primary transition-colors"
+          target="_blank"
+          rel="noopener"
+        >
+          View ecosystem source &#8594;
+        </a>
+      </div>
     </Panel>
   </Section>
 </Layout>
