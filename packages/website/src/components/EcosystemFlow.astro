@@ -88,7 +88,7 @@ const improveTarget = (improvement) => {
       <section class="space-y-phi-2">
         <div class="flex items-center justify-between gap-phi-2">
           <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
-            <span>Stage {String(index + 1).padStart(2, '0')}</span>
+            <span>Layer</span>
             <span class="text-text-primary">{group.label}</span>
           </div>
         </div>
@@ -247,8 +247,8 @@ const improveTarget = (improvement) => {
 
         {nextLane ? (
           <div class="text-xs uppercase tracking-[0.3em] text-text-secondary flex items-center gap-phi-2">
-            <span class="text-text-secondary/60">&#8595;</span>
-            <span>Outputs feed {nextLane}</span>
+            <span class="text-text-secondary/60">&#8729;</span>
+            <span>Linked to {nextLane}</span>
           </div>
         ) : null}
       </section>
@@ -256,15 +256,23 @@ const improveTarget = (improvement) => {
   })}
 </div>
 
-<div class="hidden md:grid md:gap-phi-3 md:items-start md:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr_auto_1fr]">
-  {groups.map((group, index) => {
+<div class="hidden md:grid md:gap-phi-3 md:items-start md:grid-cols-3 md:grid-rows-3">
+  {groups.map((group) => {
     const groupNodes = nodesByGroup[group.id] || [];
     const clusters = group.id === 'modules' ? moduleClusters : null;
+    const placement = group.id === 'core'
+      ? 'md:col-start-2 md:row-start-2'
+      : group.id === 'inputs'
+        ? 'md:col-start-2 md:row-start-1'
+        : group.id === 'modules'
+          ? 'md:col-start-1 md:row-start-2'
+          : group.id === 'governance'
+            ? 'md:col-start-3 md:row-start-2'
+            : 'md:col-start-2 md:row-start-3';
     return (
-      <>
-        <div class="space-y-phi-2 lane-column">
+      <div class={`space-y-phi-2 lane-column ${placement}`.trim()}>
           <div class="flex items-center gap-phi-2 text-xs uppercase tracking-[0.3em] text-text-secondary">
-            <span>Stage {String(index + 1).padStart(2, '0')}</span>
+            <span>Layer</span>
             <span class="text-text-primary">{group.label}</span>
           </div>
           <div class="rounded-2xl border border-line/10 bg-surface p-phi-3 space-y-phi-2">
@@ -425,12 +433,7 @@ const improveTarget = (improvement) => {
             </div>
           </div>
         </div>
-        {index < groups.length - 1 ? (
-          <div class="flex items-center justify-center text-text-secondary/60">
-            <span class="text-2xl">&#8594;</span>
-          </div>
-        ) : null}
-      </>
+      </div>
     );
   })}
 </div>
