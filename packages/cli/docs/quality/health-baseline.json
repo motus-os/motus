@@ -1,8 +1,8 @@
 {
   "coverage": {
-    "core_percent": null,
+    "core_percent": 78.65,
     "overall_percent": 65.14,
-    "secondary_percent": null
+    "secondary_percent": 84.57
   },
   "lint": {
     "errors": 8
@@ -20,13 +20,13 @@
     "total": 0
   },
   "tests": {
-    "duration_seconds": 36.46,
+    "duration_seconds": 36.04,
     "errors": 0,
     "failures": 0,
     "skipped": 4,
     "tests": 1923
   },
-  "timestamp": "2026-01-04T14:53:41Z",
+  "timestamp": "2026-01-04T14:58:57Z",
   "typecheck": {
     "errors": 70
   }

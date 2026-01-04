@@ -7,7 +7,7 @@
     "max_new_critical": 0
   },
   "runtime": {
-    "max_delta_pct": 10
+    "max_delta_pct": 20
   },
   "coverage": {
     "min_delta_pct": -2

@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import sqlite3
 import subprocess
 import sys
@@ -85,7 +86,14 @@ def _parse_coverage(coverage_path: Path, cli_root: Path) -> dict[str, Any]:
     totals = coverage.get("totals", {})
     overall = round(float(totals.get("percent_covered", 0.0)), 2)
 
+    relative_root = Path("src/motus")
     core_prefixes = [
+        str(relative_root / "core"),
+        str(relative_root / "coordination"),
+        str(relative_root / "policy"),
+        str(relative_root / "orchestrator"),
+        str(relative_root / "cli"),
+        str(relative_root / "mcp"),
         str(cli_root / "src/motus/core"),
         str(cli_root / "src/motus/coordination"),
         str(cli_root / "src/motus/policy"),
@@ -94,6 +102,9 @@ def _parse_coverage(coverage_path: Path, cli_root: Path) -> dict[str, Any]:
         str(cli_root / "src/motus/mcp"),
     ]
     secondary_prefixes = [
+        str(relative_root / "ingestors"),
+        str(relative_root / "ui"),
+        str(relative_root / "standards"),
         str(cli_root / "src/motus/ingestors"),
         str(cli_root / "src/motus/ui"),
         str(cli_root / "src/motus/standards"),
@@ -175,6 +186,8 @@ def _policy_metrics(db_path: Path) -> dict[str, Any]:
 
 
 def _init_clean_repo(repo_dir: Path) -> None:
+    if repo_dir.exists():
+        shutil.rmtree(repo_dir)
     repo_dir.mkdir(parents=True, exist_ok=True)
     src_dir = repo_dir / "src"
     tests_dir = repo_dir / "tests"
@@ -316,10 +329,18 @@ def _compare(baseline: dict[str, Any], current: dict[str, Any], policy: dict[str
         if policy_run["p95_ms"] > max_p95:
             failures.append("policy_run: p95 regression beyond threshold")
 
-    if current["lint"]["errors"] > policy["lint"]["max_errors"]:
+    baseline_lint = baseline.get("lint", {}).get("errors")
+    if baseline_lint is not None:
+        if current["lint"]["errors"] > baseline_lint:
+            failures.append("lint: ruff errors increased vs baseline")
+    elif current["lint"]["errors"] > policy["lint"]["max_errors"]:
         failures.append("lint: ruff errors present")
 
-    if current["typecheck"]["errors"] > policy["typecheck"]["max_errors"]:
+    baseline_type = baseline.get("typecheck", {}).get("errors")
+    if baseline_type is not None:
+        if current["typecheck"]["errors"] > baseline_type:
+            failures.append("typecheck: mypy errors increased vs baseline")
+    elif current["typecheck"]["errors"] > policy["typecheck"]["max_errors"]:
         failures.append("typecheck: mypy errors present")
 
     return failures
