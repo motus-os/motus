@@ -22,6 +22,11 @@ from motus.coordination.schemas import ClaimedResource as Resource
 from motus.core import configure_connection
 
 _SCHEMA_VERSION = 1
+LEASE_COLUMNS = (
+    "lease_id, owner_agent_id, mode, resources, issued_at, expires_at, "
+    "heartbeat_deadline, snapshot_id, policy_version, lens_digest, work_id, "
+    "attempt_id, status, outcome"
+)
 
 _INIT_SQL = """
 CREATE TABLE IF NOT EXISTS schema_version (
@@ -250,7 +255,10 @@ class LeaseStore:
     def get_lease(self, lease_id: str) -> Lease | None:
         """Get a lease by ID."""
         cursor = self._conn.cursor()
-        cursor.execute("SELECT * FROM coordination_leases WHERE lease_id = ?", (lease_id,))
+        cursor.execute(
+            f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?",
+            (lease_id,),
+        )
         row = cursor.fetchone()
         if row is None:
             return None
@@ -269,7 +277,7 @@ class LeaseStore:
                 )
                 self._conn.commit()
                 refreshed = self._conn.execute(
-                    "SELECT * FROM coordination_leases WHERE lease_id = ?",
+                    f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?",
                     (lease_id,),
                 ).fetchone()
                 if refreshed is None:
@@ -293,8 +301,8 @@ class LeaseStore:
         now = _utcnow()
         cursor = self._conn.cursor()
 
-        query = """
-            SELECT * FROM coordination_leases
+        query = f"""
+            SELECT {LEASE_COLUMNS} FROM coordination_leases
             WHERE status = 'active'
             AND expires_at > ?
             AND heartbeat_deadline > ?

@@ -263,6 +263,9 @@ class ContextCache:
         """
         if not resources:
             return []
+        max_resources = max(1, int(os.environ.get("MC_OUTCOME_MAX_RESOURCES", "200")))
+        if len(resources) > max_resources:
+            raise ValueError(f"Too many resources requested (max {max_resources})")
 
         cursor = self._conn.cursor()
         conditions = " OR ".join(
