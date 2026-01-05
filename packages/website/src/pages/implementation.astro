@@ -4,35 +4,35 @@ import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 
-import registry from '../data/module-registry.json';
 import patternsData from '../data/implementation-patterns.json';
 import { validatePatterns } from '../data/validate-patterns.js';
 import { getStatusClass, getStatusLabel } from '../lib/status.js';
 
-const kernel = registry.kernel;
-const modules = registry.bundled_modules;
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 
-const statusClasses = {
-  current: getStatusClass('current'),
-  building: getStatusClass('building'),
-  future: getStatusClass('future'),
-};
-
-const statusLabel = (status) => getStatusLabel(status);
-const moduleCounts = modules.reduce(
-  (acc, module) => {
-    acc[module.status] = (acc[module.status] || 0) + 1;
-    return acc;
-  },
-  { current: 0, building: 0, future: 0 },
-);
 const patterns = patternsData.patterns;
 validatePatterns(patterns);
 const patternStatusClass = (status) => getStatusClass(status, 'badge');
 const patternStatusLabel = (status) => getStatusLabel(status);
+
+const patternOrder = [
+  'evidence-gates',
+  'stop-conditions',
+  'clean-verification',
+  'claim-labeling',
+  'agent-charters',
+  'health-baselines',
+  'public-proof',
+];
+
+const patternsById = new Map(patterns.map((pattern) => [pattern.id, pattern]));
+const orderedPatterns = patternOrder
+  .map((id) => patternsById.get(id))
+  .filter(Boolean);
+const remainingPatterns = patterns.filter((pattern) => !patternOrder.includes(pattern.id));
+const displayPatterns = [...orderedPatterns, ...remainingPatterns];
 ---
 
 <Layout title="Implementation">
@@ -40,8 +40,8 @@ const patternStatusLabel = (status) => getStatusLabel(status);
     <section class="space-y-phi-2 md:space-y-phi-3">
       <SectionHeader
         eyebrow="Implementation Guide"
-        title="Implementation reference"
-        subtitle="Start with Get Started for the hands-on loop. Use this page for deeper reference and patterns."
+        title="Implement without drift"
+        subtitle="Run the loop once, then apply the patterns below to keep execution verifiable."
         as="h1"
         align="left"
         size="xl"
@@ -55,74 +55,84 @@ const patternStatusLabel = (status) => getStatusLabel(status);
       </div>
     </section>
 
+    <section class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3">
+      <SectionHeader
+        eyebrow="Start"
+        title="Run the loop once"
+        subtitle="Get Started produces your first receipt. Then apply the patterns below to scale safely."
+        align="left"
+        size="md"
+        maxWidth="max-w-3xl"
+      />
+      <Panel size="sm" class="flex flex-wrap items-center justify-between gap-phi-2">
+        <p class="text-sm text-text-secondary">
+          New to Motus? Run the hands-on loop first.
+        </p>
+        <a href={`${base}get-started`} class="text-mint hover:text-text-primary transition-colors text-sm">
+          Get Started &#8594;
+        </a>
+      </Panel>
+    </section>
+
     <section id="implementation-patterns" class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3 scroll-mt-24">
-    <SectionHeader
-      eyebrow="Proven Patterns"
-      title="Implementation strategies that prevent drift"
-      subtitle="These patterns keep execution deterministic and auditable."
-      align="left"
-      size="md"
-      maxWidth="max-w-3xl"
-    />
-      <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
-        {patterns.map((pattern) => {
+      <SectionHeader
+        eyebrow="Execution Patterns"
+        title="Implement without drift"
+        subtitle="Each pattern is labeled Current, Building, or Future. Apply what’s current first."
+        align="left"
+        size="md"
+        maxWidth="max-w-3xl"
+      />
+      <div class="space-y-phi-2">
+        {displayPatterns.map((pattern) => {
           const proofHref = pattern.proof
             ? pattern.proof.url.startsWith('http')
               ? pattern.proof.url
               : `${base}${pattern.proof.url.replace(/^\/+/, '')}`
             : null;
           return (
-            <div id={pattern.id} class="scroll-mt-24">
-              <Panel size="sm" class="space-y-phi-2">
-                <div class="flex items-center justify-between gap-phi-2">
+            <Panel id={pattern.id} size="sm" class="space-y-phi-2 scroll-mt-24">
+              <div class="flex items-start justify-between gap-phi-2">
+                <div class="space-y-phi-1">
                   <h3 class="text-lg font-display text-text-primary">{pattern.title}</h3>
-                  <span class={patternStatusClass(pattern.status)}>{patternStatusLabel(pattern.status)}</span>
+                  <p class="text-sm text-text-secondary">{pattern.summary}</p>
                 </div>
-                <div class="space-y-phi-2 text-sm text-text-secondary">
-                  <div class="space-y-phi-1">
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Result</p>
-                    <p>{pattern.summary}</p>
-                  </div>
-                  <div class="grid md:grid-cols-2 gap-phi-2">
-                    <div class="space-y-phi-1">
-                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">How it works</p>
-                      <p>{pattern.what}</p>
-                    </div>
-                    <div class="space-y-phi-1">
-                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Why it holds</p>
-                      <p>{pattern.why}</p>
-                    </div>
-                  </div>
-                  <div class="space-y-phi-1">
-                    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Apply</p>
-                    <ul class="space-y-phi-1">
-                      {pattern.how.map((step) => (
-                        <li>- {step}</li>
-                      ))}
-                    </ul>
-                  </div>
+                <span class={patternStatusClass(pattern.status)}>{patternStatusLabel(pattern.status)}</span>
+              </div>
+              <div class="grid md:grid-cols-2 gap-phi-2">
+                <div class="space-y-phi-1">
+                  <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Why it matters</p>
+                  <p class="text-sm text-text-secondary">{pattern.why}</p>
                 </div>
-                {proofHref ? (
-                  <a
-                    href={proofHref}
-                    class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
-                  >
-                    Proof: {pattern.proof.label} &#8594;
-                  </a>
-                ) : (
-                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">
-                    Status: {patternStatusLabel(pattern.status)}
-                  </p>
-                )}
-              </Panel>
-            </div>
+                <div class="space-y-phi-1">
+                  <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">How to apply</p>
+                  <ul class="text-sm text-text-secondary space-y-phi-1">
+                    {pattern.how.map((step) => (
+                      <li>- {step}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              {proofHref ? (
+                <a
+                  href={proofHref}
+                  class="text-sm uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
+                >
+                  Proof: {pattern.proof.label} &#8594;
+                </a>
+              ) : (
+                <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">
+                  Status: {patternStatusLabel(pattern.status)}
+                </p>
+              )}
+            </Panel>
           );
         })}
       </div>
       <Panel size="sm" class="mt-phi-2 md:mt-phi-3 space-y-phi-1">
-        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Quick Reference</p>
+        <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Quick Reference</p>
         <ul class="space-y-phi-1 text-sm text-text-secondary">
-          {patterns.map((pattern) => (
+          {displayPatterns.map((pattern) => (
             <li>
               <a href={`#${pattern.id}`} class="text-mint hover:text-text-primary transition-colors">
                 {pattern.title}
@@ -135,203 +145,29 @@ const patternStatusLabel = (status) => getStatusLabel(status);
       </Panel>
     </section>
 
-    <section id="phase-gates" class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3 scroll-mt-24">
-      <SectionHeader
-        eyebrow="Phase Gates"
-        title="Implementation, in order"
-        subtitle="Each phase has a clear exit criteria. Only move forward when the gate is satisfied."
-        align="left"
-        size="md"
-        maxWidth="max-w-3xl"
-      />
-      <div class="grid md:grid-cols-3 gap-phi-1 md:gap-phi-2">
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 1</p>
-          <h3 class="text-lg font-display text-text-primary">Kernel Foundation</h3>
-          <p class="text-sm text-text-secondary">
-            Establish the coordination DB and complete the 6-call loop end to end.
-          </p>
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
-          <ul class="text-sm text-text-secondary space-y-phi-1">
-            <li>- Lease released with outcome</li>
-            <li>- Evidence + decision logged</li>
-            <li>- Status visible via <span class="text-text-primary">motus work status</span></li>
-          </ul>
-        </Panel>
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 2</p>
-          <h3 class="text-lg font-display text-text-primary">Governance + Evidence</h3>
-          <p class="text-sm text-text-secondary">
-            Validate the audit trail and enforce evidence requirements before completion.
-          </p>
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
-          <ul class="text-sm text-text-secondary space-y-phi-1">
-            <li>- Evidence bundles are stored</li>
-            <li>- Decision log is populated</li>
-            <li>- Policy gates are satisfied</li>
-          </ul>
-        </Panel>
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 3</p>
-          <h3 class="text-lg font-display text-text-primary">Bundled Modules</h3>
-          <p class="text-sm text-text-secondary">
-            Add optional capabilities only after kernel + governance are stable.
-          </p>
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
-          <ul class="text-sm text-text-secondary space-y-phi-1">
-            <li>- Module dependencies satisfied</li>
-            <li>- Registry status matches release</li>
-            <li>- Module docs + tests exist</li>
-          </ul>
-        </Panel>
-      </div>
-    </section>
-
-    <section class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3">
-      <div id="kernel" class="scroll-mt-24"></div>
-      <SectionHeader
-        eyebrow="Reference"
-        title="Kernel foundation (Phase 1)"
-        subtitle="Use after the step-by-step path if you need deeper kernel detail."
-        align="left"
-        size="md"
-        maxWidth="max-w-3xl"
-      />
-      <div class="flex flex-wrap items-center gap-phi-2">
-        <h2 class="text-3xl font-display text-text-primary">Phase 1: {kernel.marketing_name}</h2>
-        <span class={statusClasses[kernel.status]}>{statusLabel(kernel.status)}</span>
-      </div>
-
-      <p class="text-text-secondary max-w-3xl">{kernel.description}</p>
-
-      <div class="grid md:grid-cols-2 gap-phi-2 md:gap-phi-3">
-        <Panel size="sm">
-          <h3 class="text-lg font-display text-text-primary">Primary Surfaces</h3>
-          <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary">
-            {kernel.primary_surfaces.map((item) => (
-              <li>- {item}</li>
-            ))}
-          </ul>
-        </Panel>
-        <Panel size="sm">
-          <h3 class="text-lg font-display text-text-primary">Best Practices</h3>
-          <ul class="mt-phi-2 space-y-phi-1 text-sm text-text-secondary">
-            {kernel.best_practices.map((item) => (
-              <li>- {item}</li>
-            ))}
-          </ul>
-        </Panel>
-      </div>
-      <div class="grid md:grid-cols-2 gap-phi-2 md:gap-phi-3">
-        <Panel size="sm" class="space-y-phi-1">
-          <h3 class="text-lg font-display text-text-primary">Verify the loop</h3>
-          <p class="text-sm text-text-secondary">
-            The kernel is ready when a lease completes with evidence and a decision.
-          </p>
-          <code class="text-mint font-mono text-sm">motus work status &lt;lease_id&gt;</code>
-        </Panel>
-        <Panel size="sm" class="space-y-phi-1">
-          <h3 class="text-lg font-display text-text-primary">Evidence location</h3>
-          <p class="text-sm text-text-secondary">
-            Evidence and decisions are stored in the kernel ledger for audit review.
-          </p>
-          <code class="text-mint font-mono text-sm">~/.motus/coordination.db</code>
-        </Panel>
-      </div>
-    </section>
-
-    <section class="mt-phi-5 md:mt-phi-6 space-y-phi-2 md:space-y-phi-3">
-      <div id="module-registry" class="scroll-mt-24"></div>
-      <SectionHeader
-        eyebrow="Reference"
-        title="Module registry (Phase 3)"
-        subtitle="Bundled modules are optional capabilities that extend the kernel without breaking invariants."
-        align="left"
-        size="md"
-        maxWidth="max-w-3xl"
-      />
-      <div class="flex flex-wrap gap-phi-2 text-sm">
-        <span class={statusClasses.current}>Current {moduleCounts.current}</span>
-        <span class={statusClasses.building}>Building {moduleCounts.building}</span>
-        <span class={statusClasses.future}>Future {moduleCounts.future}</span>
-        <span class="text-text-secondary text-xs">
-          Source:
-          <a
-            class="text-mint hover:text-text-primary transition-colors"
-            href={`${base}implementation#module-registry`}
-          >
-            module registry
-          </a>
-        </span>
-      </div>
-      <Panel size="sm" class="space-y-phi-1">
-        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Readiness checklist</p>
-        <ul class="text-sm text-text-secondary space-y-phi-1">
-          <li>- Kernel loop passes with evidence + decision</li>
-          <li>- Governance gates are enforced in policy</li>
-          <li>- Module docs and tests are ready</li>
-        </ul>
-      </Panel>
-
-      <div class="grid md:grid-cols-2 gap-phi-2 md:gap-phi-3">
-        {modules.map((module) => (
-          <div id={module.id} class="scroll-mt-24">
-            <Panel size="sm" class="space-y-phi-2">
-              <div class="flex items-start justify-between gap-phi-2">
-                <div>
-                  <h3 class="text-lg font-display text-text-primary">{module.marketing_name}</h3>
-                  <p class="text-sm text-text-secondary">{module.description}</p>
-                </div>
-                <span class={statusClasses[module.status]}>{statusLabel(module.status)}</span>
-              </div>
-              <ul class="space-y-phi-1 text-sm text-text-secondary">
-                {module.best_practices.slice(0, 2).map((item) => (
-                  <li>- {item}</li>
-                ))}
-              </ul>
-              <div class="flex flex-wrap gap-phi-1 text-xs text-text-secondary">
-                <span class="px-2 py-1 rounded-full border border-line/30">{module.scope}</span>
-                {module.roadmap_id ? (
-                  <span class="px-2 py-1 rounded-full border border-line/30">{module.roadmap_id}</span>
-                ) : null}
-                {module.implementation_guides?.docs ? (
-                  <a
-                    href={`${base}implementation#${module.id}`}
-                    class="text-mint hover:text-text-primary transition-colors"
-                  >
-                    Details
-                  </a>
-                ) : null}
-              </div>
-            </Panel>
-          </div>
-        ))}
-      </div>
-    </section>
-
     <section class="mt-phi-5 md:mt-phi-6 space-y-phi-2">
       <SectionHeader
-        title="Docs Reference"
-        subtitle="Use these references after you complete Get Started."
+        title="Reference links"
+        subtitle="Use these after you’ve run Get Started."
         align="left"
         size="md"
         maxWidth="max-w-3xl"
       />
       <div class="flex flex-wrap gap-phi-2 text-sm">
-        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}get-started`}>
-          Get Started
-        </a>
         <a class="text-mint hover:text-text-primary transition-colors" href={`${base}how-it-works`}>
-          Coordination API
+          How it works
+        </a>
+        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}docs/gates`}>
+          Evidence gates
+        </a>
+        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}docs/evidence`}>
+          Evidence registry
         </a>
         <a class="text-mint hover:text-text-primary transition-colors" href={`${base}docs/schema`}>
-          Kernel Schema
+          Kernel schema
         </a>
-        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}implementation#kernel`}>
-          Kernel Guide
-        </a>
-        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}implementation#module-registry`}>
-          Module Registry
+        <a class="text-mint hover:text-text-primary transition-colors" href={`${base}docs/ecosystem`}>
+          Ecosystem map
         </a>
       </div>
     </section>

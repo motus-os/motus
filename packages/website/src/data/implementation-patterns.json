@@ -50,19 +50,19 @@
       "id": "claim-labeling",
       "title": "Claim Labeling",
       "status": "current",
-      "summary": "Every claim is labeled Verified, Building, or Target.",
+      "summary": "Every claim is labeled Current, Building, or Future.",
       "what": "Status tags on every public claim with evidence or intent.",
-      "why": "Prevents accidental lies and sets clear expectations.",
+      "why": "Prevents accidental misrepresentation and sets clear expectations.",
       "how": [
-        "Verified claims require evidence + method.",
+        "Current claims require evidence + method.",
         "Building claims show in-progress proof.",
-        "Target claims are explicit and labeled."
+        "Future claims are explicit and labeled."
       ],
       "proof": {
         "label": "Evidence Registry",
         "url": "/docs/evidence"
       },
-      "quick": "Every claim is labeled Verified, Building, or Target."
+      "quick": "Every claim is labeled Current, Building, or Future."
     },
     {
       "id": "agent-charters",
