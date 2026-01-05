@@ -193,8 +193,8 @@ const paidItems = [
   <Section tone="muted" pad="tight" innerClass="max-w-4xl text-center">
     <SectionHeader title="Contribute" class="mb-phi-3" />
     <p class="text-lg text-text-secondary mb-phi-4">
-      Contributions are welcome—bug fixes, documentation, and strategy improvements.
-      Request access if you want to strengthen receipts-first workflows.
+      Contributions that strengthen receipts-first workflows are welcome.
+      Start with docs, tests, or strategy patterns. Request access for source contributions.
     </p>
     <a
       href="mailto:licensing@motusos.ai"
@@ -209,9 +209,14 @@ const paidItems = [
 
   <Section tone="light" class="text-center" innerClass="max-w-2xl">
     <SectionHeader title="Get Started" size="md" class="mb-phi-3" />
-    <div class="inline-block bg-surface/70 px-phi-3 py-phi-2 rounded-full border border-mint/20">
-      <span class="text-text-secondary text-lg">Status </span>
-      <span class="text-mint font-semibold text-lg">Building</span>
+    <div class="flex flex-col items-center gap-phi-2">
+      <div class="inline-flex items-center gap-2 bg-surface/70 px-phi-3 py-phi-2 rounded-full border border-mint/20">
+        <span class="text-text-secondary text-lg">pip install</span>
+        <span class="text-mint font-semibold text-lg">motusos</span>
+      </div>
+      <a href={`${base}get-started`} class="text-mint hover:text-text-primary transition-colors">
+        Open the quickstart &#8594;
+      </a>
     </div>
   </Section>
 </Layout>

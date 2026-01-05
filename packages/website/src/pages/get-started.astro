@@ -63,7 +63,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
   <!-- Prerequisites (if any fail, show them) -->
   <Section tone="light" pad="slim" class="border-t border-line/30" innerClass="max-w-4xl">
     <details class="group">
-      <summary class="cursor-pointer text-sm text-text-secondary hover:text-text-primary transition-colors">
+      <summary class="cursor-pointer text-base text-text-secondary hover:text-text-primary transition-colors">
         <span class="group-open:hidden">Show prerequisites</span>
         <span class="hidden group-open:inline">Hide prerequisites</span>
       </summary>
@@ -86,7 +86,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
   <!-- Setup Section (collapsed by default) -->
   <Section id="setup" tone="light" pad="slim" class="border-t border-line/30 scroll-mt-24" innerClass="max-w-4xl">
     <details class="group" open={!setup.collapsed_by_default}>
-      <summary class="cursor-pointer">
+      <summary class="cursor-pointer text-base text-text-primary">
         <SectionHeader
           eyebrow="Step 00"
           title={setup.title}

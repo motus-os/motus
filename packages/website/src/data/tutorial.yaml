@@ -5,7 +5,7 @@
 
 version: "1.0"
 last_validated: "2026-01-05"
-validated_against: "motusos==0.5.2"
+validated_against: "motusos==0.1.0"
 
 meta:
   title: "Ship a change with receipts"
