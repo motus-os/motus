@@ -1,5 +1,6 @@
 ---
 const {
+  id = undefined,
   tone = 'light',
   size = 'md',
   class: className = '',
@@ -21,6 +22,6 @@ const padClass =
       : 'p-phi-4 md:p-phi-5';
 ---
 
-<div class={`rounded-2xl ${borderClass} ${toneClass} ${padClass} ${className}`.trim()}>
+<div id={id} class={`rounded-2xl ${borderClass} ${toneClass} ${padClass} ${className}`.trim()}>
   <slot />
 </div>

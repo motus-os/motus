@@ -5,6 +5,7 @@ import Panel from '../components/Panel.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 
 import patternsData from '../data/implementation-patterns.json';
+import moduleRegistry from '../data/module-registry.json';
 import { validatePatterns } from '../data/validate-patterns.js';
 import { getStatusClass, getStatusLabel } from '../lib/status.js';
 
@@ -33,6 +34,7 @@ const orderedPatterns = patternOrder
   .filter(Boolean);
 const remainingPatterns = patterns.filter((pattern) => !patternOrder.includes(pattern.id));
 const displayPatterns = [...orderedPatterns, ...remainingPatterns];
+const modules = [moduleRegistry.kernel, ...moduleRegistry.bundled_modules];
 ---
 
 <Layout title="Implementation">
@@ -99,6 +101,7 @@ const displayPatterns = [...orderedPatterns, ...remainingPatterns];
                 </div>
                 <span class={patternStatusClass(pattern.status)}>{patternStatusLabel(pattern.status)}</span>
               </div>
+              {pattern.id === 'evidence-gates' && <span id="phase-gates" class="sr-only">Phase gates</span>}
               <div class="grid md:grid-cols-2 gap-phi-2">
                 <div class="space-y-phi-1">
                   <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Why it matters</p>
@@ -143,6 +146,30 @@ const displayPatterns = [...orderedPatterns, ...remainingPatterns];
           ))}
         </ul>
       </Panel>
+    </section>
+
+    <section id="module-registry" class="mt-phi-5 md:mt-phi-6 space-y-phi-2 scroll-mt-24">
+      <SectionHeader
+        eyebrow="Modules"
+        title="Module reference anchors"
+        subtitle="The ecosystem map and registry link here for quick context. Use docs for full module details."
+        align="left"
+        size="md"
+        maxWidth="max-w-3xl"
+      />
+      <div class="grid md:grid-cols-2 gap-phi-2">
+        {modules.map((module) => (
+          <Panel id={module.id} size="sm" class="space-y-phi-1 scroll-mt-24">
+            <div class="flex items-start justify-between gap-phi-2">
+              <div>
+                <h3 class="text-lg font-display text-text-primary">{module.marketing_name}</h3>
+                <p class="text-sm text-text-secondary">{module.description}</p>
+              </div>
+              <span class={patternStatusClass(module.status)}>{patternStatusLabel(module.status)}</span>
+            </div>
+          </Panel>
+        ))}
+      </div>
     </section>
 
     <section class="mt-phi-5 md:mt-phi-6 space-y-phi-2">

@@ -61,7 +61,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
   </Section>
 
   <!-- Prerequisites (if any fail, show them) -->
-  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl">
+  <Section tone="light" pad="slim" class="border-t border-line/30" innerClass="max-w-4xl">
     <details class="group">
       <summary class="cursor-pointer text-sm text-text-secondary hover:text-text-primary transition-colors">
         <span class="group-open:hidden">Show prerequisites</span>
@@ -71,9 +71,9 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
         {prerequisites.map((prereq: any) => (
           <Panel size="sm" class="space-y-phi-1">
             <p class="text-sm font-medium text-text-primary">{prereq.label}</p>
-            <code class="text-xs text-mint font-mono">{prereq.check_command}</code>
+            <code class="text-sm text-mint font-mono">{prereq.check_command}</code>
             {prereq.install_url && (
-              <a href={prereq.install_url} class="text-xs text-mint hover:text-text-primary transition-colors" target="_blank" rel="noopener">
+              <a href={prereq.install_url} class="text-sm text-mint hover:text-text-primary transition-colors" target="_blank" rel="noopener">
                 Install &#8594;
               </a>
             )}
@@ -84,7 +84,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
   </Section>
 
   <!-- Setup Section (collapsed by default) -->
-  <Section id="setup" tone="light" pad="tight" class="border-t border-line/30 scroll-mt-24" innerClass="max-w-4xl">
+  <Section id="setup" tone="light" pad="slim" class="border-t border-line/30 scroll-mt-24" innerClass="max-w-4xl">
     <details class="group" open={!setup.collapsed_by_default}>
       <summary class="cursor-pointer">
         <SectionHeader
@@ -100,7 +100,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
         {setup.steps.map((step: any, index: number) => (
           <Panel size="sm" class="space-y-phi-2">
             <div class="flex items-center justify-between">
-              <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
+              <p class="text-sm uppercase tracking-[0.25em] text-text-secondary">
                 {step.title}
               </p>
             </div>
@@ -110,7 +110,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
               </code>
             )}
             {step.expected_pattern && (
-              <p class="text-xs text-text-secondary">
+              <p class="text-sm text-text-secondary">
                 Expected: pattern matching <code class="text-mint">{step.expected_pattern}</code>
               </p>
             )}
@@ -119,8 +119,8 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
       </div>
       {setup.reset_instructions && (
         <Panel size="sm" class="mt-phi-3 space-y-phi-1 border-amber-500/30 border">
-          <p class="text-xs uppercase tracking-[0.25em] text-amber-400">If something goes wrong</p>
-          <pre class="text-xs text-text-secondary whitespace-pre-wrap">{setup.reset_instructions}</pre>
+          <p class="text-sm uppercase tracking-[0.25em] text-amber-400">If something goes wrong</p>
+          <pre class="text-sm text-text-secondary whitespace-pre-wrap">{setup.reset_instructions}</pre>
         </Panel>
       )}
     </details>
@@ -155,7 +155,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
                   </p>
                   <h3 class="text-xl font-display text-text-primary">{feature.title}</h3>
                 </div>
-                <span class="text-xs px-2 py-1 rounded-full border border-mint/30 text-mint">
+                <span class="text-sm px-2 py-1 rounded-full border border-mint/30 text-mint">
                   {feature.id}
                 </span>
               </div>
@@ -184,13 +184,13 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
 
                     {step.type === 'file' && (
                       <div class="space-y-phi-1">
-                        <p class="text-xs text-text-secondary">Create file: <code class="text-mint">{step.path}</code></p>
-                        <pre class="text-xs text-text-secondary bg-surface p-phi-2 rounded overflow-x-auto max-h-32 overflow-y-auto">{step.content}</pre>
+                        <p class="text-sm text-text-secondary">Create file: <code class="text-mint">{step.path}</code></p>
+                        <pre class="text-sm text-text-secondary bg-surface p-phi-2 rounded overflow-x-auto max-h-32 overflow-y-auto">{step.content}</pre>
                       </div>
                     )}
 
                     {step.explanation && (
-                      <p class="text-xs text-text-secondary/80 italic">{step.explanation}</p>
+                      <p class="text-sm text-text-secondary/80 italic">{step.explanation}</p>
                     )}
                   </div>
                 ))}
@@ -202,7 +202,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
                   <p class="text-sm text-text-primary">
                     You just completed your first receipt.
                   </p>
-                  <p class="text-xs text-text-secondary">
+                  <p class="text-sm text-text-secondary">
                     By the end, you'll have 3 of these with full evidence trails.
                   </p>
                 </Panel>
@@ -260,11 +260,11 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
     <Panel size="sm" class="mt-phi-4 space-y-phi-2">
       <div class="grid md:grid-cols-2 gap-phi-3">
         <div class="space-y-phi-1">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary/60">Without Motus</p>
+          <p class="text-sm uppercase tracking-[0.25em] text-text-secondary/60">Without Motus</p>
           <p class="text-sm text-text-secondary">"I think I did that? Maybe?"</p>
         </div>
         <div class="space-y-phi-1">
-          <p class="text-xs uppercase tracking-[0.25em] text-mint">With Motus</p>
+          <p class="text-sm uppercase tracking-[0.25em] text-mint">With Motus</p>
           <p class="text-sm text-text-primary">3 receipts with outcome, evidence, and decisions.</p>
         </div>
       </div>
@@ -283,7 +283,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
       <Button href="https://github.com/motus-os/motus-demo-app" variant="secondary" size="sm" target="_blank" rel="noopener">
         View on GitHub &#8594;
       </Button>
-      <span class="text-xs text-text-secondary self-center">
+      <span class="text-sm text-text-secondary self-center">
         (Demo repo generated on each release)
       </span>
     </div>

@@ -87,7 +87,7 @@ const moduleHighlights = [
         <MetricStat value="6" label="API calls" detail="Designed for low coordination overhead" />
         <a
           href={`${base}docs/evidence#claim-six_call_api`}
-          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
+          class="text-sm uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
         >
           Evidence &#8594;
         </a>
@@ -96,7 +96,7 @@ const moduleHighlights = [
         <MetricStat value="0" label="Cloud required" detail="Local-first, minimal setup" />
         <a
           href={`${base}docs/evidence#claim-no_cloud_dependency`}
-          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
+          class="text-sm uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
         >
           Evidence &#8594;
         </a>
@@ -105,7 +105,7 @@ const moduleHighlights = [
         <MetricStat value="1" label="Source of truth" detail="Deterministic work state" />
         <a
           href={`${base}docs/evidence#claim-coordination_db_source`}
-          class="text-xs uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
+          class="text-sm uppercase tracking-[0.25em] text-mint hover:text-text-primary transition-colors mt-phi-2 inline-flex"
         >
           Evidence &#8594;
         </a>
@@ -135,7 +135,7 @@ const moduleHighlights = [
         {workSteps.map((step) => (
           <div class="flex flex-col items-center gap-phi-1 rounded-full border border-line/30 bg-surface/70 px-phi-2 py-phi-1">
             <span class="text-sm font-mono text-text-primary">{step.label}</span>
-            <span class="text-xs text-text-secondary">{step.note}</span>
+            <span class="text-sm text-text-secondary">{step.note}</span>
           </div>
         ))}
       </div>
@@ -229,7 +229,7 @@ const moduleHighlights = [
         <h3 class="text-lg font-display text-text-primary">Policy gate</h3>
         <p class="text-sm text-text-secondary">Only eligible work can proceed.</p>
         <p class="text-sm text-text-secondary">Validates eligibility, scope, and policy packs.</p>
-        <p class="text-xs text-text-secondary/70 mt-phi-2 pt-phi-2 border-t border-line/30">
+        <p class="text-sm text-text-secondary/70 mt-phi-2 pt-phi-2 border-t border-line/30">
           <span class="font-medium">Applies to:</span> claim_work → release_work
         </p>
         <a
@@ -244,7 +244,7 @@ const moduleHighlights = [
         <h3 class="text-lg font-display text-text-primary">Evidence gate</h3>
         <p class="text-sm text-text-secondary">Evidence artifacts keep receipts complete.</p>
         <p class="text-sm text-text-secondary">Record evidence before release to keep the trail intact.</p>
-        <p class="text-xs text-text-secondary/70 mt-phi-2 pt-phi-2 border-t border-line/30">
+        <p class="text-sm text-text-secondary/70 mt-phi-2 pt-phi-2 border-t border-line/30">
           <span class="font-medium">Applies to:</span> record_evidence → release_work
         </p>
         <a
@@ -258,7 +258,7 @@ const moduleHighlights = [
         <h3 class="text-lg font-display text-text-primary">Completion gate</h3>
         <p class="text-sm text-text-secondary">Decisions + evidence complete the receipt.</p>
         <p class="text-sm text-text-secondary">Log the decision alongside the proof you attach.</p>
-        <p class="text-xs text-text-secondary/70 mt-phi-2 pt-phi-2 border-t border-line/30">
+        <p class="text-sm text-text-secondary/70 mt-phi-2 pt-phi-2 border-t border-line/30">
           <span class="font-medium">Applies to:</span> record_decision → release_work
         </p>
         <a

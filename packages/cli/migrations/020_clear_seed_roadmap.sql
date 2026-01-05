@@ -23,7 +23,10 @@ SELECT
         )
     ),
     COALESCE((SELECT value FROM instance_config WHERE key = 'instance_id'), 'unknown'),
-    1;
+    1
+WHERE EXISTS (
+    SELECT 1 FROM sqlite_master WHERE type='table' AND name='audit_log'
+);
 
 -- Remove any assignments/dependencies tied to seeded items first (FK safety)
 DELETE FROM roadmap_assignments
