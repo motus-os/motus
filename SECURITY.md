@@ -54,6 +54,13 @@ When using Motus:
 * **Web Dashboard**: The web dashboard runs on localhost only by default. Do not expose it to public networks.
 * **Trace Files**: SDK trace files stored in `~/.mc/traces/` may contain sensitive information. Secure this directory appropriately.
 
+## Dependency Update Policy
+
+- Dependabot manages dependency updates for `/packages/cli` and `/packages/website`.
+- Security updates auto-merge after CI passes.
+- Minor updates are batched weekly.
+- Major updates require manual review (Dependabot ignores semver-major updates by default).
+
 ## Known Limitations (Accepted Risks)
 
 The following issues have been reviewed and **explicitly accepted** as low-risk for a localhost-only developer tool. Do not re-review these unless the threat model changes.
