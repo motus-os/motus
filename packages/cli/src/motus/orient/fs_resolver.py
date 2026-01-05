@@ -23,9 +23,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable, Literal
 
-import yaml
-
 from motus.orient.result import OrientResult
+from motus.orient.standards_cache import load_standard_yaml
 
 Layer = Literal["user", "project", "system"]
 MAX_STANDARD_FILES = int(os.environ.get("MC_STANDARDS_MAX_FILES", "2000"))
@@ -105,7 +104,7 @@ class FilesystemStandardsResolverV0:
             scanned[layer] = len(standard_files)
 
             for path in standard_files:
-                raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+                raw = load_standard_yaml(path)
                 if not isinstance(raw, dict):
                     raise ValueError(f"Invalid standard (expected mapping): {path}")
 

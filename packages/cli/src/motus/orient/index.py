@@ -16,10 +16,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, Mapping
 
-import yaml  # type: ignore[import-untyped]
-
 from motus.atomic_io import atomic_write_json
 from motus.standards.schema import Standard
+from motus.orient.standards_cache import load_standard_yaml
 
 Layer = Literal["user", "project", "system"]
 
@@ -200,7 +199,7 @@ class StandardsIndex:
         by_type: dict[str, list[IndexedStandard]] = {}
         for root in roots:
             for path in _iter_standard_files(root):
-                raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+                raw = load_standard_yaml(path)
                 m = _require_mapping(raw, path=path)
 
                 # Fail-closed: require core keys even if schema evolves.

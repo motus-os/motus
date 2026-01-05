@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import os
 import sqlite3
 import uuid
 from contextlib import contextmanager
@@ -13,6 +14,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Iterator
 
 from motus.config import config
+from motus.core.cache import TTLCache, register_cache
 from motus.core import configure_connection
 from motus.exceptions import SessionNotFoundError
 
@@ -22,6 +24,9 @@ if TYPE_CHECKING:
     from motus.protocols import UnifiedSession
 
 DEFAULT_DB_NAME = "session_store.db"
+DEFAULT_QUERY_CACHE_TTL_S = int(os.environ.get("MC_SESSION_CACHE_TTL_S", "5"))
+DEFAULT_QUERY_CACHE_SIZE = int(os.environ.get("MC_SESSION_CACHE_SIZE", "256"))
+
 
 def _resolve_db_path(db_path: Path | str | None) -> tuple[str, bool]:
     if db_path is None:
@@ -56,11 +61,26 @@ def _generate_session_id(timestamp: str, agent_type: str, context: bytes) -> str
     return f"mot_ses_{timestamp}_{agent_type}_{uuid.uuid4().hex[:8]}"
 
 
+def _build_query_cache() -> TTLCache | None:
+    ttl_s = DEFAULT_QUERY_CACHE_TTL_S
+    max_size = DEFAULT_QUERY_CACHE_SIZE
+    if ttl_s <= 0 or max_size <= 0:
+        return None
+    return TTLCache(
+        max_size=max_size,
+        ttl_s=ttl_s,
+        name="session_queries",
+    )
+
+
 class SessionStore(SessionStoreQueries):
     """SQLite-backed session lifecycle store."""
 
     def __init__(self, db_path: Path | str | None = None) -> None:
         self._db_path, self._use_uri = _resolve_db_path(db_path)
+        self._query_cache = _build_query_cache()
+        if self._query_cache is not None:
+            register_cache("session_queries", self._query_cache)
         self._init_schema()
 
     @property
@@ -100,6 +120,12 @@ class SessionStore(SessionStoreQueries):
                 "CREATE INDEX IF NOT EXISTS idx_sessions_updated_at ON sessions(updated_at)"
             )
 
+    def _invalidate_query_cache(self) -> None:
+        cache = getattr(self, "_query_cache", None)
+        if cache is None:
+            return
+        cache.invalidate_prefix("sessions:")
+
     def create_session(self, cwd: Path, agent_type: str) -> str:
         if not agent_type or not agent_type.strip():
             raise ValueError("agent_type must be non-empty")
@@ -132,6 +158,7 @@ class SessionStore(SessionStoreQueries):
                     )
                 except sqlite3.IntegrityError:
                     continue
+            self._invalidate_query_cache()
             return session_id
 
         raise ValueError("failed to generate unique session id")
@@ -150,6 +177,7 @@ class SessionStore(SessionStoreQueries):
             )
             if cursor.rowcount == 0:
                 raise SessionNotFoundError("session not found", session_id=session_id)
+        self._invalidate_query_cache()
 
     def touch_session(self, session_id: str) -> None:
         now = _utc_now()
@@ -160,6 +188,7 @@ class SessionStore(SessionStoreQueries):
             )
             if cursor.rowcount == 0:
                 raise SessionNotFoundError("session not found", session_id=session_id)
+        self._invalidate_query_cache()
 
     def persist_from_unified(self, session: "UnifiedSession") -> None:
         """Persist a UnifiedSession to the store."""
@@ -200,3 +229,4 @@ class SessionStore(SessionStoreQueries):
                     None,
                 ),
             )
+        self._invalidate_query_cache()
