@@ -1,0 +1,151 @@
+# Validate Tutorial
+# Ensures tutorial.yaml steps work against the current Motus release.
+# Runs on PRs that touch tutorial or CLI code, and on every release.
+
+name: Validate Tutorial
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/website/src/data/tutorial.yaml'
+      - 'packages/cli/src/**'
+      - 'scripts/validate-tutorial.py'
+  pull_request:
+    paths:
+      - 'packages/website/src/data/tutorial.yaml'
+      - 'packages/cli/src/**'
+      - 'scripts/validate-tutorial.py'
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      status_filter:
+        description: 'Status filter (current, building, all)'
+        required: false
+        default: 'current'
+
+jobs:
+  validate:
+    name: Validate Tutorial Steps
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml pytest
+          pip install -e packages/cli[dev]
+
+      - name: Validate Tutorial (current status only)
+        run: |
+          python scripts/validate-tutorial.py \
+            --status-filter ${{ github.event.inputs.status_filter || 'current' }}
+
+      - name: Upload validation log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tutorial-validation-log
+          path: tutorial-validation.log
+          retention-days: 7
+
+  generate-demo-repo:
+    name: Generate Demo Repository
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'release'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyyaml
+          pip install -e packages/cli[dev]
+
+      - name: Generate demo repo
+        run: |
+          python scripts/generate-demo-repo.py \
+            --output dist/motus-demo-app \
+            --include-db
+
+      - name: Create ZIP artifact
+        run: |
+          cd dist
+          zip -r motus-demo-app.zip motus-demo-app/
+
+      - name: Upload demo repo artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: motus-demo-app
+          path: dist/motus-demo-app.zip
+          retention-days: 90
+
+      - name: Attach to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/motus-demo-app.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  generate-gifs:
+    name: Generate Tutorial GIFs
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name == 'release'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Install VHS
+        run: go install github.com/charmbracelet/vhs@latest
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Motus
+        run: pip install -e packages/cli[dev]
+
+      - name: Generate GIFs
+        run: |
+          mkdir -p packages/website/public/assets/tutorial
+          for tape in packages/website/vhs-scripts/tutorial-*.tape; do
+            if [ -f "$tape" ]; then
+              echo "Generating GIF from $tape"
+              vhs < "$tape"
+            fi
+          done
+
+      - name: Upload GIF artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tutorial-gifs
+          path: packages/website/public/assets/tutorial/*.gif
+          retention-days: 90

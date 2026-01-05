@@ -1,126 +1,207 @@
 ---
+/**
+ * Get Started - Build with Receipts Tutorial
+ *
+ * Consumes tutorial.yaml as source of truth.
+ * All commands validated against motusos CLI.
+ */
 import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
-import PersonaCard from '../components/PersonaCard.astro';
 import Button from '../components/Button.astro';
 
-import { trainingSteps } from '../data/get-started-steps.js';
-import personaMap from '../data/persona-map.json';
-import messaging from '../data/messaging.json';
+import yaml from 'js-yaml';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Load tutorial.yaml
+const tutorialPath = path.join(process.cwd(), 'src/data/tutorial.yaml');
+const tutorialContent = fs.readFileSync(tutorialPath, 'utf-8');
+const tutorial = yaml.load(tutorialContent) as any;
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
-const quickstart = messaging.quickstart || {};
-const quickstartSteps = quickstart.steps || [];
-const quickstartTitle = quickstart.title || 'Three steps to a receipt';
+
+const meta = tutorial.meta;
+const hero = meta.hero;
+const prerequisites = tutorial.prerequisites || [];
+const setup = tutorial.setup;
+const features = tutorial.features || [];
+const reveal = tutorial.reveal;
+const nextSteps = tutorial.next_steps || [];
+
+// Helper to check if GIF exists (placeholder logic - actual check in production)
+const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
 ---
 
 <Layout title="Get Started - Motus">
+  <!-- Hero Section -->
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-3xl">
+    {hero.pain && (
+      <p class="text-text-secondary mb-phi-2">{hero.pain}</p>
+    )}
     <SectionHeader
       eyebrow="Get Started"
-      title="Run the six-call loop in minutes"
-      subtitle="Install, initialize, claim work, attach proof, and release a receipt."
+      title={hero.headline}
+      subtitle={hero.subheadline}
       size="xl"
     />
     <div class="mt-phi-3 flex flex-col items-center gap-phi-3">
       <InstallCommand />
-      <Button href={`${base}how-it-works`} variant="secondary" size="sm">
-        See how the loop works &#8594;
+      <Button href={hero.cta_anchor || '#setup'} variant="secondary" size="sm">
+        {hero.cta_text} &#8594;
       </Button>
     </div>
+    <p class="mt-phi-4 text-sm text-text-secondary">
+      Duration: ~{meta.duration_minutes} minutes
+    </p>
   </Section>
 
-  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-5xl">
-    <SectionHeader
-      eyebrow="Quickstart"
-      title={quickstartTitle}
-      subtitle="Copy, run, and verify. This is the shortest path to a recorded outcome."
-      align="left"
-      size="md"
-      class="mb-phi-4"
-      maxWidth="max-w-3xl"
-    />
-    <div class="space-y-phi-3">
-      {quickstartSteps.map((step, index) => (
-        <Panel size="sm" class="space-y-phi-2">
-          <div class="flex flex-wrap items-center justify-between gap-phi-2">
-            <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
-              Step {String(index + 1).padStart(2, '0')}
-            </p>
-          </div>
-          <h2 class="text-2xl font-display text-text-primary">{step.title}</h2>
-          <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
-            <div class="space-y-phi-1">
-              <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
-              <code class="text-mint font-mono text-sm block">{step.command}</code>
+  <!-- Prerequisites (if any fail, show them) -->
+  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl">
+    <details class="group">
+      <summary class="cursor-pointer text-sm text-text-secondary hover:text-text-primary transition-colors">
+        <span class="group-open:hidden">Show prerequisites</span>
+        <span class="hidden group-open:inline">Hide prerequisites</span>
+      </summary>
+      <div class="mt-phi-2 grid md:grid-cols-3 gap-phi-2">
+        {prerequisites.map((prereq: any) => (
+          <Panel size="sm" class="space-y-phi-1">
+            <p class="text-sm font-medium text-text-primary">{prereq.label}</p>
+            <code class="text-xs text-mint font-mono">{prereq.check_command}</code>
+            {prereq.install_url && (
+              <a href={prereq.install_url} class="text-xs text-mint hover:text-text-primary transition-colors" target="_blank" rel="noopener">
+                Install &#8594;
+              </a>
+            )}
+          </Panel>
+        ))}
+      </div>
+    </details>
+  </Section>
+
+  <!-- Setup Section (collapsed by default) -->
+  <Section id="setup" tone="light" pad="tight" class="border-t border-line/30 scroll-mt-24" innerClass="max-w-4xl">
+    <details class="group" open={!setup.collapsed_by_default}>
+      <summary class="cursor-pointer">
+        <SectionHeader
+          eyebrow="Step 00"
+          title={setup.title}
+          subtitle="One-time setup. Skip if already installed."
+          align="left"
+          size="md"
+          maxWidth="max-w-3xl"
+        />
+      </summary>
+      <div class="mt-phi-3 space-y-phi-2">
+        {setup.steps.map((step: any, index: number) => (
+          <Panel size="sm" class="space-y-phi-2">
+            <div class="flex items-center justify-between">
+              <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
+                {step.title}
+              </p>
             </div>
-            <div class="space-y-phi-1">
-              <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>
-              <p class="text-sm text-text-secondary">{step.expected}</p>
-            </div>
-          </div>
+            {step.type === 'command' && (
+              <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
+                {step.command}
+              </code>
+            )}
+            {step.expected_pattern && (
+              <p class="text-xs text-text-secondary">
+                Expected: pattern matching <code class="text-mint">{step.expected_pattern}</code>
+              </p>
+            )}
+          </Panel>
+        ))}
+      </div>
+      {setup.reset_instructions && (
+        <Panel size="sm" class="mt-phi-3 space-y-phi-1 border-amber-500/30 border">
+          <p class="text-xs uppercase tracking-[0.25em] text-amber-400">If something goes wrong</p>
+          <pre class="text-xs text-text-secondary whitespace-pre-wrap">{setup.reset_instructions}</pre>
         </Panel>
-      ))}
-    </div>
+      )}
+    </details>
   </Section>
 
+  <!-- Features (The Build) -->
   <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-5xl">
     <SectionHeader
-      eyebrow="Step by Step"
-      title="Full loop, end to end"
-      subtitle="Use these commands if you want the full receipt: outcome, evidence, and decision."
+      eyebrow="The Build"
+      title="3 features. 3 receipts."
+      subtitle="Each feature follows the same loop: claim, work, evidence, release."
       align="left"
       size="md"
-      class="mb-phi-4"
       maxWidth="max-w-3xl"
+      class="mb-phi-4"
     />
+
     <div class="relative">
       <span class="absolute left-phi-2 top-0 bottom-0 w-px bg-line/20"></span>
-      <ol class="space-y-phi-2 md:space-y-phi-3 pl-phi-4 md:pl-phi-5">
-        {trainingSteps.map((step, index) => (
-          <li id={step.id} class="relative scroll-mt-24">
-            <span class="absolute left-phi-2 top-phi-2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full border border-line/30 bg-surface text-xs font-mono text-text-secondary">
-              {String(index + 1).padStart(2, '0')}
+      <ol class="space-y-phi-4 pl-phi-4 md:pl-phi-5">
+        {features.map((feature: any, featureIndex: number) => (
+          <li id={feature.id} class="relative scroll-mt-24">
+            <span class="absolute left-phi-2 top-phi-2 -translate-x-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-line/30 bg-surface text-sm font-mono text-text-secondary">
+              {String(featureIndex + 1).padStart(2, '0')}
             </span>
-            <Panel size="sm" class="space-y-phi-2">
+
+            <Panel size="sm" class="space-y-phi-3">
               <div class="flex flex-wrap items-center justify-between gap-phi-2">
-                <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
-                  Step {String(index + 1).padStart(2, '0')}
-                </p>
-                {step.proof ? (
-                  <a
-                    href={step.proof.url.startsWith('http') ? step.proof.url : `${base}${step.proof.url.replace(/^\/+/, '')}`}
-                    class="text-xs uppercase tracking-[0.2em] text-mint hover:text-text-primary transition-colors"
-                    target={step.proof.url.startsWith('http') ? '_blank' : undefined}
-                    rel={step.proof.url.startsWith('http') ? 'noopener' : undefined}
-                  >
-                    Learn more &#8594;
-                  </a>
-                ) : null}
-              </div>
-              <h3 class="text-xl font-display text-text-primary">{step.title}</h3>
-              <p class="text-sm text-text-secondary">{step.goal}</p>
-              <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
-                <div class="space-y-phi-1">
-                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
-                  {step.commands.map((command) => (
-                    <code class="text-mint font-mono text-sm block">{command}</code>
-                  ))}
+                <div>
+                  <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
+                    Feature {String(featureIndex + 1).padStart(2, '0')}
+                  </p>
+                  <h3 class="text-xl font-display text-text-primary">{feature.title}</h3>
                 </div>
-                <div class="space-y-phi-1">
-                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>
-                  <p class="text-sm text-text-secondary">{step.expected}</p>
-                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">If it fails</p>
-                  <p class="text-sm text-text-secondary">{step.failure}</p>
-                  <p class="text-xs uppercase tracking-[0.2em] text-text-secondary mt-phi-2">Fix</p>
-                  <p class="text-sm text-text-secondary">{step.fix}</p>
-                </div>
+                <span class="text-xs px-2 py-1 rounded-full border border-mint/30 text-mint">
+                  {feature.id}
+                </span>
               </div>
+
+              <p class="text-sm text-text-secondary">{feature.description}</p>
+
+              <!-- Feature Steps -->
+              <div class="space-y-phi-2">
+                {feature.steps.map((step: any) => (
+                  <div class="rounded-lg border border-line/20 bg-surface-muted p-phi-2 space-y-phi-1">
+                    <div class="flex items-center justify-between">
+                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">{step.title}</p>
+                      {step.gif && (
+                        <span class="text-xs text-mint">GIF</span>
+                      )}
+                    </div>
+
+                    {step.type === 'command' && (
+                      <code class="text-mint font-mono text-sm block">{step.command}</code>
+                    )}
+
+                    {step.type === 'file' && (
+                      <div class="space-y-phi-1">
+                        <p class="text-xs text-text-secondary">Create file: <code class="text-mint">{step.path}</code></p>
+                        <pre class="text-xs text-text-secondary bg-surface p-phi-2 rounded overflow-x-auto max-h-32 overflow-y-auto">{step.content}</pre>
+                      </div>
+                    )}
+
+                    {step.explanation && (
+                      <p class="text-xs text-text-secondary/80 italic">{step.explanation}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              <!-- Sneak peek after first feature -->
+              {featureIndex === 0 && (
+                <Panel size="sm" class="border-mint/30 border bg-mint/5">
+                  <p class="text-sm text-text-primary">
+                    You just completed your first receipt.
+                  </p>
+                  <p class="text-xs text-text-secondary">
+                    By the end, you'll have 3 of these with full evidence trails.
+                  </p>
+                </Panel>
+              )}
             </Panel>
           </li>
         ))}
@@ -128,47 +209,95 @@ const quickstartTitle = quickstart.title || 'Three steps to a receipt';
     </div>
   </Section>
 
-  <Section tone="light" pad="tight" innerClass="max-w-4xl text-center">
+  <!-- The Reveal -->
+  <Section id="reveal" tone="light" pad="tight" class="border-t border-line/30 scroll-mt-24" innerClass="max-w-4xl">
     <SectionHeader
-      title="Next steps"
-      subtitle="When you finish the loop, move into the deeper implementation reference."
+      eyebrow="The Reveal"
+      title={reveal.title}
+      subtitle={reveal.description}
+      align="left"
+      size="md"
+      maxWidth="max-w-3xl"
+      class="mb-phi-4"
+    />
+
+    <div class="space-y-phi-3">
+      {reveal.steps.map((step: any) => (
+        <Panel size="sm" class="space-y-phi-2">
+          <div class="flex items-center justify-between">
+            <p class="text-sm font-medium text-text-primary">{step.title}</p>
+            {step.gif && (
+              <span class="text-xs px-2 py-1 rounded-full bg-mint/10 text-mint">
+                See GIF
+              </span>
+            )}
+          </div>
+
+          {step.type === 'command' && (
+            <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
+              {step.command}
+            </code>
+          )}
+
+          {step.explanation && (
+            <div class="text-sm text-text-secondary whitespace-pre-line">
+              {step.explanation}
+            </div>
+          )}
+        </Panel>
+      ))}
+    </div>
+
+    <!-- Contrast: Without vs With Motus -->
+    <Panel size="sm" class="mt-phi-4 space-y-phi-2">
+      <div class="grid md:grid-cols-2 gap-phi-3">
+        <div class="space-y-phi-1">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary/60">Without Motus</p>
+          <p class="text-sm text-text-secondary">"I think I did that? Maybe?"</p>
+        </div>
+        <div class="space-y-phi-1">
+          <p class="text-xs uppercase tracking-[0.25em] text-mint">With Motus</p>
+          <p class="text-sm text-text-primary">3 receipts with outcome, evidence, and decisions.</p>
+        </div>
+      </div>
+    </Panel>
+  </Section>
+
+  <!-- Download Demo Repo -->
+  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl text-center">
+    <SectionHeader
+      title="Get the complete demo"
+      subtitle="Download the finished app with all receipts included."
       size="md"
       class="mb-phi-3"
     />
-    <div class="flex flex-wrap justify-center gap-phi-2 text-sm">
-      <a href={`${base}docs/demos`} class="text-mint hover:text-text-primary transition-colors">
-        Demo library &#8594;
-      </a>
-      <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
-        Implementation Guide &#8594;
-      </a>
-      <a href={`${base}how-it-works`} class="text-mint hover:text-text-primary transition-colors">
-        How it Works &#8594;
-      </a>
+    <div class="flex flex-wrap justify-center gap-phi-2">
+      <Button href="https://github.com/motus-os/motus-demo-app" variant="secondary" size="sm" target="_blank" rel="noopener">
+        View on GitHub &#8594;
+      </Button>
+      <span class="text-xs text-text-secondary self-center">
+        (Demo repo generated on each release)
+      </span>
     </div>
   </Section>
 
-  <Section tone="light" class="border-t border-line/30">
+  <!-- Next Steps -->
+  <Section tone="light" pad="tight" innerClass="max-w-4xl text-center">
     <SectionHeader
-      eyebrow="Choose Your Path"
-      subtitle="Pick the entry point that matches your role."
-      class="mb-phi-5"
-    >
-      <span slot="title">Designed for the journey you are on</span>
-    </SectionHeader>
-    <div class="grid md:grid-cols-2 gap-phi-3">
-      {personaMap.personas.map((persona) => {
-        const path = persona.next.startsWith('/') ? persona.next.slice(1) : persona.next;
-        return (
-          <PersonaCard
-            title={persona.title}
-            hook={persona.hook}
-            value={persona.value}
-            href={`${base}${path}`}
-            cta="Start here"
-          />
-        );
-      })}
+      title="What's next?"
+      subtitle="Continue your journey with these resources."
+      size="md"
+      class="mb-phi-3"
+    />
+    <div class="flex flex-wrap justify-center gap-phi-3 text-sm">
+      {nextSteps.map((step: any) => (
+        <a
+          href={step.href.startsWith('/') ? `${base}${step.href.slice(1)}` : step.href}
+          class="text-mint hover:text-text-primary transition-colors"
+        >
+          {step.label} &#8594;
+        </a>
+      ))}
     </div>
   </Section>
 </Layout>

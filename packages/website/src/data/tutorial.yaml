@@ -1,0 +1,438 @@
+# Tutorial Source of Truth
+# This file defines the complete "Build with Receipts" tutorial.
+# CI validates every step against the current Motus release.
+# Changes here trigger GIF regeneration and demo repo updates.
+
+version: "1.0"
+last_validated: "2026-01-05"
+validated_against: "motusos==0.5.2"
+
+meta:
+  title: "Build a Python app with receipts"
+  subtitle: "Create a simple app. Prove every step. Keep the receipts."
+  duration_minutes: 30
+  difficulty: beginner
+
+  # Page rendering controls
+  hero:
+    pain: "Your agents complete work with no proof of what happened."
+    headline: "Build something. Prove you built it."
+    subheadline: "Create a Python app with complete audit trail in 30 minutes."
+    cta_text: "Start building"
+    cta_anchor: "#setup"
+
+prerequisites:
+  - id: python
+    label: "Python 3.10+"
+    check_command: "python3 --version"
+    expected_pattern: "Python 3\\.1[0-9]"
+    install_url: "https://python.org/downloads/"
+
+  - id: pip
+    label: "pip"
+    check_command: "pip3 --version"
+    expected_pattern: "pip"
+
+  - id: pytest
+    label: "pytest"
+    check_command: "python3 -m pytest --version"
+    expected_pattern: "pytest"
+    install_url: "https://docs.pytest.org/"
+    install_command: "pip install pytest"
+
+setup:
+  id: setup
+  title: "Setup"
+  status: current
+  collapsed_by_default: true
+
+  steps:
+    - id: install
+      title: "Install Motus"
+      type: command
+      command: "pip install motusos"
+      expected_pattern: "Successfully installed"
+      expected_exit: 0
+      timeout_seconds: 60
+
+    - id: create_dir
+      title: "Create project directory"
+      type: command
+      command: "mkdir -p demo-app && cd demo-app"
+      expected_exit: 0
+
+    - id: init
+      title: "Initialize Motus"
+      type: command
+      command: "motus init --lite --path ."
+      expected_pattern: "Initialized"
+      expected_exit: 0
+
+    - id: doctor
+      title: "Verify installation"
+      type: command
+      command: "motus doctor"
+      expected_pattern: "All checks passed"
+      expected_exit: 0
+      gif: false
+
+  reset_instructions: |
+    If something goes wrong, reset and start over:
+    ```bash
+    rm -rf demo-app && mkdir demo-app && cd demo-app
+    motus init --lite --path .
+    ```
+
+features:
+  - id: DEMO-001
+    title: "Add greeting function"
+    status: current
+    intent: "Add greeting function that returns personalized message"
+    description: "Create a simple function, test it, and record the evidence."
+
+    steps:
+      - id: claim
+        title: "Claim the work"
+        type: command
+        command: "motus work claim DEMO-001 --intent \"Add greeting function\""
+        expected_pattern: "lease_[a-z0-9]+"
+        capture_output:
+          variable: lease_id
+          pattern: "lease_[a-z0-9]+"
+        expected_exit: 0
+        gif: true
+        gif_name: "01-claim"
+        explanation: "This creates a lease - a time-bounded claim on the task."
+
+      - id: write_code
+        title: "Write the code"
+        type: file
+        path: "greeter.py"
+        content: |
+          """Greeting module with personalized messages."""
+
+          def greet(name: str) -> str:
+              """Return a personalized greeting.
+
+              Args:
+                  name: The name to greet.
+
+              Returns:
+                  A greeting string.
+              """
+              if not name or not name.strip():
+                  raise ValueError("Name cannot be empty")
+              return f"Hello, {name}!"
+        explanation: "Create the actual code. This is your deliverable."
+
+      - id: test_code
+        title: "Test the code"
+        type: command
+        command: "python3 -c \"from greeter import greet; assert greet('World') == 'Hello, World!'; print('Test passed')\""
+        expected_pattern: "Test passed"
+        expected_exit: 0
+        explanation: "Verify the code works before recording evidence."
+
+      - id: evidence
+        title: "Record evidence"
+        type: command
+        command: "motus work evidence ${lease_id} test --passed 1 --failed 0"
+        expected_pattern: "Evidence recorded"
+        expected_exit: 0
+        gif: true
+        gif_name: "02-evidence"
+        explanation: "Attach proof that your tests passed."
+
+      - id: outcome
+        title: "Register the deliverable"
+        type: command
+        command: "motus work outcome ${lease_id} file --path greeter.py"
+        expected_pattern: "Outcome recorded"
+        expected_exit: 0
+        explanation: "Record what file you created."
+
+      - id: decision
+        title: "Log your decision"
+        type: command
+        command: "motus work decision ${lease_id} \"Used f-string for readability, added docstring for clarity\""
+        expected_pattern: "Decision recorded"
+        expected_exit: 0
+        explanation: "Explain why you made the choices you did."
+
+      - id: release
+        title: "Release with receipt"
+        type: command
+        command: "motus work release ${lease_id} success"
+        expected_pattern: "Released"
+        expected_exit: 0
+        gif: true
+        gif_name: "03-release"
+        explanation: "Complete the work and generate the receipt."
+
+      - id: verify
+        title: "View the receipt"
+        type: command
+        command: "motus work status ${lease_id}"
+        expected_contains:
+          - "outcome"
+          - "evidence"
+          - "decision"
+        expected_exit: 0
+        gif: true
+        gif_name: "04-receipt"
+        explanation: "See the complete audit trail for this task."
+
+  - id: DEMO-002
+    title: "Add input validation"
+    status: current
+    intent: "Add validation to reject empty names"
+    description: "Extend the function with validation and prove it works."
+
+    steps:
+      - id: claim
+        title: "Claim the work"
+        type: command
+        command: "motus work claim DEMO-002 --intent \"Add input validation\""
+        expected_pattern: "lease_[a-z0-9]+"
+        capture_output:
+          variable: lease_id_2
+          pattern: "lease_[a-z0-9]+"
+        expected_exit: 0
+        gif: false
+
+      - id: write_test
+        title: "Write the test"
+        type: file
+        path: "test_greeter.py"
+        content: |
+          """Tests for the greeter module."""
+          import pytest
+          from greeter import greet
+
+          def test_greet_valid_name():
+              assert greet("World") == "Hello, World!"
+              assert greet("Alice") == "Hello, Alice!"
+
+          def test_greet_empty_name_raises():
+              with pytest.raises(ValueError):
+                  greet("")
+              with pytest.raises(ValueError):
+                  greet("   ")
+        explanation: "Write tests that verify the validation works."
+
+      - id: run_tests
+        title: "Run the tests"
+        type: command
+        command: "python3 -m pytest test_greeter.py -v"
+        expected_pattern: "2 passed"
+        expected_exit: 0
+
+      - id: evidence
+        title: "Record evidence"
+        type: command
+        command: "motus work evidence ${lease_id_2} test --passed 2 --failed 0"
+        expected_pattern: "Evidence recorded"
+        expected_exit: 0
+
+      - id: outcome
+        title: "Register deliverables"
+        type: command
+        command: "motus work outcome ${lease_id_2} file --path test_greeter.py"
+        expected_pattern: "Outcome recorded"
+        expected_exit: 0
+
+      - id: decision
+        title: "Log decision"
+        type: command
+        command: "motus work decision ${lease_id_2} \"Used pytest for test framework, ValueError for validation errors\""
+        expected_pattern: "Decision recorded"
+        expected_exit: 0
+
+      - id: release
+        title: "Release"
+        type: command
+        command: "motus work release ${lease_id_2} success"
+        expected_pattern: "Released"
+        expected_exit: 0
+
+  - id: DEMO-003
+    title: "Add CLI entry point"
+    status: current
+    intent: "Add command-line interface for the greeter"
+    description: "Make the app runnable from the command line."
+
+    steps:
+      - id: claim
+        title: "Claim the work"
+        type: command
+        command: "motus work claim DEMO-003 --intent \"Add CLI entry point\""
+        expected_pattern: "lease_[a-z0-9]+"
+        capture_output:
+          variable: lease_id_3
+          pattern: "lease_[a-z0-9]+"
+        expected_exit: 0
+
+      - id: write_cli
+        title: "Write the CLI"
+        type: file
+        path: "cli.py"
+        content: |
+          """Command-line interface for the greeter."""
+          import sys
+          from greeter import greet
+
+          def main():
+              if len(sys.argv) < 2:
+                  print("Usage: python cli.py <name>")
+                  sys.exit(1)
+
+              name = sys.argv[1]
+              try:
+                  print(greet(name))
+              except ValueError as e:
+                  print(f"Error: {e}")
+                  sys.exit(1)
+
+          if __name__ == "__main__":
+              main()
+
+      - id: test_cli
+        title: "Test the CLI"
+        type: command
+        command: "python3 cli.py World"
+        expected_pattern: "Hello, World!"
+        expected_exit: 0
+
+      - id: evidence
+        title: "Record evidence"
+        type: command
+        command: "motus work evidence ${lease_id_3} test --passed 1 --failed 0"
+        expected_pattern: "Evidence recorded"
+        expected_exit: 0
+
+      - id: outcome
+        title: "Register deliverable"
+        type: command
+        command: "motus work outcome ${lease_id_3} file --path cli.py"
+        expected_pattern: "Outcome recorded"
+        expected_exit: 0
+
+      - id: decision
+        title: "Log decision"
+        type: command
+        command: "motus work decision ${lease_id_3} \"Used argparse-free approach for simplicity, sys.exit for proper exit codes\""
+        expected_pattern: "Decision recorded"
+        expected_exit: 0
+
+      - id: release
+        title: "Release"
+        type: command
+        command: "motus work release ${lease_id_3} success"
+        expected_pattern: "Released"
+        expected_exit: 0
+
+reveal:
+  id: reveal
+  title: "The Reveal"
+  status: current
+  description: "See all three receipts. This is what accountability looks like."
+
+  steps:
+    - id: show_leases
+      title: "Review your saved lease IDs"
+      type: command
+      command: "echo \"Lease 1: ${lease_id}\" && echo \"Lease 2: ${lease_id_2}\" && echo \"Lease 3: ${lease_id_3}\""
+      expected_exit: 0
+      explanation: "Each task got its own lease. Each lease has a receipt."
+
+    - id: receipt_1
+      title: "View receipt for Feature 1"
+      type: command
+      command: "motus work status ${lease_id}"
+      expected_exit: 0
+      expected_contains:
+        - "outcome"
+        - "evidence"
+        - "decision"
+      gif: true
+      gif_name: "05-reveal-1"
+      explanation: "The greeting function task: outcome, evidence, and decision recorded."
+
+    - id: receipt_2
+      title: "View receipt for Feature 2"
+      type: command
+      command: "motus work status ${lease_id_2}"
+      expected_exit: 0
+      expected_contains:
+        - "outcome"
+        - "evidence"
+        - "decision"
+      explanation: "The validation task: same structure, different work."
+
+    - id: receipt_3
+      title: "View receipt for Feature 3"
+      type: command
+      command: "motus work status ${lease_id_3}"
+      expected_exit: 0
+      expected_contains:
+        - "outcome"
+        - "evidence"
+        - "decision"
+      gif: true
+      gif_name: "05-reveal-3"
+      explanation: |
+        You just built 3 features. Each one has:
+        - A receipt with the outcome
+        - Evidence that tests passed
+        - A decision explaining your choices
+
+        This is what your agents should produce.
+
+demo_repo:
+  name: "motus-demo-app"
+  github_org: "motus-os"
+  description: "A simple Python app with complete Motus audit trail"
+
+  generated_files:
+    - from_tutorial: true  # greeter.py, test_greeter.py, cli.py
+
+  static_files:
+    - path: "README.md"
+      template: "demo-repo-readme.md.jinja"
+
+    - path: ".gitignore"
+      content: |
+        __pycache__/
+        *.pyc
+        .pytest_cache/
+
+    - path: "requirements.txt"
+      content: |
+        pytest>=7.0.0
+        motusos>=0.5.0
+
+  # The .motus/ directory is copied from the validated run
+  include_motus_db: true
+
+next_steps:
+  - label: "Run the same loop with your real agent"
+    href: "/how-it-works"
+  - label: "See advanced patterns"
+    href: "/implementation"
+  - label: "Explore the demo library"
+    href: "/docs/demos"
+
+# Visibility rules (matches site-wide status system)
+visibility_rules:
+  current:
+    show: true
+    interactive: true
+    badge: null
+  building:
+    show: true
+    interactive: false
+    badge: "Coming Soon"
+    badge_class: "status-building"
+  future:
+    show: false
+    interactive: false
