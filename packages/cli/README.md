@@ -28,7 +28,7 @@ Expected: CLI installs successfully
 ```bash
 pip install motusos
 motus init --lite --path . && motus doctor
-motus work claim TASK-001 --intent "My first task"
+motus work claim ADHOC-TASK-001 --intent "My first task"
 motus work evidence $LEASE test --passed 1
 motus work release $LEASE success
 motus work status $LEASE

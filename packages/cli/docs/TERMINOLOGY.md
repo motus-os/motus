@@ -45,7 +45,7 @@ The canonical Work Compiler protocol.
 
 | Call | Purpose |
 |------|---------|
-| `claim_work` | Reserve a roadmap item, get lease |
+| `claim_work` | Reserve a roadmap item, get lease (ad hoc IDs must use `ADHOC-` prefix) |
 | `get_context` | Assemble lens: task, standards, file policy, dependencies |
 | `put_outcome` | Register primary deliverable(s) produced |
 | `record_evidence` | Store verification artifacts (tests, diffs, logs) |

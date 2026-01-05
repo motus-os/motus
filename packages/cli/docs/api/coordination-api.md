@@ -13,7 +13,7 @@ point for integrators.
 
 | Call | Purpose | Notes |
 |------|---------|-------|
-| `claim_work` | Reserve a work item and obtain a contract | Returns missing prerequisites |
+| `claim_work` | Reserve a work item and obtain a contract | Returns missing prerequisites; ad hoc IDs must use `ADHOC-` prefix |
 | `get_context` | Assemble the current lens for the attempt | Returns missing prerequisites |
 | `put_outcome` | Register primary deliverables | Outcome is not evidence |
 | `record_evidence` | Attach verification artifacts | Typed + hashed evidence |

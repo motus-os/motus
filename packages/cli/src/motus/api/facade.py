@@ -70,9 +70,11 @@ from motus.coordination.api.types import (
     LeaseMode,
     Outcome,
     ReleaseResponse,
+    make_decision,
 )
 from motus.coordination.schemas import ClaimedResource as Resource
 from motus.core.database_connection import get_db_manager
+from motus.lens.compiler import assemble_lens
 from motus.logging import get_logger
 
 
@@ -88,6 +90,11 @@ def _generate_id(prefix: str) -> str:
 
 
 _kernel_logger = get_logger("motus.api.kernel")
+_ADHOC_PREFIX = "ADHOC-"
+
+
+def _is_adhoc_work_id(work_id: str) -> bool:
+    return work_id.startswith(_ADHOC_PREFIX)
 
 
 def _metrics_enabled() -> bool:
@@ -269,6 +276,11 @@ def _persist_attempt(
                 (work_id,),
             ).fetchone()
             if item is None:
+                if not _is_adhoc_work_id(work_id):
+                    _kernel_logger.warning(
+                        f"Refusing to create ad hoc roadmap item without ADHOC- prefix: {work_id}"
+                    )
+                    return False
                 conn.execute(
                     """
                     INSERT INTO roadmap_items (id, phase_key, title, created_by)
@@ -398,6 +410,21 @@ class WorkCompiler:
         if attempt_id:
             self._lease_attempt_ids[lease_id] = attempt_id
 
+    def _roadmap_item_exists(self, work_id: str) -> bool | None:
+        try:
+            db = get_db_manager()
+            with db.readonly_connection() as conn:
+                row = conn.execute(
+                    "SELECT 1 FROM roadmap_items WHERE id = ? AND deleted_at IS NULL",
+                    (work_id,),
+                ).fetchone()
+            return row is not None
+        except Exception as exc:
+            _kernel_logger.warning(
+                f"Work ID validation skipped for {work_id}: {exc}"
+            )
+            return None
+
     def _resolve_lease_metadata(
         self,
         lease_id: str,
@@ -524,6 +551,39 @@ class WorkCompiler:
             r if isinstance(r, Resource) else Resource(type=r["type"], path=r["path"])
             for r in resources
         ]
+
+        work_id_exists = self._roadmap_item_exists(task_id)
+        if work_id_exists is False and not _is_adhoc_work_id(task_id):
+            now = _utcnow()
+            lens = assemble_lens(
+                policy_version=self._coordinator._policy_version,
+                resources=normalized,
+                intent=f"[{task_id}] {intent}",
+                cache_state_hash=self._coordinator._context_cache.state_hash(),
+                timestamp=now,
+            )
+            decision = make_decision(
+                decision="DENIED",
+                reason_code="DENY_INVALID_WORK_ID",
+                suggested_next_actions=[
+                    "Use an existing roadmap item ID",
+                    "Prefix ad hoc tasks with ADHOC-",
+                ],
+            )
+            self._record_metric(
+                "work_compiler.claim_work",
+                time.perf_counter(),
+                success=False,
+                metadata={
+                    "work_id": task_id,
+                    "agent_id": agent_id,
+                    "mode": mode,
+                    "resource_count": len(normalized),
+                    "decision": decision.decision,
+                    "reason_code": decision.reason_code,
+                },
+            )
+            return ClaimResponse(decision=decision, lens=dict(lens), lease=None)
 
         attempt_id = _generate_id("attempt")
 

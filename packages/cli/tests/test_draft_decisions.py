@@ -35,7 +35,7 @@ def active_lease(wc):
     from motus.coordination.schemas import ClaimedResource
 
     result = wc.claim_work(
-        task_id="TEST-001",
+        task_id="ADHOC-TEST-001",
         resources=[ClaimedResource(type="file", path="test.py")],
         intent="Test task",
         agent_id="test-agent",

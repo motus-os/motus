@@ -70,7 +70,7 @@ quickstart:
 
     - id: claim
       title: "Claim work"
-      command: "motus work claim TASK-001 --intent \"My first task\""
+      command: "motus work claim ADHOC-TASK-001 --intent \"My first task\""
       expected: "Lease ID returned (e.g., lease_abc123)"
 
     - id: evidence
