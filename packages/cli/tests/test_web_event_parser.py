@@ -11,12 +11,12 @@ from tests.fixtures.constants import FIXED_TIMESTAMP
 class TestParseSessionHistoryPagination:
     """Tests for parse_session_history pagination behavior."""
 
-    @patch("src.motus.ui.web.event_parser.tail_lines")
-    @patch("src.motus.ui.web.event_parser.get_file_stats")
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.tail_lines")
+    @patch("motus.ui.web.event_parser.get_file_stats")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_initial_load_returns_newest_first(self, mock_get_orch, mock_stats, mock_tail):
         """Initial load returns most recent events newest-first."""
-        from src.motus.ui.web.event_parser import parse_session_history
+        from motus.ui.web.event_parser import parse_session_history
 
         mock_session = Mock()
         mock_session.source = Source.CLAUDE
@@ -47,12 +47,12 @@ class TestParseSessionHistoryPagination:
         assert result["offset"] == 0
         assert result["error"] is None
 
-    @patch("src.motus.ui.web.event_parser.tail_lines")
-    @patch("src.motus.ui.web.event_parser.get_file_stats")
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.tail_lines")
+    @patch("motus.ui.web.event_parser.get_file_stats")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_load_more_with_offset(self, mock_get_orch, mock_stats, mock_tail):
         """Load more with offset returns earlier events."""
-        from src.motus.ui.web.event_parser import parse_session_history
+        from motus.ui.web.event_parser import parse_session_history
 
         mock_session = Mock()
         mock_session.source = Source.CLAUDE
@@ -77,12 +77,12 @@ class TestParseSessionHistoryPagination:
         assert result["offset"] == 10
         assert result["error"] is None
 
-    @patch("src.motus.ui.web.event_parser.tail_lines")
-    @patch("src.motus.ui.web.event_parser.get_file_stats")
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.tail_lines")
+    @patch("motus.ui.web.event_parser.get_file_stats")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_has_more_flag_when_more_events_exist(self, mock_get_orch, mock_stats, mock_tail):
         """has_more flag is True when more events exist."""
-        from src.motus.ui.web.event_parser import parse_session_history
+        from motus.ui.web.event_parser import parse_session_history
 
         mock_session = Mock()
         mock_session.source = Source.CLAUDE
@@ -107,12 +107,12 @@ class TestParseSessionHistoryPagination:
 
         assert result["has_more"] is True
 
-    @patch("src.motus.ui.web.event_parser.tail_lines")
-    @patch("src.motus.ui.web.event_parser.get_file_stats")
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.tail_lines")
+    @patch("motus.ui.web.event_parser.get_file_stats")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_format_callback_is_called(self, mock_get_orch, mock_stats, mock_tail):
         """format_callback is called for each parsed event."""
-        from src.motus.ui.web.event_parser import parse_session_history
+        from motus.ui.web.event_parser import parse_session_history
 
         mock_session = Mock()
         mock_session.source = Source.CLAUDE
@@ -145,12 +145,12 @@ class TestParseSessionHistoryPagination:
         assert len(callback_calls) > 0
         assert result["error"] is None
 
-    @patch("src.motus.ui.web.event_parser.tail_lines")
-    @patch("src.motus.ui.web.event_parser.get_file_stats")
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.tail_lines")
+    @patch("motus.ui.web.event_parser.get_file_stats")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_early_termination_when_enough_events(self, mock_get_orch, mock_stats, mock_tail):
         """Parser terminates early when enough events collected."""
-        from src.motus.ui.web.event_parser import parse_session_history
+        from motus.ui.web.event_parser import parse_session_history
 
         mock_session = Mock()
         mock_session.source = Source.CLAUDE
@@ -180,10 +180,10 @@ class TestParseBackfillEventsDetailed:
     """Detailed tests for parse_backfill_events."""
 
     @patch("builtins.open", create=True)
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_reads_last_10kb_for_claude_sessions(self, mock_get_orch, mock_open):
         """Reads last ~10KB from Claude session files."""
-        from src.motus.ui.web.event_parser import parse_backfill_events
+        from motus.ui.web.event_parser import parse_backfill_events
 
         mock_session = Mock()
         mock_session.source = Source.CLAUDE
@@ -212,10 +212,10 @@ class TestParseBackfillEventsDetailed:
         seek_pos = mock_file.seek.call_args[0][0]
         assert seek_pos == 10000  # 20000 - 10000
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_uses_orchestrator_for_gemini_sessions(self, mock_get_orch):
         """Uses orchestrator.get_events for Gemini sessions."""
-        from src.motus.ui.web.event_parser import parse_backfill_events
+        from motus.ui.web.event_parser import parse_backfill_events
 
         mock_session = Mock()
         mock_session.source = Source.GEMINI
@@ -233,10 +233,10 @@ class TestParseBackfillEventsDetailed:
         # Should have called get_events
         mock_orch.get_events.assert_called_once_with(mock_session)
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_takes_last_10_events_from_codex(self, mock_get_orch):
         """Takes last 10 events from Codex sessions."""
-        from src.motus.ui.web.event_parser import parse_backfill_events
+        from motus.ui.web.event_parser import parse_backfill_events
 
         mock_session = Mock()
         mock_session.source = Source.CODEX
@@ -256,10 +256,10 @@ class TestParseBackfillEventsDetailed:
         assert isinstance(events, list)
 
     @patch("builtins.open", create=True)
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_handles_oserror_for_individual_session(self, mock_get_orch, mock_open):
         """Handles OSError for individual session and continues."""
-        from src.motus.ui.web.event_parser import parse_backfill_events
+        from motus.ui.web.event_parser import parse_backfill_events
 
         mock_session1 = Mock()
         mock_session1.source = Source.CLAUDE
@@ -292,10 +292,10 @@ class TestParseBackfillEventsDetailed:
 
         assert isinstance(events, list)
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_handles_unexpected_exception_for_session(self, mock_get_orch):
         """Handles unexpected exceptions for individual sessions."""
-        from src.motus.ui.web.event_parser import parse_backfill_events
+        from motus.ui.web.event_parser import parse_backfill_events
 
         mock_session = Mock()
         mock_session.source = Source.CODEX
@@ -312,10 +312,10 @@ class TestParseBackfillEventsDetailed:
 
         assert isinstance(events, list)
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_sorts_and_limits_backfill_events(self, mock_get_orch):
         """Backfill events are sorted by timestamp and limited."""
-        from src.motus.ui.web.event_parser import parse_backfill_events
+        from motus.ui.web.event_parser import parse_backfill_events
 
         mock_session = Mock()
         mock_session.source = Source.CODEX
@@ -339,10 +339,10 @@ class TestParseIncrementalEventsCallbacks:
     """Tests for parse_incremental_events callback behavior."""
 
     @patch("builtins.open", create=True)
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_line_callback_is_called(self, mock_get_orch, mock_open):
         """line_callback is called for each new line."""
-        from src.motus.ui.web.event_parser import parse_incremental_events
+        from motus.ui.web.event_parser import parse_incremental_events
 
         mock_session = Mock()
         mock_session.source = Source.CLAUDE
@@ -376,10 +376,10 @@ class TestParseIncrementalEventsCallbacks:
         assert line_calls[0][2] == "/test"
 
     @patch("builtins.open", create=True)
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_format_callback_is_called(self, mock_get_orch, mock_open):
         """format_callback is called for each parsed event."""
-        from src.motus.ui.web.event_parser import parse_incremental_events
+        from motus.ui.web.event_parser import parse_incremental_events
 
         mock_session = Mock()
         mock_session.source = Source.CLAUDE
@@ -416,10 +416,10 @@ class TestParseIncrementalEventsCallbacks:
         assert format_calls[0][1] == "test-session"
         assert format_calls[0][3] == "claude"
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_gemini_returns_empty_when_size_unchanged(self, mock_get_orch):
         """Gemini returns empty list when file size unchanged."""
-        from src.motus.ui.web.event_parser import parse_incremental_events
+        from motus.ui.web.event_parser import parse_incremental_events
 
         mock_session = Mock()
         mock_session.source = Source.GEMINI
@@ -435,10 +435,10 @@ class TestParseIncrementalEventsCallbacks:
         assert events == []
         assert new_pos == 5000
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_gemini_refreshes_when_size_changed(self, mock_get_orch):
         """Gemini re-parses file when size changes."""
-        from src.motus.ui.web.event_parser import parse_incremental_events
+        from motus.ui.web.event_parser import parse_incremental_events
 
         mock_session = Mock()
         mock_session.source = Source.GEMINI
@@ -464,10 +464,10 @@ class TestParseIncrementalEventsCallbacks:
 class TestParseSessionIntentsDetails:
     """Detailed tests for parse_session_intents."""
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_calculates_cache_hit_rate(self, mock_get_orch):
         """Calculates cache hit rate from token usage."""
-        from src.motus.ui.web.event_parser import parse_session_intents
+        from motus.ui.web.event_parser import parse_session_intents
 
         mock_session = Mock()
 
@@ -501,10 +501,10 @@ class TestParseSessionIntentsDetails:
         # Cache hit rate should be (800 / 1000) * 100 = 80%
         assert "80.0%" in stats["cache_hit_rate"]
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_tracks_models_used(self, mock_get_orch):
         """Tracks all models used in session."""
-        from src.motus.ui.web.event_parser import parse_session_intents
+        from motus.ui.web.event_parser import parse_session_intents
 
         mock_session = Mock()
 
@@ -543,10 +543,10 @@ class TestParseSessionIntentsDetails:
         assert "claude-sonnet-4" in stats["models_used"]
         assert "claude-opus-4" in stats["models_used"]
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_tracks_file_operations(self, mock_get_orch):
         """Tracks Read and Edit/Write file operations."""
-        from src.motus.ui.web.event_parser import parse_session_intents
+        from motus.ui.web.event_parser import parse_session_intents
 
         mock_session = Mock()
 
@@ -594,10 +594,10 @@ class TestParseSessionIntentsDetails:
         assert stats["files_read"] == 1
         assert stats["files_modified"] == 2
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_tracks_errors(self, mock_get_orch):
         """Tracks error events."""
-        from src.motus.ui.web.event_parser import parse_session_intents
+        from motus.ui.web.event_parser import parse_session_intents
 
         mock_session = Mock()
 
@@ -634,10 +634,10 @@ class TestParseSessionIntentsDetails:
         stats = result["stats"]
         assert stats["errors"] == 2
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_formats_intent_timestamps(self, mock_get_orch):
         """Formats intent timestamps as HH:MM:SS."""
-        from src.motus.ui.web.event_parser import parse_session_intents
+        from motus.ui.web.event_parser import parse_session_intents
 
         mock_session = Mock()
 
@@ -664,10 +664,10 @@ class TestParseSessionIntentsDetails:
         assert ":" in intents[0]["timestamp"]
         assert len(intents[0]["timestamp"].split(":")) == 3
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_handles_zero_cache_hit_rate(self, mock_get_orch):
         """Handles zero cache hit rate when no cache reads."""
-        from src.motus.ui.web.event_parser import parse_session_intents
+        from motus.ui.web.event_parser import parse_session_intents
 
         mock_session = Mock()
 
@@ -698,10 +698,10 @@ class TestParseSessionIntentsDetails:
         stats = result["stats"]
         assert "0.0%" in stats["cache_hit_rate"]
 
-    @patch("src.motus.ui.web.event_parser.get_orchestrator")
+    @patch("motus.ui.web.event_parser.get_orchestrator")
     def test_handles_events_without_raw_data(self, mock_get_orch):
         """Handles events without raw_data field."""
-        from src.motus.ui.web.event_parser import parse_session_intents
+        from motus.ui.web.event_parser import parse_session_intents
 
         mock_session = Mock()
 

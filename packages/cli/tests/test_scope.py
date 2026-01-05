@@ -2,8 +2,8 @@
 
 from unittest.mock import MagicMock, patch
 
-from src.motus.intent import Intent
-from src.motus.scope import (
+from motus.intent import Intent
+from motus.scope import (
     ScopeStatus,
     calculate_scope_status,
     check_scope,
@@ -154,7 +154,7 @@ class TestGetTouchedFilesFromSession:
         session_file.write_text('{"type": "test"}\n')
 
         # Mock the orchestrator to return ParsedEvent objects
-        with patch("src.motus.scope.get_orchestrator") as mock_get_orch:
+        with patch("motus.scope.get_orchestrator") as mock_get_orch:
             mock_orch = MagicMock()
             mock_session = MagicMock()
             mock_session.file_path = session_file
@@ -194,7 +194,7 @@ class TestGetTouchedFilesFromSession:
             mock_orch.get_events.return_value = events
             mock_get_orch.return_value = mock_orch
 
-            from src.motus.scope import get_touched_files_from_session
+            from motus.scope import get_touched_files_from_session
 
             result = get_touched_files_from_session(session_file)
 
@@ -212,7 +212,7 @@ class TestGetTouchedFilesFromSession:
         session_file = tmp_path / "codex_session.jsonl"
         session_file.write_text('{"type": "test"}\n')
 
-        with patch("src.motus.scope.get_orchestrator") as mock_get_orch:
+        with patch("motus.scope.get_orchestrator") as mock_get_orch:
             mock_orch = MagicMock()
             mock_session = MagicMock()
             mock_session.file_path = session_file
@@ -234,7 +234,7 @@ class TestGetTouchedFilesFromSession:
             mock_orch.get_events.return_value = events
             mock_get_orch.return_value = mock_orch
 
-            from src.motus.scope import get_touched_files_from_session
+            from motus.scope import get_touched_files_from_session
 
             result = get_touched_files_from_session(session_file)
             assert "src/codex_file.py" in result
@@ -248,7 +248,7 @@ class TestGetTouchedFilesFromSession:
         session_file = tmp_path / "gemini_session.jsonl"
         session_file.write_text('{"type": "test"}\n')
 
-        with patch("src.motus.scope.get_orchestrator") as mock_get_orch:
+        with patch("motus.scope.get_orchestrator") as mock_get_orch:
             mock_orch = MagicMock()
             mock_session = MagicMock()
             mock_session.file_path = session_file
@@ -270,7 +270,7 @@ class TestGetTouchedFilesFromSession:
             mock_orch.get_events.return_value = events
             mock_get_orch.return_value = mock_orch
 
-            from src.motus.scope import get_touched_files_from_session
+            from motus.scope import get_touched_files_from_session
 
             result = get_touched_files_from_session(session_file)
             assert "src/gemini_file.py" in result
@@ -292,7 +292,7 @@ class TestCheckScope:
         intent_file = mc_dir / "intent.yaml"
         intent_file.write_text("task: Test\npriority_files:\n  - main.py\n")
 
-        with patch("src.motus.scope.get_touched_files_from_git") as mock_git:
+        with patch("motus.scope.get_touched_files_from_git") as mock_git:
             mock_git.return_value = {"main.py", "extra.py"}
             status = check_scope(repo_path=tmp_path, mc_dir=mc_dir)
             assert "main.py" in status.expected_files

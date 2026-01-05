@@ -85,7 +85,7 @@ class TestSessionValidation:
         """Summary endpoint validates session exists."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -103,7 +103,7 @@ class TestSessionValidation:
         """Summary endpoint safely handles malicious session IDs."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -128,7 +128,7 @@ class TestSessionValidation:
         """Session lookups use exact comparison or safe prefix matching."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -147,7 +147,7 @@ class TestSessionValidation:
         """WebSocket handles invalid session IDs gracefully."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -173,7 +173,7 @@ class TestPathSanitization:
         """File paths come from session parsing, not direct user input."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -191,7 +191,7 @@ class TestPathSanitization:
     def test_session_file_paths_come_from_find_sessions(self):
         """Session file paths come from find_sessions, not user input."""
         # This is a design test - we verify the code structure
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -230,7 +230,7 @@ class TestPathSanitization:
         # before retrieving snapshots
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -261,7 +261,7 @@ class TestServerBinding:
 
     def test_server_binds_to_localhost_only(self):
         """Server binds to 127.0.0.1, not 0.0.0.0."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
 
@@ -276,7 +276,7 @@ class TestServerBinding:
         """Dashboard displays local-only security banner."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -308,7 +308,7 @@ class TestServerBinding:
 
     def test_no_authentication_tokens_in_code(self):
         """Code does not contain authentication/token logic."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         server.create_app()  # Validate app creates without error
@@ -331,7 +331,7 @@ class TestInputValidation:
         """WebSocket validates message types."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -351,7 +351,7 @@ class TestInputValidation:
         """Summary endpoint handles path traversal in session ID."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -372,7 +372,7 @@ class TestInputValidation:
         """Summary endpoint returns JSON, not arbitrary content."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -389,7 +389,7 @@ class TestSecretRedaction:
         """Code imports and could use redact_secrets."""
         # Verify that redact_secrets is available
         try:
-            from src.motus.ui.web import redact_secrets
+            from motus.ui.web import redact_secrets
 
             # Function exists
             assert redact_secrets is not None
@@ -409,7 +409,7 @@ class TestTUIEscaping:
 
     def test_safe_renderer_exists(self):
         """SafeRenderer is the single escape point."""
-        from src.motus.display.renderer import SafeRenderer
+        from motus.display.renderer import SafeRenderer
 
         assert SafeRenderer is not None
         assert hasattr(SafeRenderer, "escape")
@@ -419,7 +419,7 @@ class TestTUIEscaping:
 
     def test_safe_renderer_escape_method(self):
         """SafeRenderer.escape() properly escapes Rich markup."""
-        from src.motus.display.renderer import SafeRenderer
+        from motus.display.renderer import SafeRenderer
 
         # Test Rich markup escaping
         test_cases = [
@@ -439,7 +439,7 @@ class TestTUIEscaping:
 
     def test_safe_renderer_file_path_method(self):
         """SafeRenderer.file_path() escapes and truncates paths."""
-        from src.motus.display.renderer import SafeRenderer
+        from motus.display.renderer import SafeRenderer
 
         # Test malicious file paths
         malicious_paths = [
@@ -459,7 +459,7 @@ class TestTUIEscaping:
 
     def test_safe_renderer_command_method(self):
         """SafeRenderer.command() escapes and truncates commands."""
-        from src.motus.display.renderer import SafeRenderer
+        from motus.display.renderer import SafeRenderer
 
         # Test dangerous commands
         dangerous_commands = [
@@ -475,7 +475,7 @@ class TestTUIEscaping:
 
     def test_safe_renderer_content_method(self):
         """SafeRenderer.content() escapes and normalizes content."""
-        from src.motus.display.renderer import SafeRenderer
+        from motus.display.renderer import SafeRenderer
 
         # Test thinking/output content
         dangerous_content = [
@@ -493,7 +493,7 @@ class TestTUIEscaping:
         """EventTransformer uses SafeRenderer for all escaping."""
         import inspect
 
-        from src.motus.display.transformer import EventTransformer
+        from motus.display.transformer import EventTransformer
 
         # Verify EventTransformer imports and uses SafeRenderer
         source = inspect.getsource(EventTransformer)
@@ -506,7 +506,7 @@ class TestTUIEscaping:
         """EventTransformer._transform_thinking uses SafeRenderer.content()."""
         import inspect
 
-        from src.motus.display.transformer import EventTransformer
+        from motus.display.transformer import EventTransformer
 
         source = inspect.getsource(EventTransformer._transform_thinking)
         # Should use r.content() for thinking content
@@ -516,7 +516,7 @@ class TestTUIEscaping:
         """EventTransformer._get_tool_details uses SafeRenderer methods."""
         import inspect
 
-        from src.motus.display.transformer import EventTransformer
+        from motus.display.transformer import EventTransformer
 
         source = inspect.getsource(EventTransformer._get_tool_details)
         # Should use r.file_path(), r.command(), r.content(), r.escape()
@@ -527,8 +527,8 @@ class TestTUIEscaping:
         """DisplayEvent dataclass fields are pre-escaped."""
         from datetime import datetime
 
-        from src.motus.display.transformer import EventTransformer
-        from src.motus.schema.events import AgentSource, EventType, ParsedEvent
+        from motus.display.transformer import EventTransformer
+        from motus.schema.events import AgentSource, EventType, ParsedEvent
 
         # Create ParsedEvent with dangerous content
         dangerous_event = ParsedEvent(
@@ -557,7 +557,7 @@ class TestTUIEscaping:
         """SessionTransformer uses SafeRenderer for session data."""
         import inspect
 
-        from src.motus.display.transformer import SessionTransformer
+        from motus.display.transformer import SessionTransformer
 
         source = inspect.getsource(SessionTransformer.transform)
 
@@ -566,8 +566,8 @@ class TestTUIEscaping:
 
     def test_display_session_fields_are_escaped(self):
         """DisplaySession fields are pre-escaped."""
-        from src.motus.display.transformer import SessionTransformer
-        from src.motus.protocols import SessionStatus, Source
+        from motus.display.transformer import SessionTransformer
+        from motus.protocols import SessionStatus, Source
 
         # Mock UnifiedSession
         class MockSession:
@@ -586,7 +586,7 @@ class TestTUIEscaping:
 
     def test_control_characters_handled_by_safe_renderer(self):
         """SafeRenderer handles control characters safely."""
-        from src.motus.display.renderer import SafeRenderer
+        from motus.display.renderer import SafeRenderer
 
         # Test control characters
         control_chars = [
@@ -603,7 +603,7 @@ class TestTUIEscaping:
 
     def test_ansi_sequences_handled_by_safe_renderer(self):
         """SafeRenderer handles ANSI escape sequences."""
-        from src.motus.display.renderer import SafeRenderer
+        from motus.display.renderer import SafeRenderer
 
         # Test ANSI sequences
         ansi_sequences = [
@@ -619,7 +619,7 @@ class TestTUIEscaping:
 
     def test_rich_markup_injection_prevented_by_safe_renderer(self):
         """SafeRenderer prevents Rich markup injection."""
-        from src.motus.display.renderer import SafeRenderer
+        from motus.display.renderer import SafeRenderer
 
         # Injection attempts
         injection_attempts = [
@@ -642,16 +642,16 @@ class TestTUIEscaping:
         # This test documents the architecture flow
 
         # 1. SafeRenderer is the single escape point
-        from src.motus.display.renderer import SafeRenderer
+        from motus.display.renderer import SafeRenderer
 
         assert SafeRenderer.escape is not None
 
         # 2. EventTransformer uses SafeRenderer
-        from src.motus.display.transformer import EventTransformer
+        from motus.display.transformer import EventTransformer
 
         assert EventTransformer.transform is not None
 
         # 3. DisplayEvent is the pre-escaped data structure
-        from src.motus.display.events import DisplayEvent
+        from motus.display.events import DisplayEvent
 
         assert DisplayEvent is not None

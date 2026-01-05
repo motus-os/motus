@@ -2,7 +2,7 @@
 
 from unittest.mock import MagicMock, patch
 
-from src.motus.decisions import (
+from motus.decisions import (
     Decision,
     DecisionLedger,
     extract_decision_from_text,
@@ -158,7 +158,7 @@ class TestGetDecisions:
 
     def test_no_sessions(self):
         """Test with no sessions available."""
-        with patch("src.motus.decisions.get_orchestrator") as mock_get_orch:
+        with patch("motus.decisions.get_orchestrator") as mock_get_orch:
             mock_orch = MagicMock()
             mock_orch.discover_all.return_value = []
             mock_get_orch.return_value = mock_orch
@@ -172,7 +172,7 @@ class TestGetDecisions:
         session_file = tmp_path / "test_session.jsonl"
         session_file.write_text('{"type": "test"}\n')
 
-        with patch("src.motus.decisions.get_orchestrator") as mock_get_orch:
+        with patch("motus.decisions.get_orchestrator") as mock_get_orch:
             mock_orch = MagicMock()
             mock_session = MagicMock()
             mock_session.file_path = session_file
@@ -213,7 +213,7 @@ class TestGetDecisions:
             ),
         ]
 
-        with patch("src.motus.decisions.get_orchestrator") as mock_get_orch:
+        with patch("motus.decisions.get_orchestrator") as mock_get_orch:
             mock_orch = MagicMock()
             mock_session = MagicMock()
             mock_session.file_path = session_file
@@ -250,7 +250,7 @@ class TestGetDecisions:
             ),
         ]
 
-        with patch("src.motus.decisions.get_orchestrator") as mock_get_orch:
+        with patch("motus.decisions.get_orchestrator") as mock_get_orch:
             mock_orch = MagicMock()
             mock_session = MagicMock()
             mock_session.file_path = session_file
@@ -286,7 +286,7 @@ class TestGetDecisions:
             ),
         ]
 
-        with patch("src.motus.decisions.get_orchestrator") as mock_get_orch:
+        with patch("motus.decisions.get_orchestrator") as mock_get_orch:
             mock_orch = MagicMock()
             mock_session = MagicMock()
             mock_session.file_path = session_file

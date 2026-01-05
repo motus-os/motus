@@ -6,7 +6,7 @@ class TestCalculateHealth:
 
     def test_empty_context_returns_default(self):
         """Empty context returns waiting state."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         result = calculate_health({})
         assert result["health"] == 50
@@ -15,7 +15,7 @@ class TestCalculateHealth:
 
     def test_none_context_returns_default(self):
         """None context returns waiting state."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         result = calculate_health(None)
         assert result["health"] == 50
@@ -23,7 +23,7 @@ class TestCalculateHealth:
 
     def test_productive_work_increases_health(self):
         """Edit/Write tools increase health score."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {
             "tool_count": {"Edit": 5, "Write": 3},
@@ -37,7 +37,7 @@ class TestCalculateHealth:
 
     def test_high_friction_affects_status(self):
         """High friction count changes status."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {
             "tool_count": {"Edit": 1},
@@ -50,7 +50,7 @@ class TestCalculateHealth:
 
     def test_read_heavy_session_acceptable(self):
         """Research (read-heavy) sessions get acceptable scores."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {
             "tool_count": {"Read": 10, "Glob": 5, "Grep": 3},
@@ -64,7 +64,7 @@ class TestCalculateHealth:
 
     def test_drift_state_ignored(self):
         """Drift state is ignored in health calculation."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {"tool_count": {}, "files_modified": [], "decisions": [], "friction_count": 0}
         drift_state = {"is_drifting": True, "drift_score": 10}
@@ -75,7 +75,7 @@ class TestCalculateHealth:
 
     def test_health_clamped_to_range(self):
         """Health score is clamped to 10-95."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         # Very low - should clamp to 10
         ctx_low = {
@@ -99,7 +99,7 @@ class TestCalculateHealth:
 
     def test_metrics_included_in_result(self):
         """Result includes metrics breakdown."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {
             "tool_count": {"Edit": 1},
@@ -121,7 +121,7 @@ class TestMCWebServer:
 
     def test_initialization_finds_free_port(self):
         """Server finds a free port when port=0."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         assert server.port > 0
@@ -129,14 +129,14 @@ class TestMCWebServer:
 
     def test_initialization_uses_specified_port(self):
         """Server uses specified port when provided."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=8765)
         assert server.port == 8765
 
     def test_server_creates_fastapi_app(self):
         """Server creates a FastAPI application."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -147,7 +147,7 @@ class TestMCWebServer:
 
     def test_server_initial_state(self):
         """Server initializes with correct state."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
 
@@ -164,7 +164,7 @@ class TestFastAPIRoutes:
         """GET / returns HTML content."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -178,7 +178,7 @@ class TestFastAPIRoutes:
         """GET /api/summary/{session_id} returns JSON."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -193,7 +193,7 @@ class TestFastAPIRoutes:
         """WebSocket endpoint accepts connections."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -214,7 +214,7 @@ class TestWebServerIntegration:
 
     def test_multiple_servers_get_different_ports(self):
         """Multiple servers find different free ports."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server1 = MCWebServer(port=0)
         server2 = MCWebServer(port=0)
@@ -226,7 +226,7 @@ class TestWebServerIntegration:
 
     def test_server_app_has_required_routes(self):
         """Server app has the required route paths."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -243,7 +243,7 @@ class TestHealthStatusLogic:
 
     def test_needs_attention_for_low_health(self):
         """Low health triggers needs_attention status."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {"tool_count": {}, "files_modified": [], "decisions": [], "friction_count": 3}
         result = calculate_health(ctx)
@@ -253,7 +253,7 @@ class TestHealthStatusLogic:
 
     def test_exploring_for_moderate_health(self):
         """Moderate health shows exploring status."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {
             "tool_count": {"Read": 3},
@@ -269,7 +269,7 @@ class TestHealthStatusLogic:
 
     def test_on_track_for_high_health(self):
         """High health shows on_track status."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {
             "tool_count": {"Edit": 3, "Write": 2},
@@ -288,21 +288,21 @@ class TestWebServerClientManagement:
 
     def test_clients_set_starts_empty(self):
         """Clients set starts empty."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         assert len(server.ws_manager.clients) == 0
 
     def test_session_positions_starts_empty(self):
         """Session positions dict starts empty."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         assert server.session_positions == {}
 
     def test_agent_stacks_starts_empty(self):
         """Agent stacks dict starts empty."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         assert server.agent_stacks == {}
@@ -313,7 +313,7 @@ class TestWebServerPortFinding:
 
     def test_find_free_port_returns_valid_port(self):
         """_find_free_port returns a valid port number."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         port = server._find_free_port()
@@ -323,7 +323,7 @@ class TestWebServerPortFinding:
 
     def test_consecutive_port_finds_work(self):
         """Can find multiple free ports."""
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         port1 = server._find_free_port()
@@ -339,7 +339,7 @@ class TestHealthCalculationEdgeCases:
 
     def test_very_high_friction(self):
         """Very high friction still produces valid health."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {"tool_count": {}, "files_modified": [], "decisions": [], "friction_count": 100}
         result = calculate_health(ctx)
@@ -349,7 +349,7 @@ class TestHealthCalculationEdgeCases:
 
     def test_many_files_modified(self):
         """Many files modified produces high progress score."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {
             "tool_count": {"Edit": 20},
@@ -363,7 +363,7 @@ class TestHealthCalculationEdgeCases:
 
     def test_many_decisions(self):
         """Many decisions improve health score."""
-        from src.motus.ui.web import calculate_health
+        from motus.ui.web import calculate_health
 
         ctx = {
             "tool_count": {},
@@ -382,7 +382,7 @@ class TestDashboardContent:
         """Dashboard returns valid HTML document."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()
@@ -396,7 +396,7 @@ class TestDashboardContent:
         """Dashboard HTML contains JavaScript."""
         from fastapi.testclient import TestClient
 
-        from src.motus.ui.web import MCWebServer
+        from motus.ui.web import MCWebServer
 
         server = MCWebServer(port=0)
         app = server.create_app()

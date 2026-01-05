@@ -15,17 +15,17 @@ class TestGetProjectSessions:
 
     def test_returns_empty_list_when_no_directories_exist(self):
         """No sessions when directories don't exist."""
-        from src.motus.hooks import get_project_sessions
+        from motus.hooks import get_project_sessions
 
-        with patch("src.motus.hooks.CLAUDE_DIR", Path("/nonexistent")):
-            with patch("src.motus.hooks.MC_STATE_DIR", Path("/nonexistent")):
-                with patch("src.motus.hooks.GEMINI_DIR", Path("/nonexistent")):
+        with patch("motus.hooks.CLAUDE_DIR", Path("/nonexistent")):
+            with patch("motus.hooks.MC_STATE_DIR", Path("/nonexistent")):
+                with patch("motus.hooks.GEMINI_DIR", Path("/nonexistent")):
                     sessions = get_project_sessions("/some/project")
                     assert sessions == []
 
     def test_finds_claude_sessions_matching_project(self):
         """Finds Claude sessions that match the project path."""
-        from src.motus.hooks import get_project_sessions
+        from motus.hooks import get_project_sessions
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
@@ -40,9 +40,9 @@ class TestGetProjectSessions:
             transcript = session_dir / "transcript.jsonl"
             transcript.write_text('{"type": "test"}\n')
 
-            with patch("src.motus.hooks.CLAUDE_DIR", tmpdir):
-                with patch("src.motus.hooks.MC_STATE_DIR", Path("/nonexistent")):
-                    with patch("src.motus.hooks.GEMINI_DIR", Path("/nonexistent")):
+            with patch("motus.hooks.CLAUDE_DIR", tmpdir):
+                with patch("motus.hooks.MC_STATE_DIR", Path("/nonexistent")):
+                    with patch("motus.hooks.GEMINI_DIR", Path("/nonexistent")):
                         sessions = get_project_sessions("/home/user/projects/myapp")
 
             assert len(sessions) == 1
@@ -51,7 +51,7 @@ class TestGetProjectSessions:
 
     def test_ignores_old_sessions(self):
         """Sessions older than max_age_hours are ignored."""
-        from src.motus.hooks import get_project_sessions
+        from motus.hooks import get_project_sessions
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
@@ -68,16 +68,16 @@ class TestGetProjectSessions:
             old_time = (datetime.now() - timedelta(days=3)).timestamp()
             os.utime(transcript, (old_time, old_time))
 
-            with patch("src.motus.hooks.CLAUDE_DIR", tmpdir):
-                with patch("src.motus.hooks.MC_STATE_DIR", Path("/nonexistent")):
-                    with patch("src.motus.hooks.GEMINI_DIR", Path("/nonexistent")):
+            with patch("motus.hooks.CLAUDE_DIR", tmpdir):
+                with patch("motus.hooks.MC_STATE_DIR", Path("/nonexistent")):
+                    with patch("motus.hooks.GEMINI_DIR", Path("/nonexistent")):
                         sessions = get_project_sessions("/home/user/projects/myapp", max_age_hours=24)
 
             assert len(sessions) == 0
 
     def test_sessions_sorted_by_mtime_newest_first(self):
         """Sessions are sorted by modification time, newest first."""
-        from src.motus.hooks import get_project_sessions
+        from motus.hooks import get_project_sessions
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = Path(tmpdir)
@@ -99,9 +99,9 @@ class TestGetProjectSessions:
             transcript2 = session_dir / "new.jsonl"
             transcript2.write_text('{"type": "new"}\n')
 
-            with patch("src.motus.hooks.CLAUDE_DIR", tmpdir):
-                with patch("src.motus.hooks.MC_STATE_DIR", Path("/nonexistent")):
-                    with patch("src.motus.hooks.GEMINI_DIR", Path("/nonexistent")):
+            with patch("motus.hooks.CLAUDE_DIR", tmpdir):
+                with patch("motus.hooks.MC_STATE_DIR", Path("/nonexistent")):
+                    with patch("motus.hooks.GEMINI_DIR", Path("/nonexistent")):
                         sessions = get_project_sessions("/home/user/projects/myapp")
 
             assert len(sessions) == 2
@@ -114,7 +114,7 @@ class TestExtractDecisions:
 
     def test_extracts_sdk_decision_events(self):
         """Extracts decisions from SDK Decision events."""
-        from src.motus.hooks import extract_decisions_from_session
+        from motus.hooks import extract_decisions_from_session
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(
@@ -137,7 +137,7 @@ class TestExtractDecisions:
 
     def test_extracts_decisions_from_claude_thinking(self):
         """Extracts decisions from Claude thinking blocks."""
-        from src.motus.hooks import extract_decisions_from_session
+        from motus.hooks import extract_decisions_from_session
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(
@@ -165,7 +165,7 @@ class TestExtractDecisions:
 
     def test_handles_malformed_json(self):
         """Gracefully handles malformed JSON lines."""
-        from src.motus.hooks import extract_decisions_from_session
+        from motus.hooks import extract_decisions_from_session
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write("not valid json\n")
@@ -179,7 +179,7 @@ class TestExtractDecisions:
 
     def test_limits_max_decisions(self):
         """Respects max_decisions limit."""
-        from src.motus.hooks import extract_decisions_from_session
+        from motus.hooks import extract_decisions_from_session
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             for i in range(10):
@@ -192,7 +192,7 @@ class TestExtractDecisions:
 
     def test_handles_missing_file(self):
         """Returns empty list for missing files."""
-        from src.motus.hooks import extract_decisions_from_session
+        from motus.hooks import extract_decisions_from_session
 
         decisions = extract_decisions_from_session(Path("/nonexistent/file.jsonl"))
         assert decisions == []
@@ -203,7 +203,7 @@ class TestExtractFilePatterns:
 
     def test_counts_write_tool_calls(self):
         """Counts Write tool calls."""
-        from src.motus.hooks import extract_file_patterns
+        from motus.hooks import extract_file_patterns
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(
@@ -226,7 +226,7 @@ class TestExtractFilePatterns:
 
     def test_counts_edit_tool_calls(self):
         """Counts Edit tool calls."""
-        from src.motus.hooks import extract_file_patterns
+        from motus.hooks import extract_file_patterns
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(
@@ -243,7 +243,7 @@ class TestExtractFilePatterns:
 
     def test_ignores_read_tool_calls(self):
         """Ignores Read tool calls (not modifications)."""
-        from src.motus.hooks import extract_file_patterns
+        from motus.hooks import extract_file_patterns
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(
@@ -264,16 +264,16 @@ class TestGenerateContextInjection:
 
     def test_returns_empty_string_when_no_sessions(self):
         """Returns empty string when no sessions exist."""
-        from src.motus.hooks import generate_context_injection
+        from motus.hooks import generate_context_injection
 
-        with patch("src.motus.hooks.get_project_sessions", return_value=[]):
+        with patch("motus.hooks.get_project_sessions", return_value=[]):
             context = generate_context_injection("/some/project")
 
         assert context == ""
 
     def test_includes_mc_context_tags(self):
         """Context is wrapped in mc-context tags."""
-        from src.motus.hooks import generate_context_injection
+        from motus.hooks import generate_context_injection
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(json.dumps({"type": "Decision", "decision": "Test"}) + "\n")
@@ -281,7 +281,7 @@ class TestGenerateContextInjection:
 
             mock_sessions = [{"path": Path(f.name), "mtime": datetime.now(), "type": "claude"}]
 
-            with patch("src.motus.hooks.get_project_sessions", return_value=mock_sessions):
+            with patch("motus.hooks.get_project_sessions", return_value=mock_sessions):
                 context = generate_context_injection("/some/project")
 
         assert context.startswith("<mc-context>")
@@ -289,7 +289,7 @@ class TestGenerateContextInjection:
 
     def test_includes_decisions_section(self):
         """Context includes decisions section."""
-        from src.motus.hooks import generate_context_injection
+        from motus.hooks import generate_context_injection
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(
@@ -302,7 +302,7 @@ class TestGenerateContextInjection:
 
             mock_sessions = [{"path": Path(f.name), "mtime": datetime.now(), "type": "claude"}]
 
-            with patch("src.motus.hooks.get_project_sessions", return_value=mock_sessions):
+            with patch("motus.hooks.get_project_sessions", return_value=mock_sessions):
                 context = generate_context_injection("/some/project")
 
         assert "### Recent Decisions" in context
@@ -310,7 +310,7 @@ class TestGenerateContextInjection:
 
     def test_includes_hot_files_section(self):
         """Context includes hot files section."""
-        from src.motus.hooks import generate_context_injection
+        from motus.hooks import generate_context_injection
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(
@@ -327,7 +327,7 @@ class TestGenerateContextInjection:
 
             mock_sessions = [{"path": Path(f.name), "mtime": datetime.now(), "type": "claude"}]
 
-            with patch("src.motus.hooks.get_project_sessions", return_value=mock_sessions):
+            with patch("motus.hooks.get_project_sessions", return_value=mock_sessions):
                 context = generate_context_injection("/project")
 
         assert "### Hot Files" in context
@@ -339,7 +339,7 @@ class TestGetHookConfig:
 
     def test_returns_valid_config_structure(self):
         """Returns valid hook config structure."""
-        from src.motus.hooks import get_hook_config
+        from motus.hooks import get_hook_config
 
         config = get_hook_config()
 
@@ -349,7 +349,7 @@ class TestGetHookConfig:
 
     def test_session_start_hook_config(self):
         """SessionStart hook has correct structure."""
-        from src.motus.hooks import get_hook_config
+        from motus.hooks import get_hook_config
 
         config = get_hook_config()
         session_start = config["hooks"]["SessionStart"][0]
@@ -362,7 +362,7 @@ class TestGetHookConfig:
 
     def test_user_prompt_hook_config(self):
         """UserPromptSubmit hook has correct structure."""
-        from src.motus.hooks import get_hook_config
+        from motus.hooks import get_hook_config
 
         config = get_hook_config()
         user_prompt = config["hooks"]["UserPromptSubmit"][0]
@@ -377,13 +377,13 @@ class TestSessionStartHook:
 
     def test_outputs_context_for_valid_input(self):
         """Outputs context when valid cwd is provided."""
-        from src.motus.hooks import session_start_hook
+        from motus.hooks import session_start_hook
 
         hook_input = json.dumps({"cwd": "/home/user/projects/myapp"})
 
         with patch("sys.stdin", StringIO(hook_input)):
             with patch(
-                "src.motus.hooks.generate_context_injection",
+                "motus.hooks.generate_context_injection",
                 return_value="<mc-context>test</mc-context>",
             ):
                 with patch("builtins.print") as mock_print:
@@ -395,7 +395,7 @@ class TestSessionStartHook:
 
     def test_exits_cleanly_on_invalid_json(self):
         """Exits with 0 on invalid JSON (don't block Claude)."""
-        from src.motus.hooks import session_start_hook
+        from motus.hooks import session_start_hook
 
         with patch("sys.stdin", StringIO("not valid json")):
             with pytest.raises(SystemExit) as exc_info:
@@ -405,12 +405,12 @@ class TestSessionStartHook:
 
     def test_no_output_when_no_context(self):
         """No output when context is empty."""
-        from src.motus.hooks import session_start_hook
+        from motus.hooks import session_start_hook
 
         hook_input = json.dumps({"cwd": "/some/project"})
 
         with patch("sys.stdin", StringIO(hook_input)):
-            with patch("src.motus.hooks.generate_context_injection", return_value=""):
+            with patch("motus.hooks.generate_context_injection", return_value=""):
                 with patch("builtins.print") as mock_print:
                     with pytest.raises(SystemExit) as exc_info:
                         session_start_hook()
@@ -424,7 +424,7 @@ class TestUserPromptHook:
 
     def test_injects_context_for_resume_keywords(self):
         """Injects context when prompt contains resume keywords."""
-        from src.motus.hooks import user_prompt_hook
+        from motus.hooks import user_prompt_hook
 
         hook_input = json.dumps(
             {"cwd": "/project", "prompt": "Where was I? Continue from last session."}
@@ -432,7 +432,7 @@ class TestUserPromptHook:
 
         with patch("sys.stdin", StringIO(hook_input)):
             with patch(
-                "src.motus.hooks.generate_context_injection", return_value="<context>"
+                "motus.hooks.generate_context_injection", return_value="<context>"
             ) as mock_gen:
                 with patch("builtins.print") as mock_print:
                     with pytest.raises(SystemExit):
@@ -443,12 +443,12 @@ class TestUserPromptHook:
 
     def test_no_injection_for_normal_prompts(self):
         """No context injection for normal prompts."""
-        from src.motus.hooks import user_prompt_hook
+        from motus.hooks import user_prompt_hook
 
         hook_input = json.dumps({"cwd": "/project", "prompt": "Write a function to sort a list"})
 
         with patch("sys.stdin", StringIO(hook_input)):
-            with patch("src.motus.hooks.generate_context_injection") as mock_gen:
+            with patch("motus.hooks.generate_context_injection") as mock_gen:
                 with patch("builtins.print") as mock_print:
                     with pytest.raises(SystemExit):
                         user_prompt_hook()
@@ -458,13 +458,13 @@ class TestUserPromptHook:
 
     def test_triggers_on_what_did_keyword(self):
         """Triggers on 'what did' keyword."""
-        from src.motus.hooks import user_prompt_hook
+        from motus.hooks import user_prompt_hook
 
         hook_input = json.dumps({"cwd": "/project", "prompt": "What did I do in the last session?"})
 
         with patch("sys.stdin", StringIO(hook_input)):
             with patch(
-                "src.motus.hooks.generate_context_injection", return_value="<ctx>"
+                "motus.hooks.generate_context_injection", return_value="<ctx>"
             ) as mock_gen:
                 with pytest.raises(SystemExit):
                     user_prompt_hook()
@@ -473,7 +473,7 @@ class TestUserPromptHook:
 
     def test_triggers_on_remember_keyword(self):
         """Triggers on 'remember' keyword."""
-        from src.motus.hooks import user_prompt_hook
+        from motus.hooks import user_prompt_hook
 
         hook_input = json.dumps(
             {"cwd": "/project", "prompt": "Do you remember the decision we made?"}
@@ -481,7 +481,7 @@ class TestUserPromptHook:
 
         with patch("sys.stdin", StringIO(hook_input)):
             with patch(
-                "src.motus.hooks.generate_context_injection", return_value="<ctx>"
+                "motus.hooks.generate_context_injection", return_value="<ctx>"
             ) as mock_gen:
                 with pytest.raises(SystemExit):
                     user_prompt_hook()

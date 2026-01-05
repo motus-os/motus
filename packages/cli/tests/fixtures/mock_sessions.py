@@ -32,19 +32,19 @@ try:
     )
 except ImportError:
     try:
-        from src.motus.protocols import (
+        from motus.protocols import (
             EventType,
             SessionStatus,
             Source,
             UnifiedEvent,
             UnifiedSession,
         )
-        from src.motus.schema.events import (
+        from motus.schema.events import (
             AgentSource,
             ParsedEvent,
             RiskLevel,
         )
-        from src.motus.schema.events import (
+        from motus.schema.events import (
             EventType as SchemaEventType,
         )
     except ImportError:

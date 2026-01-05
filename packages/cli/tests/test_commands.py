@@ -14,7 +14,7 @@ class TestModels:
 
     def test_thinking_event_creation(self):
         """ThinkingEvent can be created with content and timestamp."""
-        from src.motus.commands import ThinkingEvent
+        from motus.commands import ThinkingEvent
 
         event = ThinkingEvent(content="Analyzing code", timestamp=datetime.now())
         assert event.content == "Analyzing code"
@@ -22,7 +22,7 @@ class TestModels:
 
     def test_tool_event_creation(self):
         """ToolEvent can be created with all fields."""
-        from src.motus.commands import ToolEvent
+        from motus.commands import ToolEvent
 
         event = ToolEvent(
             name="Edit",
@@ -35,7 +35,7 @@ class TestModels:
 
     def test_session_info_creation(self):
         """SessionInfo can be created with required fields."""
-        from src.motus.commands import SessionInfo
+        from motus.commands import SessionInfo
 
         info = SessionInfo(
             session_id="abc123",
@@ -49,7 +49,7 @@ class TestModels:
 
     def test_session_stats_defaults(self):
         """SessionStats has correct defaults."""
-        from src.motus.commands import SessionStats
+        from motus.commands import SessionStats
 
         stats = SessionStats()
         assert stats.thinking_count == 0
@@ -62,8 +62,8 @@ class TestUtils:
 
     def test_assess_risk_safe_tools(self):
         """Safe tools get safe risk level."""
-        from src.motus.commands import assess_risk
-        from src.motus.schema.events import RiskLevel
+        from motus.commands import assess_risk
+        from motus.schema.events import RiskLevel
 
         assert assess_risk("Read", {}) == RiskLevel.SAFE
         assert assess_risk("Glob", {}) == RiskLevel.SAFE
@@ -71,16 +71,16 @@ class TestUtils:
 
     def test_assess_risk_medium_tools(self):
         """Write/Edit tools get medium risk level."""
-        from src.motus.commands import assess_risk
-        from src.motus.schema.events import RiskLevel
+        from motus.commands import assess_risk
+        from motus.schema.events import RiskLevel
 
         assert assess_risk("Write", {}) == RiskLevel.MEDIUM
         assert assess_risk("Edit", {}) == RiskLevel.MEDIUM
 
     def test_assess_risk_bash_destructive(self):
         """Bash with destructive patterns gets critical risk."""
-        from src.motus.commands import assess_risk
-        from src.motus.schema.events import RiskLevel
+        from motus.commands import assess_risk
+        from motus.schema.events import RiskLevel
 
         assert assess_risk("Bash", {"command": "rm -rf /"}) == RiskLevel.CRITICAL
         assert assess_risk("Bash", {"command": "sudo apt install"}) == RiskLevel.CRITICAL
@@ -88,8 +88,8 @@ class TestUtils:
 
     def test_assess_risk_bash_normal(self):
         """Bash with normal commands gets high (base) risk."""
-        from src.motus.commands import assess_risk
-        from src.motus.schema.events import RiskLevel
+        from motus.commands import assess_risk
+        from motus.schema.events import RiskLevel
 
         # Bash is inherently high risk but not "destructive"
         result = assess_risk("Bash", {"command": "ls -la"})
@@ -97,14 +97,14 @@ class TestUtils:
 
     def test_extract_project_path_valid(self):
         """Extract project path from encoded directory name."""
-        from src.motus.commands import extract_project_path
+        from motus.commands import extract_project_path
 
         result = extract_project_path("abc123-home-user-projects-myapp")
         assert result.endswith("/home/user/projects/myapp")
 
     def test_extract_project_path_home(self):
         """Extract project path starting with home."""
-        from src.motus.commands import extract_project_path
+        from motus.commands import extract_project_path
 
         result = extract_project_path("xyz-home-user-projects-app")
         # Path.resolve() may expand symlinks (e.g., /home -> /System/Volumes/Data/home on macOS)
@@ -112,14 +112,14 @@ class TestUtils:
 
     def test_extract_project_path_single_part(self):
         """Single part returns the name unchanged."""
-        from src.motus.commands import extract_project_path
+        from motus.commands import extract_project_path
 
         result = extract_project_path("abc123")
         assert result == "abc123"
 
     def test_extract_project_path_rejects_traversal(self):
         """Path traversal attempts are rejected."""
-        from src.motus.commands import extract_project_path
+        from motus.commands import extract_project_path
 
         # Direct .. sequences should be rejected
         assert extract_project_path("abc-..-etc-passwd") == ""
@@ -128,35 +128,35 @@ class TestUtils:
 
     def test_format_age_just_now(self):
         """Format age for very recent times."""
-        from src.motus.commands import format_age
+        from motus.commands import format_age
 
         result = format_age(datetime.now() - timedelta(seconds=30))
         assert result == "just now"
 
     def test_format_age_minutes(self):
         """Format age for minutes ago."""
-        from src.motus.commands import format_age
+        from motus.commands import format_age
 
         result = format_age(datetime.now() - timedelta(minutes=5))
         assert "5m ago" == result
 
     def test_format_age_hours(self):
         """Format age for hours ago."""
-        from src.motus.commands import format_age
+        from motus.commands import format_age
 
         result = format_age(datetime.now() - timedelta(hours=3))
         assert "3h ago" == result
 
     def test_format_age_days(self):
         """Format age for days ago."""
-        from src.motus.commands import format_age
+        from motus.commands import format_age
 
         result = format_age(datetime.now() - timedelta(days=2))
         assert "2d ago" == result
 
     def test_get_risk_style_colors(self):
         """Risk styles return correct colors."""
-        from src.motus.commands import get_risk_style
+        from motus.commands import get_risk_style
 
         color, icon = get_risk_style("high")
         assert color == "red"
@@ -167,7 +167,7 @@ class TestUtils:
 
     def test_parse_content_block_thinking(self):
         """Parse thinking block."""
-        from src.motus.commands import ThinkingEvent, parse_content_block
+        from motus.commands import ThinkingEvent, parse_content_block
 
         block = {"type": "thinking", "thinking": "Analyzing the code"}
         result = parse_content_block(block)
@@ -177,7 +177,7 @@ class TestUtils:
 
     def test_parse_content_block_tool_use(self):
         """Parse tool use block."""
-        from src.motus.commands import ToolEvent, parse_content_block
+        from motus.commands import ToolEvent, parse_content_block
 
         block = {"type": "tool_use", "name": "Edit", "input": {"file_path": "/test.py"}}
         result = parse_content_block(block)
@@ -188,7 +188,7 @@ class TestUtils:
 
     def test_parse_content_block_task(self):
         """Parse Task (subagent) block."""
-        from src.motus.commands import TaskEvent, parse_content_block
+        from motus.commands import TaskEvent, parse_content_block
 
         block = {
             "type": "tool_use",
@@ -210,7 +210,7 @@ class TestListCommand:
 
     def test_find_claude_sessions_empty_dir(self):
         """Returns empty list when orchestrator returns no sessions."""
-        from src.motus.commands.list_cmd import find_claude_sessions
+        from motus.commands.list_cmd import find_claude_sessions
 
         # Mock get_orchestrator to return an orchestrator that finds no sessions
         mock_orchestrator = MagicMock()
@@ -222,9 +222,9 @@ class TestListCommand:
 
     def test_find_active_session_returns_none_when_empty(self):
         """Returns None when no sessions."""
-        from src.motus.commands.list_cmd import find_active_session
+        from motus.commands.list_cmd import find_active_session
 
-        with patch("src.motus.commands.list_cmd.find_sessions", return_value=[]):
+        with patch("motus.commands.list_cmd.find_sessions", return_value=[]):
             result = find_active_session()
             assert result is None
 
@@ -234,7 +234,7 @@ class TestSummaryCommand:
 
     def test_extract_decisions_from_transcript(self):
         """Extract decisions from thinking blocks."""
-        from src.motus.commands.summary_cmd import extract_decisions
+        from motus.commands.summary_cmd import extract_decisions
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(
@@ -262,15 +262,15 @@ class TestSummaryCommand:
 
     def test_extract_decisions_handles_missing_file(self):
         """Returns empty list for missing file."""
-        from src.motus.commands.summary_cmd import extract_decisions
+        from motus.commands.summary_cmd import extract_decisions
 
         decisions = extract_decisions(Path("/nonexistent/file.jsonl"))
         assert decisions == []
 
     def test_analyze_session_counts_events(self):
         """Analyze session counts thinking and tool events."""
-        from src.motus.commands import SessionInfo
-        from src.motus.commands.summary_cmd import analyze_session
+        from motus.commands import SessionInfo
+        from motus.commands.summary_cmd import analyze_session
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             # Write thinking event
@@ -320,8 +320,8 @@ class TestSummaryCommand:
 
     def test_generate_agent_context_includes_stats(self):
         """Generated context includes session statistics."""
-        from src.motus.commands import SessionInfo
-        from src.motus.commands.summary_cmd import generate_agent_context
+        from motus.commands import SessionInfo
+        from motus.commands.summary_cmd import generate_agent_context
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write(
@@ -355,7 +355,7 @@ class TestPruneCommand:
 
     def test_archive_session_creates_archive(self):
         """Archive session creates dated directory."""
-        from src.motus.commands.prune_cmd import archive_session
+        from motus.commands.prune_cmd import archive_session
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write('{"type": "test"}\n')
@@ -363,7 +363,7 @@ class TestPruneCommand:
             path = Path(f.name)
 
             with patch(
-                "src.motus.commands.prune_cmd.ARCHIVE_DIR", Path(tempfile.mkdtemp())
+                "motus.commands.prune_cmd.ARCHIVE_DIR", Path(tempfile.mkdtemp())
             ):
                 result = archive_session(path)
 
@@ -371,7 +371,7 @@ class TestPruneCommand:
 
     def test_delete_session_removes_file(self):
         """Delete session removes file."""
-        from src.motus.commands.prune_cmd import delete_session
+        from motus.commands.prune_cmd import delete_session
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             f.write('{"type": "test"}\n')
@@ -384,7 +384,7 @@ class TestPruneCommand:
 
     def test_delete_session_handles_missing(self):
         """Delete session handles missing file gracefully."""
-        from src.motus.commands.prune_cmd import delete_session
+        from motus.commands.prune_cmd import delete_session
 
         result = delete_session(Path("/nonexistent/file.jsonl"))
         assert result is False
@@ -395,7 +395,7 @@ class TestHooksCommand:
 
     def test_get_mc_hook_config_structure(self):
         """Hook config has correct structure."""
-        from src.motus.commands.hooks_cmd import get_mc_hook_config
+        from motus.commands.hooks_cmd import get_mc_hook_config
 
         config = get_mc_hook_config()
 
@@ -405,7 +405,7 @@ class TestHooksCommand:
 
     def test_hook_config_includes_motus(self):
         """Hook config commands reference motus module."""
-        from src.motus.commands.hooks_cmd import get_mc_hook_config
+        from motus.commands.hooks_cmd import get_mc_hook_config
 
         config = get_mc_hook_config()
 
@@ -415,7 +415,7 @@ class TestHooksCommand:
 
     def test_hook_config_has_timeout(self):
         """Hook config includes timeout."""
-        from src.motus.commands.hooks_cmd import get_mc_hook_config
+        from motus.commands.hooks_cmd import get_mc_hook_config
 
         config = get_mc_hook_config()
 
@@ -429,7 +429,7 @@ class TestCodexEventParsing:
 
     def test_extract_decisions_from_codex_transcript(self):
         """Extract decisions from Codex format transcript."""
-        from src.motus.cli import extract_decisions
+        from motus.cli import extract_decisions
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             # Write Codex format event
@@ -459,7 +459,7 @@ class TestCodexEventParsing:
 
     def test_extract_decisions_handles_both_formats(self):
         """Extract decisions works with mixed Claude and Codex events."""
-        from src.motus.cli import extract_decisions
+        from motus.cli import extract_decisions
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".jsonl", delete=False) as f:
             # Claude format
@@ -508,7 +508,7 @@ class TestCodexEventParsing:
         """CodexBuilder parses tool call events to UnifiedEvent."""
         import json
 
-        from src.motus.ingestors.codex import CodexBuilder
+        from motus.ingestors.codex import CodexBuilder
 
         builder = CodexBuilder()
 
@@ -534,7 +534,7 @@ class TestCodexEventParsing:
         """CodexBuilder parses assistant messages to UnifiedEvent."""
         import json
 
-        from src.motus.ingestors.codex import CodexBuilder
+        from motus.ingestors.codex import CodexBuilder
 
         builder = CodexBuilder()
 
@@ -558,7 +558,7 @@ class TestCodexEventParsing:
         """Unknown Codex event type returns empty list."""
         import json
 
-        from src.motus.ingestors.codex import CodexBuilder
+        from motus.ingestors.codex import CodexBuilder
 
         builder = CodexBuilder()
 
@@ -580,7 +580,7 @@ class TestSessionManagerEdgeCases:
 
     def test_session_info_with_codex_source(self):
         """SessionInfo can be created with codex source."""
-        from src.motus.commands import SessionInfo
+        from motus.commands import SessionInfo
 
         info = SessionInfo(
             session_id="codex-123",
@@ -593,7 +593,7 @@ class TestSessionManagerEdgeCases:
 
     def test_session_info_default_status(self):
         """SessionInfo defaults to idle status."""
-        from src.motus.commands import SessionInfo
+        from motus.commands import SessionInfo
 
         info = SessionInfo(
             session_id="test",
@@ -606,8 +606,8 @@ class TestSessionManagerEdgeCases:
 
     def test_find_claude_sessions_uses_orchestrator(self):
         """find_claude_sessions returns sessions from the loader."""
-        from src.motus.commands.list_cmd import find_claude_sessions
-        from src.motus.commands.models import SessionInfo
+        from motus.commands.list_cmd import find_claude_sessions
+        from motus.commands.models import SessionInfo
 
         mock_sessions = [
             SessionInfo(
@@ -632,7 +632,7 @@ class TestSessionManagerEdgeCases:
             ),
         ]
 
-        with patch("src.motus.commands.list_cmd._load_sessions", return_value=mock_sessions):
+        with patch("motus.commands.list_cmd._load_sessions", return_value=mock_sessions):
             sessions = find_claude_sessions(max_age_hours=24)
 
         # Should return sessions from all sources
@@ -647,7 +647,7 @@ class TestPermissionHandling:
     def test_get_running_projects_handles_permission_error(self):
         """get_running_claude_projects handles permission errors gracefully."""
 
-        from src.motus.cli import get_running_claude_projects
+        from motus.cli import get_running_claude_projects
 
         # Mock subprocess.run to simulate lsof permission error
         # Mock Path(...).exists() for Gemini/Codex dirs to return False
@@ -694,7 +694,7 @@ class TestPermissionHandling:
 
     def test_extract_decisions_handles_permission_error(self):
         """extract_decisions handles file permission errors."""
-        from src.motus.cli import extract_decisions
+        from motus.cli import extract_decisions
 
         # Try to read a file that would cause permission error
         with patch("builtins.open", side_effect=PermissionError("Access denied")):

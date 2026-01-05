@@ -21,11 +21,11 @@ import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from src.motus.ingestors.claude import ClaudeBuilder
-from src.motus.ingestors.codex import CodexBuilder
-from src.motus.ingestors.gemini import GeminiBuilder
-from src.motus.protocols import SessionStatus, Source, UnifiedSession
-from src.motus.tail_reader import count_lines, tail_jsonl, tail_lines
+from motus.ingestors.claude import ClaudeBuilder
+from motus.ingestors.codex import CodexBuilder
+from motus.ingestors.gemini import GeminiBuilder
+from motus.protocols import SessionStatus, Source, UnifiedSession
+from motus.tail_reader import count_lines, tail_jsonl, tail_lines
 from tests.fixtures.mock_sessions import FIXED_TIMESTAMP, MockOrchestrator
 
 # ============================================================================

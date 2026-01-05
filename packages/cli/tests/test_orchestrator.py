@@ -10,19 +10,19 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from src.motus.ingestors.base import DECISION_REGEX
-from src.motus.ingestors.claude import ClaudeBuilder
-from src.motus.ingestors.codex import CodexBuilder, map_codex_tool
-from src.motus.ingestors.gemini import GeminiBuilder, map_gemini_tool
-from src.motus.orchestrator import SessionOrchestrator, get_orchestrator
-from src.motus.protocols import (
+from motus.ingestors.base import DECISION_REGEX
+from motus.ingestors.claude import ClaudeBuilder
+from motus.ingestors.codex import CodexBuilder, map_codex_tool
+from motus.ingestors.gemini import GeminiBuilder, map_gemini_tool
+from motus.orchestrator import SessionOrchestrator, get_orchestrator
+from motus.protocols import (
     EventType,
     RiskLevel,
     SessionStatus,
     Source,
     UnifiedSession,
 )
-from src.motus.session_cache import CachedSession
+from motus.session_cache import CachedSession
 
 
 class TestBaseBuilder:
@@ -405,7 +405,7 @@ class TestSessionOrchestrator:
         sessions = orch.discover_all(max_age_hours=1)
         assert sessions == []
 
-    @patch("src.motus.orchestrator.discovery.SessionDiscovery._maybe_auto_sync")
+    @patch("motus.orchestrator.discovery.SessionDiscovery._maybe_auto_sync")
     def test_discover_all_falls_back_when_sqlite_cache_fails(self, mock_auto_sync):
         """If SQLite cache query fails, discovery falls back to builder.discover()."""
         mock_auto_sync.return_value = False  # Auto-sync returns false (nothing synced)
@@ -456,7 +456,7 @@ class TestSessionOrchestrator:
         orch._sqlite_cache.sync.assert_not_called()
         orch._builders[Source.CLAUDE].discover.assert_not_called()
 
-    @patch("src.motus.core.bootstrap.ensure_database")
+    @patch("motus.core.bootstrap.ensure_database")
     def test_discover_all_auto_syncs_when_cache_empty(self, mock_ensure_db):
         """discover_all auto-syncs once when cache is empty."""
         mock_ensure_db.return_value = None  # ensure_database succeeds
