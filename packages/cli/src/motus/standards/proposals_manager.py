@@ -9,7 +9,7 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any, Callable, Literal
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 from motus.atomic_io import atomic_write_text
 from motus.orient.index import StandardsIndex

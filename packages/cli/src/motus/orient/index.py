@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal, Mapping
 
-import yaml
+import yaml  # type: ignore[import-untyped]
 
 from motus.atomic_io import atomic_write_json
 from motus.standards.schema import Standard
