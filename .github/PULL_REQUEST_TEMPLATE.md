@@ -6,6 +6,7 @@ What does this change do?
 - [ ] Docs updated (if user-facing)
 - [ ] No new public APIs without docs
 - [ ] Evidence attached (if claims/benchmarks)
+ - [ ] Proof links updated (if website claims changed)
 
 ## Screenshots or Evidence
 Provide links or artifacts if applicable.

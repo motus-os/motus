@@ -18,3 +18,4 @@ What have you tried or considered?
 
 ## Evidence
 Links to docs, benchmarks, or user feedback.
+If this changes public behavior, include expected proof artifacts.

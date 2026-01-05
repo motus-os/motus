@@ -27,6 +27,7 @@ What happened instead?
 
 ## Evidence
 Attach logs, traces, or screenshots if available.
+Include exact command(s) run and any relevant output.
 
 ## Impact
 Who is affected and how severe is it?

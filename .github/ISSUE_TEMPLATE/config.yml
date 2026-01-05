@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://motus-os.github.io/motus/docs/
+    about: Read the docs, implementation guides, and proof links.
+  - name: Security Policy
+    url: https://github.com/motus-os/motus/blob/main/SECURITY.md
+    about: Report security issues responsibly.
+  - name: Website
+    url: https://motus-os.github.io/motus/
+    about: Learn about Motus and browse evidence.
