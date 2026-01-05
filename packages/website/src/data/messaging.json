@@ -1,13 +1,13 @@
 {
-  "version": "1.1",
+  "version": "2.0",
   "last_updated": "2026-01-05",
-  "one_liner": "Your AI remembers what it did.",
-  "tagline": "Stop re-explaining your codebase every session.",
+  "one_liner": "What did your agent actually do? Motus knows.",
+  "tagline": "Every action logged. Every decision recorded. Every outcome, receipted.",
   "hero": {
-    "headline": "Your AI remembers what it did.",
-    "subheadline": "Stop re-explaining your codebase every session.",
-    "value_prop": "Motus records outcome, evidence, and decisions so you can trust the output and move forward.",
-    "action_line": "Claim work. Attach proof. Ship a receipt.",
+    "headline": "What did your agent actually do?",
+    "subheadline": "Motus knows.",
+    "value_prop": "Every action logged. Every decision recorded. Every outcome, receipted.",
+    "action_line": "Claim. Prove. Release. Get a receipt.",
     "cta_text": "Get your first receipt",
     "cta_url": "/get-started/"
   },

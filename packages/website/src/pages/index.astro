@@ -4,7 +4,6 @@ import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import SectionHeader from '../components/SectionHeader.astro';
-import DemoLoop from '../components/DemoLoop.astro';
 import Button from '../components/Button.astro';
 import messaging from '../data/messaging.json';
 
@@ -13,154 +12,234 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   : `${import.meta.env.BASE_URL}/`;
 
 const hero = messaging.hero || {};
-const heroHeadline = hero.headline || 'Agents do the work.';
-const heroSubheadline = hero.subheadline || 'Motus keeps the receipts.';
-const heroValueProp = hero.value_prop || 'Motus records outcome, evidence, and decisions so you can trust the output and move forward.';
-const heroActionLine = hero.action_line || 'Claim work. Attach proof. Ship a receipt.';
-const heroCtaText = hero.cta_text || 'Run a verified loop';
+const heroHeadline = hero.headline || 'What did your agent actually do?';
+const heroSubheadline = hero.subheadline || 'Motus knows.';
+const heroValueProp = hero.value_prop || 'Every action logged. Every decision recorded. Every outcome, receipted.';
+const heroCtaText = hero.cta_text || 'Get your first receipt';
 const heroCtaPath = hero.cta_url ? hero.cta_url.replace(/^\/+/, '') : 'get-started';
 const heroCtaHref = `${base}${heroCtaPath}`;
 ---
 
-<Layout title="Motus - Your AI remembers what it did">
+<Layout title="Motus - What did your agent actually do?">
+  <!-- HERO: The Question -->
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-4xl">
-    <div class="mb-phi-5 space-y-phi-3">
-      <h1 class="text-4xl md:text-6xl font-display text-text-primary">
-        {heroHeadline}
-      </h1>
-      <p class="text-3xl md:text-5xl font-display text-mint">
-        {heroSubheadline}
-      </p>
-    </div>
+    <h1 class="text-3xl md:text-5xl lg:text-6xl font-display text-text-secondary mb-phi-3">
+      {heroHeadline}
+    </h1>
+    <p class="text-4xl md:text-6xl lg:text-7xl font-display text-mint mb-phi-5">
+      {heroSubheadline}
+    </p>
 
-    <div class="w-32 h-px bg-mint/70 mx-auto mb-phi-5"></div>
-
-    <p class="text-lg md:text-xl text-text-secondary mb-phi-2">
+    <p class="text-lg md:text-xl text-text-secondary mb-phi-4 max-w-2xl mx-auto">
       {heroValueProp}
     </p>
-    <p class="text-base md:text-lg text-text-secondary/80 mb-phi-3">
-      {heroActionLine}
-    </p>
-    <p class="text-sm text-text-secondary/80 mb-phi-2">
-      Works alongside Claude, GPT, Gemini, local agents, LangChain, and n8n.
-    </p>
-    <div class="mb-phi-5 flex flex-wrap justify-center gap-phi-1 text-sm text-text-secondary/80">
-      {['Claude', 'GPT', 'Gemini', 'Local agents', 'LangChain', 'n8n'].map((label) => (
-        <span class="px-phi-1 py-1 rounded-full border border-line/30 bg-charcoal/60">{label}</span>
-      ))}
-    </div>
 
-    <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">
+    <div class="flex flex-col sm:flex-row gap-phi-3 justify-center items-center mb-phi-4">
       <InstallCommand />
       <Button href={heroCtaHref} variant="secondary">
         {heroCtaText} &#8594;
       </Button>
     </div>
+
+    <p class="text-sm text-text-secondary/60">
+      Works with Claude, GPT, Gemini, LangChain, n8n, and local agents.
+    </p>
   </Section>
 
-  <Section tone="light" pad="tight" class="border-t border-line/30">
-    <p class="text-sm text-text-secondary max-w-2xl mx-auto mb-phi-2 text-center">
-      What happened, why it worked, proof it’s done.
-    </p>
+  <!-- VISION 1: The Transaction (Micro) -->
+  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-5xl">
     <SectionHeader
-      eyebrow="Demo"
-      title="See it work"
-      subtitle="Claim. Prove. Release. Get a receipt in minutes. No cloud required."
+      eyebrow="The Transaction"
+      title="One task. One receipt."
+      subtitle="Every unit of work produces a receipt: what happened, proof it worked, and why decisions were made."
       size="md"
       align="left"
       maxWidth="max-w-3xl"
       class="mb-phi-4"
     />
-    <div class="grid lg:grid-cols-[1.1fr_1fr] gap-phi-3">
-      <DemoLoop />
-      <div class="grid md:grid-cols-3 lg:grid-cols-1 gap-phi-3">
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Claim</p>
-          <p class="text-sm text-text-secondary">Take ownership.</p>
-          <code class="text-mint font-mono text-sm block">motus work claim &lt;roadmap_id&gt; --intent &quot;Describe the task&quot;</code>
-          <p class="text-sm text-text-secondary">You now own this work.</p>
-        </Panel>
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Prove</p>
-          <p class="text-sm text-text-secondary">Attach proof.</p>
-          <code class="text-mint font-mono text-sm block">motus work evidence &lt;lease_id&gt; test_result --passed 12 --failed 0</code>
-          <code class="text-mint font-mono text-sm block">motus work decision &lt;lease_id&gt; &quot;Decision summary&quot;</code>
-          <p class="text-sm text-text-secondary">Evidence attached.</p>
-        </Panel>
-        <Panel size="sm" class="space-y-phi-2">
-          <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">Release</p>
-          <p class="text-sm text-text-secondary">Ship the receipt.</p>
-          <code class="text-mint font-mono text-sm block">motus work release &lt;lease_id&gt; success</code>
-          <code class="text-mint font-mono text-sm block">motus work status &lt;lease_id&gt;</code>
-          <p class="text-sm text-text-secondary">Receipt shipped.</p>
-        </Panel>
-      </div>
+
+    <div class="grid md:grid-cols-3 gap-phi-3">
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-lg font-display text-mint">Outcome</p>
+        <p class="text-sm text-text-secondary">What was delivered. Files created, tests passed, features shipped.</p>
+        <code class="text-mint/70 font-mono text-xs block">motus work outcome $LEASE file --path src/main.py</code>
+      </Panel>
+
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-lg font-display text-mint">Evidence</p>
+        <p class="text-sm text-text-secondary">Proof it worked. Test results, build logs, verification data.</p>
+        <code class="text-mint/70 font-mono text-xs block">motus work evidence $LEASE test --passed 12</code>
+      </Panel>
+
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-lg font-display text-mint">Decisions</p>
+        <p class="text-sm text-text-secondary">Why it was done that way. Rationale, alternatives, constraints.</p>
+        <code class="text-mint/70 font-mono text-xs block">motus work decision $LEASE "Used X because Y"</code>
+      </Panel>
     </div>
-    <p class="mt-phi-2 text-sm text-text-secondary">
-      That’s the loop. Every action verified.
+
+    <p class="mt-phi-4 text-sm text-text-secondary">
+      The receipt is the deliverable. Not the code. The <em>proof</em> the code is right.
     </p>
-    {messaging.demo?.status === 'real' && (
-      <div class="mt-phi-3">
-        <img
-          src={`${base}demo.gif`}
-          alt={messaging.demo.alt || 'Motus demo'}
-          class="rounded-xl border border-line/30 mx-auto max-w-2xl"
-          loading="lazy"
-        />
-        {messaging.demo.caption && (
-          <p class="text-sm text-text-secondary text-center mt-phi-2">
-            {messaging.demo.caption}
-          </p>
-        )}
+  </Section>
+
+  <!-- VISION 2: The Chain (Meso) -->
+  <Section tone="dark" pad="tight" innerClass="max-w-5xl">
+    <SectionHeader
+      eyebrow="The Chain"
+      title="Receipts feed the next task."
+      subtitle="When one agent finishes, the next one picks up with full context. No re-explaining. No lost decisions."
+      size="md"
+      align="left"
+      maxWidth="max-w-3xl"
+      class="mb-phi-4"
+    />
+
+    <div class="grid md:grid-cols-2 gap-phi-4">
+      <div class="space-y-phi-3">
+        <div class="flex items-start gap-phi-2">
+          <span class="text-mint text-xl">1</span>
+          <div>
+            <p class="text-text-primary font-display">Agent A claims work</p>
+            <p class="text-sm text-text-secondary">Gets context, does the task, ships a receipt.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-phi-2">
+          <span class="text-mint text-xl">2</span>
+          <div>
+            <p class="text-text-primary font-display">Agent B claims dependent work</p>
+            <p class="text-sm text-text-secondary">Agent A's receipt becomes Agent B's context.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-phi-2">
+          <span class="text-mint text-xl">3</span>
+          <div>
+            <p class="text-text-primary font-display">Chain of custody preserved</p>
+            <p class="text-sm text-text-secondary">Every handoff is logged. Every decision is traceable.</p>
+          </div>
+        </div>
       </div>
-    )}
-    <div class="mt-phi-3 flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
-      <span>Need the full walkthrough?</span>
-      <a href={`${base}get-started`} class="text-mint hover:text-text-primary transition-colors">
-        Get Started &#8594;
-      </a>
+
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">The Handoff</p>
+        <div class="space-y-phi-1 text-sm">
+          <p class="text-text-secondary"><span class="text-mint">Agent A:</span> "I built the API. Here's my receipt."</p>
+          <p class="text-text-secondary"><span class="text-mint">Agent B:</span> "I see the API receipt. Writing tests now."</p>
+          <p class="text-text-secondary"><span class="text-mint">Agent C:</span> "Tests passed. Deploying with full evidence."</p>
+        </div>
+        <p class="text-xs text-text-secondary/60 mt-phi-2">No context window. No re-prompting. Just receipts.</p>
+      </Panel>
     </div>
   </Section>
 
-  <Section tone="light" class="text-center border-t border-line/30" innerClass="max-w-4xl">
-    <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Source Available. Verifiable. Yours.</h2>
-    <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
-      Audit the execution model and keep receipts local.<br class="hidden md:inline" />
-      Source-available Work Compiler + local-first storage.
-    </p>
+  <!-- VISION 3: The Ecosystem (Macro) -->
+  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-5xl">
+    <SectionHeader
+      eyebrow="The Ecosystem"
+      title="From solo agent to orchestrated fleet."
+      subtitle="One receipt is useful. A thousand receipts is an operating system for AI work."
+      size="md"
+      align="left"
+      maxWidth="max-w-3xl"
+      class="mb-phi-4"
+    />
 
-    <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center text-left md:text-center">
-        <div class="flex flex-col items-start md:items-center gap-phi-1">
-          <div class="flex items-center gap-phi-1">
-            <span class="text-mint text-xl">&#10003;</span>
-            <span class="text-text-primary">Your receipts are your data</span>
-          </div>
-        </div>
-        <div class="flex flex-col items-start md:items-center gap-phi-1">
-          <div class="flex items-center gap-phi-1">
-            <span class="text-mint text-xl">&#10003;</span>
-            <span class="text-text-primary">Local by default</span>
-          </div>
-        </div>
-        <div class="flex flex-col items-start md:items-center gap-phi-1">
-          <div class="flex items-center gap-phi-1">
-            <span class="text-mint text-xl">&#10003;</span>
-            <span class="text-text-primary">Audit the full workflow</span>
-          </div>
-        </div>
+    <div class="grid md:grid-cols-3 gap-phi-3">
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-lg font-display text-text-primary">Audit Everything</p>
+        <p class="text-sm text-text-secondary">Every agent action is logged to an immutable audit trail. Query what happened, when, and why.</p>
+      </Panel>
+
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-lg font-display text-text-primary">Coordinate Safely</p>
+        <p class="text-sm text-text-secondary">Lease-based coordination prevents conflicts. Agents can't overwrite each other's work.</p>
+      </Panel>
+
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-lg font-display text-text-primary">Scale With Proof</p>
+        <p class="text-sm text-text-secondary">More agents, more receipts, more trust. The system gets more accountable as it grows.</p>
+      </Panel>
     </div>
 
-    <div class="mt-phi-4">
-      <Button href="https://pypi.org/project/motusos/" target="_blank" rel="noopener" variant="secondary" size="sm">
-        View on PyPI
-      </Button>
+    <p class="mt-phi-4 text-sm text-text-secondary">
+      Today: Know what one agent did. Tomorrow: Orchestrate a fleet with full accountability.
+    </p>
+  </Section>
+
+  <!-- THE LOOP: How It Works -->
+  <Section tone="dark" pad="tight" innerClass="max-w-4xl">
+    <SectionHeader
+      eyebrow="The Loop"
+      title="Claim. Prove. Release."
+      subtitle="Three steps. Full accountability."
+      size="md"
+      class="mb-phi-4"
+    />
+
+    <div class="grid md:grid-cols-3 gap-phi-3 text-center">
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="text-3xl font-display text-mint">01</div>
+        <p class="text-lg font-display text-text-primary">Claim</p>
+        <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
+          motus work claim TASK-001
+        </code>
+        <p class="text-sm text-text-secondary">You own this work.</p>
+      </Panel>
+
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="text-3xl font-display text-mint">02</div>
+        <p class="text-lg font-display text-text-primary">Prove</p>
+        <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
+          motus work evidence $LEASE test
+        </code>
+        <p class="text-sm text-text-secondary">Proof attached.</p>
+      </Panel>
+
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="text-3xl font-display text-mint">03</div>
+        <p class="text-lg font-display text-text-primary">Release</p>
+        <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
+          motus work release $LEASE success
+        </code>
+        <p class="text-sm text-text-secondary">Receipt shipped.</p>
+      </Panel>
     </div>
   </Section>
 
-  <Section tone="light" class="text-center" innerClass="max-w-2xl">
+  <!-- TRUST -->
+  <Section tone="light" pad="tight" class="text-center border-t border-line/30" innerClass="max-w-4xl">
     <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-3">
-      Ready to make your agents capable?
+      Source available. Local first. Yours.
     </h2>
+
+    <div class="flex flex-col md:flex-row gap-phi-4 justify-center items-center mb-phi-4">
+      <div class="flex items-center gap-phi-1">
+        <span class="text-mint">&#10003;</span>
+        <span class="text-text-primary">Your receipts are your data</span>
+      </div>
+      <div class="flex items-center gap-phi-1">
+        <span class="text-mint">&#10003;</span>
+        <span class="text-text-primary">No cloud required</span>
+      </div>
+      <div class="flex items-center gap-phi-1">
+        <span class="text-mint">&#10003;</span>
+        <span class="text-text-primary">Audit everything</span>
+      </div>
+    </div>
+
+    <Button href="https://pypi.org/project/motusos/" target="_blank" rel="noopener" variant="secondary" size="sm">
+      View on PyPI
+    </Button>
+  </Section>
+
+  <!-- FINAL CTA -->
+  <Section tone="dark" pad="tight" class="text-center" innerClass="max-w-2xl">
+    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-2">
+      Know what your agents did.
+    </h2>
+    <p class="text-text-secondary mb-phi-4">
+      Get your first receipt in 5 minutes.
+    </p>
     <InstallCommand />
   </Section>
 </Layout>
