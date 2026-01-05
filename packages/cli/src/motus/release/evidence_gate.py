@@ -263,6 +263,45 @@ def _check_pip_audit(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
     )
 
 
+def _check_clean_venv(repo_root: Path) -> EvidenceCheckResult:
+    script_path = repo_root / "packages/cli/scripts/ci/clean_venv_proof.py"
+    output_path = repo_root / "packages/cli/docs/quality/clean-venv-proof.json"
+    if not script_path.exists():
+        return EvidenceCheckResult(
+            name="clean_venv_proof",
+            passed=False,
+            message="clean_venv_proof script missing",
+            details={"script": str(script_path)},
+        )
+
+    cmd = [sys.executable, str(script_path), "--output", str(output_path)]
+    result = _run(cmd, cwd=repo_root)
+    if result.returncode != 0 and not output_path.exists():
+        return EvidenceCheckResult(
+            name="clean_venv_proof",
+            passed=False,
+            message="clean_venv_proof failed to produce artifact",
+            details={"returncode": result.returncode, "stderr": result.stderr.strip()},
+        )
+    try:
+        payload = _json_load(output_path)
+    except Exception as exc:
+        return EvidenceCheckResult(
+            name="clean_venv_proof",
+            passed=False,
+            message=f"Failed to parse clean-venv proof: {exc}",
+        )
+
+    passed = bool(payload.get("passed"))
+    message = "Clean venv proof passed" if passed else "Clean venv proof failed"
+    return EvidenceCheckResult(
+        name="clean_venv_proof",
+        passed=passed,
+        message=message,
+        details=payload,
+    )
+
+
 def run_release_evidence(repo_root: Path) -> EvidenceBundleResult:
     cli_root = repo_root / "packages/cli"
     if not cli_root.exists():
@@ -287,6 +326,10 @@ def run_release_evidence(repo_root: Path) -> EvidenceBundleResult:
         return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
 
     checks.append(_check_pip_audit(cli_root, Path("/tmp/pip-audit.json")))
+    if not checks[-1].passed:
+        return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+
+    checks.append(_check_clean_venv(repo_root))
     if not checks[-1].passed:
         return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
 
