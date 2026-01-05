@@ -150,7 +150,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
             <Panel size="sm" class="space-y-phi-3">
               <div class="flex flex-wrap items-center justify-between gap-phi-2">
                 <div>
-                  <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">
+                  <p class="text-sm uppercase tracking-[0.22em] text-text-secondary">
                     Feature {String(featureIndex + 1).padStart(2, '0')}
                   </p>
                   <h3 class="text-xl font-display text-text-primary">{feature.title}</h3>
@@ -167,7 +167,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
                 {feature.steps.map((step: any) => (
                   <div class="rounded-lg border border-line/30 bg-surface-muted p-phi-2 space-y-phi-1">
                     <div class="flex items-center justify-between">
-                      <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">{step.title}</p>
+                      <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">{step.title}</p>
                       {step.gif && (
                         <img
                           src={getGifPath(step.gif_name)}
