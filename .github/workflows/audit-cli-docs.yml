@@ -1,0 +1,46 @@
+name: Audit CLI ↔ Docs
+
+on:
+  push:
+    paths:
+      - 'packages/cli/src/**/*.py'
+      - 'packages/website/src/**'
+      - 'packages/website/audit-known-gaps.json'
+      - 'scripts/audit-cli-docs.py'
+  pull_request:
+    paths:
+      - 'packages/cli/src/**/*.py'
+      - 'packages/website/src/**'
+      - 'packages/website/audit-known-gaps.json'
+      - 'scripts/audit-cli-docs.py'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: CLI ↔ Documentation Sync
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install motusos CLI
+        run: |
+          pip install -e packages/cli
+
+      - name: Run audit
+        run: |
+          python scripts/audit-cli-docs.py
+
+      - name: Upload audit report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report
+          path: |
+            packages/website/audit-known-gaps.json
