@@ -1,98 +1,155 @@
 ---
 import Panel from './Panel.astro';
-import { getDisplayBadge } from '../lib/status.js';
+import { getDisplayBadge, getStatusLabel } from '../lib/status.js';
 
 const { groups = [], nodes = [], base = '/', proofIndex } = Astro.props;
 
-const nodeIndex = new Map((nodes || []).map((node) => [node.id, node]));
+const orderedGroups = [...groups].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+const groupIndex = new Map(groups.map((group) => [group.id, group]));
+const nodesByGroup = orderedGroups.reduce((acc, group) => {
+  acc[group.id] = nodes
+    .filter((node) => node.group === group.id)
+    .map((node) => ({
+      ...node,
+      proof: proofIndex && node.proof_id ? proofIndex.get(node.proof_id) : null,
+    }));
+  return acc;
+}, {});
+
+const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+const withBase = (path) => (path ? `${normalizedBase}${path.replace(/^\/+/, '')}` : null);
+const normalizeHref = (href) => {
+  if (!href) return null;
+  return href.startsWith('http') ? href : withBase(href);
+};
+const proofHref = (proof) => (proof ? `${normalizedBase}docs/evidence#claim-${proof.id}` : null);
 
 const statusClass = (node) => getDisplayBadge({ status: node.status, origin: node.origin, kind: 'badge' }).className;
-const statusLabel = (node) => getDisplayBadge({ status: node.status, origin: node.origin, kind: 'badge' }).label;
+const statusText = (node) => getDisplayBadge({ status: node.status, origin: node.origin, kind: 'badge' }).label;
+const proofStatusLabel = (status) => (status ? getStatusLabel(status) : '');
 
-const toHref = (path) => {
-  if (!path) return null;
-  if (path.startsWith('http')) return path;
-  return `${base}${path.replace(/^\/+/, '')}`;
+const countStatuses = (groupNodes) => {
+  const counts = { current: 0, building: 0, future: 0, external: 0 };
+  groupNodes.forEach((node) => {
+    if (node.origin === 'external') counts.external += 1;
+    if (counts[node.status] !== undefined) counts[node.status] += 1;
+  });
+  return counts;
 };
 
-const proofHref = (proofId) => {
-  if (!proofId || !proofIndex || !proofIndex.has(proofId)) return null;
-  return `${base}docs/evidence#claim-${proofId}`;
-};
+const flowLabels = (group) =>
+  (group.flow_to || [])
+    .map((targetId) => groupIndex.get(targetId)?.label)
+    .filter(Boolean);
 ---
 
-<div class="space-y-phi-3">
-  {groups.map((group) => {
-    const groupNodes = nodes.filter((node) => node.group === group.id);
+<div class="space-y-phi-2">
+  <Panel size="sm" class="space-y-phi-1">
+    <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Flow</p>
+    <p class="text-sm text-text-secondary">
+      Inputs &#8594; Core &#8594; Proof &#8594; Future. Modules branch from Core.
+    </p>
+  </Panel>
+
+  {orderedGroups.map((group) => {
+    const groupNodes = nodesByGroup[group.id] || [];
+    const counts = countStatuses(groupNodes);
+    const flow = flowLabels(group);
+    const isExternalOnly = groupNodes.length > 0 && groupNodes.every((node) => node.origin === 'external');
     return (
-      <div class="space-y-phi-1">
-        <div>
-          <p class="text-xs uppercase tracking-[0.3em] text-text-secondary">{group.label}</p>
-          <h3 class="text-lg font-display text-text-primary">{group.description}</h3>
-          <p class="text-xs text-text-secondary">{group.relation}</p>
-        </div>
-        <div class="grid gap-phi-1">
-          {groupNodes.map((node) => {
-            const siteHref = toHref(node.website_path || node.docs_url);
-            const proofLink = proofHref(node.proof_id);
-            return (
-              <Panel size="sm" class="space-y-phi-1">
-                <div class="flex items-center gap-phi-2">
-                  {node.logo ? (
-                    <img src={toHref(node.logo)} alt={`${node.label} logo`} class="h-5 w-5" loading="lazy" />
-                  ) : null}
-                  <h4 class="text-base font-display text-text-primary">{node.label}</h4>
-                  <span class={statusClass(node)}>{statusLabel(node)}</span>
-                </div>
-                <p class="text-sm text-text-secondary">{node.summary}</p>
-                {node.flow_note ? (
-                  <p class="text-xs text-text-secondary/80">Flow: {node.flow_note}</p>
+      <details class="rounded-2xl border border-line/30 bg-surface-muted p-phi-2">
+        <summary class="cursor-pointer list-none space-y-phi-1">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{group.label}</p>
+          <h3 class="text-lg font-display text-text-primary">{group.headline}</h3>
+          <p class="text-sm text-text-secondary">{group.description}</p>
+          {flow.length ? (
+            <p class="text-xs uppercase tracking-[0.25em] text-text-secondary/70">
+              Flow &#8594; {flow.join(' · ')}
+            </p>
+          ) : null}
+          <div class="flex flex-wrap gap-phi-1 text-xs">
+            {isExternalOnly ? (
+              <span class="status-chip status-external">{counts.external} External</span>
+            ) : (
+              <>
+                {counts.current > 0 ? (
+                  <span class="status-chip status-current">{counts.current} Current</span>
                 ) : null}
-                {node.origin === 'external' && node.improves ? (
-                  <div class="space-y-phi-1 text-sm text-text-secondary">
-                    <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Motus adds</p>
-                    <ul class="space-y-phi-1">
-                      {node.improves.map((improve) => {
-                        const targetId = (improve.motus_nodes || [])[0];
-                        const targetNode = targetId ? nodeIndex.get(targetId) : null;
-                        const targetHref = targetNode ? toHref(targetNode.website_path || targetNode.docs_url) : null;
-                        return (
-                          <li>
-                            {targetHref ? (
-                              <a href={targetHref} class="text-mint hover:text-text-primary transition-colors">
-                                {improve.label} &#8594;
-                              </a>
-                            ) : (
-                              <span>{improve.label}</span>
-                            )}
-                          </li>
-                        );
-                      })}
-                    </ul>
+                {counts.building > 0 ? (
+                  <span class="status-chip status-building">{counts.building} Building</span>
+                ) : null}
+                {counts.future > 0 ? (
+                  <span class="status-chip status-future">{counts.future} Future</span>
+                ) : null}
+              </>
+            )}
+            <span class="text-text-secondary/60 text-xs">Toggle details</span>
+          </div>
+        </summary>
+        <div class="mt-phi-2 space-y-phi-2">
+          <Panel size="sm" class="text-sm text-text-secondary">
+            {group.relation}
+          </Panel>
+          <div class="grid gap-phi-2">
+            {groupNodes.map((node) => {
+              const siteHref = node.website_path ? withBase(node.website_path) : null;
+              const docsHref = normalizeHref(node.docs_url);
+              const showSite = siteHref && siteHref !== docsHref;
+              return (
+                <Panel size="sm" class="space-y-phi-1">
+                  <div class="flex items-center justify-between gap-phi-2">
+                    <div class="flex items-center gap-phi-2">
+                      {node.logo ? (
+                        <img
+                          src={withBase(node.logo)}
+                          alt={`${node.label} logo`}
+                          class="h-5 w-5 object-contain"
+                          loading="lazy"
+                        />
+                      ) : null}
+                      <h4 class="text-base font-display text-text-primary">{node.label}</h4>
+                    </div>
+                    <span class={statusClass(node)}>{statusText(node)}</span>
                   </div>
-                ) : null}
-                <div class="flex flex-wrap gap-phi-2 text-sm">
-                  {siteHref ? (
-                    <a href={siteHref} class="text-mint hover:text-text-primary transition-colors">
-                      View details &#8594;
-                    </a>
+                  {node.origin === 'external' && node.improves?.length ? (
+                    <div class="space-y-phi-1 text-sm text-text-secondary">
+                      <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Motus adds</p>
+                      <ul class="space-y-phi-1">
+                        {node.improves.slice(0, 3).map((improve) => (
+                          <li>{improve.label}</li>
+                        ))}
+                      </ul>
+                    </div>
                   ) : null}
-                  {proofLink ? (
-                    <a href={proofLink} class="text-mint hover:text-text-primary transition-colors">
-                      Evidence &#8594;
-                    </a>
-                  ) : null}
-                  {node.external_url ? (
-                    <a href={node.external_url} target="_blank" rel="noopener" class="text-text-secondary hover:text-mint transition-colors">
-                      External site &#8594;
-                    </a>
-                  ) : null}
-                </div>
-              </Panel>
-            );
-          })}
+                  <p class="text-sm text-text-secondary">{node.flow_note || node.summary}</p>
+                  <div class="flex flex-wrap gap-phi-2 text-sm">
+                    {showSite ? (
+                      <a href={siteHref} class="text-mint hover:text-text-primary transition-colors">
+                        Guide &#8594;
+                      </a>
+                    ) : null}
+                    {docsHref ? (
+                      <a href={docsHref} class="text-mint hover:text-text-primary transition-colors">
+                        Docs &#8594;
+                      </a>
+                    ) : null}
+                    {node.proof ? (
+                      <a href={proofHref(node.proof)} class="text-mint hover:text-text-primary transition-colors">
+                        Proof ({proofStatusLabel(node.proof.status)}) &#8594;
+                      </a>
+                    ) : null}
+                    {node.external_url ? (
+                      <a href={node.external_url} target="_blank" rel="noopener" class="text-text-secondary hover:text-mint transition-colors">
+                        External &#8594;
+                      </a>
+                    ) : null}
+                  </div>
+                </Panel>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </details>
     );
   })}
 </div>

@@ -159,6 +159,35 @@ def _validate_node(
     return ok
 
 
+def _validate_group(group: dict, group_ids: set[str]) -> bool:
+    ok = True
+    for key in ("id", "label", "headline", "description", "relation", "position", "flow_to"):
+        ok &= _validate_required(group, key)
+
+    position = group.get("position")
+    if not isinstance(position, int):
+        _error(f"group '{group.get('id', '?')}' position must be an integer")
+        ok = False
+    elif position < 1:
+        _error(f"group '{group.get('id', '?')}' position must be >= 1")
+        ok = False
+
+    flow_to = group.get("flow_to")
+    if not isinstance(flow_to, list):
+        _error(f"group '{group.get('id', '?')}' flow_to must be a list")
+        ok = False
+    else:
+        for target in flow_to:
+            if target not in group_ids:
+                _error(f"group '{group.get('id', '?')}' flow_to references unknown group '{target}'")
+                ok = False
+            if target == group.get("id"):
+                _error(f"group '{group.get('id', '?')}' flow_to cannot reference itself")
+                ok = False
+
+    return ok
+
+
 def main() -> int:
     repo_root = _repo_root()
     yaml_path = repo_root / "packages" / "cli" / "docs" / "website" / "ecosystem-map.yaml"
@@ -208,6 +237,18 @@ def main() -> int:
     internal_ids = {node["id"] for node in nodes if node.get("type") == "internal"}
 
     ok = True
+    for group in groups:
+        ok &= _validate_group(group, group_ids)
+
+    positions = [group.get("position") for group in groups]
+    if len(set(positions)) != len(groups):
+        _error("group positions must be unique")
+        ok = False
+    expected = list(range(1, len(groups) + 1))
+    if sorted(positions) != expected:
+        _error("group positions must be contiguous starting at 1")
+        ok = False
+
     for node in nodes:
         ok &= _validate_node(node, registry, proof_ids, internal_ids, group_ids, public_root)
 

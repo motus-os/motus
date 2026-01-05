@@ -5,32 +5,56 @@
     {
       "id": "inputs",
       "label": "Inputs",
-      "description": "Agents, orchestrators, and systems Motus governs.",
-      "relation": "Feeds Motus Core"
+      "headline": "Your agents + tools",
+      "description": "Models, orchestrators, and systems Motus governs.",
+      "relation": "Feeds Motus Core",
+      "position": 1,
+      "flow_to": [
+        "core"
+      ]
     },
     {
       "id": "core",
       "label": "Motus Core",
-      "description": "Execution kernel + coordination surface.",
-      "relation": "Center of execution + truth"
+      "headline": "Verifiable execution",
+      "description": "Kernel + coordination surface that turns work into receipts.",
+      "relation": "Center of coordination + proof",
+      "position": 2,
+      "flow_to": [
+        "modules",
+        "governance"
+      ]
     },
     {
       "id": "modules",
       "label": "Bundled Modules",
       "description": "Optional capabilities that extend the kernel without breaking invariants.",
-      "relation": "Extend the Core"
+      "headline": "Extensions",
+      "relation": "Extend the core",
+      "position": 3,
+      "flow_to": [
+        "governance"
+      ]
     },
     {
       "id": "governance",
       "label": "Proof + Governance",
+      "headline": "Policy + evidence",
       "description": "Evidence, policy, and decision accountability.",
-      "relation": "Wraps execution with proof"
+      "relation": "Wraps execution with proof",
+      "position": 4,
+      "flow_to": [
+        "future"
+      ]
     },
     {
       "id": "future",
       "label": "Future Economy",
+      "headline": "Verified work market",
       "description": "Signed work, IP registries, and brokerage.",
-      "relation": "Builds on verified work"
+      "relation": "Builds on verified work",
+      "position": 5,
+      "flow_to": []
     }
   ],
   "nodes": [
