@@ -89,6 +89,4 @@ def validate_session_path(session_path: str) -> Path:
         except ValueError:
             continue
 
-    raise PathTraversalError(
-        f"Session path must be under ~/.motus/ or ~/.claude/"
-    )
+    raise PathTraversalError("Session path must be under ~/.motus/ or ~/.claude/")

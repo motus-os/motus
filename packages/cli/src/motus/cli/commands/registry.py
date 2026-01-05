@@ -10,8 +10,8 @@ from dataclasses import dataclass
 
 from motus import __version__
 
-from .claims import register_claims_parsers
 from .activity import register_activity_parsers
+from .claims import register_claims_parsers
 from .handoffs import register_handoffs_parsers
 from .health import register_health_parsers
 from .policy import register_policy_parsers

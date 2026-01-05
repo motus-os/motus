@@ -16,8 +16,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-from motus.policy.contracts import ArtifactHash
 from motus.observability.io_capture import record_file_read
+from motus.policy.contracts import ArtifactHash
 
 SIGNATURE_PREFIX_HMAC_SHA256 = "hmac-sha256:"
 MAX_EVIDENCE_FILES = int(os.environ.get("MC_EVIDENCE_MAX_FILES", "10000"))
