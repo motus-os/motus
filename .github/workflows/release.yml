@@ -1,0 +1,85 @@
+name: Release (Draft)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Extract changelog entry
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          tag = os.environ["TAG_NAME"].lstrip("v")
+          changelog = Path("CHANGELOG.md")
+          if not changelog.exists():
+            raise SystemExit("CHANGELOG.md not found")
+
+          text = changelog.read_text()
+          start_pattern = re.compile(rf"^## \\[{re.escape(tag)}\\].*$", re.MULTILINE)
+          match = start_pattern.search(text)
+          if not match:
+            raise SystemExit(f"CHANGELOG.md does not contain section for {tag}")
+
+          start = match.start()
+          # Find next heading
+          next_match = re.search(r"^## \\[", text[match.end():], re.MULTILINE)
+          end = match.end() + (next_match.start() if next_match else len(text))
+          section = text[start:end].strip() + "\n"
+
+          Path("/tmp/release-notes.md").write_text(section)
+          print("Release notes written to /tmp/release-notes.md")
+          PY
+
+      - name: Collect evidence artifacts
+        id: evidence
+        run: |
+          files=()
+          candidates=(
+            "packages/cli/docs/quality/health-ledger.md"
+            "packages/cli/docs/quality/release-evidence.json"
+            "packages/cli/docs/quality/clean-venv-proof.json"
+            "packages/cli/docs/quality/health-baseline.json"
+            "packages/cli/docs/quality/health-policy.json"
+          )
+          for f in "${candidates[@]}"; do
+            if [ -f "$f" ]; then
+              files+=("$f")
+            fi
+          done
+          {
+            echo "files<<EOF"
+            printf '%s\n' "${files[@]}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create draft release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          draft: true
+          body_path: /tmp/release-notes.md
+          files: ${{ steps.evidence.outputs.files }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
