@@ -47,123 +47,67 @@ const heroCtaHref = `${base}${heroCtaPath}`;
   </Section>
 
   <!-- VISION 1: The Transaction (Micro) -->
-  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-5xl">
-    <SectionHeader
-      eyebrow="The Transaction"
-      title="One task. One receipt."
-      subtitle="Every unit of work produces a receipt: what happened, proof it worked, and why decisions were made."
-      size="md"
-      align="left"
-      maxWidth="max-w-3xl"
-      class="mb-phi-4"
-    />
+  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl">
+    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2">Today</p>
+    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-4">
+      One task. One receipt.
+    </h2>
 
-    <div class="grid md:grid-cols-3 gap-phi-3">
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-lg font-display text-mint">Outcome</p>
-        <p class="text-sm text-text-secondary">What was delivered. Files created, tests passed, features shipped.</p>
-        <code class="text-mint/70 font-mono text-xs block">motus work outcome $LEASE file --path src/main.py</code>
-      </Panel>
-
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-lg font-display text-mint">Evidence</p>
-        <p class="text-sm text-text-secondary">Proof it worked. Test results, build logs, verification data.</p>
-        <code class="text-mint/70 font-mono text-xs block">motus work evidence $LEASE test --passed 12</code>
-      </Panel>
-
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-lg font-display text-mint">Decisions</p>
-        <p class="text-sm text-text-secondary">Why it was done that way. Rationale, alternatives, constraints.</p>
-        <code class="text-mint/70 font-mono text-xs block">motus work decision $LEASE "Used X because Y"</code>
-      </Panel>
+    <div class="grid md:grid-cols-3 gap-phi-4 text-center">
+      <div>
+        <p class="text-lg font-display text-mint mb-phi-1">Outcome</p>
+        <p class="text-sm text-text-secondary">What was delivered.</p>
+      </div>
+      <div>
+        <p class="text-lg font-display text-mint mb-phi-1">Evidence</p>
+        <p class="text-sm text-text-secondary">Proof it worked.</p>
+      </div>
+      <div>
+        <p class="text-lg font-display text-mint mb-phi-1">Decisions</p>
+        <p class="text-sm text-text-secondary">Why it was done.</p>
+      </div>
     </div>
-
-    <p class="mt-phi-4 text-sm text-text-secondary">
-      The receipt is the deliverable. Not the code. The <em>proof</em> the code is right.
-    </p>
   </Section>
 
   <!-- VISION 2: The Chain (Meso) -->
-  <Section tone="dark" pad="tight" innerClass="max-w-5xl">
-    <SectionHeader
-      eyebrow="The Chain"
-      title="Receipts feed the next task."
-      subtitle="When one agent finishes, the next one picks up with full context. No re-explaining. No lost decisions."
-      size="md"
-      align="left"
-      maxWidth="max-w-3xl"
-      class="mb-phi-4"
-    />
+  <Section tone="dark" pad="tight" innerClass="max-w-4xl">
+    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2">Tomorrow</p>
+    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-4">
+      Receipts feed the next task.
+    </h2>
 
-    <div class="grid md:grid-cols-2 gap-phi-4">
-      <div class="space-y-phi-3">
-        <div class="flex items-start gap-phi-2">
-          <span class="text-mint text-xl">1</span>
-          <div>
-            <p class="text-text-primary font-display">Agent A claims work</p>
-            <p class="text-sm text-text-secondary">Gets context, does the task, ships a receipt.</p>
-          </div>
-        </div>
-        <div class="flex items-start gap-phi-2">
-          <span class="text-mint text-xl">2</span>
-          <div>
-            <p class="text-text-primary font-display">Agent B claims dependent work</p>
-            <p class="text-sm text-text-secondary">Agent A's receipt becomes Agent B's context.</p>
-          </div>
-        </div>
-        <div class="flex items-start gap-phi-2">
-          <span class="text-mint text-xl">3</span>
-          <div>
-            <p class="text-text-primary font-display">Chain of custody preserved</p>
-            <p class="text-sm text-text-secondary">Every handoff is logged. Every decision is traceable.</p>
-          </div>
-        </div>
-      </div>
-
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">The Handoff</p>
-        <div class="space-y-phi-1 text-sm">
-          <p class="text-text-secondary"><span class="text-mint">Agent A:</span> "I built the API. Here's my receipt."</p>
-          <p class="text-text-secondary"><span class="text-mint">Agent B:</span> "I see the API receipt. Writing tests now."</p>
-          <p class="text-text-secondary"><span class="text-mint">Agent C:</span> "Tests passed. Deploying with full evidence."</p>
-        </div>
-        <p class="text-xs text-text-secondary/60 mt-phi-2">No context window. No re-prompting. Just receipts.</p>
-      </Panel>
+    <div class="space-y-phi-2 text-lg text-text-secondary max-w-2xl">
+      <p><span class="text-mint">Agent A</span> builds the API. Ships a receipt.</p>
+      <p><span class="text-mint">Agent B</span> reads the receipt. Writes tests.</p>
+      <p><span class="text-mint">Agent C</span> sees both. Deploys with proof.</p>
     </div>
+
+    <p class="mt-phi-4 text-sm text-text-secondary/70">
+      No context window. No re-prompting. Just receipts.
+    </p>
   </Section>
 
   <!-- VISION 3: The Ecosystem (Macro) -->
-  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-5xl">
-    <SectionHeader
-      eyebrow="The Ecosystem"
-      title="From solo agent to orchestrated fleet."
-      subtitle="One receipt is useful. A thousand receipts is an operating system for AI work."
-      size="md"
-      align="left"
-      maxWidth="max-w-3xl"
-      class="mb-phi-4"
-    />
+  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl">
+    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2">The Future</p>
+    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-4">
+      From solo agent to orchestrated fleet.
+    </h2>
 
-    <div class="grid md:grid-cols-3 gap-phi-3">
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-lg font-display text-text-primary">Audit Everything</p>
-        <p class="text-sm text-text-secondary">Every agent action is logged to an immutable audit trail. Query what happened, when, and why.</p>
-      </Panel>
-
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-lg font-display text-text-primary">Coordinate Safely</p>
-        <p class="text-sm text-text-secondary">Lease-based coordination prevents conflicts. Agents can't overwrite each other's work.</p>
-      </Panel>
-
-      <Panel size="sm" class="space-y-phi-2">
-        <p class="text-lg font-display text-text-primary">Scale With Proof</p>
-        <p class="text-sm text-text-secondary">More agents, more receipts, more trust. The system gets more accountable as it grows.</p>
-      </Panel>
+    <div class="grid md:grid-cols-3 gap-phi-4 text-center">
+      <div>
+        <p class="text-lg font-display text-text-primary mb-phi-1">Audit</p>
+        <p class="text-sm text-text-secondary">Query any action.</p>
+      </div>
+      <div>
+        <p class="text-lg font-display text-text-primary mb-phi-1">Coordinate</p>
+        <p class="text-sm text-text-secondary">No conflicts. Ever.</p>
+      </div>
+      <div>
+        <p class="text-lg font-display text-text-primary mb-phi-1">Scale</p>
+        <p class="text-sm text-text-secondary">More agents, more trust.</p>
+      </div>
     </div>
-
-    <p class="mt-phi-4 text-sm text-text-secondary">
-      Today: Know what one agent did. Tomorrow: Orchestrate a fleet with full accountability.
-    </p>
   </Section>
 
   <!-- THE LOOP: How It Works -->
