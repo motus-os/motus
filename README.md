@@ -1,75 +1,57 @@
+<!-- GENERATED FILE - DO NOT EDIT DIRECTLY -->
+<!-- Edit packages/cli/docs/website/messaging.yaml instead -->
+
+
 # Motus
 
-> The execution layer for AI agents.
-> Models are powerful. Motus makes them capable.
+> Your AI agents waste 66% of their work. Motus makes every action verifiable.
+> Claim work. Prove it's done. One API. Ship receipts, not trust.
 
 [![License](https://img.shields.io/badge/license-MCSL-blue.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/motusos)](https://pypi.org/project/motusos/)
 [![Downloads](https://img.shields.io/pypi/dm/motusos)](https://pypi.org/project/motusos/)
-[![CI](https://img.shields.io/badge/ci-private-lightgrey)](#)
-[![Coverage](https://img.shields.io/badge/coverage-pending-lightgrey)](#)
 
-Repository status: private until launch. Public links will activate at release.
+## Install
 
-## What is Motus?
-Motus is a local-first coordination kernel for agent work. It provides a bounded
-6-call facade for safe handoffs, verifiable evidence, and durable decisions,
-backed by an append-only ledger.
-
-## Why Motus?
-- **Reduce drift**: one coordination contract across tools.
-- **Prove changes**: evidence and decisions are first-class.
-- **Bound context**: Lens-driven context cache prevents prompt sprawl.
-- **Operate locally**: no SaaS lock-in, no hidden queues.
-
-## Quickstart (10 lines)
 ```bash
 pip install motusos
-python - <<'PY'
-from motus import Tracer
-tracer = Tracer("quickstart")
-tracer.thinking("hello motus")
-tracer.decision("ship", reasoning="minimal example")
-print("trace written")
-PY
 ```
+Expected: CLI installs successfully
 
-Expected output (example):
-```
-trace written
-```
-Trace files are stored locally in the Motus state directory.
+## Quickstart
 
-Then open the dashboard:
 ```bash
-motus web  # http://127.0.0.1:4000
+pip install motusos
+motus init --lite --path . && motus doctor
+motus work claim TASK-001 --intent "My first task"
+motus work evidence $LEASE test --passed 1
+motus work release $LEASE success
+motus work status $LEASE
 ```
 
-## Proof and Implementation
+Expected:
+- CLI installs successfully
+- Health checks pass
+- Lease ID returned (e.g., lease_abc123)
+- Evidence recorded
+- Receipt shows outcome + evidence
+- Full receipt displayed
+
+## Benefits
+
+- **Stop repeating work**: Every action is tracked and proven
+- **Prove what happened**: Receipts, not trust
+- **No cloud required**: Local-first, your data stays yours
+
+## Links
+
 - Website: https://motus-os.github.io/motus/
-- Quickstart: https://motus-os.github.io/motus/quickstart/
-- Implementation guide: https://motus-os.github.io/motus/implementation/
-- Evidence registry: https://motus-os.github.io/motus/evidence/
-- Ecosystem map: https://motus-os.github.io/motus/ecosystem/
-
-## Documentation (canonical)
-- [Implementation Guide](packages/cli/docs/implementation/README.md)
-- [Kernel Guide](packages/cli/docs/implementation/kernel.md)
-- [Module Registry](packages/cli/docs/standards/module-registry.yaml)
-- [Docs Index](packages/cli/docs/README.md)
-
-## Architecture and Governance
-- [Architecture](ARCHITECTURE.md)
-- [Security Policy](SECURITY.md)
-- [Contributing](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Changelog](CHANGELOG.md)
-
-## Packages
-| Package | Description |
-|---------|-------------|
-| [packages/cli](packages/cli/) | Python CLI and coordination kernel |
-| [packages/website](packages/website/) | Documentation website |
+- Get Started: https://motus-os.github.io/motus/get-started/
+- How It Works: https://motus-os.github.io/motus/how-it-works/
+- Docs: https://motus-os.github.io/motus/docs/
+- PyPI: https://pypi.org/project/motusos/
+- GitHub: https://github.com/motus-os/motus
 
 ## License
-Motus Community Source License (MCSL). See [LICENSE](LICENSE).
+
+Motus Community Source License (MCSL). See https://github.com/motus-os/motus/blob/main/LICENSE.

@@ -1,0 +1,165 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-01-04",
+  "one_liner": "Your AI agents waste 66% of their work. Motus makes every action verifiable.",
+  "tagline": "Claim work. Prove it's done. One API. Ship receipts, not trust.",
+  "hero": {
+    "headline": "Your AI agents waste 66% of their work.",
+    "subheadline": "Motus makes every action verifiable.",
+    "cta_text": "Get Started",
+    "cta_url": "/get-started/",
+    "claim_status": "verified",
+    "proof_id": "momentum_tax_survey",
+    "proof_url": "/docs/evidence#claim-momentum_tax_survey"
+  },
+  "pain_statement": {
+    "short": "AI agents waste 66% of their work.",
+    "full": "AI agents waste 66% of their work through repeated tasks, lost context, and no accountability.",
+    "claim_status": "verified",
+    "proof_id": "momentum_tax_survey",
+    "proof_url": "/docs/evidence#claim-momentum_tax_survey"
+  },
+  "solution_statement": {
+    "short": "Motus makes every action verifiable.",
+    "full": "Motus provides a single API loop for agent coordination. Claim work, attach evidence, ship receipts."
+  },
+  "benefits": [
+    {
+      "id": "stop_waste",
+      "headline": "Stop repeating work",
+      "detail": "Every action is tracked and proven",
+      "icon": "check"
+    },
+    {
+      "id": "prove_it",
+      "headline": "Prove what happened",
+      "detail": "Receipts, not trust",
+      "icon": "shield"
+    },
+    {
+      "id": "local_first",
+      "headline": "No cloud required",
+      "detail": "Local-first, your data stays yours",
+      "icon": "lock"
+    }
+  ],
+  "quickstart": {
+    "title": "First success in 5 minutes",
+    "steps": [
+      {
+        "id": "install",
+        "title": "Install",
+        "command": "pip install motusos",
+        "expected": "CLI installs successfully"
+      },
+      {
+        "id": "init",
+        "title": "Initialize",
+        "command": "motus init --lite --path . && motus doctor",
+        "expected": "Health checks pass"
+      },
+      {
+        "id": "claim",
+        "title": "Claim work",
+        "command": "motus work claim TASK-001 --intent \"My first task\"",
+        "expected": "Lease ID returned (e.g., lease_abc123)"
+      },
+      {
+        "id": "evidence",
+        "title": "Attach evidence",
+        "command": "motus work evidence $LEASE test --passed 1",
+        "expected": "Evidence recorded"
+      },
+      {
+        "id": "release",
+        "title": "Release with receipt",
+        "command": "motus work release $LEASE success",
+        "expected": "Receipt shows outcome + evidence"
+      },
+      {
+        "id": "verify",
+        "title": "Verify",
+        "command": "motus work status $LEASE",
+        "expected": "Full receipt displayed"
+      }
+    ]
+  },
+  "demo": {
+    "status": "none",
+    "asset_path": "docs/assets/demo.gif",
+    "alt": "Motus claim-evidence-release loop",
+    "caption": "Claim \u2192 evidence \u2192 release",
+    "proof_id": "six_call_api"
+  },
+  "links": {
+    "website": "https://motus-os.github.io/motus/",
+    "get_started": "https://motus-os.github.io/motus/get-started/",
+    "how_it_works": "https://motus-os.github.io/motus/how-it-works/",
+    "docs": "https://motus-os.github.io/motus/docs/",
+    "pypi": "https://pypi.org/project/motusos/",
+    "github": "https://github.com/motus-os/motus",
+    "license": "https://github.com/motus-os/motus/blob/main/LICENSE"
+  },
+  "badges": [
+    {
+      "type": "license",
+      "label": "License",
+      "value": "MCSL",
+      "color": "blue",
+      "url": "LICENSE"
+    },
+    {
+      "type": "pypi",
+      "label": "PyPI",
+      "dynamic": true,
+      "package": "motusos"
+    },
+    {
+      "type": "downloads",
+      "label": "Downloads",
+      "dynamic": true,
+      "package": "motusos"
+    }
+  ],
+  "readme_sections": [
+    {
+      "id": "hero",
+      "include": true
+    },
+    {
+      "id": "demo_gif",
+      "include": true,
+      "path": "docs/assets/demo.gif",
+      "alt": "Motus claim-evidence-release loop"
+    },
+    {
+      "id": "install",
+      "include": true
+    },
+    {
+      "id": "quickstart",
+      "include": true
+    },
+    {
+      "id": "benefits",
+      "include": true
+    },
+    {
+      "id": "links",
+      "include": true
+    },
+    {
+      "id": "license",
+      "include": true
+    }
+  ],
+  "forbidden_phrases": [
+    "Outcome:",
+    "Mechanism:",
+    "Momentum Signals",
+    "execution layer for AI agents",
+    "coordination kernel",
+    "6-call facade",
+    "append-only ledger"
+  ]
+}

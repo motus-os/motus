@@ -41,6 +41,12 @@ jobs:
           python packages/cli/scripts/ci/check_module_registry.py
           python packages/cli/scripts/ci/check_proof_ledger.py
           python packages/cli/scripts/ci/check_ecosystem_map.py
+      - name: Generate public surfaces
+        working-directory: .
+        run: python scripts/generate-public-surfaces.py
+      - name: Validate messaging sync
+        working-directory: .
+        run: python scripts/check-messaging-sync.py
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

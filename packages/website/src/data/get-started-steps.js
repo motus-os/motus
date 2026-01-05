@@ -124,32 +124,3 @@ export const trainingSteps = [
     fix: 'Re-run motus work evidence / decision and recheck.',
   },
 ];
-
-export const quickstartSteps = [
-  {
-    title: 'Install Motus',
-    goal: 'Install the CLI and confirm it runs in your environment.',
-    commands: ['pip install motusos', 'motus --help'],
-    expected: 'CLI help prints and lists system + work commands.',
-  },
-  {
-    title: 'Initialize your workspace',
-    goal: 'Create the local .motus layout and validate the kernel.',
-    commands: ['motus init --lite --path .', 'motus doctor'],
-    expected: 'Local state and schema checks return OK.',
-  },
-  {
-    title: 'Run the 6-call loop',
-    goal: 'Claim work, attach evidence, and release the lease.',
-    commands: [
-      'motus work claim <roadmap_id> --intent "Describe the task"',
-      'motus work context <lease_id>',
-      'motus work outcome <lease_id> file --path src/example.py --description "Deliverable"',
-      'motus work evidence <lease_id> test_result --passed 12 --failed 0',
-      'motus work decision <lease_id> "Decision summary" --rationale "Why this path"',
-      'motus work release <lease_id> success',
-      'motus work status <lease_id>',
-    ],
-    expected: 'Lease released with outcome, evidence, and decision recorded.',
-  },
-];

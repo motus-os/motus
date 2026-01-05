@@ -6,12 +6,16 @@ import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import PersonaCard from '../components/PersonaCard.astro';
 
-import { quickstartSteps, trainingSteps } from '../data/get-started-steps.js';
+import { trainingSteps } from '../data/get-started-steps.js';
 import personaMap from '../data/persona-map.json';
+import messaging from '../data/messaging.json';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
+const quickstart = messaging.quickstart || {};
+const quickstartSteps = quickstart.steps || [];
+const quickstartTitle = quickstart.title || 'Three steps to a receipt';
 ---
 
 <Layout title="Get Started - Motus">
@@ -36,7 +40,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
     <SectionHeader
       eyebrow="Quickstart"
-      title="Three steps to a receipt"
+      title={quickstartTitle}
       subtitle="Copy, run, and verify. This is the shortest path to a recorded outcome."
       align="left"
       size="md"
@@ -52,13 +56,10 @@ const base = import.meta.env.BASE_URL.endsWith('/')
             </p>
           </div>
           <h2 class="text-2xl font-display text-text-primary">{step.title}</h2>
-          <p class="text-sm text-text-secondary">{step.goal}</p>
           <div class="grid md:grid-cols-2 gap-phi-1 md:gap-phi-2">
             <div class="space-y-phi-1">
               <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Commands</p>
-              {step.commands.map((command) => (
-                <code class="text-mint font-mono text-sm block">{command}</code>
-              ))}
+              <code class="text-mint font-mono text-sm block">{step.command}</code>
             </div>
             <div class="space-y-phi-1">
               <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Expected</p>

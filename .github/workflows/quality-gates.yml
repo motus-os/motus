@@ -11,9 +11,15 @@ on:
       - "packages/cli/docs/standards/module-registry.yaml"
       - "packages/cli/docs/website/ecosystem-map.yaml"
       - "packages/cli/docs/website/proof-ledger.yaml"
+      - "packages/cli/docs/website/messaging.yaml"
       - "packages/website/src/data/module-registry.json"
       - "packages/website/src/data/ecosystem-map.json"
       - "packages/website/src/data/proof-ledger.json"
+      - "packages/website/src/data/messaging.json"
+      - "scripts/generate-public-surfaces.py"
+      - "scripts/check-messaging-sync.py"
+      - "README.md"
+      - "packages/cli/README.md"
       - ".github/workflows/quality-gates.yml"
 
 jobs:
@@ -39,3 +45,27 @@ jobs:
         run: python scripts/ci/check_proof_ledger.py
       - name: Ecosystem map sync guard
         run: python scripts/ci/check_ecosystem_map.py
+
+  messaging-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install gate dependencies
+        run: python -m pip install pyyaml
+      - name: Regenerate public surfaces
+        run: python scripts/generate-public-surfaces.py
+      - name: Check for uncommitted changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "❌ Generated files are out of sync with messaging.yaml"
+            echo "Run: python scripts/generate-public-surfaces.py"
+            git diff
+            exit 1
+          fi
+      - name: Validate messaging sync
+        run: python scripts/check-messaging-sync.py
