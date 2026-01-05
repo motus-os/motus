@@ -81,7 +81,7 @@
     ]
   },
   "demo": {
-    "status": "none",
+    "status": "real",
     "asset_path": "docs/assets/demo.gif",
     "alt": "Motus claim-evidence-release loop",
     "caption": "Claim \u2192 evidence \u2192 release",

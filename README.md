@@ -12,6 +12,10 @@
 [![Downloads](https://img.shields.io/pypi/dm/motusos)](https://pypi.org/project/motusos/)
 [![Quality Gates](https://github.com/motus-os/motus/actions/workflows/quality-gates.yml/badge.svg)](https://github.com/motus-os/motus/actions/workflows/quality-gates.yml)
 
+## Demo
+
+![Motus claim-evidence-release loop](docs/assets/demo.gif)
+
 ## Install
 
 ```bash

@@ -93,7 +93,7 @@ quickstart:
 # ============================================
 
 demo:
-  status: "none" # real | placeholder | none
+  status: "real" # real | placeholder | none
   asset_path: "docs/assets/demo.gif"
   alt: "Motus claim-evidence-release loop"
   caption: "Claim → evidence → release"
