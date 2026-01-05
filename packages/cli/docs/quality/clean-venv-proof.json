@@ -1,0 +1,40 @@
+{
+  "conflicts": [],
+  "errors": [],
+  "motus_help_ok": true,
+  "motus_import": {
+    "file": "/private/var/folders/m4/ntj2d4_j7m703vq_bf66t2700000gn/T/motus-clean-venv-l_4r7kku/lib/python3.10/site-packages/motus/__init__.py",
+    "version": "0.1.0"
+  },
+  "packages": {
+    "PyYAML": "6.0.3",
+    "Pygments": "2.19.2",
+    "annotated-types": "0.7.0",
+    "anyio": "4.12.0",
+    "attrs": "25.4.0",
+    "certifi": "2026.1.4",
+    "exceptiongroup": "1.3.1",
+    "h11": "0.16.0",
+    "httpcore": "1.0.9",
+    "httpx": "0.28.1",
+    "idna": "3.11",
+    "jsonschema": "4.25.1",
+    "jsonschema-specifications": "2025.9.1",
+    "markdown-it-py": "4.0.0",
+    "mdurl": "0.1.2",
+    "motusos": "0.1.0",
+    "pip": "22.0.4",
+    "psutil": "7.2.1",
+    "pydantic": "2.12.5",
+    "pydantic_core": "2.41.5",
+    "referencing": "0.37.0",
+    "rich": "14.2.0",
+    "rpds-py": "0.30.0",
+    "setuptools": "58.1.0",
+    "typing-inspection": "0.4.2",
+    "typing_extensions": "4.15.0"
+  },
+  "passed": true,
+  "source_path": "/Users/ben/GitHub/motus/packages/cli",
+  "timestamp": 1767638400.3489401
+}
