@@ -35,3 +35,6 @@ venv/
 # Database
 *.db
 *.sqlite
+
+# Local demo artifacts
+scripts/demo/
