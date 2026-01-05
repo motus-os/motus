@@ -147,6 +147,22 @@ def dispatch_command(
             raise SystemExit(activity_status_command(args))
         print_parser_help(console, bundle.activity_parser)
         raise SystemExit(EXIT_USAGE)
+    if command == "audit":
+        from motus.commands.audit_cmd import (
+            audit_add_command,
+            audit_list_command,
+            audit_promote_command,
+        )
+
+        audit_cmd = getattr(args, "audit_command", None)
+        if audit_cmd == "add":
+            raise SystemExit(audit_add_command(args))
+        if audit_cmd == "promote":
+            raise SystemExit(audit_promote_command(args))
+        if audit_cmd == "list":
+            raise SystemExit(audit_list_command(args))
+        print_parser_help(console, bundle.audit_parser)
+        raise SystemExit(EXIT_USAGE)
     if command == "claims":
         from motus.commands.claims_cmd import claims_acquire_command, claims_list_command
 
