@@ -25,7 +25,7 @@ Sleep 500ms
 Type "LEASE=$(motus work claim ADHOC-DEMO-001 --intent 'Add greeting function' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
 Enter
 Sleep 500ms
-Type "echo 'def greet(name): return f\"Hello, {name}!\"' > greeter.py"
+Type 'echo "def greet(name): return \"Hello, \" + name + \"!\"" > greeter.py'
 Enter
 Type "motus work evidence $LEASE test_result --passed 1 --failed 0 2>/dev/null"
 Enter

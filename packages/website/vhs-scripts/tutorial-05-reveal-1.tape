@@ -26,7 +26,7 @@ Sleep 500ms
 # Task 1 - complete the full loop
 Type "L1=$(motus work claim ADHOC-DEMO-001 --intent 'Add greeting function' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
 Enter
-Type "echo 'def greet(name): return f\"Hello, {name}!\"' > greeter.py"
+Type 'echo "def greet(name): return \"Hello, \" + name + \"!\"" > greeter.py'
 Enter
 Type "motus work evidence $L1 test_result --passed 1 --failed 0 2>/dev/null"
 Enter

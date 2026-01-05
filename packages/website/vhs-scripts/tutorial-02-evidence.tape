@@ -27,7 +27,7 @@ Type "LEASE=$(motus work claim ADHOC-DEMO-001 --intent 'Add greeting function' 2
 Enter
 Sleep 1s
 # Create the file
-Type "echo 'def greet(name): return f\"Hello, {name}!\"' > greeter.py"
+Type 'echo "def greet(name): return \"Hello, \" + name + \"!\"" > greeter.py'
 Enter
 Sleep 500ms
 Show
@@ -39,7 +39,7 @@ Enter
 Sleep 500ms
 
 # Show the test passing
-Type "python3 -c \"from greeter import greet; assert greet('World') == 'Hello, World!'; print('Test passed')\""
+Type 'python3 -c "from greeter import greet; assert greet(\"World\") == \"Hello, World!\"; print(\"Test passed\")"'
 Sleep 300ms
 Enter
 Sleep 1s
