@@ -47,6 +47,9 @@ jobs:
       - name: Validate messaging sync
         working-directory: .
         run: python scripts/check-messaging-sync.py
+      - name: Validate chapters sync
+        working-directory: .
+        run: python scripts/check-chapters-sync.py
       - uses: actions/setup-node@v4
         with:
           node-version: "20"

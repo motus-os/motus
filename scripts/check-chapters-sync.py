@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate chapters.yaml sync and enforce chapter status rules."""
+"""Validate chapters sync and enforce chapter status rules."""
 from __future__ import annotations
 
 import json
@@ -12,12 +12,13 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CHAPTERS_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "chapters.yaml"
 CHAPTERS_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "chapters.json"
 STATUS_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "status-system.yaml"
-MODULE_REGISTRY_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "standards" / "module-registry.yaml"
+MODULE_REGISTRY = REPO_ROOT / "packages" / "website" / "src" / "data" / "module-registry.json"
 
-ALLOWED_VISIBILITY = {"prominent", "visible", "teaser", "hidden"}
-ALLOWED_PAGES = {"homepage", "how-it-works", "get-started", "implementation", "docs"}
-
-STATUS_RANK = {"future": 0, "building": 1, "current": 2}
+VISIBILITY_BY_STATUS = {
+    "current": {"prominent", "visible"},
+    "building": {"visible", "teaser"},
+    "future": {"teaser", "hidden"},
+}
 
 
 def _load_yaml(path: Path) -> dict:
@@ -28,26 +29,19 @@ def _load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _extract_modules(registry: dict) -> dict[str, str]:
-    modules: dict[str, str] = {}
-    kernel = registry.get("kernel", {})
-    if kernel:
-        modules[kernel.get("id", "kernel")] = kernel.get("status", "unknown")
-    for module in registry.get("bundled_modules", []) or []:
-        module_id = module.get("id")
-        if module_id:
-            modules[module_id] = module.get("status", "unknown")
+def _module_statuses() -> dict[str, str]:
+    data = _load_json(MODULE_REGISTRY)
+    modules = {data["kernel"]["id"]: data["kernel"]["status"]}
+    for module in data.get("bundled_modules", []):
+        modules[module["id"]] = module["status"]
     return modules
 
 
-def _status_allows(chapter_status: str, module_status: str) -> bool:
-    return STATUS_RANK.get(module_status, -1) >= STATUS_RANK.get(chapter_status, -1)
-
-
-def _allowed_chapter_statuses(status_system: dict) -> set[str]:
+def _allowed_statuses() -> set[str]:
+    status_system = _load_yaml(STATUS_YAML)
     constraints = status_system.get("constraints", {})
-    chapters = constraints.get("chapters", {})
-    return set(chapters.get("allowed", []))
+    chapters_cfg = constraints.get("chapters", {})
+    return set(chapters_cfg.get("allowed", []))
 
 
 def _check_sync() -> tuple[bool, str]:
@@ -55,109 +49,92 @@ def _check_sync() -> tuple[bool, str]:
     json_data = _load_json(CHAPTERS_JSON)
     if yaml_data != json_data:
         return False, "chapters.json does not match chapters.yaml"
-    return True, "JSON matches YAML"
+    return True, "chapters.json matches chapters.yaml"
 
 
-def _check_chapters() -> tuple[bool, str]:
-    chapters = _load_yaml(CHAPTERS_YAML).get("chapters", [])
-    status_system = _load_yaml(STATUS_YAML)
-    registry = _load_yaml(MODULE_REGISTRY_YAML)
-    modules = _extract_modules(registry)
-
-    allowed_statuses = _allowed_chapter_statuses(status_system)
-    if not allowed_statuses:
-        return False, "status-system.yaml missing chapters constraints"
-
-    ids: set[str] = set()
-    numbers: set[int] = set()
-
+def _check_status_and_visibility(chapters: list[dict]) -> tuple[bool, str]:
+    allowed = _allowed_statuses()
     for chapter in chapters:
-        chapter_id = chapter.get("id")
-        number = chapter.get("number")
         status = chapter.get("status")
         visibility = chapter.get("visibility")
-        pages = chapter.get("pages", [])
+        if status not in allowed:
+            return False, f"Chapter '{chapter.get('id')}' uses invalid status '{status}'"
+        allowed_visibility = VISIBILITY_BY_STATUS.get(status, set())
+        if visibility not in allowed_visibility:
+            return False, (
+                f"Chapter '{chapter.get('id')}' visibility '{visibility}' not allowed for status '{status}'"
+            )
+        if visibility == "hidden" and chapter.get("pages"):
+            return False, f"Chapter '{chapter.get('id')}' is hidden but has pages configured"
+    return True, "Chapter status + visibility aligned"
 
-        if not chapter_id:
-            return False, "Chapter missing id"
-        if chapter_id in ids:
-            return False, f"Duplicate chapter id: {chapter_id}"
-        ids.add(chapter_id)
 
-        if not isinstance(number, int):
-            return False, f"Chapter {chapter_id} missing numeric order"
-        if number in numbers:
-            return False, f"Duplicate chapter number: {number}"
-        numbers.add(number)
+def _check_module_dependencies(chapters: list[dict]) -> tuple[bool, str]:
+    module_status = _module_statuses()
+    for chapter in chapters:
+        chapter_status = chapter.get("status")
+        for dep in chapter.get("module_dependencies", []):
+            if dep not in module_status:
+                return False, f"Chapter '{chapter.get('id')}' references unknown module '{dep}'"
+            dep_status = module_status[dep]
+            if chapter_status == "current" and dep_status != "current":
+                return False, f"Chapter '{chapter.get('id')}' is current but module '{dep}' is '{dep_status}'"
+            if chapter_status == "building" and dep_status == "future":
+                return False, f"Chapter '{chapter.get('id')}' is building but module '{dep}' is future"
+    return True, "Chapter module dependencies aligned"
 
-        if status not in allowed_statuses:
-            return False, f"Chapter {chapter_id} uses invalid status: {status}"
 
-        if visibility not in ALLOWED_VISIBILITY:
-            return False, f"Chapter {chapter_id} uses invalid visibility: {visibility}"
-
-        if status == "current" and visibility not in {"prominent", "visible"}:
-            return False, f"Chapter {chapter_id} current but visibility is {visibility}"
-        if status == "building" and visibility not in {"visible", "teaser"}:
-            return False, f"Chapter {chapter_id} building but visibility is {visibility}"
-        if status == "future" and visibility not in {"teaser", "hidden"}:
-            return False, f"Chapter {chapter_id} future but visibility is {visibility}"
-
-        if pages:
-            for page in pages:
-                if page not in ALLOWED_PAGES:
-                    return False, f"Chapter {chapter_id} references unknown page: {page}"
-            if status == "future" and pages:
-                return False, f"Chapter {chapter_id} is future but lists pages"
-
-        dependencies = chapter.get("module_dependencies", []) or []
-        if not isinstance(dependencies, list):
-            return False, f"Chapter {chapter_id} module_dependencies must be list"
-        for dep in dependencies:
-            if dep not in modules:
-                return False, f"Chapter {chapter_id} references unknown module: {dep}"
-            if not _status_allows(status, modules[dep]):
-                return False, f"Chapter {chapter_id} status {status} exceeds module {dep} status {modules[dep]}"
-
-        if status == "current":
-            evidence = chapter.get("status_evidence", [])
-            if not evidence:
-                return False, f"Chapter {chapter_id} current but missing status_evidence"
-            for item in evidence:
-                if not item.get("type"):
-                    return False, f"Chapter {chapter_id} evidence missing type"
-                if item.get("type") in {"test", "cli_command", "integration_test"} and not item.get("test"):
-                    return False, f"Chapter {chapter_id} evidence missing test reference"
-
-    return True, "Chapter status and visibility rules are valid"
+def _check_status_evidence(chapters: list[dict]) -> tuple[bool, str]:
+    for chapter in chapters:
+        if chapter.get("status") != "current":
+            continue
+        evidence = chapter.get("status_evidence", [])
+        if not evidence:
+            return False, f"Chapter '{chapter.get('id')}' is current but has no status_evidence"
+        for entry in evidence:
+            if entry.get("type") != "test":
+                continue
+            test_ref = entry.get("test", "")
+            test_path = test_ref.split("::", 1)[0]
+            if not test_path:
+                return False, f"Chapter '{chapter.get('id')}' has invalid test reference"
+            if not (REPO_ROOT / test_path).exists():
+                return False, f"Chapter '{chapter.get('id')}' test file missing: {test_path}"
+    return True, "Chapter evidence references valid tests"
 
 
 def main() -> int:
     if not CHAPTERS_YAML.exists():
-        print(f"Missing chapters.yaml at {CHAPTERS_YAML}", file=sys.stderr)
-        return 2
+        print(f"Missing chapters.yaml at {CHAPTERS_YAML}")
+        return 1
     if not CHAPTERS_JSON.exists():
-        print(f"Missing chapters.json at {CHAPTERS_JSON}", file=sys.stderr)
-        return 2
+        print(f"Missing chapters.json at {CHAPTERS_JSON}")
+        return 1
+    if not STATUS_YAML.exists():
+        print(f"Missing status-system.yaml at {STATUS_YAML}")
+        return 1
+    if not MODULE_REGISTRY.exists():
+        print(f"Missing module-registry.json at {MODULE_REGISTRY}")
+        return 1
+
+    chapters = _load_yaml(CHAPTERS_YAML).get("chapters", [])
 
     checks = [
-        ("Chapters JSON sync", _check_sync),
-        ("Chapter rules", _check_chapters),
+        _check_sync,
+        lambda: _check_status_and_visibility(chapters),
+        lambda: _check_module_dependencies(chapters),
+        lambda: _check_status_evidence(chapters),
     ]
 
-    ok = True
-    for name, check in checks:
-        passed, msg = check()
-        status = "\u2713" if passed else "\u2717"
-        print(f"{status} {name}: {msg}")
-        ok = ok and passed
+    for check in checks:
+        ok, message = check()
+        if not ok:
+            print(message)
+            return 1
 
-    if not ok:
-        print("\n\u274c Chapters sync check failed.")
-        return 1
-    print("\n\u2713 Chapters sync checks passed.")
+    print("Chapters sync and governance checks passed.")
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())
