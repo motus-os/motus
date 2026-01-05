@@ -13,6 +13,8 @@ MESSAGING_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "messagin
 MESSAGING_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "messaging.json"
 STATUS_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "status-system.yaml"
 STATUS_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "status-system.json"
+CHAPTERS_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "chapters.yaml"
+CHAPTERS_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "chapters.json"
 PROOF_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "proof-ledger.yaml"
 ROOT_README = REPO_ROOT / "README.md"
 CLI_README = REPO_ROOT / "packages" / "cli" / "README.md"
@@ -232,15 +234,21 @@ def main() -> None:
         raise FileNotFoundError(f"Missing messaging.yaml at {MESSAGING_YAML}")
     if not STATUS_YAML.exists():
         raise FileNotFoundError(f"Missing status-system.yaml at {STATUS_YAML}")
+    if not CHAPTERS_YAML.exists():
+        raise FileNotFoundError(f"Missing chapters.yaml at {CHAPTERS_YAML}")
 
     messaging = _load_yaml(MESSAGING_YAML)
     status_system = _load_yaml(STATUS_YAML)
+    chapters = _load_yaml(CHAPTERS_YAML)
 
     MESSAGING_JSON.parent.mkdir(parents=True, exist_ok=True)
     MESSAGING_JSON.write_text(json.dumps(messaging, indent=2) + "\n", encoding="utf-8")
 
     STATUS_JSON.parent.mkdir(parents=True, exist_ok=True)
     STATUS_JSON.write_text(json.dumps(status_system, indent=2) + "\n", encoding="utf-8")
+
+    CHAPTERS_JSON.parent.mkdir(parents=True, exist_ok=True)
+    CHAPTERS_JSON.write_text(json.dumps(chapters, indent=2) + "\n", encoding="utf-8")
 
     readme = _render_readme(messaging)
     ROOT_README.write_text(readme, encoding="utf-8")

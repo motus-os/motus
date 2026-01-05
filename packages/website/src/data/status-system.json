@@ -77,6 +77,14 @@
         "future"
       ],
       "reason": "Ecosystem nodes have full lifecycle. Use separate 'origin' field for internal/external."
+    },
+    "chapters": {
+      "allowed": [
+        "current",
+        "building",
+        "future"
+      ],
+      "reason": "Chapters follow module lifecycle and must stay aligned with module registry."
     }
   },
   "origins": {

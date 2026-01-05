@@ -1,0 +1,90 @@
+version: "1.0"
+last_updated: "2026-01-04"
+
+# Chapter status and visibility must align with module-registry.yaml.
+
+chapters:
+  - id: accountability
+    number: 1
+    title: "What did your agent do?"
+    subtitle: "The Accountability Problem"
+    status: current
+    visibility: prominent
+    module_dependencies:
+      - kernel
+    status_evidence:
+      - type: test
+        test: "packages/cli/tests/test_api_core.py::test_end_to_end_workflow_records_outcome_evidence_decision"
+        description: "Full loop records outcome, evidence, decision, and release."
+    hero_moment: "motus work status <lease_id> → immediate receipt view"
+    pain: "Agent worked, but there is no durable record."
+    solution: "Receipts for every action."
+    pages:
+      - homepage
+      - get-started
+
+  - id: coordination
+    number: 2
+    title: "Who's working on what?"
+    subtitle: "The Coordination Problem"
+    status: current
+    visibility: visible
+    module_dependencies:
+      - kernel
+    status_evidence:
+      - type: test
+        test: "packages/cli/tests/conformance/test_mutual_exclusion.py::TestMutualExclusion::test_at_most_one_write_lease_per_resource"
+        description: "Mutual exclusion blocks concurrent write claims."
+    hero_moment: "Agent B denied; Agent A holds the lease."
+    pain: "Two agents collide on the same task."
+    solution: "Lease-based coordination."
+    pages:
+      - how-it-works
+      - get-started
+
+  - id: verification
+    number: 3
+    title: "Can you prove it worked?"
+    subtitle: "The Verification Problem"
+    status: building
+    visibility: teaser
+    module_dependencies:
+      - proof-engine
+    hero_moment: "Release blocked until evidence is attached."
+    pain: "Work ships without proof."
+    solution: "Gates enforce evidence."
+    pages:
+      - implementation
+
+  - id: orchestration
+    number: 4
+    title: "What should happen next?"
+    subtitle: "The Orchestration Problem"
+    status: future
+    visibility: hidden
+    module_dependencies:
+      - motus-blueprints
+    hero_moment: "Agent asks what's ready → prioritized next work."
+    pain: "Manual task assignment slows the loop."
+    solution: "Roadmap-driven work orchestration."
+    pages: []
+
+  - id: attribution
+    number: 5
+    title: "Who owns this work?"
+    subtitle: "The Attribution Problem"
+    status: future
+    visibility: hidden
+    module_dependencies:
+      - work-ledger
+      - asset-registry
+    hero_moment: "Receipt proves provenance and license terms."
+    pain: "IP ownership is ambiguous."
+    solution: "Work provenance ledger."
+    pages: []
+
+visibility_rules:
+  prominent: "Hero section, above the fold, full demo"
+  visible: "Dedicated section, full content"
+  teaser: "Brief mention with status badge"
+  hidden: "Not shown on public pages"
