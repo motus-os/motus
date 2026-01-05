@@ -91,6 +91,7 @@ def bootstrap_database_at_path(db_path: Path) -> None:
     count = runner.apply_migrations()
 
     verify_schema_version(conn)
+    _prune_old_metrics(conn, days=30)
 
     if is_fresh:
         logger.info(f"Database created successfully. Applied {count} migrations.")
@@ -98,6 +99,36 @@ def bootstrap_database_at_path(db_path: Path) -> None:
         logger.info(f"Applied {count} pending migrations.")
     else:
         logger.debug("Database schema up to date.")
+
+
+def _prune_old_metrics(conn, *, days: int) -> None:
+    """Prune metrics older than the retention window."""
+    try:
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS metrics (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                timestamp TEXT NOT NULL,
+                operation TEXT NOT NULL,
+                elapsed_ms REAL NOT NULL,
+                success INTEGER NOT NULL DEFAULT 1 CHECK (success IN (0, 1)),
+                metadata TEXT,
+                created_at TEXT NOT NULL DEFAULT (datetime('now')),
+                updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+                created_by TEXT DEFAULT NULL,
+                updated_by TEXT DEFAULT NULL,
+                deleted_at TEXT DEFAULT NULL,
+                deleted_by TEXT DEFAULT NULL,
+                deletion_reason TEXT DEFAULT NULL
+            )
+            """
+        )
+        conn.execute(
+            "DELETE FROM metrics WHERE timestamp < datetime('now', ?)",
+            (f"-{days} days",),
+        )
+    except Exception as exc:
+        logger.debug(f"Metrics retention skipped: {exc}")
 
 
 def _get_migrations_dir() -> Path:

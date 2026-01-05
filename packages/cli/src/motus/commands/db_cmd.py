@@ -46,6 +46,7 @@ def db_vacuum_command(args: Any) -> int:
     conn.execute("VACUUM")
     if getattr(args, "full", False):
         conn.execute("ANALYZE")
+    db.checkpoint_wal()
     _record_preference(conn, "db.last_vacuum", "vacuum")
     console.print("VACUUM completed", markup=False)
     return EXIT_SUCCESS

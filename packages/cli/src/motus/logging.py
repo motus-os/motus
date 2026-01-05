@@ -11,6 +11,7 @@ import json
 import logging
 import os
 import sys
+from logging.handlers import RotatingFileHandler
 from collections import OrderedDict
 from datetime import datetime
 from typing import Any
@@ -90,7 +91,11 @@ class MCLogger:
             # File handler - JSON format
             log_file = config.paths.logs_dir / "motus.log"
             try:
-                file_handler = logging.FileHandler(log_file)
+                file_handler = RotatingFileHandler(
+                    log_file,
+                    maxBytes=10 * 1024 * 1024,
+                    backupCount=5,
+                )
                 file_handler.setLevel(logging.DEBUG)
                 file_handler.setFormatter(MCFormatter(json_format=True))
                 self.logger.addHandler(file_handler)

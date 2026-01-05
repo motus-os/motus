@@ -72,6 +72,11 @@ class DatabaseQueryMixin:
 
     def checkpoint_and_close(self) -> None:
         """Checkpoint WAL and close connection (for shutdown)."""
+        if self._connection is not None:
+            try:
+                self._connection.execute("PRAGMA optimize")
+            except Exception as e:
+                logger.debug(f"PRAGMA optimize skipped: {e}")
         self.checkpoint_wal()
         self.close()
 

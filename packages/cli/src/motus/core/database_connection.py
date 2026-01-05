@@ -48,6 +48,8 @@ def configure_connection(
     conn.execute("PRAGMA foreign_keys = ON")
     conn.execute("PRAGMA busy_timeout = 30000")
     conn.execute("PRAGMA cache_size = -64000")
+    conn.execute("PRAGMA temp_store = memory")
+    conn.execute("PRAGMA mmap_size = 268435456")
     if read_only:
         conn.execute("PRAGMA query_only = ON")
     if set_row_factory:

@@ -254,19 +254,11 @@ def cmd_roadmap_claim(args: Any) -> int:
     DEPRECATED: Use `motus work claim` instead for full Work Compiler support.
     This command will be removed in v0.2.0.
     """
-    import warnings
-
     console.print(
         "[yellow]DEPRECATED: 'motus roadmap claim' will be removed in v0.2.0[/yellow]"
     )
     console.print("[yellow]Use 'motus work claim <id> --intent \"...\"' instead[/yellow]")
     console.print()
-
-    warnings.warn(
-        "motus roadmap claim is deprecated, use motus work claim instead",
-        DeprecationWarning,
-        stacklevel=2,
-    )
 
     agent_id = getattr(args, "agent", None) or _get_agent_id()
     api = RoadmapAPI(agent_id)
