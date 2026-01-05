@@ -1,0 +1,25 @@
+---
+const {
+  href = '#',
+  variant = 'primary',
+  size = 'md',
+  class: className = '',
+  target,
+  rel,
+} = Astro.props;
+
+const baseClass = 'inline-flex items-center justify-center rounded-full font-semibold transition-colors';
+const variantClass =
+  variant === 'primary'
+    ? 'bg-mint text-charcoal hover:bg-mint/90'
+    : 'border border-mint/40 text-mint hover:text-text-primary hover:border-mint/70';
+const sizeClass = size === 'sm'
+  ? 'text-sm px-phi-2 py-phi-1'
+  : 'text-sm md:text-base px-phi-3 py-phi-2';
+
+const classes = `${baseClass} ${variantClass} ${sizeClass} ${className}`.trim();
+---
+
+<a href={href} class={classes} target={target} rel={rel}>
+  <slot />
+</a>

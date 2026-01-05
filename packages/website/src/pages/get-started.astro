@@ -5,6 +5,7 @@ import SectionHeader from '../components/SectionHeader.astro';
 import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import PersonaCard from '../components/PersonaCard.astro';
+import Button from '../components/Button.astro';
 
 import { trainingSteps } from '../data/get-started-steps.js';
 import personaMap from '../data/persona-map.json';
@@ -28,16 +29,13 @@ const quickstartTitle = quickstart.title || 'Three steps to a receipt';
     />
     <div class="mt-phi-3 flex flex-col items-center gap-phi-3">
       <InstallCommand />
-      <a
-        href={`${base}how-it-works`}
-        class="text-mint hover:text-text-primary transition-colors text-sm"
-      >
+      <Button href={`${base}how-it-works`} variant="secondary" size="sm">
         See how the loop works &#8594;
-      </a>
+      </Button>
     </div>
   </Section>
 
-  <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
+  <Section tone="light" pad="tight" class="border-t border-line/20" innerClass="max-w-5xl">
     <SectionHeader
       eyebrow="Quickstart"
       title={quickstartTitle}
@@ -71,7 +69,7 @@ const quickstartTitle = quickstart.title || 'Three steps to a receipt';
     </div>
   </Section>
 
-  <Section tone="light" pad="tight" class="border-t border-line/10" innerClass="max-w-5xl">
+  <Section tone="light" pad="tight" class="border-t border-line/20" innerClass="max-w-5xl">
     <SectionHeader
       eyebrow="Step by Step"
       title="Full loop, end to end"
@@ -147,7 +145,7 @@ const quickstartTitle = quickstart.title || 'Three steps to a receipt';
     </div>
   </Section>
 
-  <Section tone="light" class="border-t border-line/10">
+  <Section tone="light" class="border-t border-line/20">
     <SectionHeader
       eyebrow="Choose Your Path"
       subtitle="Pick the entry point that matches your role."

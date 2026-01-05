@@ -5,6 +5,7 @@ import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import DemoLoop from '../components/DemoLoop.astro';
+import Button from '../components/Button.astro';
 import messaging from '../data/messaging.json';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
@@ -74,13 +75,13 @@ const fixSubline = taglineParts.slice(2).join('. ');
 
     <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">
       <InstallCommand />
-      <a href={heroCtaHref} class="text-mint hover:text-text-primary transition-colors px-phi-3 py-phi-2">
+      <Button href={heroCtaHref} variant="secondary">
         {heroCtaText} &#8594;
-      </a>
+      </Button>
     </div>
   </Section>
 
-  <Section tone="light" pad="tight" class="border-t border-line/10">
+  <Section tone="light" pad="tight" class="border-t border-line/20">
     <p class="text-sm text-text-secondary max-w-2xl mx-auto mb-phi-3 text-center">
       Start with a single verified loop. If it works locally, it works everywhere.
     </p>
@@ -126,7 +127,7 @@ const fixSubline = taglineParts.slice(2).join('. ');
     </div>
   </Section>
 
-  <Section tone="light" class="text-center border-t border-line/10" innerClass="max-w-4xl">
+  <Section tone="light" class="text-center border-t border-line/20" innerClass="max-w-4xl">
     <h2 class="text-3xl md:text-4xl font-display text-text-primary mb-phi-3">Source Available. Verifiable. Yours.</h2>
     <p class="text-lg text-text-secondary mb-phi-4 leading-relaxed">
       Audit the execution model and keep receipts local.<br class="hidden md:inline" />
@@ -155,9 +156,9 @@ const fixSubline = taglineParts.slice(2).join('. ');
     </div>
 
     <div class="mt-phi-4">
-      <a href="https://pypi.org/project/motusos/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-mint hover:text-text-primary transition-colors">
+      <Button href="https://pypi.org/project/motusos/" target="_blank" rel="noopener" variant="secondary" size="sm">
         View on PyPI
-      </a>
+      </Button>
     </div>
   </Section>
 

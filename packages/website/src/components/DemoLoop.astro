@@ -40,7 +40,7 @@ const steps = [
   }
 
   .demo-loop__eyebrow {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     letter-spacing: 0.35em;
     text-transform: uppercase;
     color: oklch(var(--text-secondary));
@@ -84,13 +84,13 @@ const steps = [
   }
 
   .demo-loop__detail {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: oklch(var(--text-secondary));
   }
 
   .demo-loop__footnote {
     margin-top: 1rem;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: oklch(var(--text-secondary));
   }
 
@@ -104,6 +104,12 @@ const steps = [
     100% {
       border-color: oklch(var(--line) / 0.25);
       box-shadow: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo-loop__step {
+      animation: none;
     }
   }
 </style>
