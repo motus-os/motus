@@ -103,7 +103,7 @@ const normalizeHref = (href) => {
         {clusters ? (
           <div class="space-y-phi-2">
             {clusters.map((cluster) => (
-              <div class="rounded-2xl border border-line/20 bg-surface-muted p-phi-2 space-y-phi-2">
+              <div class="rounded-2xl border border-line/30 bg-surface-muted p-phi-2 space-y-phi-2">
                 <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{cluster.label}</p>
                 <div class="space-y-phi-2">
                   {cluster.nodes.map((node) => {
@@ -111,7 +111,7 @@ const normalizeHref = (href) => {
                     const docsHref = normalizeHref(node.docs_url);
                     const showSite = siteHref && siteHref !== docsHref;
                     return (
-                    <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)}`.trim()}>
+                    <div class={`rounded-xl border border-line/30 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)}`.trim()}>
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
                           {node.logo ? (
@@ -189,7 +189,7 @@ const normalizeHref = (href) => {
               const docsHref = normalizeHref(node.docs_url);
               const showSite = siteHref && siteHref !== docsHref;
               return (
-              <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)}`.trim()}>
+              <div class={`rounded-xl border border-line/30 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)}`.trim()}>
                 <div class="flex items-center justify-between gap-phi-2">
                   <div class="flex items-center gap-phi-2">
                     {node.logo ? (
@@ -294,7 +294,7 @@ const normalizeHref = (href) => {
               <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">Center</span>
             ) : null}
           </div>
-          <div class="rounded-2xl border border-line/20 bg-surface-muted p-phi-1 space-y-phi-1">
+          <div class="rounded-2xl border border-line/30 bg-surface-muted p-phi-1 space-y-phi-1">
             <div class="space-y-phi-1">
               <p class="text-sm text-text-secondary">{group.description}</p>
               {group.relation ? (
@@ -307,7 +307,7 @@ const normalizeHref = (href) => {
               {clusters ? (
                 <div class="space-y-phi-1">
                   {clusters.map((cluster) => (
-                    <div class="rounded-2xl border border-line/20 bg-surface px-phi-2 py-phi-1 space-y-phi-1">
+                    <div class="rounded-2xl border border-line/30 bg-surface px-phi-2 py-phi-1 space-y-phi-1">
                       <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{cluster.label}</p>
                       <div class="space-y-phi-1">
                         {cluster.nodes.map((node) => {
@@ -315,7 +315,7 @@ const normalizeHref = (href) => {
                           const docsHref = normalizeHref(node.docs_url);
                           const showSite = siteHref && siteHref !== docsHref;
                           return (
-                          <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node)}`.trim()}>
+                          <div class={`rounded-xl border border-line/30 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node)}`.trim()}>
                             <div class="flex items-center justify-between gap-phi-2">
                               <div class="flex items-center gap-phi-2">
                                 {node.logo ? (
@@ -393,7 +393,7 @@ const normalizeHref = (href) => {
                     const docsHref = normalizeHref(node.docs_url);
                     const showSite = siteHref && siteHref !== docsHref;
                     return (
-                    <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node)}`.trim()}>
+                    <div class={`rounded-xl border border-line/30 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node)}`.trim()}>
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
                           {node.logo ? (

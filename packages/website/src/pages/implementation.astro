@@ -290,9 +290,9 @@ const patternStatusLabel = (status) => getStatusLabel(status);
                 ))}
               </ul>
               <div class="flex flex-wrap gap-phi-1 text-xs text-text-secondary">
-                <span class="px-2 py-1 rounded-full border border-line/20">{module.scope}</span>
+                <span class="px-2 py-1 rounded-full border border-line/30">{module.scope}</span>
                 {module.roadmap_id ? (
-                  <span class="px-2 py-1 rounded-full border border-line/20">{module.roadmap_id}</span>
+                  <span class="px-2 py-1 rounded-full border border-line/30">{module.roadmap_id}</span>
                 ) : null}
                 {module.implementation_guides?.docs ? (
                   <a
@@ -317,7 +317,7 @@ const patternStatusLabel = (status) => getStatusLabel(status);
         size="md"
         maxWidth="max-w-3xl"
       />
-      <div class="flex flex-wrap gap-3 text-sm">
+      <div class="flex flex-wrap gap-phi-2 text-sm">
         <a class="text-mint hover:text-text-primary transition-colors" href={`${base}get-started`}>
           Get Started
         </a>
