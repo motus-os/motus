@@ -5,7 +5,7 @@
 # Motus
 
 > What did your agent actually do? Motus knows.
-> Every action logged. Every decision recorded. Every outcome, receipted.
+> Every action logged. Every decision recorded. Every outcome a receipt.
 
 [![License](https://img.shields.io/badge/license-MCSL-blue.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/motusos)](https://pypi.org/project/motusos/)

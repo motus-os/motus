@@ -7,14 +7,14 @@ last_updated: "2026-01-05"
 
 one_liner: "What did your agent actually do? Motus knows."
 
-tagline: "Every action logged. Every decision recorded. Every outcome, receipted."
+tagline: "Every action logged. Every decision recorded. Every outcome a receipt."
 
 hero:
   # The hook - asks the question nobody says out loud
   headline: "What did your agent actually do?"
   subheadline: "Motus knows."
   # The position
-  value_prop: "Every action logged. Every decision recorded. Every outcome, receipted."
+  value_prop: "Every action logged. Every decision recorded. Every outcome a receipt."
   # The action
   action_line: "Claim. Prove. Release. Get a receipt."
   cta_text: "Get your first receipt"
