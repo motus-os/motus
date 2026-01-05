@@ -141,7 +141,7 @@ const moduleHighlights = [
       </div>
 
       <p class="text-text-secondary text-sm text-center mt-phi-3 pt-phi-3 border-t border-line/30">
-        Every lease closes with outcome, evidence, and decision.
+        A complete receipt includes outcome, evidence, and decision.
       </p>
     </Panel>
   </Section>
@@ -214,7 +214,7 @@ const moduleHighlights = [
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
     <SectionHeader
       title="Gates keep the loop honest"
-      subtitle="Work cannot close without proof and decision."
+      subtitle="Gate criteria define what a complete receipt looks like."
       class="mb-phi-4"
       maxWidth="max-w-2xl"
     />
@@ -235,8 +235,8 @@ const moduleHighlights = [
       <Panel size="sm" class="space-y-phi-2">
         <div id="evidence-gates" class="scroll-mt-24"></div>
         <h3 class="text-lg font-display text-text-primary">Evidence gate</h3>
-        <p class="text-sm text-text-secondary">Completion cannot happen without proof.</p>
-        <p class="text-sm text-text-secondary">Requires evidence artifacts before release.</p>
+        <p class="text-sm text-text-secondary">Evidence artifacts keep receipts complete.</p>
+        <p class="text-sm text-text-secondary">Record evidence before release to keep the trail intact.</p>
         <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_evidence → release_work</p>
         <a
@@ -248,8 +248,8 @@ const moduleHighlights = [
       </Panel>
       <Panel size="sm" class="space-y-phi-2">
         <h3 class="text-lg font-display text-text-primary">Completion gate</h3>
-        <p class="text-sm text-text-secondary">Every release includes evidence + decision.</p>
-        <p class="text-sm text-text-secondary">Requires decision log + evidence before release.</p>
+        <p class="text-sm text-text-secondary">Decisions + evidence complete the receipt.</p>
+        <p class="text-sm text-text-secondary">Log the decision alongside the proof you attach.</p>
         <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_decision → release_work</p>
         <a
@@ -261,6 +261,9 @@ const moduleHighlights = [
       </Panel>
     </div>
     <p class="text-sm text-text-secondary mt-phi-3">
+      Enforcement status: building. Evidence and decisions are recorded today; strict blocking is coming.
+    </p>
+    <p class="text-sm text-text-secondary mt-phi-2">
       See the full gate criteria in the
       <a href={`${base}implementation#phase-gates`} class="text-mint hover:text-text-primary transition-colors">
         implementation guide

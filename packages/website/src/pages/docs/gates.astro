@@ -13,7 +13,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-3xl">
     <SectionHeader
       eyebrow="Evidence & Gates"
-      subtitle="Work cannot close without evidence and decision."
+      subtitle="Gate criteria define what a complete receipt looks like."
       size="xl"
     >
       <span slot="title">Gates make execution safe.</span>
@@ -48,8 +48,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       </Panel>
       <Panel size="sm" class="space-y-phi-2">
         <h3 class="text-lg font-display text-text-primary">Evidence gate</h3>
-        <p class="text-sm text-text-secondary">Completion cannot happen without proof.</p>
-        <p class="text-sm text-text-secondary">Requires evidence artifacts before release.</p>
+        <p class="text-sm text-text-secondary">Evidence artifacts keep receipts complete.</p>
+        <p class="text-sm text-text-secondary">Record evidence before release to keep the trail intact.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_evidence → release_work</p>
         <a href={`${base}docs/evidence#claim-evidence_gate`} class="text-sm text-mint hover:text-text-primary transition-colors">
@@ -58,8 +58,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       </Panel>
       <Panel size="sm" class="space-y-phi-2">
         <h3 class="text-lg font-display text-text-primary">Completion gate</h3>
-        <p class="text-sm text-text-secondary">Every release includes evidence + decision.</p>
-        <p class="text-sm text-text-secondary">Requires decision log + evidence before release.</p>
+        <p class="text-sm text-text-secondary">Decisions + evidence complete the receipt.</p>
+        <p class="text-sm text-text-secondary">Log the decision alongside the proof you attach.</p>
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Touches</p>
         <p class="text-sm text-text-secondary">record_decision → release_work</p>
         <a href={`${base}docs/evidence#claim-completion_gate`} class="text-sm text-mint hover:text-text-primary transition-colors">
@@ -76,6 +76,9 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       size="md"
       class="mb-phi-3"
     />
+    <p class="text-sm text-text-secondary mb-phi-2">
+      Enforcement status: building. Evidence and decisions are recorded today; strict blocking is coming.
+    </p>
     <div class="flex flex-wrap justify-center gap-phi-2 text-sm">
       <a href={`${base}implementation#phase-gates`} class="text-mint hover:text-text-primary transition-colors">
         Implementation gates &#8594;

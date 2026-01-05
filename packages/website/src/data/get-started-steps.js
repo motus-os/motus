@@ -102,13 +102,13 @@ export const trainingSteps = [
       'motus work decision <lease_id> "Decision summary" --rationale "Why this path"',
       'motus work release <lease_id> success',
     ],
-    expected: 'Lease released with evidence and decision logged.',
+    expected: 'Lease released; evidence and decision appear in the status output.',
     proof: {
       label: 'Coordination API',
       url: '/how-it-works',
     },
-    failure: 'Missing evidence or decision',
-    fix: 'Add at least one evidence entry and decision before release.',
+    failure: 'Lease expired or not found',
+    fix: 'Re-claim the work and re-run the evidence + decision steps before releasing.',
   },
   {
     id: 'audit',
