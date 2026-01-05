@@ -1,32 +1,34 @@
-version: "1.0"
+version: "1.1"
 last_updated: "2026-01-04"
 
 # ============================================
 # CORE MESSAGING
 # ============================================
 
-one_liner: "Your AI agents waste 66% of their work. Motus makes every action verifiable."
+one_liner: "Agents do the work. Motus keeps the receipts."
 
-tagline: "Claim work. Prove it's done. One API. Ship receipts, not trust."
+tagline: "One API. Verification infrastructure for AI that acts."
 
 hero:
-  headline: "Your AI agents waste 66% of their work."
-  subheadline: "Motus makes every action verifiable."
-  cta_text: "Get Started"
+  # The hook - creates tension
+  headline: "Agents do the work."
+  subheadline: "Motus keeps the receipts."
+  # The position
+  value_prop: "One API. Verification infrastructure for AI that acts."
+  # The action
+  action_line: "Claim work. Attach proof. Ship a receipt."
+  cta_text: "Run a verified loop"
   cta_url: "/get-started/"
-  claim_status: "verified"
-  proof_id: "momentum_tax_survey"
-  proof_url: "/docs/evidence#claim-momentum_tax_survey"
+  # No claim_status/proof_id - this is positioning, not a provable claim
 
 pain_statement:
-  short: "AI agents waste 66% of their work."
-  full: "AI agents waste 66% of their work through repeated tasks, lost context, and no accountability."
-  claim_status: "verified"
-  proof_id: "momentum_tax_survey"
-  proof_url: "/docs/evidence#claim-momentum_tax_survey"
+  # Pain without problematic statistics
+  short: "AI agents act without accountability."
+  full: "AI agents complete tasks with no record of what happened, why, or whether it worked."
+  # This is observable truth, not a cited claim
 
 solution_statement:
-  short: "Motus makes every action verifiable."
+  short: "Motus keeps the receipts."
   full: "Motus provides a single API loop for agent coordination. Claim work, attach evidence, ship receipts."
 
 # ============================================

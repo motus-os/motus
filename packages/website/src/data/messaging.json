@@ -8,14 +8,14 @@
     "subheadline": "Motus makes every action verifiable.",
     "cta_text": "Get Started",
     "cta_url": "/get-started/",
-    "claim_status": "verified",
+    "claim_status": "current",
     "proof_id": "momentum_tax_survey",
     "proof_url": "/docs/evidence#claim-momentum_tax_survey"
   },
   "pain_statement": {
     "short": "AI agents waste 66% of their work.",
     "full": "AI agents waste 66% of their work through repeated tasks, lost context, and no accountability.",
-    "claim_status": "verified",
+    "claim_status": "current",
     "proof_id": "momentum_tax_survey",
     "proof_url": "/docs/evidence#claim-momentum_tax_survey"
   },

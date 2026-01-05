@@ -11,6 +11,8 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MESSAGING_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "messaging.yaml"
 MESSAGING_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "messaging.json"
+STATUS_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "status-system.yaml"
+STATUS_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "status-system.json"
 ROOT_README = REPO_ROOT / "README.md"
 CLI_README = REPO_ROOT / "packages" / "cli" / "README.md"
 
@@ -179,11 +181,17 @@ def _render_readme(messaging: dict) -> str:
 def main() -> None:
     if not MESSAGING_YAML.exists():
         raise FileNotFoundError(f"Missing messaging.yaml at {MESSAGING_YAML}")
+    if not STATUS_YAML.exists():
+        raise FileNotFoundError(f"Missing status-system.yaml at {STATUS_YAML}")
 
     messaging = _load_yaml(MESSAGING_YAML)
+    status_system = _load_yaml(STATUS_YAML)
 
     MESSAGING_JSON.parent.mkdir(parents=True, exist_ok=True)
     MESSAGING_JSON.write_text(json.dumps(messaging, indent=2) + "\n", encoding="utf-8")
+
+    STATUS_JSON.parent.mkdir(parents=True, exist_ok=True)
+    STATUS_JSON.write_text(json.dumps(status_system, indent=2) + "\n", encoding="utf-8")
 
     readme = _render_readme(messaging)
     ROOT_README.write_text(readme, encoding="utf-8")

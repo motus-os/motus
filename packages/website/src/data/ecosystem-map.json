@@ -39,7 +39,7 @@
       "type": "external",
       "group": "inputs",
       "label": "LangChain",
-      "status": "external",
+      "status": "current",
       "logo": "/brand/ecosystem/langchain.svg",
       "external_url": "https://langchain.com",
       "summary": "Agent framework + tool routing.",
@@ -63,14 +63,15 @@
             "coordination-api"
           ]
         }
-      ]
+      ],
+      "origin": "external"
     },
     {
       "id": "n8n",
       "type": "external",
       "group": "inputs",
       "label": "n8n",
-      "status": "external",
+      "status": "current",
       "logo": "/brand/ecosystem/n8n.svg",
       "external_url": "https://n8n.io",
       "summary": "Workflow automation and integrations.",
@@ -94,14 +95,15 @@
             "module-manager"
           ]
         }
-      ]
+      ],
+      "origin": "external"
     },
     {
       "id": "claude",
       "type": "external",
       "group": "inputs",
       "label": "Claude (Anthropic)",
-      "status": "external",
+      "status": "current",
       "logo": "/brand/ecosystem/anthropic.svg",
       "external_url": "https://www.anthropic.com/claude",
       "summary": "Foundation model for reasoning and generation.",
@@ -125,14 +127,15 @@
             "coordination-api"
           ]
         }
-      ]
+      ],
+      "origin": "external"
     },
     {
       "id": "gemini",
       "type": "external",
       "group": "inputs",
       "label": "Gemini",
-      "status": "external",
+      "status": "current",
       "logo": "/brand/ecosystem/googlegemini.svg",
       "external_url": "https://gemini.google.com",
       "summary": "Multimodal model and assistant stack.",
@@ -156,14 +159,15 @@
             "coordination-api"
           ]
         }
-      ]
+      ],
+      "origin": "external"
     },
     {
       "id": "openai",
       "type": "external",
       "group": "inputs",
       "label": "OpenAI",
-      "status": "external",
+      "status": "current",
       "logo": "/brand/ecosystem/openai.png",
       "external_url": "https://openai.com",
       "summary": "Model APIs for agent and tool execution.",
@@ -187,7 +191,8 @@
             "kernel"
           ]
         }
-      ]
+      ],
+      "origin": "external"
     },
     {
       "id": "kernel",
@@ -200,7 +205,8 @@
       "flow_note": "Single source of truth",
       "website_path": "/implementation#kernel",
       "docs_url": "/implementation#kernel",
-      "proof_id": "kernel_schema"
+      "proof_id": "kernel_schema",
+      "origin": "internal"
     },
     {
       "id": "work-compiler",
@@ -211,7 +217,8 @@
       "summary": "Six-call loop that turns work into verified outcomes.",
       "flow_note": "claim -> context -> outcome -> evidence -> decision -> release",
       "website_path": "/how-it-works",
-      "docs_url": "/implementation#kernel"
+      "docs_url": "/implementation#kernel",
+      "origin": "internal"
     },
     {
       "id": "coordination-api",
@@ -223,7 +230,8 @@
       "flow_note": "Public coordination surface",
       "website_path": "/how-it-works",
       "docs_url": "/how-it-works",
-      "proof_id": "six_call_api"
+      "proof_id": "six_call_api",
+      "origin": "internal"
     },
     {
       "id": "module-sdk",
@@ -236,7 +244,8 @@
       "summary": "Interfaces and toggle behavior for bundled modules.",
       "flow_note": "Module interface contracts",
       "website_path": "/implementation#module-sdk",
-      "docs_url": "/implementation#module-sdk"
+      "docs_url": "/implementation#module-sdk",
+      "origin": "internal"
     },
     {
       "id": "capability-matrix",
@@ -249,7 +258,8 @@
       "summary": "Capability registry + grants with explainable eligibility.",
       "flow_note": "Eligibility + grants",
       "website_path": "/implementation#capability-matrix",
-      "docs_url": "/implementation#capability-matrix"
+      "docs_url": "/implementation#capability-matrix",
+      "origin": "internal"
     },
     {
       "id": "contract-compiler",
@@ -262,7 +272,8 @@
       "summary": "Compile standards into deterministic contracts and hashes.",
       "flow_note": "Standards -> contracts",
       "website_path": "/implementation#contract-compiler",
-      "docs_url": "/implementation#contract-compiler"
+      "docs_url": "/implementation#contract-compiler",
+      "origin": "internal"
     },
     {
       "id": "knowledge-engine",
@@ -275,7 +286,8 @@
       "summary": "Hot authority + cold reference with traceable retrieval.",
       "flow_note": "Traceable knowledge",
       "website_path": "/implementation#knowledge-engine",
-      "docs_url": "/implementation#knowledge-engine"
+      "docs_url": "/implementation#knowledge-engine",
+      "origin": "internal"
     },
     {
       "id": "lens-engine",
@@ -288,7 +300,8 @@
       "summary": "Deterministic context assembly from contracts and knowledge.",
       "flow_note": "Deterministic context",
       "website_path": "/implementation#lens-engine",
-      "docs_url": "/implementation#lens-engine"
+      "docs_url": "/implementation#lens-engine",
+      "origin": "internal"
     },
     {
       "id": "proof-engine",
@@ -301,7 +314,8 @@
       "summary": "Evidence bundles + validators for completion gates.",
       "flow_note": "Evidence bundles",
       "website_path": "/implementation#proof-engine",
-      "docs_url": "/implementation#proof-engine"
+      "docs_url": "/implementation#proof-engine",
+      "origin": "internal"
     },
     {
       "id": "module-manager",
@@ -314,7 +328,8 @@
       "summary": "Enable/disable modules with explicit config.",
       "flow_note": "Module toggles",
       "website_path": "/implementation#module-manager",
-      "docs_url": "/implementation#module-manager"
+      "docs_url": "/implementation#module-manager",
+      "origin": "internal"
     },
     {
       "id": "motus-blueprints",
@@ -327,7 +342,8 @@
       "summary": "Deterministic scaffolding for programs and projects.",
       "flow_note": "Deterministic scaffolds",
       "website_path": "/implementation#motus-blueprints",
-      "docs_url": "/implementation#motus-blueprints"
+      "docs_url": "/implementation#motus-blueprints",
+      "origin": "internal"
     },
     {
       "id": "policy-gates",
@@ -337,7 +353,8 @@
       "status": "current",
       "summary": "Deterministic enforcement + evidence requirements.",
       "flow_note": "Gate packs + enforcement",
-      "docs_url": "/implementation"
+      "docs_url": "/implementation",
+      "origin": "internal"
     },
     {
       "id": "evidence-bundles",
@@ -347,7 +364,8 @@
       "status": "current",
       "summary": "Manifested proof artifacts with hashes and signatures.",
       "flow_note": "Proof artifacts",
-      "docs_url": "/implementation"
+      "docs_url": "/implementation",
+      "origin": "internal"
     },
     {
       "id": "decision-log",
@@ -357,7 +375,8 @@
       "status": "current",
       "summary": "Append-only record of decisions and rationale.",
       "flow_note": "Why + rationale",
-      "docs_url": "/implementation#kernel"
+      "docs_url": "/implementation#kernel",
+      "origin": "internal"
     },
     {
       "id": "roadmap-api",
@@ -367,7 +386,8 @@
       "status": "current",
       "summary": "Plan, claim, review, and complete work without bypassing the kernel.",
       "flow_note": "Plan -> claim -> review",
-      "docs_url": "/implementation#kernel"
+      "docs_url": "/implementation#kernel",
+      "origin": "internal"
     },
     {
       "id": "work-ledger",
@@ -379,7 +399,8 @@
       "summary": "Signed work receipts + provenance ledger for verified execution.",
       "flow_note": "Signed provenance",
       "website_path": "/implementation#work-ledger",
-      "docs_url": "/implementation#work-ledger"
+      "docs_url": "/implementation#work-ledger",
+      "origin": "internal"
     },
     {
       "id": "asset-registry",
@@ -391,7 +412,8 @@
       "summary": "Registry of IP assets, owners, license terms, and usage rules.",
       "flow_note": "IP + license terms",
       "website_path": "/implementation#asset-registry",
-      "docs_url": "/implementation#asset-registry"
+      "docs_url": "/implementation#asset-registry",
+      "origin": "internal"
     },
     {
       "id": "motus-exchange",
@@ -403,7 +425,8 @@
       "summary": "Brokerage layer for licensing IP and routing verified work.",
       "flow_note": "Brokerage + settlement",
       "website_path": "/implementation#motus-exchange",
-      "docs_url": "/implementation#motus-exchange"
+      "docs_url": "/implementation#motus-exchange",
+      "origin": "internal"
     }
   ]
 }

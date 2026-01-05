@@ -5,6 +5,7 @@ import Panel from '../../components/Panel.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import patternsData from '../../data/implementation-patterns.json';
 import { validatePatterns } from '../../data/validate-patterns.js';
+import { getStatusClass, getStatusLabel } from '../../lib/status.js';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -12,15 +13,8 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 
 const patterns = patternsData.patterns;
 validatePatterns(patterns);
-const statusClass = (status) => {
-  if (status === 'verified') return 'status-badge status-current';
-  return 'status-badge status-building';
-};
-const statusLabel = (status) => {
-  if (status === 'verified') return 'Verified';
-  if (status === 'building') return 'Building';
-  return 'Target';
-};
+const statusClass = (status) => getStatusClass(status, 'badge');
+const statusLabel = (status) => getStatusLabel(status);
 ---
 
 <Layout title="Strategies - Motus">
@@ -40,9 +34,9 @@ const statusLabel = (status) => {
         Use these patterns to keep implementation deterministic, auditable, and repeatable.
       </p>
       <div class="flex flex-wrap justify-center items-center gap-phi-2 text-xs text-text-secondary mt-phi-3">
-        <span class="status-badge status-current">Verified</span>
+        <span class="status-badge status-current">Current</span>
         <span class="status-badge status-building">Building</span>
-        <span class="status-badge status-building">Target</span>
+        <span class="status-badge status-future">Future</span>
         <span class="text-text-secondary/60">&#183;</span>
         <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
           Full Implementation Guide

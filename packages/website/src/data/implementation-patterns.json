@@ -3,7 +3,7 @@
     {
       "id": "evidence-gates",
       "title": "Evidence Gates",
-      "status": "verified",
+      "status": "current",
       "summary": "No phase proceeds without logged proof.",
       "what": "Gate criteria that must pass before a phase completes.",
       "why": "Stops approvals without evidence and keeps work auditable.",
@@ -21,7 +21,7 @@
     {
       "id": "stop-conditions",
       "title": "Stop Conditions",
-      "status": "target",
+      "status": "future",
       "summary": "Explicit triggers halt work and require a decision.",
       "what": "Predefined conditions that force a stop and a decision record.",
       "why": "Prevents working around failures and hides regressions.",
@@ -35,28 +35,28 @@
     {
       "id": "clean-verification",
       "title": "Clean Verification",
-      "status": "target",
+      "status": "future",
       "summary": "Verify in a clean environment before release.",
       "what": "Fresh clone + venv verification to eliminate hidden state.",
       "why": "Local environments lie; clean runs reveal drift.",
       "how": [
         "Clone to a clean temp directory.",
         "Create a fresh venv and install dependencies.",
-        "Run tests, build, and audit tools." 
+        "Run tests, build, and audit tools."
       ],
       "quick": "Verify in a clean environment before release."
     },
     {
       "id": "claim-labeling",
       "title": "Claim Labeling",
-      "status": "verified",
+      "status": "current",
       "summary": "Every claim is labeled Verified, Building, or Target.",
       "what": "Status tags on every public claim with evidence or intent.",
       "why": "Prevents accidental lies and sets clear expectations.",
       "how": [
         "Verified claims require evidence + method.",
         "Building claims show in-progress proof.",
-        "Target claims are explicit and labeled." 
+        "Target claims are explicit and labeled."
       ],
       "proof": {
         "label": "Evidence Registry",
@@ -67,14 +67,14 @@
     {
       "id": "agent-charters",
       "title": "Agent Charters",
-      "status": "target",
+      "status": "future",
       "summary": "Single-approval autonomy with explicit scope and stop rules.",
       "what": "A charter defines scope, decision policy, and stop conditions.",
       "why": "Enables autonomy without drift or unsafe changes.",
       "how": [
         "Define allowed paths and forbidden areas.",
         "Set autonomous vs approval-only actions.",
-        "Require evidence logging per cycle." 
+        "Require evidence logging per cycle."
       ],
       "quick": "Single-approval autonomy with explicit scope and stops."
     },
@@ -88,21 +88,21 @@
       "how": [
         "Capture pip-audit, pytest, and lint counts.",
         "Compare against the last baseline in CI.",
-        "Update baselines only when metrics improve." 
+        "Update baselines only when metrics improve."
       ],
       "quick": "Capture health baselines and block regressions."
     },
     {
       "id": "public-proof",
       "title": "Public Proof",
-      "status": "target",
+      "status": "future",
       "summary": "Publish aggregated proof without exposing IP.",
       "what": "Aggregate metrics that prove process integrity.",
       "why": "Builds trust without leaking internal details.",
       "how": [
         "Export counts, rates, and outcomes only.",
         "Exclude file paths and roadmap specifics.",
-        "Link proof summaries to the registry." 
+        "Link proof summaries to the registry."
       ],
       "quick": "Publish aggregated proof without exposing IP."
     }

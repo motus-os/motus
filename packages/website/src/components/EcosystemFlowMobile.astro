@@ -1,29 +1,13 @@
 ---
 import Panel from './Panel.astro';
+import { getDisplayBadge } from '../lib/status.js';
 
 const { groups = [], nodes = [], base = '/', proofIndex } = Astro.props;
 
 const nodeIndex = new Map((nodes || []).map((node) => [node.id, node]));
 
-const statusClass = (status) => {
-  switch (status) {
-    case 'current':
-      return 'status-badge status-current';
-    case 'building':
-      return 'status-badge status-building';
-    case 'future':
-      return 'status-badge status-future';
-    case 'external':
-      return 'status-badge status-external';
-    default:
-      return 'status-badge status-current';
-  }
-};
-
-const statusLabel = (status) => {
-  if (!status) return 'Current';
-  return status.charAt(0).toUpperCase() + status.slice(1);
-};
+const statusClass = (node) => getDisplayBadge({ status: node.status, origin: node.origin, kind: 'badge' }).className;
+const statusLabel = (node) => getDisplayBadge({ status: node.status, origin: node.origin, kind: 'badge' }).label;
 
 const toHref = (path) => {
   if (!path) return null;
@@ -58,13 +42,13 @@ const proofHref = (proofId) => {
                     <img src={toHref(node.logo)} alt={`${node.label} logo`} class="h-5 w-5" loading="lazy" />
                   ) : null}
                   <h4 class="text-base font-display text-text-primary">{node.label}</h4>
-                  <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                  <span class={statusClass(node)}>{statusLabel(node)}</span>
                 </div>
                 <p class="text-sm text-text-secondary">{node.summary}</p>
                 {node.flow_note ? (
                   <p class="text-xs text-text-secondary/80">Flow: {node.flow_note}</p>
                 ) : null}
-                {node.type === 'external' && node.improves ? (
+                {node.origin === 'external' && node.improves ? (
                   <div class="space-y-phi-1 text-sm text-text-secondary">
                     <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Motus adds</p>
                     <ul class="space-y-phi-1">

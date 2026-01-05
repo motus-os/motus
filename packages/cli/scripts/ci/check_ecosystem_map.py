@@ -9,7 +9,8 @@ from pathlib import Path
 import yaml
 
 
-ALLOWED_STATUSES = {"current", "building", "future", "external"}
+ALLOWED_STATUSES = {"current", "building", "future"}
+ALLOWED_ORIGINS = {"internal", "external"}
 INTERNAL_STATUSES = {"current", "building", "future"}
 
 
@@ -59,11 +60,15 @@ def _validate_node(
     public_root: Path,
 ) -> bool:
     ok = True
-    for key in ("id", "type", "group", "label", "status", "summary"):
+    for key in ("id", "type", "group", "label", "status", "summary", "origin"):
         ok &= _validate_required(node, key)
 
     if node.get("status") not in ALLOWED_STATUSES:
         _error(f"node '{node.get('id', '?')}' has invalid status: {node.get('status')}")
+        ok = False
+
+    if node.get("origin") not in ALLOWED_ORIGINS:
+        _error(f"node '{node.get('id', '?')}' has invalid origin: {node.get('origin')}")
         ok = False
 
     if node.get("group") not in group_ids:
@@ -73,6 +78,9 @@ def _validate_node(
     node_type = node.get("type")
     if node_type not in {"internal", "external"}:
         _error(f"node '{node.get('id', '?')}' has invalid type: {node_type}")
+        ok = False
+    if node.get("origin") and node_type and node.get("origin") != node_type:
+        _error(f"node '{node.get('id', '?')}' origin/type mismatch: {node.get('origin')} vs {node_type}")
         ok = False
 
     if node_type == "internal":
@@ -107,9 +115,6 @@ def _validate_node(
                     ok = False
 
     if node_type == "external":
-        if node.get("status") != "external":
-            _error(f"external node '{node.get('id', '?')}' must use status 'external'")
-            ok = False
         if not node.get("logo"):
             _error(f"external node '{node.get('id', '?')}' missing logo")
             ok = False

@@ -7,6 +7,7 @@ import SectionHeader from '../components/SectionHeader.astro';
 import registry from '../data/module-registry.json';
 import patternsData from '../data/implementation-patterns.json';
 import { validatePatterns } from '../data/validate-patterns.js';
+import { getStatusClass, getStatusLabel } from '../lib/status.js';
 
 const kernel = registry.kernel;
 const modules = registry.bundled_modules;
@@ -15,12 +16,12 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   : `${import.meta.env.BASE_URL}/`;
 
 const statusClasses = {
-  current: 'status-chip status-current',
-  building: 'status-chip status-building',
-  future: 'status-chip status-future',
+  current: getStatusClass('current'),
+  building: getStatusClass('building'),
+  future: getStatusClass('future'),
 };
 
-const statusLabel = (status) => status.charAt(0).toUpperCase() + status.slice(1);
+const statusLabel = (status) => getStatusLabel(status);
 const moduleCounts = modules.reduce(
   (acc, module) => {
     acc[module.status] = (acc[module.status] || 0) + 1;
@@ -30,15 +31,8 @@ const moduleCounts = modules.reduce(
 );
 const patterns = patternsData.patterns;
 validatePatterns(patterns);
-const patternStatusClass = (status) => {
-  if (status === 'verified') return 'status-badge status-current';
-  return 'status-badge status-building';
-};
-const patternStatusLabel = (status) => {
-  if (status === 'verified') return 'Verified';
-  if (status === 'building') return 'Building';
-  return 'Target';
-};
+const patternStatusClass = (status) => getStatusClass(status, 'badge');
+const patternStatusLabel = (status) => getStatusLabel(status);
 ---
 
 <Layout title="Implementation">

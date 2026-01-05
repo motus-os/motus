@@ -1,4 +1,6 @@
 ---
+import { getDisplayBadge, getStatusLabel } from '../lib/status.js';
+
 const { groups = [], nodes = [], base = '/', proofIndex = null } = Astro.props;
 
 const nodeIndex = new Map(nodes.map((node) => [node.id, node]));
@@ -16,24 +18,16 @@ const nodesByGroup = groups.reduce((acc, group) => {
 const normalizedBase = base.endsWith('/') ? base : `${base}/`;
 const withBase = (path) => (path ? `${normalizedBase}${path.replace(/^\/+/, '')}` : null);
 const proofHref = (proof) => (proof ? `${normalizedBase}docs/evidence#claim-${proof.id}` : null);
-const statusLabel = (status) => (status === 'external'
-  ? 'External'
-  : status.charAt(0).toUpperCase() + status.slice(1));
-const proofStatusLabel = (status) => (status ? status.charAt(0).toUpperCase() + status.slice(1) : '');
-const statusClass = (status) => {
-  switch (status) {
-    case 'current':
-      return 'status-chip status-current';
-    case 'building':
-      return 'status-chip status-building';
-    case 'future':
-      return 'status-chip status-future';
-    default:
-      return 'status-chip status-external';
+
+const statusLabel = (status) => getStatusLabel(status);
+const proofStatusLabel = (status) => (status ? getStatusLabel(status) : '');
+const statusClass = (node) => getDisplayBadge({ status: node.status, origin: node.origin }).className;
+const statusText = (node) => getDisplayBadge({ status: node.status, origin: node.origin }).label;
+const statusAccent = (node) => {
+  if (node.origin === 'external') {
+    return 'border-l-4 border-line/40';
   }
-};
-const statusAccent = (status) => {
-  switch (status) {
+  switch (node.status) {
     case 'current':
       return 'border-l-4 border-text-secondary/70';
     case 'building':
@@ -117,7 +111,7 @@ const normalizeHref = (href) => {
                     const docsHref = normalizeHref(node.docs_url);
                     const showSite = siteHref && siteHref !== docsHref;
                     return (
-                    <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                    <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)}`.trim()}>
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
                           {node.logo ? (
@@ -132,7 +126,7 @@ const normalizeHref = (href) => {
                           )}
                           <span class="text-sm text-text-primary font-medium">{node.label}</span>
                         </div>
-                        <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                        <span class={statusClass(node)}>{statusText(node)}</span>
                       </div>
                       <p class="text-sm text-text-secondary">
                         {node.flow_note || node.summary}
@@ -195,7 +189,7 @@ const normalizeHref = (href) => {
               const docsHref = normalizeHref(node.docs_url);
               const showSite = siteHref && siteHref !== docsHref;
               return (
-              <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+              <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)}`.trim()}>
                 <div class="flex items-center justify-between gap-phi-2">
                   <div class="flex items-center gap-phi-2">
                     {node.logo ? (
@@ -210,7 +204,7 @@ const normalizeHref = (href) => {
                     )}
                     <span class="text-sm text-text-primary font-medium">{node.label}</span>
                   </div>
-                  <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                  <span class={statusClass(node)}>{statusText(node)}</span>
                 </div>
                 <p class="text-sm text-text-secondary">
                   {node.flow_note || node.summary}
@@ -321,7 +315,7 @@ const normalizeHref = (href) => {
                           const docsHref = normalizeHref(node.docs_url);
                           const showSite = siteHref && siteHref !== docsHref;
                           return (
-                          <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                          <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node)}`.trim()}>
                             <div class="flex items-center justify-between gap-phi-2">
                               <div class="flex items-center gap-phi-2">
                                 {node.logo ? (
@@ -336,7 +330,7 @@ const normalizeHref = (href) => {
                                 )}
                                 <span class="text-sm text-text-primary font-medium">{node.label}</span>
                               </div>
-                              <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                              <span class={statusClass(node)}>{statusText(node)}</span>
                             </div>
                             <p class="text-sm text-text-secondary">
                               {node.flow_note || node.summary}
@@ -399,7 +393,7 @@ const normalizeHref = (href) => {
                     const docsHref = normalizeHref(node.docs_url);
                     const showSite = siteHref && siteHref !== docsHref;
                     return (
-                    <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node.status)}`.trim()}>
+                    <div class={`rounded-xl border border-line/20 bg-surface px-phi-2 py-phi-1 space-y-phi-1 ${statusAccent(node)}`.trim()}>
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
                           {node.logo ? (
@@ -414,7 +408,7 @@ const normalizeHref = (href) => {
                           )}
                           <span class="text-sm text-text-primary font-medium">{node.label}</span>
                         </div>
-                        <span class={statusClass(node.status)}>{statusLabel(node.status)}</span>
+                        <span class={statusClass(node)}>{statusText(node)}</span>
                       </div>
                       <p class="text-sm text-text-secondary">
                         {node.flow_note || node.summary}

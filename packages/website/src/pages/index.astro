@@ -13,64 +13,33 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   : `${import.meta.env.BASE_URL}/`;
 
 const hero = messaging.hero || {};
-const heroHeadline = hero.headline || '';
-const heroMatch = heroHeadline.match(/^(.*?)(\d+%?)(.*)$/);
-const heroPrefix = heroMatch ? heroMatch[1].trim() : '';
-const heroValue = heroMatch ? heroMatch[2] : '';
-const heroSuffix = heroMatch ? heroMatch[3].trim() : '';
-const heroProofUrl = hero.proof_url || '';
-const heroProofHref = heroProofUrl
-  ? (heroProofUrl.startsWith('http') ? heroProofUrl : `${base}${heroProofUrl.replace(/^\/+/, '')}`)
-  : '';
-const heroCtaText = hero.cta_text || 'Get Started';
+const heroHeadline = hero.headline || 'Agents do the work.';
+const heroSubheadline = hero.subheadline || 'Motus keeps the receipts.';
+const heroValueProp = hero.value_prop || 'One API. Verification infrastructure for AI that acts.';
+const heroActionLine = hero.action_line || 'Claim work. Attach proof. Ship a receipt.';
+const heroCtaText = hero.cta_text || 'Run a verified loop';
 const heroCtaPath = hero.cta_url ? hero.cta_url.replace(/^\/+/, '') : 'get-started';
 const heroCtaHref = `${base}${heroCtaPath}`;
-const tagline = messaging.tagline || '';
-const taglineParts = tagline.split('.').map((part) => part.trim()).filter(Boolean);
-const fixHeadline = taglineParts.slice(0, 2).join('. ');
-const fixSubline = taglineParts.slice(2).join('. ');
 ---
 
-<Layout title="Motus - Verifiable AI agent coordination">
+<Layout title="Motus - Verification infrastructure for AI agents">
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-4xl">
-    <div class="mb-phi-5 space-y-phi-2">
-      {heroValue ? (
-        <>
-          <p class="text-xs uppercase tracking-[0.35em] text-text-secondary">
-            {heroPrefix || heroHeadline}
-          </p>
-          <span class="text-6xl md:text-[7.5rem] font-display font-semibold text-mint">{heroValue}</span>
-          <p class="text-lg md:text-xl text-text-secondary">
-            {heroSuffix ? `${heroSuffix} ` : ''}{hero.subheadline}
-            {heroProofHref ? (
-              <a
-                href={heroProofHref}
-                class="text-text-secondary/60 hover:text-mint transition-colors align-super text-sm ml-1"
-                title="Proof"
-              >
-                *
-              </a>
-            ) : null}
-          </p>
-        </>
-      ) : (
-        <>
-          <h1 class="text-4xl md:text-6xl font-display text-text-primary">
-            {heroHeadline}
-          </h1>
-          <p class="text-lg md:text-xl text-text-secondary">{hero.subheadline}</p>
-        </>
-      )}
+    <div class="mb-phi-5 space-y-phi-3">
+      <h1 class="text-4xl md:text-6xl font-display text-text-primary">
+        {heroHeadline}
+      </h1>
+      <p class="text-3xl md:text-5xl font-display text-mint">
+        {heroSubheadline}
+      </p>
     </div>
 
     <div class="w-32 h-px bg-mint/70 mx-auto mb-phi-5"></div>
 
-    <p class="text-sm uppercase tracking-[0.35em] text-text-secondary mb-phi-2">The fix</p>
-    <h1 class="text-4xl md:text-6xl font-display text-text-primary mb-phi-2">
-      {fixHeadline ? `${fixHeadline}.` : "Claim work. Prove it's done."}
-    </h1>
-    <p class="text-lg md:text-2xl text-text-secondary mb-phi-5">
-      {fixSubline ? `${fixSubline}.` : messaging.solution_statement?.short}
+    <p class="text-lg md:text-xl text-text-secondary mb-phi-2">
+      {heroValueProp}
+    </p>
+    <p class="text-base md:text-lg text-text-secondary/80 mb-phi-5">
+      {heroActionLine}
     </p>
 
     <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">

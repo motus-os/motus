@@ -1,0 +1,140 @@
+# status-system.yaml
+# CANONICAL SOURCE - All status terminology derives from this file
+# Edit this file, run generator, everything stays in sync
+
+version: "1.0"
+last_updated: "2026-01-04"
+
+# ============================================
+# THE THREE STATUSES (and only three)
+# ============================================
+
+statuses:
+  current:
+    id: "current"
+    label: "Current"
+    description: "Shipped, documented, proven. Has evidence."
+    css_class: "status-current"
+    color_token: "mint"
+    badge_style: "solid"
+
+  building:
+    id: "building"
+    label: "Building"
+    description: "In active development. Roadmap item exists."
+    css_class: "status-building"
+    color_token: "mint"
+    badge_style: "outline"
+
+  future:
+    id: "future"
+    label: "Future"
+    description: "Planned but not started. Concept only."
+    css_class: "status-future"
+    color_token: "future"
+    badge_style: "outline"
+
+# ============================================
+# MIGRATION MAP (old terms -> canonical)
+# ============================================
+
+migrations:
+  # Proof system terms -> unified
+  verified: "current"
+  target: "future"
+
+  # Already canonical (no-op)
+  current: "current"
+  building: "building"
+  future: "future"
+
+  # Common typos/alternatives
+  done: "current"
+  shipped: "current"
+  planned: "future"
+  todo: "future"
+
+# ============================================
+# DOMAIN CONSTRAINTS (what statuses each domain allows)
+# ============================================
+
+constraints:
+  modules:
+    allowed: [current, building, future]
+    reason: "Modules have full lifecycle"
+
+  patterns:
+    allowed: [current, building, future]
+    reason: "Patterns have full lifecycle"
+
+  strategies:
+    allowed: [current, building, future]
+    reason: "Strategies have full lifecycle"
+
+  claims:
+    allowed: [current, future]
+    reason: "Claims are proven (current) or not yet proven (future). No 'building' - claims are binary."
+
+  ecosystem:
+    allowed: [current, building, future]
+    reason: "Ecosystem nodes have full lifecycle. Use separate 'origin' field for internal/external."
+
+# ============================================
+# ORIGIN (separate from status)
+# ============================================
+
+origins:
+  internal:
+    id: "internal"
+    label: "Motus"
+    description: "Built as part of Motus"
+
+  external:
+    id: "external"
+    label: "External"
+    description: "Third-party tool or integration"
+
+# ============================================
+# FORBIDDEN TERMS (CI blocks these)
+# ============================================
+
+forbidden_labels:
+  - "Verified"     # Use "Current"
+  - "Target"       # Use "Future"
+  - "Planned"      # Use "Future"
+  - "Shipped"      # Use "Current"
+  - "Done"         # Use "Current"
+  - "Todo"         # Use "Future"
+  - "TODO"         # Use "Future"
+
+forbidden_values:
+  - "verified"     # Use "current"
+  - "target"       # Use "future"
+  - "planned"      # Use "future"
+  - "shipped"      # Use "current"
+  - "done"         # Use "current"
+  - "todo"         # Use "future"
+
+# ============================================
+# DISPLAY RULES
+# ============================================
+
+display:
+  # Badge format: "[LABEL]" or "[LABEL] [COUNT]"
+  show_count: true
+  uppercase_label: true
+
+  # Colors (reference tokens in Layout.astro)
+  colors:
+    current:
+      bg: "oklch(var(--surface) / 0.7)"
+      text: "oklch(var(--text-secondary))"
+      border: "oklch(var(--line) / 0.3)"
+    building:
+      bg: "oklch(var(--mint) / 0.12)"
+      text: "oklch(var(--mint))"
+      border: "oklch(var(--mint) / 0.5)"
+    future:
+      bg: "oklch(var(--future) / 0.12)"
+      text: "oklch(var(--future))"
+      border: "oklch(var(--future) / 0.5)"

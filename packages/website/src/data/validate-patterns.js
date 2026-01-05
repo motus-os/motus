@@ -1,5 +1,9 @@
+import statusSystem from './status-system.json';
+
 export const validatePatterns = (patterns) => {
-  const allowedStatuses = new Set(['verified', 'building', 'target']);
+  const allowedStatuses = new Set(
+    statusSystem?.constraints?.patterns?.allowed || ['current', 'building', 'future'],
+  );
 
   for (const pattern of patterns) {
     if (!pattern.id) {

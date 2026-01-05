@@ -4,6 +4,7 @@ import Section from '../../components/Section.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import Panel from '../../components/Panel.astro';
 import proofLedger from '../../data/proof-ledger.json';
+import { getStatusClass, getStatusLabel } from '../../lib/status.js';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -18,8 +19,8 @@ for (const claim of proofLedger.claims) {
   seen.add(claim.id);
 }
 
-const statusLabel = (status) => (status === 'verified' ? 'Verified' : 'Target');
-const statusClass = (status) => (status === 'verified' ? 'status-badge status-current' : 'status-badge status-building');
+const statusLabel = (status) => getStatusLabel(status);
+const statusClass = (status) => getStatusClass(status, 'badge');
 ---
 
 <Layout title="Evidence Registry">
@@ -55,7 +56,7 @@ const statusClass = (status) => (status === 'verified' ? 'status-badge status-cu
   <Section tone="light">
     <SectionHeader
       eyebrow="Claims"
-      subtitle="Lead with the result, then the proof. Target claims show what is being built."
+      subtitle="Lead with the result, then the proof. Future claims show what is being built."
       align="left"
       size="md"
       class="mb-phi-4"
@@ -69,7 +70,7 @@ const statusClass = (status) => (status === 'verified' ? 'status-badge status-cu
               <span class={statusClass(claim.status)}>{statusLabel(claim.status)}</span>
               {claim.verified_on ? (
                 <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">
-                  Verified {claim.verified_on}
+                  Recorded {claim.verified_on}
                 </span>
               ) : null}
             </div>

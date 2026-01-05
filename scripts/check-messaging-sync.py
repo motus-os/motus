@@ -12,13 +12,18 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MESSAGING_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "messaging.yaml"
 MESSAGING_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "messaging.json"
+STATUS_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "status-system.yaml"
+STATUS_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "status-system.json"
 ROOT_README = REPO_ROOT / "README.md"
 CLI_README = REPO_ROOT / "packages" / "cli" / "README.md"
 DOCS_TESTS = REPO_ROOT / "docs" / "quality" / "messaging-tests.md"
+PROOF_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "proof-ledger.yaml"
+PATTERNS_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "implementation-patterns.json"
+STRATEGIES_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "strategies.json"
 
 GENERATED_MARKER = "<!-- GENERATED FILE - DO NOT EDIT DIRECTLY -->"
 ALLOWED_DEMO_STATUS = {"real", "placeholder", "none"}
-ALLOWED_CLAIM_STATUS = {"verified", "target"}
+ALLOWED_CLAIM_STATUS = {"current", "future"}
 
 
 def _load_yaml(path: Path) -> dict:
@@ -39,6 +44,18 @@ def _check_json_sync() -> tuple[bool, str]:
     if yaml_data != json_data:
         return False, "messaging.json does not match messaging.yaml"
     return True, "JSON matches YAML"
+
+
+def _check_status_system_sync() -> tuple[bool, str]:
+    if not STATUS_YAML.exists():
+        return False, f"Missing status-system.yaml at {STATUS_YAML}"
+    if not STATUS_JSON.exists():
+        return False, f"Missing status-system.json at {STATUS_JSON}"
+    yaml_data = _load_yaml(STATUS_YAML)
+    json_data = _load_json(STATUS_JSON)
+    if yaml_data != json_data:
+        return False, "status-system.json does not match status-system.yaml"
+    return True, "Status system JSON matches YAML"
 
 
 def _check_generated_markers() -> tuple[bool, str]:
@@ -76,6 +93,60 @@ def _check_forbidden_phrases() -> tuple[bool, str]:
         if phrase.lower() in content:
             return False, f"Forbidden phrase '{phrase}' found in {MESSAGING_JSON}"
     return True, "No forbidden phrases"
+
+
+def _allowed_statuses(domain: str, status_system: dict) -> set[str]:
+    constraints = status_system.get("constraints", {})
+    domain_cfg = constraints.get(domain, {})
+    return set(domain_cfg.get("allowed", []))
+
+
+def _check_status_terms() -> tuple[bool, str]:
+    status_system = _load_yaml(STATUS_YAML)
+    forbidden = set(status_system.get("forbidden_values", []))
+
+    allowed_claims = _allowed_statuses("claims", status_system)
+    allowed_patterns = _allowed_statuses("patterns", status_system)
+    allowed_strategies = _allowed_statuses("strategies", status_system)
+
+    messaging = _load_yaml(MESSAGING_YAML)
+    claim_status = messaging.get("hero", {}).get("claim_status")
+    if claim_status in forbidden:
+        return False, f"messaging.yaml uses forbidden claim_status '{claim_status}'"
+    if claim_status not in allowed_claims:
+        return False, "messaging.yaml claim_status not allowed by status-system"
+
+    pain_status = messaging.get("pain_statement", {}).get("claim_status")
+    if pain_status in forbidden:
+        return False, f"messaging.yaml uses forbidden claim_status '{pain_status}'"
+    if pain_status not in allowed_claims:
+        return False, "messaging.yaml pain_statement claim_status not allowed by status-system"
+
+    proof_ledger = _load_yaml(PROOF_YAML)
+    for claim in proof_ledger.get("claims", []):
+        status = claim.get("status")
+        if status in forbidden:
+            return False, f"proof-ledger.yaml uses forbidden status '{status}'"
+        if status not in allowed_claims:
+            return False, f"proof-ledger.yaml status '{status}' not allowed by status-system"
+
+    patterns = _load_json(PATTERNS_JSON).get("patterns", [])
+    for pattern in patterns:
+        status = pattern.get("status")
+        if status in forbidden:
+            return False, f"implementation-patterns.json uses forbidden status '{status}'"
+        if status not in allowed_patterns:
+            return False, f"implementation-patterns.json status '{status}' not allowed"
+
+    strategies = _load_json(STRATEGIES_JSON).get("strategies", [])
+    for strategy in strategies:
+        status = strategy.get("status")
+        if status in forbidden:
+            return False, f"strategies.json uses forbidden status '{status}'"
+        if status not in allowed_strategies:
+            return False, f"strategies.json status '{status}' not allowed"
+
+    return True, "Status terms aligned with status-system"
 
 
 def _require_claim(block: dict, label: str) -> tuple[bool, str]:
@@ -152,10 +223,12 @@ def _check_tests_recorded() -> tuple[bool, str]:
 def main() -> int:
     checks = [
         ("JSON sync", _check_json_sync),
+        ("Status system sync", _check_status_system_sync),
         ("Generated markers", _check_generated_markers),
         ("README content", _check_readme_content),
         ("Forbidden phrases", _check_forbidden_phrases),
         ("Numeric claims", _check_numeric_claims),
+        ("Status terms", _check_status_terms),
         ("Demo status", _check_demo_status),
         ("Import scope", _check_import_scope),
         ("Readiness tests", _check_tests_recorded),
