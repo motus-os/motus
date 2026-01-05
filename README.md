@@ -16,31 +16,20 @@
 
 ![Motus claim-evidence-release loop](docs/assets/demo.gif)
 
-## Install
 
-```bash
-pip install motusos
-```
-Expected: CLI installs successfully
 
 ## Quickstart
 
 ```bash
-pip install motusos
-motus init --lite --path . && motus doctor
-motus work claim ADHOC-TASK-001 --intent "My first task"
+motus work claim TASK-001 --intent "My first task"
 motus work evidence $LEASE test --passed 1
 motus work release $LEASE success
-motus work status $LEASE
 ```
 
 Expected:
-- CLI installs successfully
-- Health checks pass
-- Lease ID returned (e.g., lease_abc123)
-- Evidence recorded
-- Receipt shows outcome + evidence
-- Full receipt displayed
+- You own this work.
+- Proof attached.
+- Receipt shipped.
 
 ## Benefits
 

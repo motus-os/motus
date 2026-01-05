@@ -51,13 +51,13 @@ const heroCtaHref = `${base}${heroCtaPath}`;
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/30">
-    <p class="text-sm text-text-secondary max-w-2xl mx-auto mb-phi-3 text-center">
-      Start with a single verified loop. If it works locally, it works everywhere.
+    <p class="text-sm text-text-secondary max-w-2xl mx-auto mb-phi-2 text-center">
+      What happened, why it worked, proof it’s done.
     </p>
     <SectionHeader
       eyebrow="Demo"
-      title="Run a verified loop locally"
-      subtitle="Get a receipt with evidence and decision in minutes. No cloud required."
+      title="See it work"
+      subtitle="Claim. Prove. Release. Get a receipt in minutes. No cloud required."
       size="md"
       align="left"
       maxWidth="max-w-3xl"
@@ -67,27 +67,45 @@ const heroCtaHref = `${base}${heroCtaPath}`;
       <DemoLoop />
       <div class="grid md:grid-cols-3 lg:grid-cols-1 gap-phi-3">
         <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 01</p>
-          <p class="text-sm text-text-secondary">Claim a lease for the task.</p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Claim</p>
+          <p class="text-sm text-text-secondary">Take ownership of the task.</p>
           <code class="text-mint font-mono text-sm block">motus work claim &lt;roadmap_id&gt; --intent &quot;Describe the task&quot;</code>
-          <p class="text-xs text-text-secondary">Expected: lease_id returned.</p>
+          <p class="text-xs text-text-secondary">You now own this work.</p>
         </Panel>
         <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 02</p>
-          <p class="text-sm text-text-secondary">Attach evidence + decision.</p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Prove</p>
+          <p class="text-sm text-text-secondary">Attach evidence and a decision.</p>
           <code class="text-mint font-mono text-sm block">motus work evidence &lt;lease_id&gt; test_result --passed 12 --failed 0</code>
           <code class="text-mint font-mono text-sm block">motus work decision &lt;lease_id&gt; &quot;Decision summary&quot;</code>
-          <p class="text-xs text-text-secondary">Expected: proof and rationale recorded.</p>
+          <p class="text-xs text-text-secondary">Evidence attached.</p>
         </Panel>
         <Panel size="sm" class="space-y-phi-2">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 03</p>
-          <p class="text-sm text-text-secondary">Release + verify status.</p>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Release</p>
+          <p class="text-sm text-text-secondary">Ship the receipt.</p>
           <code class="text-mint font-mono text-sm block">motus work release &lt;lease_id&gt; success</code>
           <code class="text-mint font-mono text-sm block">motus work status &lt;lease_id&gt;</code>
-          <p class="text-xs text-text-secondary">Expected: receipt shows outcome + evidence.</p>
+          <p class="text-xs text-text-secondary">Receipt shipped.</p>
         </Panel>
       </div>
     </div>
+    <p class="mt-phi-2 text-sm text-text-secondary">
+      That’s the loop. Every action verified.
+    </p>
+    {messaging.demo?.status === 'real' && (
+      <div class="mt-phi-3">
+        <img
+          src={`${base}demo.gif`}
+          alt={messaging.demo.alt || 'Motus demo'}
+          class="rounded-xl border border-line/30 mx-auto max-w-2xl"
+          loading="lazy"
+        />
+        {messaging.demo.caption && (
+          <p class="text-sm text-text-secondary text-center mt-phi-2">
+            {messaging.demo.caption}
+          </p>
+        )}
+      </div>
+    )}
     <div class="mt-phi-3 flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
       <span>Need the full walkthrough?</span>
       <a href={`${base}get-started`} class="text-mint hover:text-text-primary transition-colors">

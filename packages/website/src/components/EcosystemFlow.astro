@@ -49,6 +49,39 @@ const statusAccent = (node) => {
   }
 };
 
+const groupStatus = (groupId) => {
+  if (groupId === 'inputs') return 'external';
+  if (groupId === 'modules') return 'building';
+  if (groupId === 'future') return 'future';
+  return 'current';
+};
+
+const groupStatusLabel = (status) => {
+  switch (status) {
+    case 'building':
+      return 'Building';
+    case 'future':
+      return 'Future';
+    case 'external':
+      return 'External';
+    default:
+      return 'Current';
+  }
+};
+
+const groupStatusClass = (status) => {
+  switch (status) {
+    case 'building':
+      return 'border-mint/60 border-dashed opacity-85';
+    case 'future':
+      return 'border-future/60 border-dotted opacity-60';
+    case 'external':
+      return 'border-line/60';
+    default:
+      return 'border-mint/60';
+  }
+};
+
 const moduleNodes = nodesByGroup.modules || [];
 const clusterOrder = [
   'Standards + Contracts',
@@ -95,97 +128,75 @@ const countStatuses = (groupNodes) => {
   return counts;
 };
 
+const railGroupIds = ['inputs', 'core', 'governance', 'future'];
+const railGroups = railGroupIds
+  .map((id) => orderedGroups.find((group) => group.id === id))
+  .filter(Boolean);
+const modulesGroup = orderedGroups.find((group) => group.id === 'modules');
+
 ---
 
-<div class="space-y-phi-3">
+<div class="space-y-phi-3" data-eco-root data-eco-filter="current">
   <div class="rounded-3xl border border-line/30 bg-surface-muted p-phi-2">
-    <div class="flex flex-wrap items-stretch gap-phi-1">
-      {orderedGroups.filter((group) => group.id !== 'modules').map((group, index, array) => {
-        const groupNodes = nodesByGroup[group.id] || [];
-        const counts = countStatuses(groupNodes);
-        const flow = flowLabels(group);
-        const isExternalOnly = groupNodes.length > 0 && groupNodes.every((node) => node.origin === 'external');
-        return (
-          <div class="flex items-stretch gap-phi-1">
-            <div class="flex-1 min-w-[10rem] rounded-2xl border border-line/30 bg-surface px-phi-2 py-phi-2 space-y-phi-1">
-              <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{group.label}</p>
-              <h3 class="text-base font-display text-text-primary">{group.headline}</h3>
-              <p class="text-sm text-text-secondary">{group.description}</p>
-              {flow.length ? (
-                <p class="text-xs uppercase tracking-[0.25em] text-text-secondary/70">
-                  Flow → {flow.join(' · ')}
-                </p>
-              ) : null}
-              <div class="flex flex-wrap gap-phi-1 text-xs">
-                {isExternalOnly ? (
-                  <span class="status-chip status-external">{counts.external} External</span>
-                ) : (
-                  <>
-                    {counts.current > 0 ? (
-                      <span class="status-chip status-current">{counts.current} Current</span>
-                    ) : null}
-                    {counts.building > 0 ? (
-                      <span class="status-chip status-building">{counts.building} Building</span>
-                    ) : null}
-                    {counts.future > 0 ? (
-                      <span class="status-chip status-future">{counts.future} Future</span>
-                    ) : null}
-                  </>
-                )}
-              </div>
-            </div>
-            {index < array.length - 1 ? (
-              <div class="flex items-center px-phi-1 text-text-secondary/60 text-lg">&#8594;</div>
-            ) : null}
-          </div>
-        );
-      })}
-    </div>
-
-    {nodesByGroup.modules?.length ? (
-      <div class="mt-phi-2 flex flex-col items-center gap-phi-1">
-        <span class="text-text-secondary/60 text-lg">&#8595;</span>
-        <div class="max-w-2xl w-full">
-          {(() => {
-            const group = orderedGroups.find((entry) => entry.id === 'modules');
-            if (!group) return null;
-            const groupNodes = nodesByGroup.modules || [];
-            const counts = countStatuses(groupNodes);
-            const flow = flowLabels(group);
-            return (
-              <div class="rounded-2xl border border-line/30 bg-surface px-phi-2 py-phi-2 space-y-phi-1">
+    <div class="space-y-phi-2">
+      <div class="flex flex-wrap items-center justify-center gap-phi-2">
+        {railGroups.map((group, index) => {
+          const status = groupStatus(group.id);
+          return (
+            <div class="flex items-center gap-phi-2">
+              <div class={`rounded-2xl border px-phi-2 py-phi-2 text-center space-y-phi-1 bg-surface ${groupStatusClass(status)}`.trim()}>
                 <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{group.label}</p>
                 <h3 class="text-base font-display text-text-primary">{group.headline}</h3>
-                <p class="text-sm text-text-secondary">{group.description}</p>
-                {flow.length ? (
-                  <p class="text-xs uppercase tracking-[0.25em] text-text-secondary/70">
-                    Flow → {flow.join(' · ')}
-                  </p>
-                ) : null}
-                <div class="flex flex-wrap gap-phi-1 text-xs">
-                  {counts.current > 0 ? (
-                    <span class="status-chip status-current">{counts.current} Current</span>
-                  ) : null}
-                  {counts.building > 0 ? (
-                    <span class="status-chip status-building">{counts.building} Building</span>
-                  ) : null}
-                  {counts.future > 0 ? (
-                    <span class="status-chip status-future">{counts.future} Future</span>
-                  ) : null}
-                </div>
+                <p class="text-xs text-text-secondary">{group.description}</p>
+                <span class={`status-chip status-${status}`}>{groupStatusLabel(status)}</span>
               </div>
-            );
-          })()}
+              {index < railGroups.length - 1 ? (
+                <span class="text-text-secondary/60 text-lg">&#8594;</span>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+
+      {modulesGroup ? (
+        <div class="flex flex-col items-center gap-phi-1">
+          <span class="text-text-secondary/60 text-lg">&#8595;</span>
+          <div class={`rounded-2xl border px-phi-2 py-phi-2 text-center space-y-phi-1 bg-surface ${groupStatusClass(groupStatus('modules'))}`.trim()}>
+            <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{modulesGroup.label}</p>
+            <h3 class="text-base font-display text-text-primary">{modulesGroup.headline}</h3>
+            <p class="text-xs text-text-secondary">{modulesGroup.description}</p>
+            <span class={`status-chip status-${groupStatus('modules')}`}>{groupStatusLabel(groupStatus('modules'))}</span>
+          </div>
+        </div>
+      ) : null}
+
+      <div class="flex flex-wrap items-center justify-between gap-phi-2 text-xs text-text-secondary/70">
+        <div class="flex flex-wrap items-center gap-phi-1">
+          <button
+            type="button"
+            data-eco-toggle="current"
+            class="px-2 py-1 rounded-full border border-line/40 text-text-primary hover:text-mint transition-colors"
+            aria-pressed="true"
+          >
+            Current only
+          </button>
+          <button
+            type="button"
+            data-eco-toggle="all"
+            class="px-2 py-1 rounded-full border border-line/40 text-text-secondary hover:text-mint transition-colors"
+            aria-pressed="false"
+          >
+            All layers
+          </button>
+        </div>
+        <div class="flex flex-wrap items-center gap-phi-2">
+          <span class="hidden md:inline">Solid = current · Dashed = building · Dotted = future</span>
         </div>
       </div>
-    ) : null}
-
-    <div class="mt-phi-2 text-xs uppercase tracking-[0.25em] text-text-secondary/70">
-      Flow summary: Inputs &#8594; Core &#8594; Proof &#8594; Future (modules branch from Core).
     </div>
   </div>
 
-  <div class="space-y-phi-2">
+  <div class="space-y-phi-2" data-eco-detail>
     {orderedGroups.map((group) => {
       const groupNodes = nodesByGroup[group.id] || [];
       const counts = countStatuses(groupNodes);
@@ -242,7 +253,10 @@ const countStatuses = (groupNodes) => {
                         const showSite = siteHref && siteHref !== docsHref;
                         const improves = node.improves?.slice(0, 3) || [];
                         return (
-                          <div class={`rounded-xl border border-line/30 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)} ${statusOpacity(node)}`.trim()}>
+                          <div
+                            data-node-status={node.status}
+                            class={`rounded-xl border border-line/30 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)} ${statusOpacity(node)}`.trim()}
+                          >
                             <div class="flex items-center justify-between gap-phi-2">
                               <div class="flex items-center gap-phi-2">
                                 {node.logo ? (
@@ -325,7 +339,10 @@ const countStatuses = (groupNodes) => {
                   const showSite = siteHref && siteHref !== docsHref;
                   const improves = node.improves?.slice(0, 3) || [];
                   return (
-                    <div class={`rounded-xl border border-line/30 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)} ${statusOpacity(node)}`.trim()}>
+                    <div
+                      data-node-status={node.status}
+                      class={`rounded-xl border border-line/30 bg-surface px-phi-2 py-phi-2 space-y-phi-1 ${statusAccent(node)} ${statusOpacity(node)}`.trim()}
+                    >
                       <div class="flex items-center justify-between gap-phi-2">
                         <div class="flex items-center gap-phi-2">
                           {node.logo ? (
@@ -404,3 +421,35 @@ const countStatuses = (groupNodes) => {
     })}
   </div>
 </div>
+
+<style>
+  [data-eco-root][data-eco-filter='current'] [data-node-status='building'],
+  [data-eco-root][data-eco-filter='current'] [data-node-status='future'] {
+    display: none;
+  }
+
+  [data-eco-toggle][aria-pressed='true'] {
+    border-color: oklch(var(--mint) / 0.6);
+    color: oklch(var(--text-primary));
+  }
+</style>
+
+<script>
+  const ecosystemRoot = document.querySelector('[data-eco-root]');
+  if (ecosystemRoot) {
+    const toggles = ecosystemRoot.querySelectorAll('[data-eco-toggle]');
+    toggles.forEach((toggle) => {
+      toggle.addEventListener('click', () => {
+        const filter = toggle.getAttribute('data-eco-toggle');
+        if (!filter) return;
+        ecosystemRoot.setAttribute('data-eco-filter', filter);
+        toggles.forEach((btn) => {
+          const active = btn === toggle;
+          btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+          btn.classList.toggle('text-text-primary', active);
+          btn.classList.toggle('text-text-secondary', !active);
+        });
+      });
+    });
+  }
+</script>

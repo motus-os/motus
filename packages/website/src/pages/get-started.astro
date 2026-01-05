@@ -165,7 +165,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
               <!-- Feature Steps -->
               <div class="space-y-phi-2">
                 {feature.steps.map((step: any) => (
-                  <div class="rounded-lg border border-line/20 bg-surface-muted p-phi-2 space-y-phi-1">
+                  <div class="rounded-lg border border-line/30 bg-surface-muted p-phi-2 space-y-phi-1">
                     <div class="flex items-center justify-between">
                       <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">{step.title}</p>
                       {step.gif && (
@@ -173,7 +173,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
                           src={getGifPath(step.gif_name)}
                           alt={`${step.title} demo`}
                           loading="lazy"
-                          class="h-10 w-auto rounded border border-line/20"
+                          class="h-10 w-auto rounded border border-line/30"
                         />
                       )}
                     </div>
@@ -236,7 +236,7 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
                 src={getGifPath(step.gif_name)}
                 alt={`${step.title} demo`}
                 loading="lazy"
-                class="h-10 w-auto rounded border border-line/20"
+                class="h-10 w-auto rounded border border-line/30"
               />
             )}
           </div>

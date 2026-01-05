@@ -17,7 +17,7 @@ hero:
   value_prop: "One API. Verification infrastructure for AI that acts."
   # The action
   action_line: "Claim work. Attach proof. Ship a receipt."
-  cta_text: "Run a verified loop"
+  cta_text: "Get your first receipt"
   cta_url: "/get-started/"
   # No claim_status/proof_id - this is positioning, not a provable claim
 
@@ -56,37 +56,23 @@ benefits:
 # ============================================
 
 quickstart:
-  title: "First success in 5 minutes"
+  title: "Claim. Prove. Release."
+  subtitle: "Three commands. One receipt."
   steps:
-    - id: install
-      title: "Install"
-      command: "pip install motusos"
-      expected: "CLI installs successfully"
-
-    - id: init
-      title: "Initialize"
-      command: "motus init --lite --path . && motus doctor"
-      expected: "Health checks pass"
-
     - id: claim
-      title: "Claim work"
-      command: "motus work claim ADHOC-TASK-001 --intent \"My first task\""
-      expected: "Lease ID returned (e.g., lease_abc123)"
+      title: "Claim"
+      command: "motus work claim TASK-001 --intent \"My first task\""
+      expected: "You own this work."
 
-    - id: evidence
-      title: "Attach evidence"
+    - id: prove
+      title: "Prove"
       command: "motus work evidence $LEASE test --passed 1"
-      expected: "Evidence recorded"
+      expected: "Proof attached."
 
     - id: release
-      title: "Release with receipt"
+      title: "Release"
       command: "motus work release $LEASE success"
-      expected: "Receipt shows outcome + evidence"
-
-    - id: verify
-      title: "Verify"
-      command: "motus work status $LEASE"
-      expected: "Full receipt displayed"
+      expected: "Receipt shipped."
 
 # ============================================
 # DEMO ASSET (OPTIONAL)

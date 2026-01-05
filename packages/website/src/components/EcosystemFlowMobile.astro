@@ -43,12 +43,30 @@ const flowLabels = (group) =>
     .filter(Boolean);
 ---
 
-<div class="space-y-phi-2">
+<div class="space-y-phi-2" data-eco-root data-eco-filter="current">
   <Panel size="sm" class="space-y-phi-1">
     <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Flow</p>
     <p class="text-sm text-text-secondary">
       Inputs &#8594; Core &#8594; Proof &#8594; Future. Modules branch from Core.
     </p>
+    <div class="flex flex-wrap items-center gap-phi-1 text-xs text-text-secondary/70">
+      <button
+        type="button"
+        data-eco-toggle="current"
+        class="px-2 py-1 rounded-full border border-line/40 text-text-primary"
+        aria-pressed="true"
+      >
+        Current only
+      </button>
+      <button
+        type="button"
+        data-eco-toggle="all"
+        class="px-2 py-1 rounded-full border border-line/40 text-text-secondary"
+        aria-pressed="false"
+      >
+        All layers
+      </button>
+    </div>
   </Panel>
 
   {orderedGroups.map((group) => {
@@ -96,7 +114,7 @@ const flowLabels = (group) =>
               const docsHref = normalizeHref(node.docs_url);
               const showSite = siteHref && siteHref !== docsHref;
               return (
-                <Panel size="sm" class="space-y-phi-1">
+                <Panel size="sm" class="space-y-phi-1" data-node-status={node.status}>
                   <div class="flex items-center justify-between gap-phi-2">
                     <div class="flex items-center gap-phi-2">
                       {node.logo ? (
@@ -153,3 +171,35 @@ const flowLabels = (group) =>
     );
   })}
 </div>
+
+<style>
+  [data-eco-root][data-eco-filter='current'] [data-node-status='building'],
+  [data-eco-root][data-eco-filter='current'] [data-node-status='future'] {
+    display: none;
+  }
+
+  [data-eco-toggle][aria-pressed='true'] {
+    border-color: oklch(var(--mint) / 0.6);
+    color: oklch(var(--text-primary));
+  }
+</style>
+
+<script>
+  const ecosystemRoot = document.querySelector('[data-eco-root]');
+  if (ecosystemRoot) {
+    const toggles = ecosystemRoot.querySelectorAll('[data-eco-toggle]');
+    toggles.forEach((toggle) => {
+      toggle.addEventListener('click', () => {
+        const filter = toggle.getAttribute('data-eco-toggle');
+        if (!filter) return;
+        ecosystemRoot.setAttribute('data-eco-filter', filter);
+        toggles.forEach((btn) => {
+          const active = btn === toggle;
+          btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+          btn.classList.toggle('text-text-primary', active);
+          btn.classList.toggle('text-text-secondary', !active);
+        });
+      });
+    });
+  }
+</script>
