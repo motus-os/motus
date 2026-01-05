@@ -271,21 +271,18 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
     </Panel>
   </Section>
 
-  <!-- Download Demo Repo -->
+  <!-- Demo Repo -->
   <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl text-center">
     <SectionHeader
-      title="Get the complete demo"
-      subtitle="Download the finished app with all receipts included."
+      title="Demo repo (publishing soon)"
+      subtitle="We’re preparing a release-tagged demo repo. For now, follow the steps above to generate receipts locally."
       size="md"
       class="mb-phi-3"
     />
     <div class="flex flex-wrap justify-center gap-phi-2">
-      <Button href="https://github.com/motus-os/motus-demo-app" variant="secondary" size="sm" target="_blank" rel="noopener">
-        View on GitHub &#8594;
+      <Button href={`${base}docs/demos`} variant="secondary" size="sm">
+        Demo notes &#8594;
       </Button>
-      <span class="text-sm text-text-secondary self-center">
-        (Demo repo generated on each release)
-      </span>
     </div>
   </Section>
 

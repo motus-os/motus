@@ -8,16 +8,16 @@ last_validated: "2026-01-05"
 validated_against: "motusos==0.5.2"
 
 meta:
-  title: "Build a Python app with receipts"
-  subtitle: "Create a simple app. Prove every step. Keep the receipts."
+  title: "Ship a change with receipts"
+  subtitle: "Harden a small feature, prove it, and keep the receipts."
   duration_minutes: 30
   difficulty: beginner
 
   # Page rendering controls
   hero:
-    pain: "Your agents complete work with no proof of what happened."
-    headline: "Build something. Prove you built it."
-    subheadline: "Create a Python app with complete audit trail in 30 minutes."
+    pain: "Your agents complete work with no durable record of what happened."
+    headline: "Ship a change. Keep the receipt."
+    subheadline: "Build a small feature with outcome, evidence, and decision in 30 minutes."
     cta_text: "Start building"
     cta_anchor: "#setup"
 
@@ -89,16 +89,16 @@ setup:
 
 features:
   - id: ADHOC-DEMO-001
-    title: "Add greeting function"
+    title: "Add a safe greeting function"
     status: current
-    intent: "Add greeting function that returns personalized message"
-    description: "Create a simple function, test it, and record the evidence."
+    intent: "Add greeting function with basic validation"
+    description: "Create a small function, validate input, and record the evidence."
 
     steps:
       - id: claim
         title: "Claim the work"
         type: command
-        command: "motus work claim ADHOC-DEMO-001 --intent \"Add greeting function\""
+        command: "motus work claim ADHOC-DEMO-001 --intent \"Add a safe greeting function\""
         expected_pattern: "lease-[a-z0-9-]+"
         capture_output:
           variable: lease_id
@@ -187,16 +187,16 @@ features:
         explanation: "See the complete audit trail for this task."
 
   - id: ADHOC-DEMO-002
-    title: "Add input validation"
+    title: "Prove the validation"
     status: current
-    intent: "Add validation to reject empty names"
-    description: "Extend the function with validation and prove it works."
+    intent: "Add tests that enforce validation"
+    description: "Write tests that prove the validation is enforced."
 
     steps:
       - id: claim
         title: "Claim the work"
         type: command
-        command: "motus work claim ADHOC-DEMO-002 --intent \"Add input validation\""
+        command: "motus work claim ADHOC-DEMO-002 --intent \"Prove the validation\""
         expected_pattern: "lease-[a-z0-9-]+"
         capture_output:
           variable: lease_id_2
@@ -260,9 +260,9 @@ features:
         expected_exit: 0
 
   - id: ADHOC-DEMO-003
-    title: "Add CLI entry point"
+    title: "Expose it via CLI"
     status: current
-    intent: "Add command-line interface for the greeter"
+    intent: "Add a command-line interface for the greeter"
     description: "Make the app runnable from the command line."
 
     steps:

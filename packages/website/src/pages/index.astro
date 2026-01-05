@@ -15,14 +15,14 @@ const base = import.meta.env.BASE_URL.endsWith('/')
 const hero = messaging.hero || {};
 const heroHeadline = hero.headline || 'Agents do the work.';
 const heroSubheadline = hero.subheadline || 'Motus keeps the receipts.';
-const heroValueProp = hero.value_prop || 'One API. Verification infrastructure for AI that acts.';
+const heroValueProp = hero.value_prop || 'Motus records outcome, evidence, and decisions so you can trust the output and move forward.';
 const heroActionLine = hero.action_line || 'Claim work. Attach proof. Ship a receipt.';
 const heroCtaText = hero.cta_text || 'Run a verified loop';
 const heroCtaPath = hero.cta_url ? hero.cta_url.replace(/^\/+/, '') : 'get-started';
 const heroCtaHref = `${base}${heroCtaPath}`;
 ---
 
-<Layout title="Motus - Verification infrastructure for AI agents">
+<Layout title="Motus - Your AI remembers what it did">
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-4xl">
     <div class="mb-phi-5 space-y-phi-3">
       <h1 class="text-4xl md:text-6xl font-display text-text-primary">
@@ -38,9 +38,17 @@ const heroCtaHref = `${base}${heroCtaPath}`;
     <p class="text-lg md:text-xl text-text-secondary mb-phi-2">
       {heroValueProp}
     </p>
-    <p class="text-base md:text-lg text-text-secondary/80 mb-phi-5">
+    <p class="text-base md:text-lg text-text-secondary/80 mb-phi-3">
       {heroActionLine}
     </p>
+    <p class="text-sm text-text-secondary/80 mb-phi-2">
+      Works alongside Claude, GPT, Gemini, local agents, LangChain, and n8n.
+    </p>
+    <div class="mb-phi-5 flex flex-wrap justify-center gap-phi-1 text-sm text-text-secondary/80">
+      {['Claude', 'GPT', 'Gemini', 'Local agents', 'LangChain', 'n8n'].map((label) => (
+        <span class="px-phi-1 py-1 rounded-full border border-line/30 bg-charcoal/60">{label}</span>
+      ))}
+    </div>
 
     <div class="flex flex-col md:flex-row gap-phi-3 justify-center items-center">
       <InstallCommand />

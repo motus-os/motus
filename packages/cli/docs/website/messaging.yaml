@@ -1,20 +1,20 @@
 version: "1.1"
-last_updated: "2026-01-04"
+last_updated: "2026-01-05"
 
 # ============================================
 # CORE MESSAGING
 # ============================================
 
-one_liner: "Agents do the work. Motus keeps the receipts."
+one_liner: "Your AI remembers what it did."
 
-tagline: "One API. Verification infrastructure for AI that acts."
+tagline: "Stop re-explaining your codebase every session."
 
 hero:
   # The hook - creates tension
-  headline: "Agents do the work."
-  subheadline: "Motus keeps the receipts."
+  headline: "Your AI remembers what it did."
+  subheadline: "Stop re-explaining your codebase every session."
   # The position
-  value_prop: "One API. Verification infrastructure for AI that acts."
+  value_prop: "Motus records outcome, evidence, and decisions so you can trust the output and move forward."
   # The action
   action_line: "Claim work. Attach proof. Ship a receipt."
   cta_text: "Get your first receipt"
@@ -23,8 +23,8 @@ hero:
 
 pain_statement:
   # Pain without problematic statistics
-  short: "AI agents act without accountability."
-  full: "AI agents complete tasks with no record of what happened, why, or whether it worked."
+  short: "AI agents act without a durable record."
+  full: "AI agents complete tasks with no durable record of what happened, why, or whether it worked."
   # This is observable truth, not a cited claim
 
 solution_statement:
@@ -38,12 +38,12 @@ solution_statement:
 benefits:
   - id: stop_rework
     headline: "Stop repeating work"
-    detail: "Every action is tracked and proven"
+    detail: "Stop re-explaining your codebase every session"
     icon: "check"
 
   - id: prove_it
     headline: "Prove what happened"
-    detail: "Receipts, not trust"
+    detail: "Know what your AI did and why"
     icon: "shield"
 
   - id: local_first
@@ -155,6 +155,7 @@ forbidden_phrases:
   - "Mechanism:"
   - "Momentum Signals"
   - "execution layer for AI agents"
+  - "verification infrastructure"
   - "coordination kernel"
   - "6-call facade"
   - "append-only ledger"

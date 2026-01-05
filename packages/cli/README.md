@@ -4,8 +4,8 @@
 
 # Motus
 
-> Agents do the work. Motus keeps the receipts.
-> One API. Verification infrastructure for AI that acts.
+> Your AI remembers what it did.
+> Stop re-explaining your codebase every session.
 
 [![License](https://img.shields.io/badge/license-MCSL-blue.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/motusos)](https://pypi.org/project/motusos/)
@@ -33,8 +33,8 @@ Expected:
 
 ## Benefits
 
-- **Stop repeating work**: Every action is tracked and proven
-- **Prove what happened**: Receipts, not trust
+- **Stop repeating work**: Stop re-explaining your codebase every session
+- **Prove what happened**: Know what your AI did and why
 - **No cloud required**: Local-first, your data stays yours
 
 ## Evidence

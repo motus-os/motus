@@ -1,19 +1,19 @@
 {
   "version": "1.1",
-  "last_updated": "2026-01-04",
-  "one_liner": "Agents do the work. Motus keeps the receipts.",
-  "tagline": "One API. Verification infrastructure for AI that acts.",
+  "last_updated": "2026-01-05",
+  "one_liner": "Your AI remembers what it did.",
+  "tagline": "Stop re-explaining your codebase every session.",
   "hero": {
-    "headline": "Agents do the work.",
-    "subheadline": "Motus keeps the receipts.",
-    "value_prop": "One API. Verification infrastructure for AI that acts.",
+    "headline": "Your AI remembers what it did.",
+    "subheadline": "Stop re-explaining your codebase every session.",
+    "value_prop": "Motus records outcome, evidence, and decisions so you can trust the output and move forward.",
     "action_line": "Claim work. Attach proof. Ship a receipt.",
     "cta_text": "Get your first receipt",
     "cta_url": "/get-started/"
   },
   "pain_statement": {
-    "short": "AI agents act without accountability.",
-    "full": "AI agents complete tasks with no record of what happened, why, or whether it worked."
+    "short": "AI agents act without a durable record.",
+    "full": "AI agents complete tasks with no durable record of what happened, why, or whether it worked."
   },
   "solution_statement": {
     "short": "Motus keeps the receipts.",
@@ -23,13 +23,13 @@
     {
       "id": "stop_rework",
       "headline": "Stop repeating work",
-      "detail": "Every action is tracked and proven",
+      "detail": "Stop re-explaining your codebase every session",
       "icon": "check"
     },
     {
       "id": "prove_it",
       "headline": "Prove what happened",
-      "detail": "Receipts, not trust",
+      "detail": "Know what your AI did and why",
       "icon": "shield"
     },
     {
@@ -146,6 +146,7 @@
     "Mechanism:",
     "Momentum Signals",
     "execution layer for AI agents",
+    "verification infrastructure",
     "coordination kernel",
     "6-call facade",
     "append-only ledger"
