@@ -89,3 +89,5 @@ jobs:
           python-version: "3.11"
       - name: Check internal links
         run: python scripts/ci/check_links.py
+      - name: Check proof references
+        run: python scripts/ci/check_proofs.py
