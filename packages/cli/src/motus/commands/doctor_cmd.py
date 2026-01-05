@@ -20,11 +20,36 @@ from motus.core.errors import DatabaseError, SchemaError
 from motus.config import config as motus_config
 from motus.config_loader import get_config_path
 from motus.hardening.health import HealthChecker, HealthResult, HealthStatus
+from motus.hardening.package_conflicts import detect_package_conflicts
 
 
 MIN_DISK_FREE_BYTES = 100 * 1024 * 1024
 MAX_LOG_BYTES = 100 * 1024 * 1024
 MAX_WAL_BYTES = 50 * 1024 * 1024
+
+
+def _package_conflict_check() -> HealthResult:
+    result = detect_package_conflicts()
+    if not result.conflict:
+        return HealthResult(
+            name="package_conflict",
+            status=HealthStatus.PASS,
+            message="No conflicting Motus packages detected",
+            details={"origin": result.origin},
+        )
+
+    if result.conflicts:
+        installed = ", ".join(f"{name}=={ver}" for name, ver in result.conflicts.items())
+        message = f"Conflicting packages installed: {installed}. Remove with: pip uninstall motus motus-command -y"
+    else:
+        message = "Motus import resolves to motus-command path. Remove old packages: pip uninstall motus motus-command -y"
+
+    return HealthResult(
+        name="package_conflict",
+        status=HealthStatus.FAIL,
+        message=message,
+        details={"conflicts": result.conflicts, "origin": result.origin},
+    )
 
 
 def _db_exists_check(db_path: Path) -> HealthResult:
@@ -220,6 +245,7 @@ def doctor_command(*, json_output: bool = False, fix: bool = False) -> int:
     console = Console()
     checker = HealthChecker()
     db_path = get_database_path()
+    checker.register(_package_conflict_check)
     checker.register(lambda: _db_exists_check(db_path))
     checker.register(lambda: _db_readable_check(db_path))
     checker.register(lambda: _db_integrity_check(db_path))

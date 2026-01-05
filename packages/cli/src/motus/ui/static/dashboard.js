@@ -16,6 +16,8 @@ let loadedOffset = 0;  // How many events we've loaded
 let hasMoreEvents = false;  // Whether there are more events to load
 let isLoadingMore = false;  // Prevent duplicate load_more requests
 let isLoadingSession = false;  // Prevent duplicate session selection requests
+let sessionHistoryTimeout = null;  // Timeout handle for session history response
+const SESSION_HISTORY_TIMEOUT_MS = 5000;
 
 // SPAWN event data storage for expand/copy
 let spawnEventData = {};  // Map of spawn-id -> { prompt, context, model, agentType }
@@ -325,6 +327,10 @@ function connect() {
         document.getElementById('status-dot').classList.add('disconnected');
         lastHeartbeatTime = null;
         reconnectAttempts++;
+        if (sessionHistoryTimeout) {
+            clearTimeout(sessionHistoryTimeout);
+            sessionHistoryTimeout = null;
+        }
         const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), maxReconnectDelay);
         if (reconnectAttempts > 5) {
             document.getElementById('status-text').textContent = 'Server offline. Run: motus web';
@@ -365,6 +371,10 @@ function handleMessage(data) {
             document.getElementById('status-text').textContent = 'Connected (backfilled)';
         }
     } else if (data.type === 'session_history') {
+        if (sessionHistoryTimeout) {
+            clearTimeout(sessionHistoryTimeout);
+            sessionHistoryTimeout = null;
+        }
         // Session history loaded (initial load or "load more")
         const newEvents = data.events || [];
         const offset = data.offset || 0;
@@ -542,6 +552,18 @@ function selectSession(id, projectPath) {
     // Request full session history - renderFeed will be called when data arrives
     if (ws.readyState === WebSocket.OPEN) {
         ws.send(JSON.stringify({ type: 'select_session', session_id: id }));
+        if (sessionHistoryTimeout) {
+            clearTimeout(sessionHistoryTimeout);
+        }
+        sessionHistoryTimeout = setTimeout(() => {
+            if (!isLoadingSession) {
+                return;
+            }
+            isLoadingSession = false;
+            isLoadingMore = false;
+            container.innerHTML = '<div class="empty-state">Session history unavailable. Run "motus doctor" for diagnostics.</div>';
+            document.getElementById('status-text').textContent = 'Session history unavailable';
+        }, SESSION_HISTORY_TIMEOUT_MS);
     } else {
         // WebSocket not ready - clear loading state
         isLoadingSession = false;

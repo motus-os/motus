@@ -30,6 +30,7 @@ if TYPE_CHECKING:
     from fastapi.staticfiles import StaticFiles
 
 from motus.logging import get_logger
+from motus.hardening.package_conflicts import detect_package_conflicts
 from motus.ui.web.routes import register_routes
 from motus.ui.web.state import SessionState
 from motus.ui.web.websocket import WebSocketHandler
@@ -168,6 +169,18 @@ def run_web(port: Optional[int] = None, no_browser: bool = False):
         port: Port to run on (None = 4000)
         no_browser: If True, don't open browser automatically
     """
+    conflict = detect_package_conflicts()
+    if conflict.conflict:
+        print("Package conflict detected. Motus is loading from a conflicting installation.")
+        if conflict.conflicts:
+            installed = ", ".join(f"{name}=={ver}" for name, ver in conflict.conflicts.items())
+            print(f"Conflicting packages: {installed}")
+        if conflict.origin:
+            print(f"Import origin: {conflict.origin}")
+        print("Fix: pip uninstall motus motus-command -y")
+        print("Then reinstall: pip install motusos[web]")
+        raise SystemExit(1)
+
     server = MCWebServer(port=port if port is not None else 4000)
     success = server.run(open_browser=not no_browser)
     if not success:

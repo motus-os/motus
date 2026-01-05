@@ -6,12 +6,13 @@
 from __future__ import annotations
 
 import json
-import os
 import subprocess
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+from motus.hardening.package_conflicts import detect_package_conflicts
 
 
 MAX_HEALTH_LEDGER_AGE_HOURS = 24
@@ -95,6 +96,30 @@ def _check_health_files(repo_root: Path) -> EvidenceCheckResult:
         passed=True,
         message="Health artifacts present and recent",
         details={"health_ledger_age_seconds": int(age_seconds)},
+    )
+
+
+def _check_package_conflicts() -> EvidenceCheckResult:
+    result = detect_package_conflicts()
+    if not result.conflict:
+        return EvidenceCheckResult(
+            name="package_conflicts",
+            passed=True,
+            message="No conflicting packages detected",
+            details={"origin": result.origin},
+        )
+
+    details = {"conflicts": result.conflicts, "origin": result.origin}
+    if result.conflicts:
+        installed = ", ".join(f"{name}=={ver}" for name, ver in result.conflicts.items())
+        message = f"Conflicting packages installed: {installed}"
+    else:
+        message = "Motus import resolves to motus-command path"
+    return EvidenceCheckResult(
+        name="package_conflicts",
+        passed=False,
+        message=message,
+        details=details,
     )
 
 
@@ -228,6 +253,10 @@ def run_release_evidence(repo_root: Path) -> EvidenceBundleResult:
     checks: list[EvidenceCheckResult] = []
 
     checks.append(_check_health_files(repo_root))
+    if not checks[-1].passed:
+        return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+
+    checks.append(_check_package_conflicts())
     if not checks[-1].passed:
         return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
 
