@@ -18,6 +18,9 @@ on:
       - "packages/website/src/data/proof-ledger.json"
       - "packages/website/src/data/status-system.json"
       - "packages/website/src/data/messaging.json"
+      - "packages/website/src/**"
+      - "packages/website/public/**"
+      - "packages/website/scripts/**"
       - "scripts/generate-public-surfaces.py"
       - "scripts/check-messaging-sync.py"
       - "README.md"
@@ -71,3 +74,18 @@ jobs:
           fi
       - name: Validate messaging sync
         run: python scripts/check-messaging-sync.py
+
+  website-link-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/website
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Check internal links
+        run: python scripts/ci/check_links.py
