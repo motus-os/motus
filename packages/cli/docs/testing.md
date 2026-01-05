@@ -7,6 +7,11 @@ Run the full test suite:
 python3 -m pytest tests/ -q
 ```
 
+Run the fast tier (smoke + critical) in parallel:
+```bash
+python3 scripts/ci/run_fast_tests.py
+```
+
 ## CI Recommendation
 
 Run lint and tests in CI:
@@ -17,12 +22,19 @@ Example GitHub Actions (see .github/workflows/ci.yml):
 - lint: ruff + black
 - tests: full test suite
 
+## Optional Dependencies
+
+Some tests require optional extras:
+- Web tests: install `.[web]`
+- MCP tests: install `.[mcp]`
+- Gemini tests: install `.[gemini]`
+
 ## Snapshot Tests
 
-Snapshot testing is planned for a future release. The current test suite uses:
+Snapshot tests require `syrupy` (included in `.[dev]`):
 
 ```bash
-python -m pytest tests/ -q
+python -m pytest tests/test_cli_snapshots.py -q
 ```
 
 For deterministic test runs:

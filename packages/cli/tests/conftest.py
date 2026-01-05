@@ -13,6 +13,7 @@ Determinism Requirements (from Codex QC review):
 
 from __future__ import annotations
 
+import importlib.util
 import os
 import sys
 import uuid
@@ -30,6 +31,16 @@ from tests.fixtures.constants import (
 )
 
 CLAIMS_TRACKING_ENABLED = os.environ.get("MOTUS_TRACK_CLAIMS", "0") == "1"
+OPTIONAL_DEPENDENCIES = (
+    ("fastapi", "fastapi", lambda name: name.startswith("test_web")),
+    ("mcp", "mcp", lambda name: name in {"test_mcp.py", "test_messages.py"}),
+    ("google-genai", "google.genai", lambda name: "gemini" in name),
+)
+SNAPSHOT_TEST_FILES = {"test_cli_snapshots.py"}
+
+
+def _module_missing(module: str) -> bool:
+    return importlib.util.find_spec(module) is None
 
 # Ensure tests import the local package, not a globally installed motus.
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -205,7 +216,28 @@ def pytest_configure(config):
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_collection_modifyitems(items):
-    """Auto-discover and register claims from test markers."""
+    """Skip optional dependency tests and auto-discover claims."""
+    missing_optional = {
+        label: _module_missing(module)
+        for label, module, _predicate in OPTIONAL_DEPENDENCIES
+    }
+
+    for item in items:
+        name = item.fspath.basename
+        for label, _module, predicate in OPTIONAL_DEPENDENCIES:
+            if missing_optional[label] and predicate(name):
+                item.add_marker(
+                    pytest.mark.skip(reason=f"Optional dependency missing: {label}")
+                )
+                break
+
+    if _module_missing("syrupy"):
+        for item in items:
+            if item.fspath.basename in SNAPSHOT_TEST_FILES:
+                raise pytest.UsageError(
+                    "Snapshot tests require syrupy. Install with: pip install syrupy"
+                )
+
     if not CLAIMS_TRACKING_ENABLED:
         return
 
@@ -214,6 +246,9 @@ def pytest_collection_modifyitems(items):
     db = get_db_manager()
 
     for item in items:
+        if item.get_closest_marker("skip") or item.get_closest_marker("skipif"):
+            continue
+
         marker = item.get_closest_marker("claim")
         if marker:
             claim_id = marker.kwargs.get("id")
