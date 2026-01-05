@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-01-05
+
+Hardening release focused on reliability, evidence, and UI resilience.
+
+### Added
+
+- Release evidence gate: `motus release check` / `motus release bundle` (health, tests, bandit, pip-audit, clean-venv proof)
+- Package conflict detection surfaced in `motus doctor` and `motus web`
+- Clean-venv proof generator for repeatable release evidence
+
+### Fixed
+
+- Web UI session history timeouts now return an error instead of hanging
+- Migration robustness: checksum allowlist for known updates and legacy leases upgrade path
+- Bounded filesystem scans and audit loops to prevent long-running operations
+
 ## [0.1.0] - 2025-12-30
 
 Initial public release of Motus CLI - local-first agent coordination tooling.

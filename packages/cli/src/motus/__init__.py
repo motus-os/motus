@@ -38,7 +38,7 @@ try:
         __version__ = version("motus")
 except PackageNotFoundError:
     # Fallback for editable installs when package metadata unavailable
-    __version__ = "0.1.0"
+    __version__ = "0.1.1"
 
 __author__ = "Motus Contributors"
 
