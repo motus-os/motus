@@ -28,19 +28,26 @@ const statusClass = (node) => getDisplayBadge({ status: node.status, origin: nod
 const statusText = (node) => getDisplayBadge({ status: node.status, origin: node.origin, kind: 'badge' }).label;
 const proofStatusLabel = (status) => (status ? getStatusLabel(status) : '');
 
-const countStatuses = (groupNodes) => {
-  const counts = { current: 0, building: 0, future: 0, external: 0 };
-  groupNodes.forEach((node) => {
-    if (node.origin === 'external') counts.external += 1;
-    if (counts[node.status] !== undefined) counts[node.status] += 1;
-  });
-  return counts;
+const groupStatus = (groupId) => {
+  if (groupId === 'inputs') return 'external';
+  if (groupId === 'modules') return 'building';
+  if (groupId === 'future') return 'future';
+  return 'current';
 };
 
-const flowLabels = (group) =>
-  (group.flow_to || [])
-    .map((targetId) => groupIndex.get(targetId)?.label)
-    .filter(Boolean);
+const groupStatusLabel = (status) => {
+  switch (status) {
+    case 'building':
+      return 'Building';
+    case 'future':
+      return 'Future';
+    case 'external':
+      return 'External';
+    default:
+      return 'Current';
+  }
+};
+
 ---
 
 <div class="space-y-phi-2" data-eco-root data-eco-filter="current">
@@ -71,37 +78,16 @@ const flowLabels = (group) =>
 
   {orderedGroups.map((group) => {
     const groupNodes = nodesByGroup[group.id] || [];
-    const counts = countStatuses(groupNodes);
-    const flow = flowLabels(group);
-    const isExternalOnly = groupNodes.length > 0 && groupNodes.every((node) => node.origin === 'external');
     return (
       <details class="rounded-2xl border border-line/30 bg-surface-muted p-phi-2">
         <summary class="cursor-pointer list-none space-y-phi-1">
-          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{group.label}</p>
+          <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">{group.label}</p>
           <h3 class="text-lg font-display text-text-primary">{group.headline}</h3>
           <p class="text-sm text-text-secondary">{group.description}</p>
-          {flow.length ? (
-            <p class="text-xs uppercase tracking-[0.25em] text-text-secondary/70">
-              Flow &#8594; {flow.join(' · ')}
-            </p>
-          ) : null}
           <div class="flex flex-wrap gap-phi-1 text-xs">
-            {isExternalOnly ? (
-              <span class="status-chip status-external">{counts.external} External</span>
-            ) : (
-              <>
-                {counts.current > 0 ? (
-                  <span class="status-chip status-current">{counts.current} Current</span>
-                ) : null}
-                {counts.building > 0 ? (
-                  <span class="status-chip status-building">{counts.building} Building</span>
-                ) : null}
-                {counts.future > 0 ? (
-                  <span class="status-chip status-future">{counts.future} Future</span>
-                ) : null}
-              </>
-            )}
-            <span class="text-text-secondary/60 text-xs">Toggle details</span>
+            <span class={`status-chip status-${groupStatus(group.id)}`}>
+              {groupStatusLabel(groupStatus(group.id))}
+            </span>
           </div>
         </summary>
         <div class="mt-phi-2 space-y-phi-2">
@@ -133,13 +119,15 @@ const flowLabels = (group) =>
                     <div class="space-y-phi-1 text-sm text-text-secondary">
                       <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Motus adds</p>
                       <ul class="space-y-phi-1">
-                        {node.improves.slice(0, 3).map((improve) => (
+                        {node.improves.slice(0, 2).map((improve) => (
                           <li>{improve.label}</li>
                         ))}
                       </ul>
                     </div>
                   ) : null}
-                  <p class="text-sm text-text-secondary">{node.flow_note || node.summary}</p>
+                  <p class="text-sm text-text-secondary">
+                    {node.origin === 'external' ? node.summary : (node.flow_note || node.summary)}
+                  </p>
                   <div class="flex flex-wrap gap-phi-2 text-sm">
                     {showSite ? (
                       <a href={siteHref} class="text-mint hover:text-text-primary transition-colors">
