@@ -4,8 +4,8 @@
 
 # Motus
 
-> Your AI remembers what it did.
-> Stop re-explaining your codebase every session.
+> What did your agent actually do? Motus knows.
+> Every action logged. Every decision recorded. Every outcome, receipted.
 
 [![License](https://img.shields.io/badge/license-MCSL-blue.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/motusos)](https://pypi.org/project/motusos/)

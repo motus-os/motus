@@ -1,22 +1,22 @@
-version: "1.1"
+version: "2.0"
 last_updated: "2026-01-05"
 
 # ============================================
 # CORE MESSAGING
 # ============================================
 
-one_liner: "Your AI remembers what it did."
+one_liner: "What did your agent actually do? Motus knows."
 
-tagline: "Stop re-explaining your codebase every session."
+tagline: "Every action logged. Every decision recorded. Every outcome, receipted."
 
 hero:
-  # The hook - creates tension
-  headline: "Your AI remembers what it did."
-  subheadline: "Stop re-explaining your codebase every session."
+  # The hook - asks the question nobody says out loud
+  headline: "What did your agent actually do?"
+  subheadline: "Motus knows."
   # The position
-  value_prop: "Motus records outcome, evidence, and decisions so you can trust the output and move forward."
+  value_prop: "Every action logged. Every decision recorded. Every outcome, receipted."
   # The action
-  action_line: "Claim work. Attach proof. Ship a receipt."
+  action_line: "Claim. Prove. Release. Get a receipt."
   cta_text: "Get your first receipt"
   cta_url: "/get-started/"
   # No claim_status/proof_id - this is positioning, not a provable claim
