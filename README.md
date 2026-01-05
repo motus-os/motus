@@ -10,6 +10,7 @@
 [![License](https://img.shields.io/badge/license-MCSL-blue.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/motusos)](https://pypi.org/project/motusos/)
 [![Downloads](https://img.shields.io/pypi/dm/motusos)](https://pypi.org/project/motusos/)
+[![Quality Gates](https://github.com/motus-os/motus/actions/workflows/quality-gates.yml/badge.svg)](https://github.com/motus-os/motus/actions/workflows/quality-gates.yml)
 
 ## Install
 
@@ -42,6 +43,15 @@ Expected:
 - **Stop repeating work**: Every action is tracked and proven
 - **Prove what happened**: Receipts, not trust
 - **No cloud required**: Local-first, your data stays yours
+
+## Evidence
+
+- Six API calls run the full loop: claim, context, outcome, evidence, decision, release. ([Proof](https://motus-os.github.io/motus/docs/evidence#claim-six_call_api))
+- The registry labels what is current, building, and future. ([Proof](https://motus-os.github.io/motus/docs/evidence#claim-module_registry))
+- Kernel schema v0.1.3 defines the authoritative tables. ([Proof](https://motus-os.github.io/motus/docs/evidence#claim-kernel_schema))
+- A registry sync gate keeps docs and website aligned. ([Proof](https://motus-os.github.io/motus/docs/evidence#claim-docs_registry_sync))
+
+Full registry: https://motus-os.github.io/motus/docs/evidence
 
 ## Links
 

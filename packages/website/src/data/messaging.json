@@ -115,6 +115,11 @@
       "label": "Downloads",
       "dynamic": true,
       "package": "motusos"
+    },
+    {
+      "type": "workflow",
+      "label": "Quality Gates",
+      "workflow": "quality-gates.yml"
     }
   ],
   "readme_sections": [
@@ -138,6 +143,10 @@
     },
     {
       "id": "benefits",
+      "include": true
+    },
+    {
+      "id": "evidence",
       "include": true
     },
     {

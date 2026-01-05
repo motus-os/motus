@@ -132,6 +132,9 @@ badges:
     label: "Downloads"
     dynamic: true
     package: "motusos"
+  - type: workflow
+    label: "Quality Gates"
+    workflow: "quality-gates.yml"
 
 # ============================================
 # README SECTIONS (Controls README structure)
@@ -149,6 +152,8 @@ readme_sections:
   - id: quickstart
     include: true
   - id: benefits
+    include: true
+  - id: evidence
     include: true
   - id: links
     include: true

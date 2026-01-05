@@ -13,6 +13,7 @@ MESSAGING_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "messagin
 MESSAGING_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "messaging.json"
 STATUS_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "status-system.yaml"
 STATUS_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "status-system.json"
+PROOF_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "proof-ledger.yaml"
 ROOT_README = REPO_ROOT / "README.md"
 CLI_README = REPO_ROOT / "packages" / "cli" / "README.md"
 
@@ -26,7 +27,7 @@ def _load_yaml(path: Path) -> dict:
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
-def _render_badges(badges: Iterable[dict]) -> str:
+def _render_badges(badges: Iterable[dict], repo_url: str | None) -> str:
     lines = []
     for badge in badges:
         badge_type = badge.get("type")
@@ -46,6 +47,17 @@ def _render_badges(badges: Iterable[dict]) -> str:
             image = f"https://img.shields.io/pypi/dm/{package}"
             link = f"https://pypi.org/project/{package}/"
             lines.append(f"[![Downloads]({image})]({link})")
+        elif badge_type == "workflow":
+            workflow = badge.get("workflow")
+            label = badge.get("label", "CI")
+            if not (workflow and repo_url):
+                continue
+            workflow_path = REPO_ROOT / ".github" / "workflows" / workflow
+            if not workflow_path.exists():
+                continue
+            image = f"{repo_url}/actions/workflows/{workflow}/badge.svg"
+            link = f"{repo_url}/actions/workflows/{workflow}"
+            lines.append(f"[![{label}]({image})]({link})")
     return "\n".join(lines)
 
 
@@ -127,6 +139,34 @@ def _render_demo(demo: dict, section_cfg: dict | None) -> str:
     return ""
 
 
+def _render_evidence(proof_ledger: dict, docs_base: str | None, section_cfg: dict | None) -> str:
+    if not section_cfg or not section_cfg.get("include", False):
+        return ""
+    docs_base = (docs_base or "").rstrip("/")
+    claims = [
+        claim
+        for claim in proof_ledger.get("claims", [])
+        if claim.get("featured") and claim.get("status") == "current"
+    ]
+    if not claims:
+        return ""
+    lines = ["## Evidence", ""]
+    for claim in claims:
+        claim_text = claim.get("claim", "").strip()
+        if not claim_text:
+            continue
+        claim_id = claim.get("id", "")
+        if docs_base:
+            link = f"{docs_base}/evidence#claim-{claim_id}"
+        else:
+            link = f"/docs/evidence#claim-{claim_id}"
+        lines.append(f"- {claim_text} ([Proof]({link}))")
+    registry = f"{docs_base}/evidence" if docs_base else "/docs/evidence"
+    lines.append("")
+    lines.append(f"Full registry: {registry}")
+    return "\n".join(lines)
+
+
 def _render_readme(messaging: dict) -> str:
     sections = messaging.get("readme_sections", [])
     section_ids = {section["id"]: section for section in sections if section.get("include", False)}
@@ -135,6 +175,8 @@ def _render_readme(messaging: dict) -> str:
     tagline = messaging.get("tagline", "")
     quickstart = messaging.get("quickstart", {})
     steps = quickstart.get("steps", [])
+    links = messaging.get("links", {})
+    docs_base = links.get("docs")
 
     parts = [
         GENERATED_HEADER,
@@ -145,7 +187,7 @@ def _render_readme(messaging: dict) -> str:
         "",
     ]
 
-    badges = _render_badges(messaging.get("badges", []))
+    badges = _render_badges(messaging.get("badges", []), links.get("github"))
     if badges:
         parts.append(badges)
         parts.append("")
@@ -167,8 +209,15 @@ def _render_readme(messaging: dict) -> str:
         parts.append(_render_benefits(messaging.get("benefits", [])))
         parts.append("")
 
+    proof_ledger = _load_yaml(PROOF_YAML) if PROOF_YAML.exists() else {}
+    if section_ids.get("evidence"):
+        evidence_block = _render_evidence(proof_ledger, docs_base, section_ids.get("evidence"))
+        if evidence_block:
+            parts.append(evidence_block)
+            parts.append("")
+
     if section_ids.get("links"):
-        parts.append(_render_links(messaging.get("links", {})))
+        parts.append(_render_links(links))
         parts.append("")
 
     if section_ids.get("license"):

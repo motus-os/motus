@@ -18,6 +18,7 @@ ROOT_README = REPO_ROOT / "README.md"
 CLI_README = REPO_ROOT / "packages" / "cli" / "README.md"
 DOCS_TESTS = REPO_ROOT / "docs" / "quality" / "messaging-tests.md"
 PROOF_YAML = REPO_ROOT / "packages" / "cli" / "docs" / "website" / "proof-ledger.yaml"
+WORKFLOWS_DIR = REPO_ROOT / ".github" / "workflows"
 PATTERNS_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "implementation-patterns.json"
 STRATEGIES_JSON = REPO_ROOT / "packages" / "website" / "src" / "data" / "strategies.json"
 
@@ -156,7 +157,7 @@ def _require_claim(block: dict, label: str) -> tuple[bool, str]:
     proof_id = block.get("proof_id")
     proof_url = block.get("proof_url")
     if claim_status not in ALLOWED_CLAIM_STATUS:
-        return False, f"{label} claim_status must be verified or target"
+        return False, f"{label} claim_status must be current or future"
     if not (proof_id or proof_url):
         return False, f"{label} missing proof_id or proof_url"
     return True, ""
@@ -200,6 +201,34 @@ def _check_demo_status() -> tuple[bool, str]:
     return True, "Demo status valid"
 
 
+def _check_badge_workflows() -> tuple[bool, str]:
+    data = _load_yaml(MESSAGING_YAML)
+    missing = []
+    for badge in data.get("badges", []):
+        workflow = badge.get("workflow")
+        if workflow and not (WORKFLOWS_DIR / workflow).exists():
+            missing.append(workflow)
+    if missing:
+        return False, f"Missing workflow file(s) for badges: {', '.join(sorted(missing))}"
+    return True, "Workflow badges validated"
+
+
+def _check_evidence_links() -> tuple[bool, str]:
+    content = ROOT_README.read_text(encoding="utf-8")
+    links = re.findall(r"\[[^\]]+\]\(([^)]+)\)", content)
+    proof_ids = {claim.get("id") for claim in _load_yaml(PROOF_YAML).get("claims", [])}
+    invalid = []
+    for url in links:
+        match = re.search(r"docs/evidence#claim-([a-z0-9_-]+)", url, re.IGNORECASE)
+        if match:
+            claim_id = match.group(1)
+            if claim_id not in proof_ids:
+                invalid.append(claim_id)
+    if invalid:
+        return False, f"README evidence links reference unknown claim ids: {', '.join(sorted(set(invalid)))}"
+    return True, "Evidence links resolve"
+
+
 def _check_import_scope() -> tuple[bool, str]:
     allowed = {
         REPO_ROOT / "packages" / "website" / "src" / "pages" / "index.astro",
@@ -228,9 +257,11 @@ def main() -> int:
         ("Status system sync", _check_status_system_sync),
         ("Generated markers", _check_generated_markers),
         ("README content", _check_readme_content),
+        ("Badge workflows", _check_badge_workflows),
         ("Forbidden phrases", _check_forbidden_phrases),
         ("Numeric claims", _check_numeric_claims),
         ("Status terms", _check_status_terms),
+        ("Evidence links", _check_evidence_links),
         ("Demo status", _check_demo_status),
         ("Import scope", _check_import_scope),
         ("Readiness tests", _check_tests_recorded),
