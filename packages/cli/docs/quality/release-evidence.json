@@ -1,0 +1,94 @@
+{
+  "blocked": null,
+  "checks": [
+    {
+      "details": {
+        "health_ledger_age_seconds": 9902
+      },
+      "message": "Health artifacts present and recent",
+      "name": "health_files",
+      "passed": true
+    },
+    {
+      "details": {
+        "origin": "/Users/ben/GitHub/motus/packages/cli/src/motus/__init__.py"
+      },
+      "message": "No conflicting packages detected",
+      "name": "package_conflicts",
+      "passed": true
+    },
+    {
+      "details": {
+        "errors": 0,
+        "failed": 0
+      },
+      "message": "pytest passed",
+      "name": "pytest_results",
+      "passed": true
+    },
+    {
+      "details": {
+        "critical": 0,
+        "high": 0
+      },
+      "message": "Bandit clean",
+      "name": "bandit_results",
+      "passed": true
+    },
+    {
+      "details": {
+        "core": 0,
+        "dev_only": 9
+      },
+      "message": "pip-audit clean (dev-only: 9)",
+      "name": "pip_audit_results",
+      "passed": true
+    },
+    {
+      "details": {
+        "conflicts": [],
+        "errors": [],
+        "motus_help_ok": true,
+        "motus_import": {
+          "file": "/private/var/folders/m4/ntj2d4_j7m703vq_bf66t2700000gn/T/motus-clean-venv-7olw7id6/lib/python3.10/site-packages/motus/__init__.py",
+          "version": "0.1.1"
+        },
+        "packages": {
+          "PyYAML": "6.0.3",
+          "Pygments": "2.19.2",
+          "annotated-types": "0.7.0",
+          "anyio": "4.12.0",
+          "attrs": "25.4.0",
+          "certifi": "2026.1.4",
+          "exceptiongroup": "1.3.1",
+          "h11": "0.16.0",
+          "httpcore": "1.0.9",
+          "httpx": "0.28.1",
+          "idna": "3.11",
+          "jsonschema": "4.25.1",
+          "jsonschema-specifications": "2025.9.1",
+          "markdown-it-py": "4.0.0",
+          "mdurl": "0.1.2",
+          "motusos": "0.1.1",
+          "pip": "22.0.4",
+          "psutil": "7.2.1",
+          "pydantic": "2.12.5",
+          "pydantic_core": "2.41.5",
+          "referencing": "0.37.0",
+          "rich": "14.2.0",
+          "rpds-py": "0.30.0",
+          "setuptools": "58.1.0",
+          "typing-inspection": "0.4.2",
+          "typing_extensions": "4.15.0"
+        },
+        "passed": true,
+        "source_path": "/Users/ben/GitHub/motus/packages/cli",
+        "timestamp": 1767646665.6128
+      },
+      "message": "Clean venv proof passed",
+      "name": "clean_venv_proof",
+      "passed": true
+    }
+  ],
+  "passed": true
+}

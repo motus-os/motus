@@ -3,7 +3,7 @@
   "errors": [],
   "motus_help_ok": true,
   "motus_import": {
-    "file": "/private/var/folders/m4/ntj2d4_j7m703vq_bf66t2700000gn/T/motus-clean-venv-4b6vwjvs/lib/python3.10/site-packages/motus/__init__.py",
+    "file": "/private/var/folders/m4/ntj2d4_j7m703vq_bf66t2700000gn/T/motus-clean-venv-oiuwlj07/lib/python3.10/site-packages/motus/__init__.py",
     "version": "0.1.1"
   },
   "packages": {
@@ -36,5 +36,5 @@
   },
   "passed": true,
   "source_path": "/Users/ben/GitHub/motus/packages/cli",
-  "timestamp": 1767639171.264669
+  "timestamp": 1767646724.716823
 }
