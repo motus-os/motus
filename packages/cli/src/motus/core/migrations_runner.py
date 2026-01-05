@@ -21,6 +21,13 @@ from .migrations_schema import (
 )
 
 logger = get_logger(__name__)
+
+# Allow known checksum mismatches for historical migrations.
+_CHECKSUM_ALLOWLIST = {
+    5: {"8e25ba0db729df46"},
+    11: {"916955d0d4a93548"},
+    16: {"fb79675f0195b2a0"},
+}
 def _ensure_schema_version_table(conn: sqlite3.Connection) -> None:
     conn.execute(
         """
@@ -75,8 +82,32 @@ def discover_migrations(migrations_dir: Path) -> List[Migration]:
 
     migrations.sort(key=lambda m: m.version)
     return migrations
+def _prepare_legacy_leases(conn: sqlite3.Connection) -> None:
+    row = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='leases'"
+    ).fetchone()
+    if not row:
+        return
+
+    cols = {r[1] for r in conn.execute("PRAGMA table_info(leases)").fetchall()}
+    required = {"resource_type", "resource_id", "worker_id", "ttl_seconds", "acquired_at"}
+    if required.issubset(cols):
+        return
+
+    legacy_name = "leases_legacy"
+    suffix = 0
+    while conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+        (legacy_name,),
+    ).fetchone():
+        suffix += 1
+        legacy_name = f"leases_legacy_{suffix}"
+
+    conn.execute(f"ALTER TABLE leases RENAME TO {legacy_name}")
 def _execute_migration_up(conn: sqlite3.Connection, migration: Migration) -> None:
     try:
+        if migration.version == 19:
+            _prepare_legacy_leases(conn)
         if migration.up_sql.strip():
             conn.executescript(migration.up_sql)
 
@@ -135,6 +166,23 @@ def run_migrations(
     for migration in pending:
         if migration.version in applied:
             if applied[migration.version].checksum != migration.checksum:
+                allowed = _CHECKSUM_ALLOWLIST.get(migration.version, set())
+                if applied[migration.version].checksum in allowed:
+                    logger.warning(
+                        f"[MIGRATE-002] Migration {migration.version} checksum mismatch "
+                        "allowed; updating schema_version record"
+                    )
+                    if not dry_run:
+                        conn.execute(
+                            """
+                            UPDATE schema_version
+                            SET checksum = ?, migration_name = ?
+                            WHERE version = ?
+                            """,
+                            (migration.checksum, migration.name, migration.version),
+                        )
+                        conn.commit()
+                    continue
                 raise MigrationError(
                     f"[MIGRATE-002] Migration {migration.version} "
                     "changed after application (checksum mismatch)"

@@ -10,6 +10,7 @@ Tests:
 
 import json
 import sqlite3
+from pathlib import Path
 
 import pytest
 
@@ -20,6 +21,7 @@ from motus.core import (
 )
 from motus.core.bootstrap import bootstrap_database, is_first_run
 from motus.core.migrations import MigrationRunner
+from motus.core.migrations_schema import parse_migration_file
 
 
 class TestDatabaseManager:
@@ -319,6 +321,76 @@ DROP TABLE IF EXISTS test;
         runner2 = MigrationRunner(conn, migrations_dir)
         with pytest.raises(MigrationError, match="MIGRATE-002.*checksum"):
             runner2.apply_migrations()
+
+        conn.close()
+
+    def test_legacy_leases_upgrade(self, tmp_path):
+        """Allow checksum mismatches for known migrations and upgrade legacy leases."""
+        migrations_dir = Path(__file__).resolve().parents[1] / "migrations"
+        db_path = tmp_path / "legacy.db"
+        conn = sqlite3.connect(db_path, isolation_level=None)
+
+        conn.execute(
+            """
+            CREATE TABLE schema_version (
+                version INTEGER PRIMARY KEY,
+                migration_name TEXT NOT NULL,
+                applied_at TEXT NOT NULL DEFAULT (datetime('now')),
+                checksum TEXT NOT NULL,
+                execution_time_ms INTEGER
+            )
+            """
+        )
+
+        allowlist = {
+            5: "8e25ba0db729df46",
+            11: "916955d0d4a93548",
+            16: "fb79675f0195b2a0",
+        }
+        for path in sorted(migrations_dir.glob("*.sql")):
+            migration = parse_migration_file(path)
+            if migration.version >= 19:
+                continue
+            checksum = allowlist.get(migration.version, migration.checksum)
+            conn.execute(
+                """
+                INSERT INTO schema_version (version, migration_name, checksum, execution_time_ms)
+                VALUES (?, ?, ?, ?)
+                """,
+                (migration.version, migration.name, checksum, 0),
+            )
+
+        conn.executescript(
+            """
+            CREATE TABLE leases (
+                lease_id TEXT PRIMARY KEY,
+                owner_agent_id TEXT NOT NULL,
+                mode TEXT NOT NULL,
+                resources TEXT NOT NULL,
+                issued_at TEXT NOT NULL,
+                expires_at TEXT NOT NULL,
+                heartbeat_deadline TEXT NOT NULL,
+                snapshot_id TEXT NOT NULL,
+                policy_version TEXT NOT NULL,
+                lens_digest TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'active',
+                outcome TEXT,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            );
+            """
+        )
+
+        runner = MigrationRunner(conn, migrations_dir)
+        count = runner.apply_migrations()
+
+        assert count == 1
+        cols = {row[1] for row in conn.execute("PRAGMA table_info(leases)").fetchall()}
+        assert "resource_type" in cols
+        legacy = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'leases_legacy%'"
+        ).fetchall()
+        assert legacy
 
         conn.close()
 
