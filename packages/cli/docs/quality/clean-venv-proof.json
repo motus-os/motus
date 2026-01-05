@@ -3,8 +3,8 @@
   "errors": [],
   "motus_help_ok": true,
   "motus_import": {
-    "file": "/private/var/folders/m4/ntj2d4_j7m703vq_bf66t2700000gn/T/motus-clean-venv-l_4r7kku/lib/python3.10/site-packages/motus/__init__.py",
-    "version": "0.1.0"
+    "file": "/private/var/folders/m4/ntj2d4_j7m703vq_bf66t2700000gn/T/motus-clean-venv-4b6vwjvs/lib/python3.10/site-packages/motus/__init__.py",
+    "version": "0.1.1"
   },
   "packages": {
     "PyYAML": "6.0.3",
@@ -22,7 +22,7 @@
     "jsonschema-specifications": "2025.9.1",
     "markdown-it-py": "4.0.0",
     "mdurl": "0.1.2",
-    "motusos": "0.1.0",
+    "motusos": "0.1.1",
     "pip": "22.0.4",
     "psutil": "7.2.1",
     "pydantic": "2.12.5",
@@ -36,5 +36,5 @@
   },
   "passed": true,
   "source_path": "/Users/ben/GitHub/motus/packages/cli",
-  "timestamp": 1767638400.3489401
+  "timestamp": 1767639171.264669
 }
