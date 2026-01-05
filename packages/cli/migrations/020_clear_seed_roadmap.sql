@@ -9,24 +9,8 @@
 
 -- UP
 
--- Audit trail (capture count before deletion)
-INSERT INTO audit_log (event_type, actor, resource_type, action, new_value, instance_id, protocol_version)
-SELECT
-    'roadmap_cleanup',
-    'migration:020_clear_seed_roadmap',
-    'roadmap',
-    'delete_seeded_items',
-    json_object(
-        'deleted_items', (
-            SELECT COUNT(*) FROM roadmap_items
-            WHERE created_by IN ('migration:011', 'migration:011_roadmap_reality_reset')
-        )
-    ),
-    COALESCE((SELECT value FROM instance_config WHERE key = 'instance_id'), 'unknown'),
-    1
-WHERE EXISTS (
-    SELECT 1 FROM sqlite_master WHERE type='table' AND name='audit_log'
-);
+-- Audit trail intentionally skipped here.
+-- This migration must be safe even when audit_log is absent (legacy upgrade tests).
 
 -- Remove any assignments/dependencies tied to seeded items first (FK safety)
 DELETE FROM roadmap_assignments
