@@ -186,6 +186,18 @@ def _check_numeric_claims() -> tuple[bool, str]:
     return True, "Numeric claims are provable"
 
 
+def _check_claim_proofs() -> tuple[bool, str]:
+    data = _load_yaml(MESSAGING_YAML)
+    for label in ("hero", "pain_statement"):
+        block = data.get(label, {})
+        if block.get("claim_status") is None:
+            continue
+        ok, msg = _require_claim(block, label)
+        if not ok:
+            return False, msg
+    return True, "Claims with status include proofs"
+
+
 def _check_demo_status() -> tuple[bool, str]:
     data = _load_yaml(MESSAGING_YAML)
     demo = data.get("demo", {})
@@ -229,6 +241,18 @@ def _check_evidence_links() -> tuple[bool, str]:
     return True, "Evidence links resolve"
 
 
+def _check_proof_ledger_evidence() -> tuple[bool, str]:
+    proof_ledger = _load_yaml(PROOF_YAML)
+    for claim in proof_ledger.get("claims", []):
+        evidence = claim.get("evidence", [])
+        if not evidence:
+            return False, f"proof-ledger claim '{claim.get('id')}' missing evidence entries"
+        for entry in evidence:
+            if not entry.get("url"):
+                return False, f"proof-ledger claim '{claim.get('id')}' has evidence without url"
+    return True, "Proof ledger evidence entries present"
+
+
 def _check_import_scope() -> tuple[bool, str]:
     allowed = {
         REPO_ROOT / "packages" / "website" / "src" / "pages" / "index.astro",
@@ -260,8 +284,10 @@ def main() -> int:
         ("Badge workflows", _check_badge_workflows),
         ("Forbidden phrases", _check_forbidden_phrases),
         ("Numeric claims", _check_numeric_claims),
+        ("Claim proofs", _check_claim_proofs),
         ("Status terms", _check_status_terms),
         ("Evidence links", _check_evidence_links),
+        ("Proof ledger evidence", _check_proof_ledger_evidence),
         ("Demo status", _check_demo_status),
         ("Import scope", _check_import_scope),
         ("Readiness tests", _check_tests_recorded),
