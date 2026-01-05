@@ -381,10 +381,27 @@ DROP TABLE IF EXISTS test;
             """
         )
 
+        # Minimal roadmap tables needed for migration 020 cleanup
+        conn.executescript(
+            """
+            CREATE TABLE roadmap_items (
+                id TEXT PRIMARY KEY,
+                created_by TEXT
+            );
+            CREATE TABLE roadmap_assignments (
+                item_id TEXT
+            );
+            CREATE TABLE roadmap_dependencies (
+                item_id TEXT,
+                depends_on_id TEXT
+            );
+            """
+        )
+
         runner = MigrationRunner(conn, migrations_dir)
         count = runner.apply_migrations()
 
-        assert count == 1
+        assert count == 2
         cols = {row[1] for row in conn.execute("PRAGMA table_info(leases)").fetchall()}
         assert "resource_type" in cols
         legacy = conn.execute(
