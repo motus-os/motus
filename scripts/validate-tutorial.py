@@ -41,6 +41,13 @@ class TutorialValidator:
         self.dry_run = dry_run
         self.context: dict[str, str] = {}
         self.workdir: Path | None = None
+        self.env = os.environ.copy()
+        self.log_lines: list[str] = []
+        self.log_path = Path(os.environ.get("TUTORIAL_LOG_PATH", "tutorial-validation.log")).resolve()
+
+    def log(self, message: str) -> None:
+        """Record a log line for CI artifacts."""
+        self.log_lines.append(message)
 
     def load_tutorial(self) -> dict:
         """Load and parse the tutorial YAML."""
@@ -59,6 +66,7 @@ class TutorialValidator:
 
         if self.dry_run:
             print(f"  [DRY RUN] Would execute: {command}")
+            self.log(f"[DRY RUN] {command}")
             return 0, "dry-run-output", ""
 
         try:
@@ -66,12 +74,20 @@ class TutorialValidator:
                 command,
                 shell=True,
                 cwd=self.workdir,
+                env=self.env,
                 capture_output=True,
                 text=True,
                 timeout=timeout,
             )
+            self.log(f"$ {command}")
+            if result.stdout:
+                self.log(result.stdout.strip())
+            if result.stderr:
+                self.log(result.stderr.strip())
             return result.returncode, result.stdout, result.stderr
         except subprocess.TimeoutExpired:
+            self.log(f"$ {command}")
+            self.log(f"TIMEOUT after {timeout}s")
             return -1, "", f"Command timed out after {timeout}s"
 
     def write_file(self, path: str, content: str) -> bool:
@@ -107,6 +123,10 @@ class TutorialValidator:
             return True
 
         if step_type == "command":
+            if step.get("skip_in_ci") and os.environ.get("CI"):
+                print("      SKIP: Marked skip_in_ci")
+                self.log(f"SKIP (CI): {step.get('id', '')}")
+                return True
             command = step["command"]
             timeout = step.get("timeout_seconds", 30)
 
@@ -128,6 +148,13 @@ class TutorialValidator:
                     print(f"      Output: {stdout[:200]}")
                     return False
 
+            if "expected_patterns" in step:
+                patterns = step["expected_patterns"] or []
+                if not any(re.search(p, stdout) for p in patterns):
+                    print(f"      FAIL: None of patterns matched: {patterns}")
+                    print(f"      Output: {stdout[:200]}")
+                    return False
+
             # Check expected contains
             if "expected_contains" in step:
                 for expected in step["expected_contains"]:
@@ -146,6 +173,13 @@ class TutorialValidator:
                     print(f"      Captured: {var_name} = {self.context[var_name]}")
                 else:
                     print(f"      WARN: Could not capture {var_name}")
+
+            if step.get("workdir"):
+                next_dir = (self.workdir / step["workdir"]).resolve()
+                next_dir.mkdir(parents=True, exist_ok=True)
+                self.workdir = next_dir
+                self.env["MC_DB_PATH"] = str(self.workdir / "coordination.db")
+                print(f"      Working directory -> {self.workdir}")
 
             print(f"      OK")
             return True
@@ -196,59 +230,64 @@ class TutorialValidator:
     def run(self) -> int:
         """Run the full validation."""
         try:
-            tutorial = self.load_tutorial()
-        except Exception as e:
-            print(f"ERROR: Failed to load tutorial: {e}")
-            return 3
+            try:
+                tutorial = self.load_tutorial()
+            except Exception as e:
+                print(f"ERROR: Failed to load tutorial: {e}")
+                return 3
 
-        print(f"Tutorial: {tutorial['meta']['title']}")
-        print(f"Version: {tutorial['version']}")
-        print(f"Status filter: {self.status_filter}")
-        print()
-
-        # Check prerequisites
-        if not self.validate_prerequisites(tutorial.get("prerequisites", [])):
-            return 2
-
-        print()
-
-        # Create temp directory for the build
-        with tempfile.TemporaryDirectory(prefix="motus-tutorial-") as tmpdir:
-            self.workdir = Path(tmpdir)
-            print(f"Working directory: {self.workdir}")
+            print(f"Tutorial: {tutorial['meta']['title']}")
+            print(f"Version: {tutorial['version']}")
+            print(f"Status filter: {self.status_filter}")
             print()
 
-            # Validate setup
-            print("Setup:")
-            setup = tutorial.get("setup", {})
-            if not self.validate_section(setup, "setup"):
-                print("\nFAIL: Setup failed")
-                return 1
+            # Check prerequisites
+            if not self.validate_prerequisites(tutorial.get("prerequisites", [])):
+                return 2
 
             print()
 
-            # Validate each feature
-            print("Features:")
-            for feature in tutorial.get("features", []):
-                feature_id = feature["id"]
-                if not self.validate_section(feature, feature_id):
-                    print(f"\nFAIL: Feature {feature_id} failed")
+            # Create temp directory for the build
+            with tempfile.TemporaryDirectory(prefix="motus-tutorial-") as tmpdir:
+                self.workdir = Path(tmpdir)
+                self.env["MC_DB_PATH"] = str(self.workdir / "coordination.db")
+                print(f"Working directory: {self.workdir}")
+                print()
+
+                # Validate setup
+                print("Setup:")
+                setup = tutorial.get("setup", {})
+                if not self.validate_section(setup, "setup"):
+                    print("\nFAIL: Setup failed")
+                    return 1
+
+                print()
+
+                # Validate each feature
+                print("Features:")
+                for feature in tutorial.get("features", []):
+                    feature_id = feature["id"]
+                    if not self.validate_section(feature, feature_id):
+                        print(f"\nFAIL: Feature {feature_id} failed")
+                        return 1
+
+                print()
+
+                # Validate reveal
+                print("Reveal:")
+                reveal = tutorial.get("reveal", {})
+                if not self.validate_section(reveal, "reveal"):
+                    print("\nFAIL: Reveal failed")
                     return 1
 
             print()
-
-            # Validate reveal
-            print("Reveal:")
-            reveal = tutorial.get("reveal", {})
-            if not self.validate_section(reveal, "reveal"):
-                print("\nFAIL: Reveal failed")
-                return 1
-
-        print()
-        print("=" * 60)
-        print("PASS: All tutorial steps validated successfully")
-        print("=" * 60)
-        return 0
+            print("=" * 60)
+            print("PASS: All tutorial steps validated successfully")
+            print("=" * 60)
+            return 0
+        finally:
+            if self.log_lines:
+                self.log_path.write_text("\n".join(self.log_lines) + "\n")
 
 
 def main():

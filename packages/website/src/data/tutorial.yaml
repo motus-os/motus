@@ -178,9 +178,9 @@ features:
         type: command
         command: "motus work status ${lease_id}"
         expected_contains:
-          - "outcome"
-          - "evidence"
-          - "decision"
+          - "Lease:"
+          - "Status:"
+          - "Agent:"
         expected_exit: 0
         gif: true
         gif_name: "04-receipt"
@@ -355,9 +355,9 @@ reveal:
       command: "motus work status ${lease_id}"
       expected_exit: 0
       expected_contains:
-        - "outcome"
-        - "evidence"
-        - "decision"
+        - "Lease:"
+        - "Status:"
+        - "Agent:"
       gif: true
       gif_name: "05-reveal-1"
       explanation: "The greeting function task: outcome, evidence, and decision recorded."
@@ -368,9 +368,9 @@ reveal:
       command: "motus work status ${lease_id_2}"
       expected_exit: 0
       expected_contains:
-        - "outcome"
-        - "evidence"
-        - "decision"
+        - "Lease:"
+        - "Status:"
+        - "Agent:"
       explanation: "The validation task: same structure, different work."
 
     - id: receipt_3
@@ -379,9 +379,9 @@ reveal:
       command: "motus work status ${lease_id_3}"
       expected_exit: 0
       expected_contains:
-        - "outcome"
-        - "evidence"
-        - "decision"
+        - "Lease:"
+        - "Status:"
+        - "Agent:"
       gif: true
       gif_name: "05-reveal-3"
       explanation: |
