@@ -16,6 +16,9 @@ Hide
 Type "cd /tmp && rm -rf demo-app && mkdir demo-app && cd demo-app"
 Enter
 Sleep 500ms
+Type "export MC_DB_PATH=/tmp/demo-app/coordination.db"
+Enter
+Sleep 200ms
 Type "motus init --lite --path . 2>/dev/null"
 Enter
 Sleep 1s
@@ -28,7 +31,7 @@ Enter
 Sleep 500ms
 
 # The actual command
-Type "motus work claim DEMO-001 --intent 'Add greeting function'"
+Type "motus work claim ADHOC-DEMO-001 --intent 'Add greeting function' 2>/dev/null"
 Sleep 500ms
 Enter
 Sleep 2s

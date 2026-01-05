@@ -10,12 +10,12 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
   : `${import.meta.env.BASE_URL}/`;
 const workSteps = [
-  { label: "claim_work()", note: "Reserve work + lease" },
-  { label: "get_context()", note: "Assemble the Lens" },
+  { label: "claim_work()", note: "Reserve the task" },
+  { label: "get_context()", note: "Get relevant files" },
   { label: "put_outcome()", note: "Register deliverables" },
   { label: "record_evidence()", note: "Attach proof" },
   { label: "record_decision()", note: "Log rationale" },
-  { label: "release_work()", note: "Finalize + release" },
+  { label: "release_work()", note: "Complete + receipt" },
 ];
 const moduleHighlights = [
   {
@@ -23,25 +23,25 @@ const moduleHighlights = [
     focus: 'Reading',
     summary: {
       lead: 'Read only what matters.',
-      rest: 'Deterministic Lens slices keep context tight.',
+      rest: 'Deterministic file snapshots keep context tight and reproducible.',
     },
     bullets: [
-      'Token compression lens',
-      'Deterministic context slices',
-      'Snapshot provenance',
+      'Relevant files only',
+      'Reproducible snapshots',
+      'Token-efficient',
     ],
   },
   {
     name: 'LEASES',
     focus: 'Coordination',
     summary: {
-      lead: 'No collision handoffs.',
-      rest: 'Lease-based coordination locks work until release.',
+      lead: 'No collision, no conflicts.',
+      rest: 'Exclusive access to tasks until work is released.',
     },
     bullets: [
-      'Lease-based handoffs',
+      'Exclusive task access',
       'Conflict detection',
-      'Deterministic releases',
+      'Clean handoffs',
     ],
   },
   {
@@ -49,12 +49,12 @@ const moduleHighlights = [
     focus: 'Trust',
     summary: {
       lead: 'Every action is reviewable.',
-      rest: 'Evidence bundles + policy gates produce receipts.',
+      rest: 'Outcome, evidence, and decision bundled together.',
     },
     bullets: [
       'Evidence bundles',
-      'Policy gates',
-      'Audit trail integrity',
+      'Decision logging',
+      'Audit trail',
     ],
   },
   {
@@ -62,7 +62,7 @@ const moduleHighlights = [
     focus: 'Reasoning',
     summary: {
       lead: 'Reuse decisions, not guesswork.',
-      rest: 'Pattern library captures triggers + reviews.',
+      rest: 'Pattern library for consistent approaches.',
     },
     bullets: [
       'Decision patterns',
@@ -181,32 +181,38 @@ const moduleHighlights = [
     <div class="grid md:grid-cols-2 gap-phi-3">
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">claim_work()</code>
-        <p class="text-text-secondary mt-2">Lease reserved with a Lens snapshot.</p>
+        <p class="text-text-primary mt-2 text-sm font-medium">Reserve a task with exclusive access.</p>
+        <p class="text-text-secondary mt-1 text-sm">Returns a lease ID that locks the task until you release it. Captures a snapshot of relevant files.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">get_context()</code>
-        <p class="text-text-secondary mt-2">Refreshed Lens snapshot mid-task.</p>
+        <p class="text-text-primary mt-2 text-sm font-medium">Get a fresh view of the task state.</p>
+        <p class="text-text-secondary mt-1 text-sm">Refreshes the file snapshot mid-task if sources changed. Returns only what’s relevant.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">put_outcome()</code>
-        <p class="text-text-secondary mt-2">Deliverables registered to the lease.</p>
+        <p class="text-text-primary mt-2 text-sm font-medium">Register what you delivered.</p>
+        <p class="text-text-secondary mt-1 text-sm">Record the files, changes, or artifacts your work produced. Attached to your lease.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">record_evidence()</code>
-        <p class="text-text-secondary mt-2">Proof artifacts attached.</p>
+        <p class="text-text-primary mt-2 text-sm font-medium">Attach proof that it works.</p>
+        <p class="text-text-secondary mt-1 text-sm">Test results, validation outputs, or any artifact that proves your work is correct.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">record_decision()</code>
-        <p class="text-text-secondary mt-2">Decision rationale logged.</p>
+        <p class="text-text-primary mt-2 text-sm font-medium">Explain why you chose this approach.</p>
+        <p class="text-text-secondary mt-1 text-sm">Log the reasoning behind your choices. Useful for review and debugging.</p>
       </Panel>
 
       <Panel size="sm">
         <code class="text-mint font-mono text-lg">release_work()</code>
-        <p class="text-text-secondary mt-2">Lease closed with a receipt.</p>
+        <p class="text-text-primary mt-2 text-sm font-medium">Complete the task with a receipt.</p>
+        <p class="text-text-secondary mt-1 text-sm">Closes your lease and generates a receipt with outcome, evidence, and decision attached.</p>
       </Panel>
     </div>
   </Section>
@@ -223,8 +229,9 @@ const moduleHighlights = [
         <h3 class="text-lg font-display text-text-primary">Policy gate</h3>
         <p class="text-sm text-text-secondary">Only eligible work can proceed.</p>
         <p class="text-sm text-text-secondary">Validates eligibility, scope, and policy packs.</p>
-        <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
-        <p class="text-sm text-text-secondary">claim_work → release_work</p>
+        <p class="text-xs text-text-secondary/70 mt-phi-2 pt-phi-2 border-t border-line/20">
+          <span class="font-medium">Applies to:</span> claim_work → release_work
+        </p>
         <a
           href={`${base}docs/evidence#claim-policy_gates`}
           class="text-sm text-mint hover:text-text-primary transition-colors"
@@ -237,8 +244,9 @@ const moduleHighlights = [
         <h3 class="text-lg font-display text-text-primary">Evidence gate</h3>
         <p class="text-sm text-text-secondary">Evidence artifacts keep receipts complete.</p>
         <p class="text-sm text-text-secondary">Record evidence before release to keep the trail intact.</p>
-        <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
-        <p class="text-sm text-text-secondary">record_evidence → release_work</p>
+        <p class="text-xs text-text-secondary/70 mt-phi-2 pt-phi-2 border-t border-line/20">
+          <span class="font-medium">Applies to:</span> record_evidence → release_work
+        </p>
         <a
           href={`${base}docs/evidence#claim-evidence_gate`}
           class="text-sm text-mint hover:text-text-primary transition-colors"
@@ -250,8 +258,9 @@ const moduleHighlights = [
         <h3 class="text-lg font-display text-text-primary">Completion gate</h3>
         <p class="text-sm text-text-secondary">Decisions + evidence complete the receipt.</p>
         <p class="text-sm text-text-secondary">Log the decision alongside the proof you attach.</p>
-        <p class="text-xs uppercase tracking-[0.22em] text-text-secondary">Touches</p>
-        <p class="text-sm text-text-secondary">record_decision → release_work</p>
+        <p class="text-xs text-text-secondary/70 mt-phi-2 pt-phi-2 border-t border-line/20">
+          <span class="font-medium">Applies to:</span> record_decision → release_work
+        </p>
         <a
           href={`${base}docs/evidence#claim-completion_gate`}
           class="text-sm text-mint hover:text-text-primary transition-colors"
@@ -298,45 +307,45 @@ const moduleHighlights = [
 
     <div class="space-y-phi-4">
       <Panel size="sm">
-        <h3 class="text-xl font-display text-mint mb-phi-2">Deterministic Lens snapshot</h3>
+        <h3 class="text-xl font-display text-mint mb-phi-2">Claim work and get context</h3>
         <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
-<code><span class="text-text-secondary"># Claim work and assemble a deterministic Lens</span>
+<code><span class="text-mint/70"># Reserve a task and pull the relevant context</span>
 <span class="text-mint">from</span> motus.api <span class="text-mint">import</span> WorkCompiler
 
 wc = WorkCompiler()
 claim = wc.claim_work(
-    task_id="RI-EX-001",
+    task_id="ADHOC-EX-001",
     resources=[&#123;"type": "file", "path": "src/auth.py"&#125;],
     intent="Harden auth flow",
     agent_id="agent-1",
 )
-ctx = wc.get_context(claim.lease.lease_id, task_id="RI-EX-001")
-lens = ctx.lens
+ctx = wc.get_context(claim.lease.lease_id, task_id="ADHOC-EX-001")
+resource_specs = ctx.lens.get("resource_specs", [])
 </code></pre>
       </Panel>
 
       <Panel size="sm">
-        <h3 class="text-xl font-display text-mint mb-phi-2">Receipt with outcome + evidence</h3>
+        <h3 class="text-xl font-display text-mint mb-phi-2">Complete with receipt</h3>
         <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
-<code><span class="text-text-secondary"># Attach outcomes, evidence, and decisions</span>
+<code><span class="text-mint/70"># Attach outcomes, evidence, and decisions</span>
 lease_id = claim.lease.lease_id
 
 wc.put_outcome(lease_id, outcome_type="file", path="src/auth.py")
 wc.record_evidence(lease_id, evidence_type="test_result", test_results=&#123;"passed": 44, "failed": 0&#125;)
 wc.record_decision(lease_id, decision="Ship guardrails", rationale="Stops regressions")
-wc.release_work(lease_id, outcome="success")
+wc.release_work(lease_id, outcome="success")  <span class="text-mint/70"># Receipt generated</span>
 </code></pre>
       </Panel>
 
       <Panel size="sm">
-        <h3 class="text-xl font-display text-mint mb-phi-2">Evidence bundle verified</h3>
+        <h3 class="text-xl font-display text-mint mb-phi-2">Verify the evidence</h3>
         <pre class="theme-dark bg-charcoal/80 rounded-xl p-phi-2 md:p-phi-3 overflow-x-auto text-sm">
-<code><span class="text-text-secondary"># Verify a bundle on disk</span>
+<code><span class="text-mint/70"># Verify an evidence bundle on disk</span>
 <span class="text-mint">from</span> pathlib <span class="text-mint">import</span> Path
 <span class="text-mint">from</span> motus.policy.verify <span class="text-mint">import</span> verify_evidence_bundle
 
 result = verify_evidence_bundle(evidence_dir=Path(".motus/evidence/run-001"))
-<span class="text-mint">assert</span> result.ok
+<span class="text-mint">assert</span> result.ok  <span class="text-mint/70"># Evidence is valid</span>
 </code></pre>
       </Panel>
     </div>

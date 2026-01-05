@@ -169,7 +169,12 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
                     <div class="flex items-center justify-between">
                       <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">{step.title}</p>
                       {step.gif && (
-                        <span class="text-xs text-mint">GIF</span>
+                        <img
+                          src={getGifPath(step.gif_name)}
+                          alt={`${step.title} demo`}
+                          loading="lazy"
+                          class="h-10 w-auto rounded border border-line/20"
+                        />
                       )}
                     </div>
 
@@ -227,9 +232,12 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
           <div class="flex items-center justify-between">
             <p class="text-sm font-medium text-text-primary">{step.title}</p>
             {step.gif && (
-              <span class="text-xs px-2 py-1 rounded-full bg-mint/10 text-mint">
-                See GIF
-              </span>
+              <img
+                src={getGifPath(step.gif_name)}
+                alt={`${step.title} demo`}
+                loading="lazy"
+                class="h-10 w-auto rounded border border-line/20"
+              />
             )}
           </div>
 

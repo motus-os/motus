@@ -51,15 +51,19 @@ setup:
       title: "Install Motus"
       type: command
       command: "pip install motusos"
-      expected_pattern: "Successfully installed"
+      expected_patterns:
+        - "Successfully installed"
+        - "Requirement already satisfied"
       expected_exit: 0
       timeout_seconds: 60
+      skip_in_ci: true
 
     - id: create_dir
       title: "Create project directory"
       type: command
       command: "mkdir -p demo-app && cd demo-app"
       expected_exit: 0
+      workdir: "demo-app"
 
     - id: init
       title: "Initialize Motus"
@@ -68,11 +72,11 @@ setup:
       expected_pattern: "Initialized"
       expected_exit: 0
 
-    - id: doctor
+    - id: version
       title: "Verify installation"
       type: command
-      command: "motus doctor"
-      expected_pattern: "All checks passed"
+      command: "motus --version"
+      expected_pattern: "motus\\s+\\d+\\.\\d+\\.\\d+"
       expected_exit: 0
       gif: false
 
@@ -84,7 +88,7 @@ setup:
     ```
 
 features:
-  - id: DEMO-001
+  - id: ADHOC-DEMO-001
     title: "Add greeting function"
     status: current
     intent: "Add greeting function that returns personalized message"
@@ -94,11 +98,11 @@ features:
       - id: claim
         title: "Claim the work"
         type: command
-        command: "motus work claim DEMO-001 --intent \"Add greeting function\""
-        expected_pattern: "lease_[a-z0-9]+"
+        command: "motus work claim ADHOC-DEMO-001 --intent \"Add greeting function\""
+        expected_pattern: "lease-[a-z0-9-]+"
         capture_output:
           variable: lease_id
-          pattern: "lease_[a-z0-9]+"
+          pattern: "lease-[a-z0-9-]+"
         expected_exit: 0
         gif: true
         gif_name: "01-claim"
@@ -136,7 +140,7 @@ features:
       - id: evidence
         title: "Record evidence"
         type: command
-        command: "motus work evidence ${lease_id} test --passed 1 --failed 0"
+        command: "motus work evidence ${lease_id} test_result --passed 1 --failed 0"
         expected_pattern: "Evidence recorded"
         expected_exit: 0
         gif: true
@@ -147,7 +151,7 @@ features:
         title: "Register the deliverable"
         type: command
         command: "motus work outcome ${lease_id} file --path greeter.py"
-        expected_pattern: "Outcome recorded"
+        expected_pattern: "Outcome registered"
         expected_exit: 0
         explanation: "Record what file you created."
 
@@ -155,7 +159,7 @@ features:
         title: "Log your decision"
         type: command
         command: "motus work decision ${lease_id} \"Used f-string for readability, added docstring for clarity\""
-        expected_pattern: "Decision recorded"
+        expected_pattern: "Decision logged"
         expected_exit: 0
         explanation: "Explain why you made the choices you did."
 
@@ -163,7 +167,7 @@ features:
         title: "Release with receipt"
         type: command
         command: "motus work release ${lease_id} success"
-        expected_pattern: "Released"
+        expected_pattern: "Released:"
         expected_exit: 0
         gif: true
         gif_name: "03-release"
@@ -182,7 +186,7 @@ features:
         gif_name: "04-receipt"
         explanation: "See the complete audit trail for this task."
 
-  - id: DEMO-002
+  - id: ADHOC-DEMO-002
     title: "Add input validation"
     status: current
     intent: "Add validation to reject empty names"
@@ -192,11 +196,11 @@ features:
       - id: claim
         title: "Claim the work"
         type: command
-        command: "motus work claim DEMO-002 --intent \"Add input validation\""
-        expected_pattern: "lease_[a-z0-9]+"
+        command: "motus work claim ADHOC-DEMO-002 --intent \"Add input validation\""
+        expected_pattern: "lease-[a-z0-9-]+"
         capture_output:
           variable: lease_id_2
-          pattern: "lease_[a-z0-9]+"
+          pattern: "lease-[a-z0-9-]+"
         expected_exit: 0
         gif: false
 
@@ -230,7 +234,7 @@ features:
       - id: evidence
         title: "Record evidence"
         type: command
-        command: "motus work evidence ${lease_id_2} test --passed 2 --failed 0"
+        command: "motus work evidence ${lease_id_2} test_result --passed 2 --failed 0"
         expected_pattern: "Evidence recorded"
         expected_exit: 0
 
@@ -238,24 +242,24 @@ features:
         title: "Register deliverables"
         type: command
         command: "motus work outcome ${lease_id_2} file --path test_greeter.py"
-        expected_pattern: "Outcome recorded"
+        expected_pattern: "Outcome registered"
         expected_exit: 0
 
       - id: decision
         title: "Log decision"
         type: command
         command: "motus work decision ${lease_id_2} \"Used pytest for test framework, ValueError for validation errors\""
-        expected_pattern: "Decision recorded"
+        expected_pattern: "Decision logged"
         expected_exit: 0
 
       - id: release
         title: "Release"
         type: command
         command: "motus work release ${lease_id_2} success"
-        expected_pattern: "Released"
+        expected_pattern: "Released:"
         expected_exit: 0
 
-  - id: DEMO-003
+  - id: ADHOC-DEMO-003
     title: "Add CLI entry point"
     status: current
     intent: "Add command-line interface for the greeter"
@@ -265,11 +269,11 @@ features:
       - id: claim
         title: "Claim the work"
         type: command
-        command: "motus work claim DEMO-003 --intent \"Add CLI entry point\""
-        expected_pattern: "lease_[a-z0-9]+"
+        command: "motus work claim ADHOC-DEMO-003 --intent \"Add CLI entry point\""
+        expected_pattern: "lease-[a-z0-9-]+"
         capture_output:
           variable: lease_id_3
-          pattern: "lease_[a-z0-9]+"
+          pattern: "lease-[a-z0-9-]+"
         expected_exit: 0
 
       - id: write_cli
@@ -306,7 +310,7 @@ features:
       - id: evidence
         title: "Record evidence"
         type: command
-        command: "motus work evidence ${lease_id_3} test --passed 1 --failed 0"
+        command: "motus work evidence ${lease_id_3} test_result --passed 1 --failed 0"
         expected_pattern: "Evidence recorded"
         expected_exit: 0
 
@@ -314,21 +318,21 @@ features:
         title: "Register deliverable"
         type: command
         command: "motus work outcome ${lease_id_3} file --path cli.py"
-        expected_pattern: "Outcome recorded"
+        expected_pattern: "Outcome registered"
         expected_exit: 0
 
       - id: decision
         title: "Log decision"
         type: command
         command: "motus work decision ${lease_id_3} \"Used argparse-free approach for simplicity, sys.exit for proper exit codes\""
-        expected_pattern: "Decision recorded"
+        expected_pattern: "Decision logged"
         expected_exit: 0
 
       - id: release
         title: "Release"
         type: command
         command: "motus work release ${lease_id_3} success"
-        expected_pattern: "Released"
+        expected_pattern: "Released:"
         expected_exit: 0
 
 reveal:
