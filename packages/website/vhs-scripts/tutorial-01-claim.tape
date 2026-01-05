@@ -2,7 +2,7 @@
 # Demonstrates: motus work claim
 # Generated from tutorial.yaml structure - update YAML, regenerate this
 
-Output packages/website/public/assets/tutorial/01-claim.gif
+Output public/assets/tutorial/01-claim.gif
 
 Set Shell "bash"
 Set FontSize 14
@@ -31,7 +31,7 @@ Enter
 Sleep 500ms
 
 # The actual command
-Type "motus work claim ADHOC-DEMO-001 --intent 'Add greeting function' 2>/dev/null"
+Type "motus work claim ADHOC-DEMO-001 --intent 'Add a safe greeting function' 2>/dev/null"
 Sleep 500ms
 Enter
 Sleep 2s

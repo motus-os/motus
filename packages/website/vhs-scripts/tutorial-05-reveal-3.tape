@@ -2,7 +2,7 @@
 # Demonstrates: Three complete receipts from three features
 # Generated from tutorial.yaml structure - update YAML, regenerate this
 
-Output packages/website/public/assets/tutorial/05-reveal-3.gif
+Output public/assets/tutorial/05-reveal-3.gif
 
 Set Shell "bash"
 Set FontSize 14
@@ -24,7 +24,7 @@ Enter
 Sleep 500ms
 
 # Task 1
-Type "L1=$(motus work claim ADHOC-DEMO-001 --intent 'Add greeting function' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
+Type "L1=$(motus work claim ADHOC-DEMO-001 --intent 'Add a safe greeting function' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
 Enter
 Type 'echo "def greet(name): return \"Hello, \" + name + \"!\"" > greeter.py'
 Enter
@@ -39,7 +39,7 @@ Enter
 Sleep 300ms
 
 # Task 2
-Type "L2=$(motus work claim ADHOC-DEMO-002 --intent 'Add input validation' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
+Type "L2=$(motus work claim ADHOC-DEMO-002 --intent 'Prove the validation' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
 Enter
 Type "echo 'import pytest' > test_greeter.py"
 Enter

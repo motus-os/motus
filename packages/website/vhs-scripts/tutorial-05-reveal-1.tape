@@ -2,7 +2,7 @@
 # Demonstrates: motus work status showing complete receipt
 # Generated from tutorial.yaml structure - update YAML, regenerate this
 
-Output packages/website/public/assets/tutorial/05-reveal-1.gif
+Output public/assets/tutorial/05-reveal-1.gif
 
 Set Shell "bash"
 Set FontSize 14
@@ -24,7 +24,7 @@ Enter
 Sleep 500ms
 
 # Task 1 - complete the full loop
-Type "L1=$(motus work claim ADHOC-DEMO-001 --intent 'Add greeting function' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
+Type "L1=$(motus work claim ADHOC-DEMO-001 --intent 'Add a safe greeting function' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
 Enter
 Type 'echo "def greet(name): return \"Hello, \" + name + \"!\"" > greeter.py'
 Enter

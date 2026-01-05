@@ -2,7 +2,7 @@
 # Demonstrates: motus work evidence
 # Generated from tutorial.yaml structure - update YAML, regenerate this
 
-Output packages/website/public/assets/tutorial/02-evidence.gif
+Output public/assets/tutorial/02-evidence.gif
 
 Set Shell "bash"
 Set FontSize 14
@@ -23,7 +23,7 @@ Type "motus init --lite --path . 2>/dev/null"
 Enter
 Sleep 500ms
 # Create lease and capture ID
-Type "LEASE=$(motus work claim ADHOC-DEMO-001 --intent 'Add greeting function' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
+Type "LEASE=$(motus work claim ADHOC-DEMO-001 --intent 'Add a safe greeting function' 2>/dev/null | grep -o 'lease-[a-z0-9-]*')"
 Enter
 Sleep 1s
 # Create the file
