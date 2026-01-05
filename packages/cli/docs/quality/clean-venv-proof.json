@@ -35,6 +35,6 @@
     "typing_extensions": "4.15.0"
   },
   "passed": true,
-  "source_path": "/Users/ben/GitHub/motus/packages/cli",
+  "source_path": "/path/to/motus/packages/cli",
   "timestamp": 1767646724.716823
 }

@@ -11,7 +11,7 @@
     },
     {
       "details": {
-        "origin": "/Users/ben/GitHub/motus/packages/cli/src/motus/__init__.py"
+        "origin": "/path/to/motus/packages/cli/src/motus/__init__.py"
       },
       "message": "No conflicting packages detected",
       "name": "package_conflicts",
@@ -82,7 +82,7 @@
           "typing_extensions": "4.15.0"
         },
         "passed": true,
-        "source_path": "/Users/ben/GitHub/motus/packages/cli",
+        "source_path": "/path/to/motus/packages/cli",
         "timestamp": 1767646665.6128
       },
       "message": "Clean venv proof passed",

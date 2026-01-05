@@ -127,7 +127,7 @@ INSERT INTO terminology (domain, internal_key, display_name, description, sort_o
 -- =============================================================================
 
 CREATE TABLE programs (
-    id TEXT PRIMARY KEY,                    -- 'motus-cli', 'bens-linkedin', 'veritas-infra'
+    id TEXT PRIMARY KEY,                    -- 'motus-cli', 'bens-linkedin', 'example-infra'
     name TEXT NOT NULL,
     description TEXT,
     type_key TEXT NOT NULL DEFAULT 'software',
@@ -738,7 +738,7 @@ GROUP BY pr.id, pr.name, t_type.display_name, t_status.display_name, pr.owner, p
 INSERT INTO programs (id, name, description, type_key, owner) VALUES
 ('motus-cli', 'Motus CLI', 'Multi-agent coordination framework', 'software', 'cli-agent'),
 ('bens-linkedin', 'Ben''s LinkedIn', 'Thought leadership content', 'content', 'content-agent'),
-('veritas-infra', 'Veritas Infrastructure', 'Systems and tooling', 'infrastructure', 'infra-agent');
+('example-infra', 'Example Infrastructure', 'Systems and tooling', 'infrastructure', 'infra-agent');
 
 -- Products within programs
 INSERT INTO products (id, program_id, name, description, version) VALUES
