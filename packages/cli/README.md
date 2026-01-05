@@ -4,8 +4,8 @@
 
 # Motus
 
-> Your AI agents waste 66% of their work. Motus makes every action verifiable.
-> Claim work. Prove it's done. One API. Ship receipts, not trust.
+> Agents do the work. Motus keeps the receipts.
+> One API. Verification infrastructure for AI that acts.
 
 [![License](https://img.shields.io/badge/license-MCSL-blue.svg)](LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/motusos)](https://pypi.org/project/motusos/)
