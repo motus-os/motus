@@ -93,15 +93,19 @@ def test_mcformatter_console_includes_level_and_message(
 def test_mclogger_skips_file_handler_on_permission_error(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    original_file_handler = logging.FileHandler
+    from logging.handlers import RotatingFileHandler
+
+    # Clear logger cache to ensure fresh instance
+    monkeypatch.setattr(mc_logging, "_loggers", {})
 
     def _raise_permission(*_args, **_kwargs):
         raise PermissionError("nope")
 
-    monkeypatch.setattr(mc_logging.logging, "FileHandler", _raise_permission)
+    # Patch RotatingFileHandler (what the code actually uses)
+    monkeypatch.setattr(mc_logging, "RotatingFileHandler", _raise_permission)
     logger = mc_logging.MCLogger("perm-test")
     assert not any(
-        isinstance(handler, original_file_handler) for handler in logger.logger.handlers
+        isinstance(handler, RotatingFileHandler) for handler in logger.logger.handlers
     )
 
 

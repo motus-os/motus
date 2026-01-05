@@ -7,11 +7,13 @@ from types import SimpleNamespace
 from motus.commands.audit_cmd import audit_add_command, audit_promote_command
 from motus.core.bootstrap import bootstrap_database_at_path
 from motus.core.database_connection import reset_db_manager
+from motus.core.layered_config import reset_config
 
 
 def _bootstrap_db(tmp_path: Path, monkeypatch) -> Path:
     db_path = tmp_path / "coordination.db"
     monkeypatch.setenv("MOTUS_DATABASE__PATH", str(db_path))
+    reset_config()  # Reset config cache to pick up new env var
     reset_db_manager()
     bootstrap_database_at_path(db_path)
     reset_db_manager()

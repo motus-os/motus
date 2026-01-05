@@ -13,7 +13,7 @@ from typing import Any
 
 from rich.console import Console
 
-from motus.cli.exit_codes import EXIT_ERROR, EXIT_SUCCESS, EXIT_USAGE
+from motus.cli.exit_codes import EXIT_SUCCESS, EXIT_USAGE
 from motus.core.database_connection import get_db_manager
 from motus.observability.audit import AuditEvent, AuditLogger
 

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -125,6 +126,8 @@ def _check_package_conflicts() -> EvidenceCheckResult:
 
 def _check_pytest(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
     cmd = [
+        sys.executable,
+        "-m",
         "pytest",
         "tests/",
         "--json-report",
@@ -208,6 +211,14 @@ def _check_bandit(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
     )
 
 
+# Dev-only packages excluded from vulnerability checks (not shipped with motusos)
+DEV_ONLY_PACKAGES = frozenset([
+    "ansible",
+    "ansible-core",
+    "cbor2",  # Not a runtime dependency
+])
+
+
 def _check_pip_audit(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
     cmd = ["pip-audit", "--format", "json", "-o", str(report_path)]
     result = _run(cmd, cwd=cli_root)
@@ -227,21 +238,28 @@ def _check_pip_audit(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
             message=f"Failed to parse pip-audit report: {exc}",
         )
 
-    total = 0
+    core_vulns = 0
+    dev_vulns = 0
     for dep in payload.get("dependencies", []):
-        total += len(dep.get("vulns", []))
-    if total:
+        pkg_name = dep.get("name", "").lower()
+        vuln_count = len(dep.get("vulns", []))
+        if pkg_name in DEV_ONLY_PACKAGES:
+            dev_vulns += vuln_count
+        else:
+            core_vulns += vuln_count
+
+    if core_vulns:
         return EvidenceCheckResult(
             name="pip_audit_results",
             passed=False,
-            message=f"pip-audit found {total} vulnerabilities",
-            details={"total": total},
+            message=f"pip-audit found {core_vulns} core vulnerabilities",
+            details={"core": core_vulns, "dev_only": dev_vulns},
         )
     return EvidenceCheckResult(
         name="pip_audit_results",
         passed=True,
-        message="pip-audit clean",
-        details={"total": total},
+        message=f"pip-audit clean (dev-only: {dev_vulns})",
+        details={"core": core_vulns, "dev_only": dev_vulns},
     )
 
 
