@@ -111,16 +111,18 @@ def _check_status_terms() -> tuple[bool, str]:
 
     messaging = _load_yaml(MESSAGING_YAML)
     claim_status = messaging.get("hero", {}).get("claim_status")
-    if claim_status in forbidden:
-        return False, f"messaging.yaml uses forbidden claim_status '{claim_status}'"
-    if claim_status not in allowed_claims:
-        return False, "messaging.yaml claim_status not allowed by status-system"
+    if claim_status is not None:  # None is valid (positioning, not a provable claim)
+        if claim_status in forbidden:
+            return False, f"messaging.yaml uses forbidden claim_status '{claim_status}'"
+        if claim_status not in allowed_claims:
+            return False, "messaging.yaml claim_status not allowed by status-system"
 
     pain_status = messaging.get("pain_statement", {}).get("claim_status")
-    if pain_status in forbidden:
-        return False, f"messaging.yaml uses forbidden claim_status '{pain_status}'"
-    if pain_status not in allowed_claims:
-        return False, "messaging.yaml pain_statement claim_status not allowed by status-system"
+    if pain_status is not None:  # None is valid (positioning, not a provable claim)
+        if pain_status in forbidden:
+            return False, f"messaging.yaml uses forbidden claim_status '{pain_status}'"
+        if pain_status not in allowed_claims:
+            return False, "messaging.yaml pain_statement claim_status not allowed by status-system"
 
     proof_ledger = _load_yaml(PROOF_YAML)
     for claim in proof_ledger.get("claims", []):

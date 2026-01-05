@@ -643,7 +643,7 @@ class PomodoroBot:
             reasoning=reasoning,
             alternatives=[
                 "skip break (rejected: reduces long-term focus)",
-                "extend break (rejected: momentum loss)"
+                "extend break (rejected: focus loss)"
             ]
         )
 

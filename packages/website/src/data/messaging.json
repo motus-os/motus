@@ -21,7 +21,7 @@
   },
   "benefits": [
     {
-      "id": "stop_waste",
+      "id": "stop_rework",
       "headline": "Stop repeating work",
       "detail": "Every action is tracked and proven",
       "icon": "check"

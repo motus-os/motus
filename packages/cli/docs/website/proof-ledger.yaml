@@ -1,6 +1,4 @@
 claims:
-# NOTE: Removed momentum_tax_survey - citation didn't support the claim.
-# The SO 2024 survey says "66% don't trust output" not "spend more time fixing."
 - id: six_call_api
   featured: true
   status: current

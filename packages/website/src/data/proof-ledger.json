@@ -1,28 +1,13 @@
 {
   "claims": [
     {
-      "id": "momentum_tax_survey",
-      "featured": false,
-      "status": "current",
-      "verified_on": "2024-05-08",
-      "method": "External survey: Stack Overflow 2024 AI",
-      "claim": "66% of developers spend more time fixing AI code than they saved.",
-      "momentum": "Result: highlights the waste Motus is built to remove.",
-      "evidence": [
-        {
-          "label": "Stack Overflow 2024 AI survey",
-          "url": "https://survey.stackoverflow.co/2024/ai"
-        }
-      ]
-    },
-    {
       "id": "six_call_api",
       "featured": true,
       "status": "current",
       "verified_on": "2026-01-02",
       "method": "Docs-backed: coordination API reference",
       "claim": "Six API calls run the full loop: claim, context, outcome, evidence, decision, release.",
-      "momentum": "Result: work stays coordinated without sprawl.",
+      "impact": "Work stays coordinated without sprawl.",
       "evidence": [
         {
           "label": "Coordination API docs",
@@ -37,7 +22,7 @@
       "verified_on": "2026-01-02",
       "method": "Docs-backed: module registry definitions",
       "claim": "The registry labels what is current, building, and future.",
-      "momentum": "Result: teams align on what is real versus in progress.",
+      "impact": "Teams align on what is real versus in progress.",
       "evidence": [
         {
           "label": "Module registry",
@@ -52,7 +37,7 @@
       "verified_on": "2026-01-02",
       "method": "Docs-backed: kernel schema definition",
       "claim": "Kernel schema v0.1.3 defines the authoritative tables.",
-      "momentum": "Result: stable contracts keep integrations aligned.",
+      "impact": "Stable contracts keep integrations aligned.",
       "evidence": [
         {
           "label": "Kernel schema docs",
@@ -67,7 +52,7 @@
       "verified_on": "2026-01-02",
       "method": "CI-backed: registry sync gate",
       "claim": "A registry sync gate keeps docs and website aligned.",
-      "momentum": "Result: published guidance stays in lockstep with releases.",
+      "impact": "Published guidance stays in lockstep with releases.",
       "evidence": [
         {
           "label": "Evidence registry entry",
@@ -82,7 +67,7 @@
       "verified_on": "2026-01-03",
       "method": "Docs-backed: architecture principle",
       "claim": "No cloud dependency; data stays local by default.",
-      "momentum": "Result: local-first setup keeps teams moving.",
+      "impact": "Local-first setup keeps teams moving.",
       "evidence": [
         {
           "label": "Architecture doc",
@@ -97,7 +82,7 @@
       "verified_on": "2026-01-03",
       "method": "Docs-backed: kernel invariants",
       "claim": "coordination.db is the single source of truth for work state.",
-      "momentum": "Result: deterministic state stays reviewable.",
+      "impact": "Deterministic state stays reviewable.",
       "evidence": [
         {
           "label": "Kernel guide",
@@ -111,7 +96,7 @@
       "status": "future",
       "method": "Docs-backed: phase gate criteria",
       "claim": "Policy gates run before work is released.",
-      "momentum": "Result: unsafe changes stop before they ship.",
+      "impact": "Unsafe changes stop before they ship.",
       "evidence": [
         {
           "label": "Phase gates criteria",
@@ -125,7 +110,7 @@
       "status": "future",
       "method": "Docs-backed: 6-call loop and gate criteria",
       "claim": "Evidence is required before completion.",
-      "momentum": "Result: proof travels with every outcome.",
+      "impact": "Proof travels with every receipt.",
       "evidence": [
         {
           "label": "How the loop captures evidence",
@@ -139,7 +124,7 @@
       "status": "future",
       "method": "Docs-backed: decision + evidence requirements",
       "claim": "Completion requires evidence and a logged decision.",
-      "momentum": "Result: every closeout stays reviewable.",
+      "impact": "Every closeout stays reviewable.",
       "evidence": [
         {
           "label": "Completion gate summary",
