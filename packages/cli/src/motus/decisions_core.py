@@ -12,14 +12,22 @@ from datetime import datetime
 from typing import Optional
 
 # Patterns that indicate a decision was made
+_DECISION_SUBJECTS = [
+    r"I(?:'ve|'ll| will| have)?",
+    r"we(?:'ve|'ll| will| have)?",
+]
+_DECISION_ACTIONS = (
+    r"(?:decided to|chose to|chosen to|opted to|going to|will)"
+)
+
 DECISION_PATTERNS = [
     # Explicit decision language
-    r"(?:I(?:'ve|'ll| will| have)?|(?:we(?:'ve|'ll| will| have)?)) (?:decided to|chose to|chosen to|opted to|going to|will)",
+    *[rf"{subject} {_DECISION_ACTIONS}" for subject in _DECISION_SUBJECTS],
     r"(?:decided|chose|chosen|opted) to (?:use|implement|add|create|remove|change|update|fix|keep|skip|avoid)",
-    r"(?:using|implementing|adding|creating|removing|changing|updating|fixing|keeping|skipping|avoiding) .+ instead of",
-    r"(?:rather than|instead of|over) .+, (?:I|we)(?:'ll|'ve| will| have)?",
+    r"(?:using|implementing|adding|creating|removing|changing|updating|fixing|keeping|skipping|avoiding) .+? instead of",
+    r"(?:rather than|instead of|over) .+?, (?:I|we)(?:'ll|'ve| will| have)?",
     # Reasoning indicators
-    r"because .+ (?:is|are|was|were|will be|would be) (?:better|simpler|cleaner|faster|safer|more)",
+    r"because .+? (?:is|are|was|were|will be|would be) (?:better|simpler|cleaner|faster|safer|more)",
     r"(?:this|that) (?:is|would be) (?:better|simpler|cleaner|faster|safer|more)",
     r"(?:the reason|reasoning) (?:is|being) that",
     # Comparison decisions
