@@ -139,11 +139,11 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
     />
 
     <div class="relative">
-      <span class="absolute left-phi-2 top-0 bottom-0 w-px bg-line/20"></span>
-      <ol class="space-y-phi-4 pl-phi-4 md:pl-phi-5">
+      <span class="absolute left-phi-3 top-0 bottom-0 w-px bg-line/20"></span>
+      <ol class="space-y-phi-4 pl-phi-5 md:pl-phi-6">
         {features.map((feature: any, featureIndex: number) => (
           <li id={feature.id} class="relative scroll-mt-24">
-            <span class="absolute left-phi-2 top-phi-2 -translate-x-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-line/30 bg-surface text-sm font-mono text-text-secondary">
+            <span class="absolute left-phi-3 top-phi-2 -translate-x-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-line/30 bg-surface text-sm font-mono text-text-secondary">
               {String(featureIndex + 1).padStart(2, '0')}
             </span>
 
