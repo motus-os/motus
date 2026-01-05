@@ -10,7 +10,9 @@ Provides CLI access to the 6-call Work Compiler API:
 - motus work evidence <lease_id> - Record verification artifact
 - motus work decision <lease_id> - Log decision
 - motus work release <lease_id> - Release with outcome
+- motus work status <lease_id> - Show current lease status
 - motus work cleanup - Expire stale leases
+- motus work list - List active leases
 """
 
 from __future__ import annotations
@@ -137,5 +139,14 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
         description="Expire stale leases to clear blocking entries",
     )
     cleanup_parser.add_argument("--json", action="store_true", help="Output as JSON")
+
+    # motus work list
+    list_parser = work_subparsers.add_parser(
+        "list",
+        help="List active leases",
+        description="List active work leases and their status",
+    )
+    list_parser.add_argument("--all", action="store_true", help="Include expired and released leases")
+    list_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
     return work_parser

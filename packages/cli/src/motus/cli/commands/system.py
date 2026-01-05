@@ -18,6 +18,11 @@ def register_system_parsers(subparsers: argparse._SubParsersAction) -> None:
 
     doctor_parser = subparsers.add_parser("doctor", help="Run health checks")
     doctor_parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON")
+    doctor_parser.add_argument(
+        "--fix",
+        action="store_true",
+        help="Attempt safe auto-remediation for warnings",
+    )
 
     errors_parser = subparsers.add_parser("errors", help="Summarize errors from a session")
     errors_parser.add_argument("session_id", nargs="?", help="Session ID (prefix match supported)")

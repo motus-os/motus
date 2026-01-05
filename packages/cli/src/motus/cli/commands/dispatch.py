@@ -163,6 +163,26 @@ def dispatch_command(
             raise SystemExit(audit_list_command(args))
         print_parser_help(console, bundle.audit_parser)
         raise SystemExit(EXIT_USAGE)
+    if command == "db":
+        from motus.commands.db_cmd import (
+            db_analyze_command,
+            db_checkpoint_command,
+            db_stats_command,
+            db_vacuum_command,
+        )
+
+        db_cmd = getattr(args, "db_command", None)
+        if db_cmd == "vacuum":
+            raise SystemExit(db_vacuum_command(args))
+        if db_cmd == "analyze":
+            raise SystemExit(db_analyze_command(args))
+        if db_cmd == "stats":
+            raise SystemExit(db_stats_command(args))
+        if db_cmd == "checkpoint":
+            raise SystemExit(db_checkpoint_command(args))
+
+        print_parser_help(console, bundle.db_parser)
+        raise SystemExit(EXIT_USAGE)
     if command == "claims":
         from motus.commands.claims_cmd import claims_acquire_command, claims_list_command
 
@@ -283,7 +303,12 @@ def dispatch_command(
     if command == "doctor":
         from motus.commands.doctor_cmd import doctor_command
 
-        raise SystemExit(doctor_command(json_output=getattr(args, "json", False)))
+        raise SystemExit(
+            doctor_command(
+                json_output=getattr(args, "json", False),
+                fix=getattr(args, "fix", False),
+            )
+        )
     if command == "errors":
         from motus.commands.errors_cmd import errors_command
 

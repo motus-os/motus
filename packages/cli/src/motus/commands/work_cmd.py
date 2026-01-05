@@ -16,6 +16,7 @@ from rich.console import Console
 
 from ..api import WorkCompiler
 from ..coordination.schemas import ClaimedResource as Resource
+from ..core.database_connection import get_db_manager
 from ..logging import get_logger
 
 logger = get_logger(__name__)
@@ -330,6 +331,87 @@ def cmd_work_cleanup(args: Any) -> int:
     return 0
 
 
+def cmd_work_list(args: Any) -> int:
+    """Handle: motus work list"""
+    db = get_db_manager()
+    as_json = getattr(args, "json", False)
+    include_all = getattr(args, "all", False)
+
+    with db.readonly_connection() as conn:
+        table = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'coordination_leases'"
+        ).fetchone()
+        if table is None:
+            if as_json:
+                console.print_json(json.dumps({"items": [], "count": 0}))
+            else:
+                console.print("[yellow]No leases found.[/yellow]")
+            return 0
+
+        if include_all:
+            query = """
+                SELECT lease_id, owner_agent_id, work_id, issued_at, expires_at, status
+                FROM coordination_leases
+                ORDER BY issued_at DESC
+            """
+            params: tuple[Any, ...] = ()
+        else:
+            query = """
+                SELECT lease_id, owner_agent_id, work_id, issued_at, expires_at, status
+                FROM coordination_leases
+                WHERE status = 'active'
+                AND expires_at > mc_now_iso()
+                AND heartbeat_deadline > mc_now_iso()
+                ORDER BY issued_at DESC
+            """
+            params = ()
+
+        rows = conn.execute(query, params).fetchall()
+
+    items = [
+        {
+            "lease_id": r["lease_id"],
+            "task_id": r["work_id"],
+            "agent_id": r["owner_agent_id"],
+            "claimed_at": r["issued_at"],
+            "expires_at": r["expires_at"],
+            "status": r["status"],
+        }
+        for r in rows
+    ]
+
+    if as_json:
+        console.print_json(json.dumps({"items": items, "count": len(items)}))
+        return 0
+
+    if not items:
+        console.print("[yellow]No leases found.[/yellow]")
+        return 0
+
+    from rich.table import Table
+
+    table = Table(title="Active Leases" if not include_all else "Leases")
+    table.add_column("Lease ID", style="dim")
+    table.add_column("Task ID")
+    table.add_column("Agent")
+    table.add_column("Claimed")
+    table.add_column("Expires")
+    table.add_column("Status", style="dim")
+
+    for item in items:
+        table.add_row(
+            item["lease_id"],
+            item["task_id"] or "-",
+            item["agent_id"],
+            item["claimed_at"],
+            item["expires_at"],
+            item["status"],
+        )
+
+    console.print(table)
+    return 0
+
+
 def handle_work_command(args: Any) -> int:
     """Dispatch work subcommand."""
     subcommand = getattr(args, "work_command", None)
@@ -350,8 +432,12 @@ def handle_work_command(args: Any) -> int:
         return cmd_work_status(args)
     elif subcommand == "cleanup":
         return cmd_work_cleanup(args)
+    elif subcommand == "list":
+        return cmd_work_list(args)
     else:
-        console.print("[yellow]Usage: motus work <claim|context|outcome|evidence|decision|release|status|cleanup>[/yellow]")
+        console.print(
+            "[yellow]Usage: motus work <claim|context|outcome|evidence|decision|release|status|cleanup|list>[/yellow]"
+        )
         console.print("\nThe 6-call Work Compiler protocol:")
         console.print("  1. motus work claim <task_id>     - Claim work, get lease")
         console.print("  2. motus work context <lease_id>  - Get context (Lens)")
