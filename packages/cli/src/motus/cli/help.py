@@ -52,6 +52,7 @@ _COMMAND_HELP_TIERS: dict[str, int] = {
     "activity": 3,
     "audit": 3,
     "db": 3,
+    "release": 3,
 }
 
 _COMMAND_HELP_TEXTS: dict[str, str] = {
@@ -87,6 +88,7 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     "activity": "Activity proof ledger utilities",
     "audit": "Audit finding pipeline utilities",
     "db": "Database maintenance utilities",
+    "release": "Release evidence gates",
     "claude": "Manage CLAUDE.md instructions safely",
 }
 

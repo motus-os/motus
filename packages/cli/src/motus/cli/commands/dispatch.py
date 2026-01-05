@@ -427,6 +427,17 @@ def dispatch_command(
         from motus.commands.review_cmd import review_command
 
         raise SystemExit(review_command(args))
+    if command == "release":
+        from motus.commands.release_cmd import release_bundle_command, release_check_command
+
+        release_cmd = getattr(args, "release_command", None)
+        if release_cmd == "check":
+            raise SystemExit(release_check_command(args))
+        if release_cmd == "bundle":
+            raise SystemExit(release_bundle_command(args))
+
+        print_parser_help(console, bundle.release_parser)
+        raise SystemExit(EXIT_USAGE)
 
     if command is None:
         console.print("[bold]Motus - Observability for AI agents[/bold]\n")

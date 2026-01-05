@@ -17,6 +17,7 @@ from .db import register_db_parsers
 from .handoffs import register_handoffs_parsers
 from .health import register_health_parsers
 from .policy import register_policy_parsers
+from .release import register_release_parsers
 from .review import register_review_parsers
 from .roadmap import register_roadmap_parsers
 from .sessions import register_session_parsers
@@ -42,6 +43,7 @@ class ParserBundle:
     activity_parser: argparse.ArgumentParser
     audit_parser: argparse.ArgumentParser
     db_parser: argparse.ArgumentParser
+    release_parser: argparse.ArgumentParser
 
 
 def build_parser() -> ParserBundle:
@@ -78,6 +80,7 @@ Run 'motus --help' for a list of commands.
     handoffs_parser = register_handoffs_parsers(subparsers)
     audit_parser = register_audit_parsers(subparsers)
     db_parser = register_db_parsers(subparsers)
+    release_parser = register_release_parsers(subparsers)
     register_review_parsers(subparsers)
     register_system_parsers(subparsers)
 
@@ -94,4 +97,5 @@ Run 'motus --help' for a list of commands.
         activity_parser=activity_parser,
         audit_parser=audit_parser,
         db_parser=db_parser,
+        release_parser=release_parser,
     )

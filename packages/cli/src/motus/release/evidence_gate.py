@@ -1,0 +1,254 @@
+# Copyright (c) 2024-2025 Veritas Collaborative, LLC
+# SPDX-License-Identifier: LicenseRef-MCSL
+
+"""Fail-closed release evidence gate."""
+
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import time
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+
+MAX_HEALTH_LEDGER_AGE_HOURS = 24
+
+
+@dataclass(frozen=True)
+class EvidenceCheckResult:
+    name: str
+    passed: bool
+    message: str
+    details: dict[str, Any] | None = None
+
+
+@dataclass(frozen=True)
+class EvidenceBundleResult:
+    passed: bool
+    checks: list[EvidenceCheckResult]
+    blocked: str | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "passed": self.passed,
+            "blocked": self.blocked,
+            "checks": [
+                {
+                    "name": c.name,
+                    "passed": c.passed,
+                    "message": c.message,
+                    "details": c.details,
+                }
+                for c in self.checks
+            ],
+        }
+
+
+def _run(cmd: list[str], *, cwd: Path) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        cmd,
+        cwd=str(cwd),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
+def _json_load(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _health_files(repo_root: Path) -> dict[str, Path]:
+    return {
+        "health_baseline": repo_root / "packages/cli/docs/quality/health-baseline.json",
+        "health_policy": repo_root / "packages/cli/docs/quality/health-policy.json",
+        "health_ledger": repo_root / "packages/cli/docs/quality/health-ledger.md",
+    }
+
+
+def _check_health_files(repo_root: Path) -> EvidenceCheckResult:
+    files = _health_files(repo_root)
+    missing = [name for name, path in files.items() if not path.exists()]
+    if missing:
+        return EvidenceCheckResult(
+            name="health_files",
+            passed=False,
+            message=f"Missing health artifacts: {', '.join(missing)}",
+        )
+
+    ledger = files["health_ledger"]
+    age_seconds = time.time() - ledger.stat().st_mtime
+    max_age = MAX_HEALTH_LEDGER_AGE_HOURS * 3600
+    if age_seconds > max_age:
+        return EvidenceCheckResult(
+            name="health_files",
+            passed=False,
+            message="health-ledger.md is older than 24h",
+            details={"age_seconds": int(age_seconds)},
+        )
+
+    return EvidenceCheckResult(
+        name="health_files",
+        passed=True,
+        message="Health artifacts present and recent",
+        details={"health_ledger_age_seconds": int(age_seconds)},
+    )
+
+
+def _check_pytest(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
+    cmd = [
+        "pytest",
+        "tests/",
+        "--json-report",
+        f"--json-report-file={report_path}",
+        "-q",
+    ]
+    result = _run(cmd, cwd=cli_root)
+    if result.returncode != 0 and not report_path.exists():
+        return EvidenceCheckResult(
+            name="pytest_results",
+            passed=False,
+            message="pytest failed to produce json report",
+            details={"returncode": result.returncode, "stderr": result.stderr.strip()},
+        )
+    try:
+        payload = _json_load(report_path)
+    except Exception as exc:
+        return EvidenceCheckResult(
+            name="pytest_results",
+            passed=False,
+            message=f"Failed to parse pytest report: {exc}",
+        )
+
+    summary = payload.get("summary", {})
+    failed = int(summary.get("failed", 0))
+    errors = int(summary.get("errors", 0))
+    if failed or errors:
+        return EvidenceCheckResult(
+            name="pytest_results",
+            passed=False,
+            message=f"pytest failures: failed={failed}, errors={errors}",
+            details={"failed": failed, "errors": errors},
+        )
+    return EvidenceCheckResult(
+        name="pytest_results",
+        passed=True,
+        message="pytest passed",
+        details={"failed": failed, "errors": errors},
+    )
+
+
+def _check_bandit(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
+    cmd = ["bandit", "-r", "src/", "-f", "json", "-o", str(report_path)]
+    result = _run(cmd, cwd=cli_root)
+    if result.returncode != 0 and not report_path.exists():
+        return EvidenceCheckResult(
+            name="bandit_results",
+            passed=False,
+            message="bandit failed to produce json report",
+            details={"returncode": result.returncode, "stderr": result.stderr.strip()},
+        )
+    try:
+        payload = _json_load(report_path)
+    except Exception as exc:
+        return EvidenceCheckResult(
+            name="bandit_results",
+            passed=False,
+            message=f"Failed to parse bandit report: {exc}",
+        )
+
+    high = 0
+    critical = 0
+    for item in payload.get("results", []):
+        severity = str(item.get("issue_severity", "")).upper()
+        if severity == "HIGH":
+            high += 1
+        elif severity == "CRITICAL":
+            critical += 1
+    if high or critical:
+        return EvidenceCheckResult(
+            name="bandit_results",
+            passed=False,
+            message="Bandit HIGH/CRITICAL findings",
+            details={"high": high, "critical": critical},
+        )
+    return EvidenceCheckResult(
+        name="bandit_results",
+        passed=True,
+        message="Bandit clean",
+        details={"high": high, "critical": critical},
+    )
+
+
+def _check_pip_audit(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
+    cmd = ["pip-audit", "--format", "json", "-o", str(report_path)]
+    result = _run(cmd, cwd=cli_root)
+    if result.returncode != 0 and not report_path.exists():
+        return EvidenceCheckResult(
+            name="pip_audit_results",
+            passed=False,
+            message="pip-audit failed to produce json report",
+            details={"returncode": result.returncode, "stderr": result.stderr.strip()},
+        )
+    try:
+        payload = _json_load(report_path)
+    except Exception as exc:
+        return EvidenceCheckResult(
+            name="pip_audit_results",
+            passed=False,
+            message=f"Failed to parse pip-audit report: {exc}",
+        )
+
+    total = 0
+    for dep in payload.get("dependencies", []):
+        total += len(dep.get("vulns", []))
+    if total:
+        return EvidenceCheckResult(
+            name="pip_audit_results",
+            passed=False,
+            message=f"pip-audit found {total} vulnerabilities",
+            details={"total": total},
+        )
+    return EvidenceCheckResult(
+        name="pip_audit_results",
+        passed=True,
+        message="pip-audit clean",
+        details={"total": total},
+    )
+
+
+def run_release_evidence(repo_root: Path) -> EvidenceBundleResult:
+    cli_root = repo_root / "packages/cli"
+    if not cli_root.exists():
+        cli_root = repo_root
+
+    checks: list[EvidenceCheckResult] = []
+
+    checks.append(_check_health_files(repo_root))
+    if not checks[-1].passed:
+        return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+
+    checks.append(_check_pytest(cli_root, Path("/tmp/pytest.json")))
+    if not checks[-1].passed:
+        return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+
+    checks.append(_check_bandit(cli_root, Path("/tmp/bandit.json")))
+    if not checks[-1].passed:
+        return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+
+    checks.append(_check_pip_audit(cli_root, Path("/tmp/pip-audit.json")))
+    if not checks[-1].passed:
+        return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+
+    return EvidenceBundleResult(True, checks)
+
+
+def write_release_bundle(output_path: Path, result: EvidenceBundleResult) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(result.to_dict(), indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
