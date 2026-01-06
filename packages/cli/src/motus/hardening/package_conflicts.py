@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 CONFLICTING_DISTS = ("motus", "motus-command")
-_SHADOWED_MARKERS = ("motus-command",)
+_SHADOWED_MARKERS = ("motus-command", "motus-internal")
 
 
 @dataclass(frozen=True)

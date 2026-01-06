@@ -50,13 +50,14 @@ echo ""
 echo "Import path: $import_path"
 
 # Check for wrong repo in path
-if echo "$import_path" | grep -qE "motus-command"; then
+if echo "$import_path" | grep -qE "motus-command|motus-internal"; then
   echo ""
   echo "FAIL: motus imports from wrong repository"
   echo "  Expected: .../motus/packages/cli/src/motus/__init__.py"
   echo "  Actual:   $import_path"
   echo ""
   echo "FIX: pip3 uninstall motus motus-command -y"
+  echo "     If motus-internal is on PYTHONPATH, remove it."
   echo "     pip3 install motusos"
   exit 1
 fi

@@ -178,6 +178,7 @@ def run_web(port: Optional[int] = None, no_browser: bool = False):
         if conflict.origin:
             print(f"Import origin: {conflict.origin}")
         print("Fix: pip uninstall motus motus-command -y")
+        print("If motus-internal is on PYTHONPATH, remove it.")
         print("Then reinstall: pip install motusos[web]")
         raise SystemExit(1)
 

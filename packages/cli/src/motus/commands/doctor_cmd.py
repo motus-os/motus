@@ -43,12 +43,13 @@ def _package_conflict_check() -> HealthResult:
         message = (
             "Conflicting packages installed: "
             f"{installed}. Remove with: pip uninstall motus motus-command -y "
-            "and install motusos."
+            "and install motusos. If motus-internal is on PYTHONPATH, remove it."
         )
     else:
         message = (
             "Motus import resolves to a non-packaged path. "
-            "Remove old packages: pip uninstall motus motus-command -y and install motusos."
+            "Remove old packages: pip uninstall motus motus-command -y and install motusos. "
+            "If motus-internal is on PYTHONPATH, remove it."
         )
 
     return HealthResult(

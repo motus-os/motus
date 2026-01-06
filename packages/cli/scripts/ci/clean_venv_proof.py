@@ -129,7 +129,7 @@ def main() -> int:
         motus_path = motus_info.get("file", "")
         expected_prefix = str(venv_dir)
         import_ok = bool(motus_path) and expected_prefix in str(motus_path)
-        shadowed = any(marker in str(motus_path) for marker in ("motus-command",))
+        shadowed = any(marker in str(motus_path) for marker in ("motus-command", "motus-internal"))
         payload["shadowed"] = shadowed
 
         motus_bin = _bin_dir(venv_dir) / "motus"
