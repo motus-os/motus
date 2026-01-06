@@ -1263,7 +1263,7 @@ motus diff chk_abc123
 
 ## Configuration
 
-Motus stores configuration in `~/.motus/config.yaml`. Use `motus config` to manage settings:
+Motus stores configuration in `~/.motus/config.json`. Use `motus config` to manage settings:
 
 ```bash
 # View current config

@@ -6,13 +6,18 @@
 Configuration precedence (highest to lowest):
 1. CLI arguments (--flag values)
 2. Environment variables (MOTUS_*)
-3. Project config (.motus/config.yaml)
-4. User config (~/.config/motus/config.yaml)
-5. System config (/etc/motus/config.yaml)
+3. Project config (.motus/config.json)
+4. User config (~/.motus/config.json)
+5. System config (/etc/motus/config.json)
 6. Defaults (hardcoded)
+
+Legacy YAML config files (.motus/config.yaml, ~/.config/motus/config.yaml, /etc/motus/config.yaml)
+are supported as a fallback for v0.1.x only.
 """
 
+import json
 import os
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -29,9 +34,9 @@ from .errors import ConfigError
 CONFIG_LAYERS = [
     "cli",  # --flag values
     "environment",  # MOTUS_* env vars
-    "project",  # .motus/config.yaml
-    "user",  # ~/.config/motus/config.yaml
-    "system",  # /etc/motus/config.yaml
+    "project",  # .motus/config.json
+    "user",  # ~/.motus/config.json
+    "system",  # /etc/motus/config.json
     "defaults",  # Hardcoded
 ]
 
@@ -94,26 +99,60 @@ class LayeredConfig:
         }
 
     def _load_file_layers(self) -> None:
-        """Load configuration from YAML files."""
-        if not YAML_AVAILABLE:
-            return
-
-        paths = {
+        """Load configuration from JSON files (fallback to legacy YAML)."""
+        json_paths = {
+            "project": Path(".motus/config.json"),
+            "user": Path.home() / ".motus/config.json",
+            "system": Path("/etc/motus/config.json"),
+        }
+        legacy_paths = {
             "project": Path(".motus/config.yaml"),
             "user": Path.home() / ".config/motus/config.yaml",
             "system": Path("/etc/motus/config.yaml"),
         }
 
-        for layer, path in paths.items():
+        for layer, path in json_paths.items():
             if path.exists():
                 try:
-                    with open(path) as f:
-                        data = yaml.safe_load(f) or {}
+                    with open(path, "r") as f:
+                        data = json.load(f) or {}
+                        data = self._normalize_json_config(data)
                         self._layers[layer] = self._flatten_dict(data)
                 except Exception as e:
                     raise ConfigError(
                         f"[CONFIG-003] Failed to parse {path}: {e}"
                     ) from e
+                continue
+
+            legacy_path = legacy_paths[layer]
+            if legacy_path.exists():
+                if not YAML_AVAILABLE:
+                    raise ConfigError(
+                        f"[CONFIG-003] Legacy YAML config found at {legacy_path} "
+                        "but PyYAML is not installed."
+                    )
+                warnings.warn(
+                    f"Legacy YAML config detected at {legacy_path}. "
+                    f"Please migrate to {path}.",
+                    DeprecationWarning,
+                    stacklevel=2,
+                )
+                try:
+                    with open(legacy_path, "r") as f:
+                        data = yaml.safe_load(f) or {}
+                        self._layers[layer] = self._flatten_dict(data)
+                except Exception as e:
+                    raise ConfigError(
+                        f"[CONFIG-003] Failed to parse {legacy_path}: {e}"
+                    ) from e
+
+    @staticmethod
+    def _normalize_json_config(data: dict) -> dict:
+        """Map config.json keys to layered config dotted keys."""
+        normalized = dict(data)
+        if "db_path" in normalized and "database.path" not in normalized:
+            normalized["database.path"] = normalized["db_path"]
+        return normalized
 
     def _load_environment(self) -> None:
         """Load configuration from environment variables.

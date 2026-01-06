@@ -54,8 +54,8 @@ f       Filter
 q       Quit
 
 ## Configuration
-~/.motus/config.yaml  # Global config
-.motus/config.yaml    # Project config
+~/.motus/config.json  # Global config
+.motus/config.json    # Project config
 ```
 
 ---
