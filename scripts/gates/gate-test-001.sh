@@ -139,8 +139,9 @@ fi
 echo ""
 echo "=== Check 5: Test Data Sanitization ==="
 
-# Look for personal info in test files (exclude __pycache__ and binary files)
-personal_patterns="ben@|bnvoss|veritas|/Users/ben"
+# Look for personal info in test files (exclude __pycache__, binary files, and copyright headers)
+personal_patterns="ben@|bnvoss|/Users/ben"
+# Note: "veritas" removed - it matches copyright headers (Veritas Collaborative, LLC)
 personal_found=$(grep -rliE "$personal_patterns" "$TEST_DIR" --include="*.py" --include="*.json" --include="*.yaml" --exclude-dir="__pycache__" 2>/dev/null | head -5)
 
 if [ -n "$personal_found" ]; then
