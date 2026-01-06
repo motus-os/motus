@@ -22,6 +22,7 @@ MOTUS_TREE_DIRS: tuple[str, ...] = (
     "project/skills",
     "project/standards",
     "project/config",
+    "scratch",
     "state/ledger",
     "state/evidence",
     "state/orient",

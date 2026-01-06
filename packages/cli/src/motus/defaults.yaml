@@ -10,7 +10,7 @@ paths:
   voice: ./voice
   skills: ./skills
   products: ./products
-  scratch: ./.scratch
+  scratch: ./.motus/scratch
 
 cr:
   folders: [queue, in-progress, review, done]

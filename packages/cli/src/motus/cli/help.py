@@ -39,6 +39,7 @@ _COMMAND_HELP_TIERS: dict[str, int] = {
     "explain": 2,
     "claude": 2,
     "modules": 2,
+    "scratch": 2,
     # Tier 3: advanced / power users
     "orient": 3,
     "standards": 3,
@@ -94,6 +95,7 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     "claude": "Manage CLAUDE.md instructions safely",
     "gates": "Release gate registry utilities",
     "modules": "Module registry utilities",
+    "scratch": "Scratch entry store utilities",
 }
 
 
@@ -245,5 +247,8 @@ def format_cli_resource_id(command: str | None, args: argparse.Namespace) -> str
     if command == "claims":
         sub = getattr(args, "claims_command", None)
         return f"claims:{sub}" if sub else "claims"
+    if command == "scratch":
+        sub = getattr(args, "scratch_command", None)
+        return f"scratch:{sub}" if sub else "scratch"
 
     return command

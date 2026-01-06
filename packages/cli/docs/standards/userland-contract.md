@@ -28,6 +28,7 @@ Purpose: define the required local layout and registries for Motus userland.
 | `.motus/project/skills/` | Project skill packs | Project-owned |
 | `.motus/project/standards/` | Project standards | Project-owned |
 | `.motus/project/config/` | Project config overlays | Project-owned |
+| `.motus/scratch/` | Scratch entry store | File-backed index |
 | `.motus/state/ledger/` | Local ledger artifacts | Do not edit by hand |
 | `.motus/state/evidence/` | Evidence bundles | Append-only |
 | `.motus/state/orient/` | Orient events | Best-effort |

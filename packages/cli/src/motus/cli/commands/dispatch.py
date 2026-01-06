@@ -145,6 +145,28 @@ def dispatch_command(
             raise SystemExit(modules_list_command(args))
         print_parser_help(console, bundle.modules_parser)
         raise SystemExit(EXIT_USAGE)
+    if command == "scratch":
+        from motus.commands.scratch_cmd import (
+            scratch_add_command,
+            scratch_list_command,
+            scratch_promote_command,
+            scratch_rebuild_index_command,
+            scratch_show_command,
+        )
+
+        scratch_cmd = getattr(args, "scratch_command", None)
+        if scratch_cmd == "add":
+            raise SystemExit(scratch_add_command(args))
+        if scratch_cmd == "list":
+            raise SystemExit(scratch_list_command(args))
+        if scratch_cmd == "show":
+            raise SystemExit(scratch_show_command(args))
+        if scratch_cmd == "promote":
+            raise SystemExit(scratch_promote_command(args))
+        if scratch_cmd == "rebuild-index":
+            raise SystemExit(scratch_rebuild_index_command(args))
+        print_parser_help(console, bundle.scratch_parser)
+        raise SystemExit(EXIT_USAGE)
     if command == "gates":
         from motus.commands.gates_cmd import gates_list_command, gates_show_command
 

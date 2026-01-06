@@ -19,6 +19,7 @@ from .gates import register_gates_parsers
 from .handoffs import register_handoffs_parsers
 from .health import register_health_parsers
 from .modules import register_modules_parsers
+from .scratch import register_scratch_parsers
 from .policy import register_policy_parsers
 from .release import register_release_parsers
 from .review import register_review_parsers
@@ -44,6 +45,7 @@ class ParserBundle:
     modules_parser: argparse.ArgumentParser
     gates_parser: argparse.ArgumentParser
     gates_parser: argparse.ArgumentParser
+    scratch_parser: argparse.ArgumentParser
     verify_parser: argparse.ArgumentParser
     handoffs_parser: argparse.ArgumentParser
     activity_parser: argparse.ArgumentParser
@@ -84,6 +86,7 @@ Run 'motus --help' for a list of commands.
     health_parser = register_health_parsers(subparsers)
     modules_parser = register_modules_parsers(subparsers)
     gates_parser = register_gates_parsers(subparsers)
+    scratch_parser = register_scratch_parsers(subparsers)
     verify_parser = register_verify_parsers(subparsers)
     handoffs_parser = register_handoffs_parsers(subparsers)
     audit_parser = register_audit_parsers(subparsers)
@@ -104,6 +107,7 @@ Run 'motus --help' for a list of commands.
         modules_parser=modules_parser,
         gates_parser=gates_parser,
         gates_parser=gates_parser,
+        scratch_parser=scratch_parser,
         verify_parser=verify_parser,
         handoffs_parser=handoffs_parser,
         activity_parser=activity_parser,

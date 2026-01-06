@@ -55,6 +55,7 @@ motus policy plan --files src/main.py  # Plan policy gates for a file
 | `modules` | List registered Motus modules |
 | `policy` | Plan and run Vault OS policy gates (proof of compliance) |
 | `rollback` | Restore state to a previous checkpoint |
+| `scratch` | Manage scratch entries and promotions |
 | `teleport` | Export a session bundle for cross-session context transfer |
 
 ### Tier 3 (Advanced)
@@ -71,6 +72,40 @@ motus policy plan --files src/main.py  # Plan policy gates for a file
 | `summary` | Generate a rich summary for CLAUDE.md injection |
 
 ---
+
+## Scratch Commands
+
+Scratch entries are stored under `.motus/scratch/` and can be promoted to the roadmap.
+
+### motus scratch add
+
+```bash
+motus scratch add --title "Idea" --body "Capture quick thought"
+```
+
+### motus scratch list
+
+```bash
+motus scratch list
+```
+
+### motus scratch show
+
+```bash
+motus scratch show SCR-2026-01-06-001
+```
+
+### motus scratch promote
+
+```bash
+motus scratch promote SCR-2026-01-06-001 --phase phase_h --item-type work
+```
+
+### motus scratch rebuild-index
+
+```bash
+motus scratch rebuild-index
+```
 
 ## Session Commands
 

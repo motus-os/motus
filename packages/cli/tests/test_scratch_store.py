@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import json
 import sqlite3
 from pathlib import Path
 
 from motus.core.bootstrap import bootstrap_database_at_path
 from motus.core.database_connection import reset_db_manager
 from motus.core.layered_config import reset_config
-from motus.motus_fs import create_motus_tree
-from motus.scratch.store import ScratchStore
+from motus.scratch import ScratchStore
 
 
 def _bootstrap_db(tmp_path: Path, monkeypatch) -> Path:
@@ -20,66 +20,58 @@ def _bootstrap_db(tmp_path: Path, monkeypatch) -> Path:
     return db_path
 
 
-def test_scratch_index_rebuild(tmp_path: Path) -> None:
-    motus_dir = tmp_path / ".motus"
-    create_motus_tree(motus_dir)
+def test_scratch_index_rebuild_on_corrupt_index(tmp_path: Path) -> None:
+    root = tmp_path / ".motus" / "scratch"
+    store = ScratchStore(root)
+    entry = store.create_entry(title="Quick note", body="Remember to test.")
 
-    store = ScratchStore(motus_dir)
-    entry = store.create_entry(title="Scratch item", description="Test scratch")
+    index_path = root / "INDEX.json"
+    index_path.write_text("{bad json", encoding="utf-8")
 
-    index_path = motus_dir / "scratch" / "index.json"
-    index_path.write_text("{broken json")
+    rebuilt = store.load_index()
+    assert any(e.entry_id == entry.entry_id for e in rebuilt.entries)
 
-    entries = store.list_entries()
-    assert any(e.scratch_id == entry.scratch_id for e in entries)
+    payload = json.loads(index_path.read_text(encoding="utf-8"))
+    assert payload.get("schema") == "motus.scratch.index.v1"
 
 
-def test_scratch_promote_to_roadmap(monkeypatch, tmp_path: Path) -> None:
+def test_scratch_promote_records_decision_and_evidence(monkeypatch, tmp_path: Path) -> None:
     db_path = _bootstrap_db(tmp_path, monkeypatch)
-    motus_dir = tmp_path / ".motus"
-    create_motus_tree(motus_dir)
+    monkeypatch.setenv("MC_AGENT_ID", "tester")
 
-    store = ScratchStore(motus_dir)
-    entry = store.create_entry(
-        title="Scratch to roadmap",
-        description="Promotion test",
-        created_by="builder",
-    )
+    root = tmp_path / ".motus" / "scratch"
+    store = ScratchStore(root)
+    entry = store.create_entry(title="Roadmap idea", body="Add scratch promotion.")
 
-    promoted = store.promote_to_roadmap(
-        entry.scratch_id,
-        phase_key="phase_012",
-        item_type="work",
-        agent_id="builder",
-    )
+    result = store.promote_to_roadmap(entry.entry_id, phase_key="phase_h")
 
-    assert promoted.roadmap_id
-    assert promoted.status == "promoted"
+    updated = store.load_entry(entry.entry_id)
+    assert updated.status == "promoted"
+    assert updated.roadmap is not None
+    assert updated.roadmap.item_id == result.roadmap_id
 
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
+
     rm_row = conn.execute(
-        "SELECT id FROM roadmap_items WHERE id = ?",
-        (promoted.roadmap_id,),
+        "SELECT id, title FROM roadmap_items WHERE id = ?",
+        (result.roadmap_id,),
     ).fetchone()
     assert rm_row is not None
 
-    dec_row = conn.execute(
-        "SELECT id, decision_type FROM decisions WHERE work_id = ?",
-        (promoted.roadmap_id,),
+    decision_row = conn.execute(
+        "SELECT decision_type, work_id FROM decisions WHERE work_id = ?",
+        (result.roadmap_id,),
     ).fetchone()
-    assert dec_row is not None
-    assert dec_row["decision_type"] == "plan_committed"
+    assert decision_row is not None
+    assert decision_row["decision_type"] == "plan_committed"
 
-    ev_row = conn.execute(
-        "SELECT id, evidence_type FROM evidence WHERE work_id = ?",
-        (promoted.roadmap_id,),
+    evidence_row = conn.execute(
+        "SELECT evidence_type, uri, work_id FROM evidence WHERE work_id = ?",
+        (result.roadmap_id,),
     ).fetchone()
-    assert ev_row is not None
-    assert ev_row["evidence_type"] == "document"
+    assert evidence_row is not None
+    assert evidence_row["evidence_type"] == "document"
+    assert evidence_row["uri"].startswith("scratch:")
 
     conn.close()
-
-    reloaded = store.load_entry(entry.scratch_id)
-    assert reloaded.roadmap_id == promoted.roadmap_id
-    assert reloaded.evidence_id == promoted.evidence_id
