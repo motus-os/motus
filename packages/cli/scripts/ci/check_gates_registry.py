@@ -16,7 +16,8 @@ REGISTRY_PATH = ROOT / "packages" / "cli" / "docs" / "standards" / "gates.yaml"
 RUN_ALL_PATH = ROOT / "scripts" / "gates" / "run-all-gates.sh"
 
 GATE_ID_RE = re.compile(r"^GATE-[A-Z]+-[0-9]+$")
-ALLOWED_PHASES = {"environment", "functionality", "security", "release"}
+ALLOWED_TIERS = {"T0", "T1", "T2", "T3"}
+ALLOWED_KINDS = {"intake", "test", "security", "plan", "artifact", "egress"}
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
@@ -57,8 +58,9 @@ def _validate_registry(data: dict[str, Any], errors: list[str]) -> set[str]:
             continue
         gate_id = str(gate.get("id", "")).strip()
         description = str(gate.get("description", "")).strip()
-        script = str(gate.get("script", "")).strip()
-        phase = str(gate.get("phase", "")).strip()
+        command = str(gate.get("command", "")).strip()
+        tier = str(gate.get("tier", "")).strip()
+        kind = str(gate.get("kind", "")).strip()
 
         if not gate_id:
             errors.append(f"gates[{idx}] missing id")
@@ -72,17 +74,22 @@ def _validate_registry(data: dict[str, Any], errors: list[str]) -> set[str]:
         if not description:
             errors.append(f"gates[{idx}] missing description")
 
-        if not script:
-            errors.append(f"gates[{idx}] missing script")
+        if not command:
+            errors.append(f"gates[{idx}] missing command")
         else:
-            script_path = ROOT / script
+            script_path = ROOT / command
             if not script_path.exists():
-                errors.append(f"gates[{idx}] script not found: {script}")
+                errors.append(f"gates[{idx}] command not found: {command}")
 
-        if not phase:
-            errors.append(f"gates[{idx}] missing phase")
-        elif phase not in ALLOWED_PHASES:
-            errors.append(f"gates[{idx}] invalid phase: {phase}")
+        if not tier:
+            errors.append(f"gates[{idx}] missing tier")
+        elif tier not in ALLOWED_TIERS:
+            errors.append(f"gates[{idx}] invalid tier: {tier}")
+
+        if not kind:
+            errors.append(f"gates[{idx}] missing kind")
+        elif kind not in ALLOWED_KINDS:
+            errors.append(f"gates[{idx}] invalid kind: {kind}")
 
     return seen
 
