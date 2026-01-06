@@ -121,6 +121,10 @@ Every headline must pass:
 
 ## Provable Claims Policy
 
+Canonical claims live in `CONTENT-STANDARD.md` and `standards/proof-ledger.json`.
+Do not add or restate claims here. The lists below are historical reference only
+and must be verified in the proof ledger before use.
+
 ### We CAN Claim (Evidence Exists)
 
 **Core API Claims:**
@@ -168,10 +172,10 @@ Source: `.ai/milestones/2026-01-02-SOLO-OODA-VALIDATION.md`
 
 ### Proof Pack Requirement
 Before adding any numeric claim:
-1. Create proof pack in `docs/proofs/<claim>/`
-2. Include `method.md` and `reproduce.sh`
-3. Link from website copy
-4. OR reference milestone document with evidence
+1. Create proof bundle in `docs/proof/<claim-id>/`
+2. Include `methodology.md`, `results.json`, `reproduce.sh`, and `manifest.json`
+3. Link from website copy within one scroll
+4. OR reference a verified proof ledger entry
 
 ---
 
@@ -214,9 +218,22 @@ If it does none of those, cut it.
 
 ---
 
+## Review Process
+
+Website changes follow a multi-phase review process with gates:
+
+- **Full process**: `REVIEW-PROCESS.md` (8 phases, validation modes, artifact chain)
+- **Writing gates**: `CONTENT-STANDARD.md` (short, enforceable pre-writing checks)
+- **Claims registry**: `standards/proof-ledger.json` (all claims must be registered)
+- **Terminology**: `standards/terminology.json` (approved/banned terms)
+- **Benchmark spec**: `CODEX-BENCHMARK-HANDOFF.md` (homepage proof environment)
+
+Sign-offs are recorded in `artifacts/sign-offs/`.
+
+---
+
 ## Scope Rules
 
 - Website copy lives in `packages/website/**`.
 - Canonical messaging lives in `packages/website/src/data/messaging.json`.
 - Generated copy must stay in sync with messaging automation.
-

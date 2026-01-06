@@ -17,8 +17,21 @@ Public documentation and product site for Motus. The canonical source lives in
 - `vision.json` will be added when the vision pipeline lands.
 - The persona map source of truth is
   `packages/cli/docs/website/persona-map.yaml`.
-- The proof ledger source of truth is
-  `packages/cli/docs/website/proof-ledger.yaml`.
+- The site proof ledger source of truth is
+  `packages/cli/docs/website/proof-ledger.yaml` (legacy, read-only).
+- The marketing claims registry is `packages/website/standards/proof-ledger.json`
+  and is enforced by the content standard.
+
+## Review Process
+
+Website changes follow a structured review process. See:
+
+- `REVIEW-PROCESS.md` - Full 8-phase review with gates and validation modes
+- `CONTENT-STANDARD.md` - Short pre-writing checklist (hard gates)
+- `CLAUDE.md` - Voice, design system, copy guidelines
+- `standards/proof-ledger.json` - Claims registry
+- `standards/terminology.json` - Approved/banned terms
+- `standards/tailwind-arbitrary-allowlist.txt` - Allowed Tailwind arbitrary values
 
 ## Local development
 

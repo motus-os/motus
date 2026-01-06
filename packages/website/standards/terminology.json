@@ -1,0 +1,18 @@
+{
+  "approved": [
+    "receipts",
+    "evidence",
+    "outcomes",
+    "decisions"
+  ],
+  "banned_marketing": [
+    "rx_001",
+    "lease_id",
+    "CRUD",
+    "UUID"
+  ],
+  "requires_definition": [
+    "tokens",
+    "context window"
+  ]
+}

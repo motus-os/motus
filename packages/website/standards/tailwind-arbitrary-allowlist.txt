@@ -1,0 +1,13 @@
+# Tailwind arbitrary values allowlist (generated from current website sources)
+bg-[#10a37f]
+bg-[#4285f4]
+bg-[#cc9b7a]
+bg-[radial-gradient(120%_120%_at_0%_0%,oklch(var(--mint)_/_0.08),transparent_55%)]
+min-h-[70vh]
+min-w-[160px]
+tracking-[0.18em]
+tracking-[0.22em]
+tracking-[0.25em]
+tracking-[0.28em]
+tracking-[0.2em]
+tracking-[0.3em]

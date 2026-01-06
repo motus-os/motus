@@ -6,6 +6,27 @@
 
 ---
 
+## Canonical References (Single Source of Truth)
+
+- `CONTENT-STANDARD.md` - writing gates + enforcement
+- `standards/proof-ledger.json` - claim registry + status
+- `standards/terminology.json` - approved/banned terms
+- `tailwind.config.mjs` - design tokens
+
+## Artifact Chain (Outputs → Constraints → Validation)
+
+| Phase | Output Artifact (Exact Filename) | Constraint Created | Validation (Later Phase) |
+|-------|----------------------------------|--------------------|--------------------------|
+| 0. Foundation | `tailwind.config.mjs`<br>`CONTENT-STANDARD.md`<br>`standards/terminology.json`<br>`standards/proof-ledger.json` | All copy/design must use tokens, approved terms, and verified claims | Phase 3-4 design-system checks; Phase 6 jargon audit; Phase 7 claim audit |
+| 1. Research | `artifacts/phase-1-patterns.md`<br>`artifacts/phase-1-message-map.md`<br>`artifacts/phase-1-positioning.md` | Phase 2 can only use researched patterns + positioning | Phase 2 IA review; Phase 6 swap test |
+| 2. IA | `artifacts/phase-2-ia.md` | Phase 3-4 must implement this structure + time budget | Phase 6 5-second test |
+| 3. Visual Design | `artifacts/phase-3-design-spec.md` | Phase 4 must build exactly to the spec with tokens | Phase 5 technical + design audit |
+| 4. Implementation | `artifacts/phase-4-implementation-report.md` | Phase 5-8 review the exact built pages | Phase 5 audits + Phase 8 release checklist |
+| 5. Technical Review | `artifacts/phase-5-tech-audit.md` | Phase 8 cannot ship if any failures remain | Phase 8 pre-launch checklist |
+| 6. User Perspective | `artifacts/phase-6-user-tests.md` | Copy revisions required before Phase 7 | Phase 7 claim audit |
+| 7. Credibility | `artifacts/phase-7-claim-audit.md`<br>`standards/proof-ledger.json` (updated) | Only verified claims may ship | Phase 8 proof + link audit |
+| 8. Pre-Launch | `artifacts/phase-8-release-checklist.md` | Ship only when all gates pass | Post-deploy verification |
+
 ## Ethos & Brand Positioning
 
 ### Core Identity
@@ -48,13 +69,19 @@ We solve the fundamental problem: when an AI agent does work, there's no structu
 |------|-------------|-------------|
 | 0.1 | Verify design system exists and is documented | `tailwind.config.mjs` reviewed |
 | 0.2 | Verify brand guidelines exist | Voice doc, color palette, typography |
-| 0.3 | Verify deployment pipeline works | Successful test deploy |
-| 0.4 | Verify correct repository | Working directory confirmed |
-| 0.5 | Document constraints | List of non-negotiables |
+| 0.3 | Create/update content standard | `CONTENT-STANDARD.md` |
+| 0.4 | Create/update terminology list | `standards/terminology.json` |
+| 0.5 | Create/update proof ledger schema | `standards/proof-ledger.json` |
+| 0.6 | Verify deployment pipeline works | Successful test deploy |
+| 0.7 | Verify correct repository | Working directory confirmed |
+| 0.8 | Document constraints | List of non-negotiables |
 
 ### Success Criteria
 
 - [ ] Design system file exists with phi spacing, oklch colors
+- [ ] `CONTENT-STANDARD.md` exists and is referenced
+- [ ] `standards/terminology.json` exists and is referenced
+- [ ] `standards/proof-ledger.json` exists and is referenced
 - [ ] Can deploy to production (GitHub Pages) and verify
 - [ ] All team members know the correct repo location
 - [ ] Brand voice document exists and is referenced
@@ -108,14 +135,8 @@ We will use [pattern] because [reason].
 
 ### 1C: Evidence Gathering
 
-For any quantitative claim:
-
-| Claim | Required Evidence | Minimum Standard |
-|-------|-------------------|------------------|
-| Performance (ms) | Benchmark results | N ≥ 1,000, p50/p95/p99 reported |
-| Reduction (%) | A/B comparison | Real tokenizer (tiktoken), reproducible |
-| Compatibility | Test matrix | Actual test runs, not assumptions |
-| User metrics | Analytics data | Statistical significance |
+Evidence requirements are defined in `CONTENT-STANDARD.md` and enforced via `standards/proof-ledger.json`.
+Only claims that can meet those standards proceed to Phase 2.
 
 ### Tasks
 
@@ -183,7 +204,7 @@ For each page, define:
 | Subheadlines | One sentence, concrete benefit |
 | Body copy | Grade 8 reading level, active voice |
 | Code examples | Runnable, syntax highlighted, annotated |
-| Claims | Link to evidence, qualified if uncertain |
+| Claims | Verified only; proof link adjacent |
 
 ### Tasks
 
@@ -407,7 +428,10 @@ Show page to someone unfamiliar with Motus for 5 seconds, then ask:
 
 ### 6B: Jargon Audit
 
-Read every word on the page. Flag:
+Read every word on the page. Use `standards/terminology.json` as the source of truth.
+Anything in `requires_definition` must be defined inline.
+
+Flag:
 
 | Category | Examples | Action |
 |----------|----------|--------|
@@ -435,6 +459,8 @@ For every claim on the page:
 | "95% fewer tokens" | Quantitative | Benchmark | Must link to proof |
 | "Works with Claude, GPT..." | Capability | Test matrix | Must have tested |
 | "5 minutes to first receipt" | Time | User testing | Must have timed |
+
+All claims must exist in `standards/proof-ledger.json` with status `verified`.
 
 ### Tasks
 
@@ -465,53 +491,20 @@ For every claim on the page:
 
 ### 7A: Evidence Standards
 
-| Claim Type | Minimum Evidence Required |
-|------------|---------------------------|
-| Performance (latency) | N ≥ 1,000 samples, p50/p95/p99, reproducible script |
-| Reduction (%) | Real tokenizer (tiktoken), before/after comparison, N ≥ 100 |
-| Compatibility | Actual test runs with each provider, test logs |
-| User metrics | Analytics data with statistical significance |
-| Time claims | User testing with N ≥ 10, measured completion times |
+Evidence standards are defined in `CONTENT-STANDARD.md`.
+No claim is eligible for marketing pages unless it is `verified` in `standards/proof-ledger.json`.
 
 ### 7B: Evidence Bundle Structure
 
-Each claim needs:
-
-```
-/docs/proof/[claim-name]/
-├── methodology.md      # How we measured
-├── results.json        # Raw data
-├── reproduce.sh        # Script to reproduce
-└── manifest.json       # Metadata
-```
+Evidence bundles must follow the structure defined in `CONTENT-STANDARD.md`.
 
 ### 7C: Proof Ledger
 
-All claims must be registered:
-
-```json
-{
-  "claims": [
-    {
-      "id": "token-reduction-95",
-      "claim": "95% fewer tokens",
-      "location": "homepage-section-1",
-      "evidence_path": "/docs/proof/token-reduction/",
-      "status": "verified",
-      "last_verified": "2026-01-06",
-      "methodology": "tiktoken, N=1000, 4 scenarios"
-    }
-  ]
-}
-```
+All claims must be registered in `standards/proof-ledger.json` using the required fields defined there.
 
 ### 7D: Claim Classification
 
-| Status | Meaning | Action |
-|--------|---------|--------|
-| **Verified** | Evidence meets standards | Can display prominently |
-| **Preliminary** | Evidence exists but below standard | Must qualify ("up to", "in testing") |
-| **Unverified** | No evidence | Remove or mark as goal |
+Use the status values defined in `standards/proof-ledger.json`. Marketing pages may use `verified` claims only.
 
 ### Tasks
 
@@ -520,8 +513,8 @@ All claims must be registered:
 | 7.1 | List all claims on page | Claim inventory |
 | 7.2 | Classify each claim | Status per claim |
 | 7.3 | Build evidence bundles for verified claims | Evidence bundles |
-| 7.4 | Qualify or remove unverified claims | Updated copy |
-| 7.5 | Update proof ledger | Ledger file |
+| 7.4 | Remove non-verified claims from marketing pages | Updated copy |
+| 7.5 | Update proof ledger | `standards/proof-ledger.json` |
 
 ### Success Criteria
 
@@ -611,6 +604,26 @@ All claims must be registered:
 | 6. User Perspective | Clarity verified | 5-second test passes |
 | 7. Credibility | Claims verified | Evidence bundles exist |
 | 8. Pre-Launch | Final checks | Deployment succeeds |
+
+---
+
+## Validation Modes (Agent Collaboration)
+
+Use these modes so agents know how to apply this process.
+
+### Default: Maker / Checker
+- **Maker** applies phases and produces artifacts.
+- **Checker** audits strictly against `CONTENT-STANDARD.md` + artifacts.
+- **Required** for homepage and claim changes; record sign-off in `artifacts/sign-offs/`.
+
+### Calibration: Split + Cross-Review
+- Agent A reviews Section 1; Agent B reviews Section 2.
+- Swap reviews and reconcile differences.
+- Use when the process is new or revised.
+
+### High Stakes: Parallel Validation
+- Two independent full reviews, then compare outputs.
+- Use for launch-critical changes or investor pages.
 
 ---
 

@@ -96,3 +96,7 @@ jobs:
         run: python scripts/ci/check_links.py
       - name: Check proof references
         run: python scripts/ci/check_proofs.py
+      - name: Check content standards
+        run: python scripts/ci/check_content_standard.py
+      - name: Check Tailwind arbitrary values
+        run: python scripts/ci/check_tailwind_arbitrary.py
