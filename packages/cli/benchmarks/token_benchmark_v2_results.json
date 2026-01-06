@@ -1,0 +1,15 @@
+{
+  "workflow": "3-step (model \u2192 api \u2192 tests)",
+  "without_motus": {
+    "step2_tokens": 203,
+    "step3_tokens": 289,
+    "total_tokens": 492
+  },
+  "with_motus": {
+    "step2_tokens": 90,
+    "step3_tokens": 128,
+    "total_tokens": 218
+  },
+  "reduction_percent": 56,
+  "key_insight": "Context grows O(n) without Motus, stays flat with receipts"
+}

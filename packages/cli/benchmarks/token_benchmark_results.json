@@ -1,0 +1,10 @@
+{
+  "without_motus": [],
+  "with_motus": [],
+  "runs": 5,
+  "without_motus_tokens": 297,
+  "with_motus_tokens": 112,
+  "reduction_percent": 62,
+  "without_context_chars": 1188,
+  "with_context_chars": 449
+}

@@ -1,0 +1,10 @@
+{
+  "scenario": "realistic_handoff",
+  "description": "Code + explanations vs structured receipt",
+  "without_motus_tokens": 1187,
+  "with_motus_tokens": 340,
+  "tokens_saved": 847,
+  "reduction_percent": 71,
+  "without_chars": 4750,
+  "with_chars": 1360
+}

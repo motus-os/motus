@@ -1,0 +1,27 @@
+{
+  "scenarios": [
+    {
+      "scenario": "WITHOUT MOTUS (manual paste)",
+      "tokens": 887,
+      "reduction": 0
+    },
+    {
+      "scenario": "WITH MOTUS (basic - paste receipt)",
+      "tokens": 145,
+      "reduction": 84
+    },
+    {
+      "scenario": "WITH MOTUS (full - context API)",
+      "tokens": 107,
+      "reduction": 88
+    },
+    {
+      "scenario": "WITH MOTUS (optimal - query on demand)",
+      "tokens": 43,
+      "reduction": 95
+    }
+  ],
+  "baseline_tokens": 887,
+  "optimal_tokens": 43,
+  "max_reduction_percent": 95
+}
