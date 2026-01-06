@@ -10,6 +10,11 @@ from motus.ingest.otlp import OTLPIngestApp, create_app
 from motus.ingest.parser import SpanAction, parse_otlp_spans
 
 
+@pytest.fixture(autouse=True)
+def _unset_vault_dir(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("MC_VAULT_DIR", raising=False)
+
+
 @pytest.fixture
 def sample_otlp_payload():
     """Standard OTLP payload with tool and non-tool spans."""

@@ -487,8 +487,20 @@ class Coordinator:
         # Handle checkpoint - optionally refresh Lens
         lens_delta = None
         if event_type == "checkpoint":
-            # TODO: Compute Lens delta
-            pass
+            intent = payload.get("intent") if isinstance(payload, dict) else None
+            lens = assemble_lens(
+                policy_version=self._policy_version,
+                resources=lease.resources,
+                intent=intent or "checkpoint update",
+                cache_state_hash=self._context_cache.state_hash(),
+                timestamp=_utcnow(),
+            )
+            lens_payload = dict(lens)
+            lens_hash = lens_payload.get("lens_hash")
+            lens_digest = lens_hash if isinstance(lens_hash, str) else ""
+            if lens_digest and lens_digest != lease.lens_digest:
+                self._lease_store.update_lens_digest(lease_id, lens_digest)
+                lens_delta = lens_payload
 
         return StatusResponse(accepted=True, lens_delta=lens_delta)
 

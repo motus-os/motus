@@ -356,6 +356,25 @@ class LeaseStore:
 
         return self.get_lease(lease_id)
 
+    def update_lens_digest(self, lease_id: str, lens_digest: str) -> Lease | None:
+        """Update lens digest for an active lease."""
+        now = _utcnow()
+        cursor = self._conn.cursor()
+        cursor.execute(
+            """
+            UPDATE coordination_leases
+            SET lens_digest = ?, updated_at = ?
+            WHERE lease_id = ? AND status = 'active'
+            """,
+            (lens_digest, _iso_z(now), lease_id),
+        )
+        self._conn.commit()
+
+        if cursor.rowcount == 0:
+            return None
+
+        return self.get_lease(lease_id)
+
     def release_lease(
         self, lease_id: str, outcome: Outcome, status: LeaseStatus = "released"
     ) -> Lease | None:

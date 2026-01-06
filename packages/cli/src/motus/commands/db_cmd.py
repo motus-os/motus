@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,7 @@ from motus.core.database import get_database_path, get_db_manager
 from motus.migration.path_migration import CANONICAL_DIRNAME, LEGACY_DIRNAME, find_legacy_workspace_dir
 
 console = Console()
+_SAFE_TABLE_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
 def _db_exists(db_path: Path) -> bool:
@@ -72,13 +74,15 @@ def db_analyze_command(args: Any) -> int:
 def _table_counts(conn, tables: list[str]) -> dict[str, int]:
     counts: dict[str, int] = {}
     for name in tables:
+        if not _SAFE_TABLE_RE.fullmatch(name):
+            continue
         row = conn.execute(
             "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
             (name,),
         ).fetchone()
         if not row:
             continue
-        count = conn.execute(f"SELECT COUNT(*) FROM {name}").fetchone()[0]
+        count = conn.execute(f'SELECT COUNT(*) FROM "{name}"').fetchone()[0]
         counts[name] = int(count)
     return counts
 
