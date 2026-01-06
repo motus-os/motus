@@ -137,6 +137,34 @@ def dispatch_command(
             raise SystemExit(standards_reject_command(args))
         print_parser_help(console, bundle.standards_parser)
         raise SystemExit(EXIT_USAGE)
+    if command == "modules":
+        from motus.commands.modules_cmd import modules_list_command
+
+        modules_cmd = getattr(args, "modules_command", None)
+        if modules_cmd == "list":
+            raise SystemExit(modules_list_command(args))
+        print_parser_help(console, bundle.modules_parser)
+        raise SystemExit(EXIT_USAGE)
+    if command == "gates":
+        from motus.commands.gates_cmd import gates_list_command, gates_show_command
+
+        gates_cmd = getattr(args, "gates_command", None)
+        if gates_cmd == "list":
+            raise SystemExit(gates_list_command(args))
+        if gates_cmd == "show":
+            raise SystemExit(gates_show_command(args))
+        print_parser_help(console, bundle.gates_parser)
+        raise SystemExit(EXIT_USAGE)
+    if command == "gates":
+        from motus.commands.gates_cmd import gates_list_command, gates_show_command
+
+        gates_cmd = getattr(args, "gates_command", None)
+        if gates_cmd == "list":
+            raise SystemExit(gates_list_command(args))
+        if gates_cmd == "show":
+            raise SystemExit(gates_show_command(args))
+        print_parser_help(console, bundle.gates_parser)
+        raise SystemExit(EXIT_USAGE)
     if command == "activity":
         from motus.commands.activity_cmd import activity_list_command, activity_status_command
 

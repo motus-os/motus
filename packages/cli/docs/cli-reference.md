@@ -65,6 +65,7 @@ motus policy plan --files src/main.py  # Plan policy gates for a file
 | `harness` | Detect test harness for a repository |
 | `init` | Initialize a Motus workspace (.motus/) |
 | `mcp` | Start MCP server (stdio transport) |
+| `gates` | Release gate registry utilities |
 | `orient` | Lookup a cached decision (Cached Orient) |
 | `standards` | Standards (Cached Orient) utilities |
 | `summary` | Generate a rich summary for CLAUDE.md injection |
@@ -717,6 +718,34 @@ motus modules list --json
 
 **Output:**
 Shows module id, name, status, and target release (version).
+
+---
+
+### motus gates
+
+List or inspect gates from the canonical release gate registry.
+
+**Synopsis:**
+```bash
+motus gates list [--registry PATH] [--json]
+motus gates show <gate-id> [--registry PATH] [--json]
+```
+
+**Options:**
+- `--registry PATH` - Override registry path (default: packages/cli/docs/standards/gates.yaml)
+- `--json` - Emit JSON instead of a table
+
+**Examples:**
+```bash
+# List gates
+motus gates list
+
+# Show one gate
+motus gates show GATE-CLI-001
+```
+
+**Output:**
+Shows gate id, tier, kind, and command.
 
 ---
 

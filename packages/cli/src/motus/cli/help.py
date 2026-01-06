@@ -54,6 +54,7 @@ _COMMAND_HELP_TIERS: dict[str, int] = {
     "audit": 3,
     "db": 3,
     "release": 3,
+    "gates": 3,
 }
 
 _COMMAND_HELP_TEXTS: dict[str, str] = {
@@ -91,7 +92,8 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     "db": "Database maintenance utilities",
     "release": "Release evidence gates",
     "claude": "Manage CLAUDE.md instructions safely",
-    "modules": "List modules from the registry",
+    "gates": "Release gate registry utilities",
+    "modules": "Module registry utilities",
 }
 
 
