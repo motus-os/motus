@@ -1,0 +1,40 @@
+{
+  "description": "Valid evidence bundle with correct hashes and required manifest structure",
+  "oracle_ref": "evidence-bundle@0.1.0#verify_manifest",
+  "input": {
+    "manifest": {
+      "version": "0.1.0",
+      "run_id": "run-abc123",
+      "created_at": "2025-12-15T10:00:00Z",
+      "repo_dir": "/home/user/project",
+      "profile_id": "personal",
+      "policy_versions": {
+        "skill_packs_registry": "0.1.0",
+        "gates": "0.1.0"
+      },
+      "plan": {
+        "kind": "path",
+        "path": "plan.json"
+      },
+      "gate_results": [
+        {
+          "gate_id": "gate-lint",
+          "status": "pass",
+          "exit_code": 0,
+          "duration_ms": 150,
+          "log_paths": [
+            "logs/gate-lint.stdout"
+          ]
+        }
+      ],
+      "workspace_delta_paths": [
+        "src/main.py"
+      ],
+      "untracked_delta_paths": [],
+      "run_hash": "9419355df1a815091171604b0daf34377701eac0932998631792abfccb16828f"
+    }
+  },
+  "expected_outcome": "PASS",
+  "verification_note": "run_hash is the SHA-256 of the canonical manifest JSON bytes, excluding run_hash and signature.",
+  "notes": "This vector is schema-aligned (required fields present) and uses a real run_hash."
+}

@@ -1,0 +1,18 @@
+{
+  "description": "Permit plan_hash does not match current plan (plan drift)",
+  "oracle_ref": "permit-token@0.1.0#validate",
+  "input": {
+    "permit": {
+      "permit_id": "permit-xyz789",
+      "plan_hash": "old_plan_hash_from_yesterday_1234567890123456789012345678901234",
+      "issued_at": "2025-12-14T10:00:00Z",
+      "expires_at": "2025-12-15T10:00:00Z",
+      "scope": ["src/main.py"],
+      "actions": ["write"]
+    },
+    "current_plan_hash": "new_plan_hash_after_changes_567890123456789012345678901234abcdef",
+    "current_time": "2025-12-14T12:00:00Z"
+  },
+  "expected_outcome": "FAIL.PERMIT_HASH_MISMATCH",
+  "notes": "Plan was modified after permit was issued. Permit is no longer valid for this plan."
+}

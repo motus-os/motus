@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Motus Standards Gates Definition Schema",
+  "description": "Schema for defining gates and tiers in a Motus-governed repository",
+  "type": "object",
+  "required": ["version", "tiers", "gates"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version (semver)"
+    },
+    "tiers": {
+      "type": "array",
+      "description": "Gate tier definitions (T0, T1, T2, etc.)",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^T[0-9]+$",
+            "description": "Tier identifier (e.g., T0, T1, T2)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable tier name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Tier purpose and scope"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "gates": {
+      "type": "array",
+      "description": "Gate definitions",
+      "items": {
+        "type": "object",
+        "required": ["id", "tier", "kind", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^GATE-[A-Z]+-[0-9]+$",
+            "description": "Gate identifier (e.g., GATE-LINT-001)"
+          },
+          "tier": {
+            "type": "string",
+            "pattern": "^T[0-9]+$",
+            "description": "Tier this gate belongs to"
+          },
+          "kind": {
+            "type": "string",
+            "enum": ["intake", "plan", "tool", "artifact", "egress", "test", "lint", "security"],
+            "description": "Gate category"
+          },
+          "description": {
+            "type": "string",
+            "description": "What this gate verifies"
+          },
+          "command": {
+            "type": "string",
+            "description": "Shell command to execute (optional for conceptual gates)"
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 1000,
+            "description": "Maximum execution time in milliseconds"
+          },
+          "required": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether gate failure blocks the run"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

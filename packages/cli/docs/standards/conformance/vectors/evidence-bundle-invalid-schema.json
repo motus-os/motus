@@ -1,0 +1,13 @@
+{
+  "description": "Evidence bundle missing required fields",
+  "oracle_ref": "evidence-bundle@0.1.0#verify_manifest",
+  "input": {
+    "manifest": {
+      "version": "0.1.0",
+      "run_id": "run-missing-fields",
+      "gate_results": []
+    }
+  },
+  "expected_outcome": "FAIL.MANIFEST_INVALID",
+  "notes": "Missing required fields: created_at, repo_dir, policy_versions, plan"
+}

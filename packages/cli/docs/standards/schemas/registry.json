@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Motus Standards Skill Pack Registry Schema",
+  "description": "Schema for registering skill packs that map file scopes to gate tiers",
+  "type": "object",
+  "required": ["version", "packs"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version (semver)"
+    },
+    "packs": {
+      "type": "array",
+      "description": "Skill pack definitions",
+      "items": {
+        "type": "object",
+        "required": ["id", "precedence", "scopes", "gate_tier", "version", "owner", "status"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^BP-PACK-[A-Z0-9-]+$",
+            "description": "Pack identifier (e.g., BP-PACK-CODE-TIER-T1)"
+          },
+          "path": {
+            "type": "string",
+            "description": "Path to pack documentation (optional)"
+          },
+          "precedence": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000,
+            "description": "Higher precedence packs override lower ones (100 = baseline, 200 = specific)"
+          },
+          "scopes": {
+            "type": "array",
+            "description": "Glob patterns for files this pack applies to",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "gate_tier": {
+            "type": "string",
+            "pattern": "^T[0-9]+$",
+            "description": "Gate tier this pack requires"
+          },
+          "coverage_tags": {
+            "type": "array",
+            "description": "Compliance/framework coverage tags",
+            "items": {
+              "type": "string"
+            }
+          },
+          "version": {
+            "type": "string",
+            "description": "Pack version (semver)"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Pack maintainer"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "deprecated"],
+            "description": "Pack lifecycle status"
+          },
+          "replacement": {
+            "type": "string",
+            "description": "Replacement pack ID if deprecated"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

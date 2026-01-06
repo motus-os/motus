@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "packs": [
+    {
+      "id": "BP-PACK-BASELINE",
+      "precedence": 100,
+      "scopes": ["**/*"],
+      "gate_tier": "T0",
+      "version": "1.0.0",
+      "owner": "team",
+      "status": "active",
+      "replacement": ""
+    },
+    {
+      "id": "BP-PACK-CODE-TIER-T1",
+      "precedence": 200,
+      "scopes": [
+        "src/**",
+        "tests/**",
+        "pyproject.toml",
+        "setup.py",
+        "requirements*.txt"
+      ],
+      "gate_tier": "T1",
+      "version": "1.0.0",
+      "owner": "team",
+      "status": "active",
+      "replacement": ""
+    }
+  ]
+}

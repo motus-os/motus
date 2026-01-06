@@ -1,0 +1,39 @@
+{
+  "description": "Evidence bundle with mismatched run_hash",
+  "oracle_ref": "evidence-bundle@0.1.0#verify_manifest",
+  "input": {
+    "manifest": {
+      "version": "0.1.0",
+      "run_id": "run-xyz789",
+      "created_at": "2025-12-15T10:00:00Z",
+      "repo_dir": "/home/user/project",
+      "profile_id": "personal",
+      "policy_versions": {
+        "skill_packs_registry": "0.1.0",
+        "gates": "0.1.0"
+      },
+      "plan": {
+        "kind": "path",
+        "path": "plan.json"
+      },
+      "gate_results": [
+        {
+          "gate_id": "gate-test",
+          "status": "pass",
+          "exit_code": 0,
+          "duration_ms": 3000,
+          "log_paths": [
+            "logs/gate-test.stdout"
+          ]
+        }
+      ],
+      "workspace_delta_paths": [
+        "src/main.py"
+      ],
+      "untracked_delta_paths": [],
+      "run_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "expected_outcome": "FAIL.HASH_MISMATCH",
+  "notes": "The run_hash does not match what would be computed from the manifest contents"
+}

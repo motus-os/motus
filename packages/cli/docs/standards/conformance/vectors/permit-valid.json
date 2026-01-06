@@ -1,0 +1,18 @@
+{
+  "description": "Valid permit token bound to correct plan hash",
+  "oracle_ref": "permit-token@0.1.0#validate",
+  "input": {
+    "permit": {
+      "permit_id": "permit-abc123",
+      "plan_hash": "a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd",
+      "issued_at": "2025-12-15T10:00:00Z",
+      "expires_at": "2025-12-15T11:00:00Z",
+      "scope": ["src/main.py"],
+      "actions": ["write"]
+    },
+    "current_plan_hash": "a1b2c3d4e5f6789012345678901234567890123456789012345678901234abcd",
+    "current_time": "2025-12-15T10:30:00Z"
+  },
+  "expected_outcome": "PASS",
+  "notes": "Permit plan_hash matches current plan, not expired, valid scope"
+}

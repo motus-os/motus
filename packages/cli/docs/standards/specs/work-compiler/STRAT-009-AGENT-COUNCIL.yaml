@@ -1,0 +1,228 @@
+# STRAT-009: Agent Council
+# Multi-agent async deliberation for complex decisions
+
+name: Agent Council
+id: STRAT-009
+version: 1.1.0
+created: 2025-12-24
+updated: 2025-12-24
+status: validated
+
+# When this strategy should be suggested
+triggers:
+  - signal: multi_perspective_decision_needed
+    confidence_threshold: 0.8
+    examples:
+      - "This affects multiple stakeholders"
+      - "Trade-offs between competing concerns"
+      - "Need to avoid groupthink"
+
+  - signal: high_stakes_messaging_or_positioning
+    confidence_threshold: 0.7
+    examples:
+      - "Website copy decisions"
+      - "Public-facing documentation"
+      - "Brand/marketing decisions"
+
+  - signal: architectural_decision_with_user_impact
+    confidence_threshold: 0.75
+    examples:
+      - "API design that affects DX"
+      - "Feature prioritization"
+      - "Breaking change evaluation"
+
+  - signal: need_fresh_eyes_on_established_direction
+    confidence_threshold: 0.8
+    examples:
+      - "We've been heads-down, need perspective"
+      - "Echo chamber risk"
+      - "Validate assumptions before shipping"
+
+# The execution pattern
+pattern:
+  0_preflight:
+    action: Create briefing document with constraints
+    required_fields:
+      - decisions: "Numbered list of specific decisions to be made"
+      - output_format: "Word limits, required headers, structure"
+      - research_requirements: "Per-role research expectations"
+      - severity_ratings: "BLOCKER | STRONG | NOTED for dissent"
+    notes: |
+      Pre-flight prevents verbose, unfocused responses.
+      Match council size to decision scope (3 agents for single decision, 5 for comprehensive review).
+
+  1_setup:
+    action: Create shared conversation file(s)
+    artifacts:
+      - "{topic}-DELIBERATION.md"
+      - "{topic}-DECISIONS.md"
+    notes: |
+      File-based allows async, auditable discussion.
+      Each agent appends, never overwrites.
+      Separate deliberation from final decisions.
+
+  2_define_roles:
+    action: Assign distinct perspectives to agents
+    example_roles:
+      - User Advocate: "Would a solo dev say this? Does it match their pain?"
+      - Enterprise Advocate: "Can a CTO present this to their board?"
+      - Competitive Analyst: "What makes this different? (requires web research)"
+      - Copywriter: "Is this tight? Does every word earn its place?"
+      - Open Source Advocate: "Does this feel genuine or like marketing?"
+      - Technical Reviewer: "Feasibility, implementation concerns"
+    role_requirements:
+      - Each role must have distinct perspective (avoid redundancy)
+      - Research roles (Competitive Analyst, Open Source Advocate) must cite sources
+      - Advocacy roles must stay in-persona throughout
+    notes: |
+      Roles should create productive tension.
+      Research-backed arguments > opinion-based arguments.
+
+  3_seed_context:
+    action: Provide all agents with shared context
+    includes:
+      - The question/decision to be made (numbered D1, D2, etc.)
+      - Relevant research or prior work
+      - Constraints and success criteria
+      - What a good outcome looks like
+      - Output format requirements (word limit, headers)
+
+  4_deliberate:
+    action: Agents discuss via shared file
+    protocol:
+      - Read entire file before responding
+      - Append to designated response area
+      - Reference specific points when agreeing/disagreeing
+      - Flag concerns with severity rating:
+        - BLOCKER: Cannot proceed without resolution
+        - STRONG: Significant risk, recommend addressing
+        - NOTED: Reasonable concern, can proceed
+    word_limits:
+      - Quick council (3 agents): 300-500 words per agent
+      - Full council (5 agents): 500-1000 words per agent
+    notes: |
+      Async allows deep thinking.
+      File-based creates audit trail.
+      Severity ratings make synthesis tractable.
+
+  5_orchestrator_interject:
+    action: Main session can add context or redirect
+    when_to_interject:
+      - Agents missing key context
+      - Discussion going off-track
+      - New information available
+      - Clarification needed
+    notes: |
+      Orchestrator is not a voter, but a facilitator.
+      Can share learnings from parallel work.
+
+  6_synthesize:
+    action: Coordinator (or orchestrator) synthesizes verdict
+    output:
+      - Key agreements
+      - Unresolved tensions
+      - Recommended action
+      - Dissenting opinions noted
+
+  7_decide:
+    action: Human approves, modifies, or rejects
+    notes: |
+      Council advises, human decides.
+      Dissent should be preserved, not hidden.
+
+# What this strategy produces
+value: |
+  - Surfaces blind spots through multi-perspective review
+  - Creates audit trail of reasoning
+  - Prevents groupthink and echo chambers
+  - Allows deep async thinking (vs rushed live debate)
+  - External sessions bring fresh eyes to established patterns
+
+# When NOT to use this
+contraindications:
+  - Simple decisions with obvious answers
+  - Time-critical situations (adds latency)
+  - Decisions that don't benefit from multiple perspectives
+  - When you already have strong external validation
+
+# Comparison to alternatives
+vs_alternatives:
+  vs_single_agent_review:
+    advantage: "Multiple perspectives surface more issues"
+    disadvantage: "Takes longer, more coordination"
+
+  vs_live_parallel_agents:
+    advantage: "Deeper thinking, agents can build on each other"
+    disadvantage: "Slower, requires file-based coordination"
+
+  vs_human_committee:
+    advantage: "Faster, available 24/7, no scheduling"
+    disadvantage: "Less context than domain experts"
+
+# Real examples
+examples:
+  round_1:
+    context: "Motus website messaging - initial review"
+    roles_used:
+      - Researcher: Gathered 25+ user language signals
+      - Architect: Proposed terminology and narrative structure
+      - Coordinator: Validated and refined recommendations
+      - Editorial Reviewer: Challenged assumptions, surfaced 7 concerns
+    outcome: |
+      - Validated "Scope" terminology
+      - Identified "Gate" and "Prove" as not matching user language
+      - Open source angle identified as MASSIVE but missing
+    files:
+      - OBSERVE-CONVERSATION.md
+      - DECIDE-CONVERSATION.md
+
+  round_2:
+    context: "Motus website messaging - decision resolution"
+    roles_used:
+      - User Advocate: Solo dev perspective on D1 (verb), D2 (headline), D4 (tone)
+      - Enterprise Advocate: CTO perspective on D1, D2, D4
+      - Competitive Analyst: D5 (differentiation) with web research
+      - Copywriter: D2 (headline), D3 (open source positioning)
+      - Open Source Advocate: D3 with web research + authenticity check
+    outcome: |
+      APPROVED WITH SYNTHESIS:
+      - D1: "SCOPE. ENFORCE. VERIFY." (Enforce resolves Block/Control tension)
+      - D2: "Stop agents from breaking production." + open source subhead
+      - D3: Hero subhead + badge + GitHub CTA
+      - D4: Outcome-focused in hero, pain-aware below fold
+      - D5: "The only open source framework that enforces scope and proves compliance"
+
+      BLOCKERS SURFACED:
+      - GitHub org inconsistency (motus-os vs bnvoss)
+      - License clarity needed
+    tokens_used: ~1.5M (high due to research depth)
+    files:
+      - ROUND-2-DELIBERATION.md
+      - ROUND-2-DECISIONS.md
+
+# Learnings (from Round 2)
+learnings:
+  what_worked:
+    - Parallel execution surfaces blind spots (User vs Enterprise tension → Enforce)
+    - Research agents add external validation (competitor analysis, sources cited)
+    - Skeptic role caught launch blocker (GitHub org inconsistency)
+    - Structured decisions (D1-D5) made synthesis tractable
+
+  what_to_improve:
+    - Add word limits (some agents produced 2000+ words)
+    - Require severity ratings (BLOCKER vs NOTED)
+    - Staged debate for high-stakes (agents respond to each other, not just brief)
+    - Research requirements vary by role (specify in preflight)
+
+  calibration:
+    - 3 agents: Single decision (e.g., "Block vs Control")
+    - 5 agents: Comprehensive review (e.g., full messaging strategy)
+    - Token budget: ~300K per agent for research roles, ~100K for advocacy roles
+
+# Meta-observation
+meta: |
+  This strategy was discovered and formalized DURING its own execution.
+  Round 1 created the pattern. Round 2 validated and refined it.
+  Key insight: The value is synthesis, not consensus. Productive tension
+  between User Advocate and Enterprise Advocate produced "Enforce" -
+  a term neither would have proposed alone.

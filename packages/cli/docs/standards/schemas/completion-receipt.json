@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Motus CompletionReceipt schema",
+  "type": "object",
+  "required": [
+    "version",
+    "work_item_id",
+    "to_state",
+    "target_ref",
+    "verified_source_state",
+    "evidence_run_id",
+    "evidence_run_hash",
+    "verified_by",
+    "verified_at"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version (SemVer). Breaking changes require major version bump."
+    },
+    "work_item_id": {
+      "type": "string",
+      "description": "Work item identifier (e.g., CR id)."
+    },
+    "to_state": {
+      "type": "string",
+      "description": "Terminal state being asserted (e.g., done/merged/released)."
+    },
+    "target_ref": {
+      "type": "string",
+      "description": "The ref this completion is bound to (e.g., refs/heads/main)."
+    },
+    "verified_source_state": {
+      "type": "object",
+      "description": "Immutable source state the evidence was verified against. Must match EvidenceManifest.source_state.",
+      "required": ["vcs", "commit_sha", "dirty"],
+      "properties": {
+        "vcs": {"type": "string", "enum": ["git"]},
+        "commit_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "ref": {"type": "string"},
+        "dirty": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "evidence_run_id": {"type": "string"},
+    "evidence_run_hash": {
+      "type": "string",
+      "description": "The EvidenceManifest.run_hash being asserted."
+    },
+    "verification_report_hash": {
+      "type": "string",
+      "description": "Optional hash of a verification report artifact (if produced separately)."
+    },
+    "exception_grants": {
+      "type": "array",
+      "description": "Optional explicit exceptions covering failing gates (bounded waivers; stronger semantics should be specified separately).",
+      "items": {
+        "type": "object",
+        "required": ["gate_id", "approved_by", "justification"],
+        "properties": {
+          "gate_id": {"type": "string"},
+          "approved_by": {"type": "string"},
+          "justification": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "verified_by": {
+      "type": "string",
+      "description": "Verifier principal (human or CI identity)."
+    },
+    "verified_at": {
+      "type": "string",
+      "description": "Verification time (ISO 8601)."
+    },
+    "key_id": {"type": "string"},
+    "signature": {
+      "type": "string",
+      "description": "Optional signature over this receipt (higher tiers may require)."
+    }
+  },
+  "additionalProperties": false
+}

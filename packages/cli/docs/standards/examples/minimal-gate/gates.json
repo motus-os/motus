@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "tiers": [
+    {"id": "T0", "name": "Tier 0", "description": "Basic structure checks"}
+  ],
+  "gates": [
+    {
+      "id": "gate-check",
+      "tier": "T0",
+      "kind": "artifact",
+      "description": "Check that README exists",
+      "command": "./gate-check.sh",
+      "timeout_ms": 5000,
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Motus Standards Profiles Schema",
+  "description": "Schema for defining governance profiles (personal, team, enterprise, regulated)",
+  "type": "object",
+  "required": ["version", "profiles"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version (semver)"
+    },
+    "profiles": {
+      "type": "array",
+      "description": "Profile definitions",
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "defaults"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": ["personal", "team", "enterprise", "regulated"],
+            "description": "Profile identifier"
+          },
+          "description": {
+            "type": "string",
+            "description": "Profile purpose and use case"
+          },
+          "defaults": {
+            "type": "object",
+            "description": "Default settings for this profile",
+            "required": ["pack_cap", "gate_tier_min"],
+            "properties": {
+              "pack_cap": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10,
+                "description": "Maximum number of skill packs per run"
+              },
+              "gate_tier_min": {
+                "type": "string",
+                "pattern": "^T[0-9]+$",
+                "description": "Minimum gate tier required"
+              },
+              "signature_required": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether evidence must be signed"
+              },
+              "reconciliation_strict": {
+                "type": "boolean",
+                "default": true,
+                "description": "Whether D ⊆ R is strictly enforced"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

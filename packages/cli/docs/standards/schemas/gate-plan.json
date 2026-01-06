@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vault OS control-plane GatePlan schema",
+  "type": "object",
+  "required": [
+    "version",
+    "policy_versions",
+    "packs",
+    "pack_versions",
+    "gate_tier",
+    "gates",
+    "pack_cap"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Contract version for this schema. No breaking changes without a new major."
+    },
+    "profile_id": {
+      "type": "string",
+      "description": "Optional profile identifier (e.g., personal/team/smb-enterprise)."
+    },
+    "policy_versions": {
+      "type": "object",
+      "description": "Versions of the policy artifacts used to compute this plan.",
+      "required": ["skill_packs_registry", "gates"],
+      "properties": {
+        "skill_packs_registry": {"type": "string"},
+        "gates": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "packs": {
+      "type": "array",
+      "description": "Ordered list of selected pack IDs.",
+      "items": {"type": "string"}
+    },
+    "pack_versions": {
+      "type": "array",
+      "description": "Ordered per-pack version metadata captured at planning time.",
+      "items": {
+        "type": "object",
+        "required": ["id", "version", "owner", "status", "replacement"],
+        "properties": {
+          "id": {"type": "string"},
+          "version": {"type": "string"},
+          "owner": {"type": "string"},
+          "status": {"type": "string", "enum": ["active", "deprecated"]},
+          "replacement": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "gate_tier": {
+      "type": "string",
+      "description": "Requested verification tier (e.g., T0/T1/T2)."
+    },
+    "gates": {
+      "type": "array",
+      "description": "Ordered list of gate IDs to execute.",
+      "items": {"type": "string"}
+    },
+    "pack_cap": {
+      "type": "object",
+      "description": "Pack cap evaluation results used to prevent runaway specialization.",
+      "required": ["cap", "selected", "exceeded"],
+      "properties": {
+        "cap": {"type": "integer", "minimum": 0},
+        "selected": {"type": "integer", "minimum": 0},
+        "exceeded": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+

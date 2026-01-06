@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "profiles": [
+    {
+      "id": "personal",
+      "description": "Solo developer - fast by default, code escalates to T1",
+      "defaults": {"pack_cap": 8, "gate_tier_min": "T0"}
+    },
+    {
+      "id": "team",
+      "description": "Team environment - tests required by default",
+      "defaults": {"pack_cap": 6, "gate_tier_min": "T1"}
+    }
+  ]
+}

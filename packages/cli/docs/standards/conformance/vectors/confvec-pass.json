@@ -1,0 +1,13 @@
+{
+  "description": "CORE-CONF-002 PASS: oracle validates derived fields",
+  "oracle_ref": "canonicalization@0.1.0#canonicalize_sha256",
+  "input": {
+    "b": 2,
+    "a": 1
+  },
+  "expected_outcome": "PASS",
+  "expected_canonical": "{\"a\":1,\"b\":2}",
+  "expected_hash": "43258cff783fe7036d8a43033f830adfc60ec037382473548ac742b888292777",
+  "notes": "Vector is self-consistent: canonicalize(input)==expected_canonical and sha256(expected_canonical)==expected_hash."
+}
+

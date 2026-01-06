@@ -1,0 +1,16 @@
+{
+  "description": "Nested object canonicalization test",
+  "oracle_ref": "canonicalization@0.1.0#canonicalize_sha256",
+  "input": {
+    "outer": {
+      "z_inner": true,
+      "a_inner": false
+    },
+    "array": [3, 1, 2],
+    "alpha": "first"
+  },
+  "expected_outcome": "PASS",
+  "expected_canonical": "{\"alpha\":\"first\",\"array\":[3,1,2],\"outer\":{\"a_inner\":false,\"z_inner\":true}}",
+  "expected_hash": "ecae809edb8267b1eebe3b86d3c1cc24829787375060013f4e3f9c1ae310fb8b",
+  "notes": "Nested objects have keys sorted recursively. Arrays preserve order (not sorted)."
+}

@@ -1,0 +1,27 @@
+{
+  "version": "1.0.0",
+  "tiers": [
+    {"id": "T0", "name": "Tier 0", "description": "Lint checks only"},
+    {"id": "T1", "name": "Tier 1", "description": "Lint + test suite"}
+  ],
+  "gates": [
+    {
+      "id": "gate-lint",
+      "tier": "T0",
+      "kind": "lint",
+      "description": "Run ruff linter on source and tests",
+      "command": "./gates/gate-lint.sh",
+      "timeout_ms": 30000,
+      "required": true
+    },
+    {
+      "id": "gate-test",
+      "tier": "T1",
+      "kind": "test",
+      "description": "Run pytest on test suite",
+      "command": "./gates/gate-test.sh",
+      "timeout_ms": 300000,
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Motus Conformance Vector schema",
+  "type": "object",
+  "required": ["oracle_ref", "input", "expected_outcome"],
+  "properties": {
+    "description": {"type": "string"},
+    "oracle_ref": {
+      "type": "string",
+      "description": "Oracle reference in the form <spec>@<version>#<oracle> (see specs/conformance-validity.md)."
+    },
+    "input": {
+      "type": "object",
+      "description": "Protocol input object for the oracle."
+    },
+    "expected_outcome": {
+      "type": "string",
+      "description": "Expected reason code outcome (PASS or FAIL.* or CONFVEC.*)."
+    },
+    "expected_canonical": {
+      "type": "string",
+      "description": "Optional expected canonical JSON string (canonicalization vectors)."
+    },
+    "expected_hash": {
+      "type": "string",
+      "description": "Optional expected SHA-256 hex digest (canonicalization vectors)."
+    },
+    "expected_result": {
+      "type": "object",
+      "description": "Optional expected derived result object (e.g., reconciliation vectors)."
+    },
+    "notes": {"type": "string"},
+    "verification_note": {"type": "string"}
+  },
+  "additionalProperties": false
+}
+

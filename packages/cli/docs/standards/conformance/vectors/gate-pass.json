@@ -1,0 +1,20 @@
+{
+  "description": "Gate execution that passes (exit code 0)",
+  "oracle_ref": "gate-contract@0.1.0#evaluate",
+  "input": {
+    "gate": {
+      "id": "ruff-lint",
+      "command": "ruff check src/",
+      "tier": "T0",
+      "timeout_ms": 30000
+    },
+    "execution": {
+      "exit_code": 0,
+      "duration_ms": 250,
+      "stdout": "All checks passed!",
+      "stderr": ""
+    }
+  },
+  "expected_outcome": "PASS",
+  "notes": "Exit code 0 indicates gate success"
+}

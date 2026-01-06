@@ -1,0 +1,13 @@
+{
+  "description": "Basic JSON canonicalization test",
+  "oracle_ref": "canonicalization@0.1.0#canonicalize_sha256",
+  "input": {
+    "zebra": 1,
+    "alpha": 2,
+    "middle": 3
+  },
+  "expected_outcome": "PASS",
+  "expected_canonical": "{\"alpha\":2,\"middle\":3,\"zebra\":1}",
+  "expected_hash": "8279885d9e6f748807a4a8838376aad819aee964979d576d496aa9a67ea2bd6a",
+  "notes": "Keys must be sorted lexicographically, no whitespace between tokens"
+}

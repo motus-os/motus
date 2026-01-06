@@ -1,0 +1,17 @@
+{
+  "description": "Side-effecting action attempted without permit",
+  "oracle_ref": "permit-token@0.1.0#validate",
+  "input": {
+    "permit": null,
+    "action": {
+      "type": "write",
+      "target": "src/main.py"
+    },
+    "profile": {
+      "name": "team",
+      "require_permits": true
+    }
+  },
+  "expected_outcome": "FAIL.PERMIT_MISSING",
+  "notes": "Profile requires permits but none provided. No permit = no run."
+}

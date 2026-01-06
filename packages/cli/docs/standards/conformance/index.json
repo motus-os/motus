@@ -1,0 +1,27 @@
+{
+  "title": "Motus Conformance Suite",
+  "version": "0.1.0",
+  "vectors": [
+    {"file": "vectors/evidence-bundle-valid.json", "spec": "evidence-bundle", "expected": "PASS"},
+    {"file": "vectors/evidence-bundle-invalid-hash.json", "spec": "evidence-bundle", "expected": "FAIL.HASH_MISMATCH"},
+    {"file": "vectors/evidence-bundle-invalid-schema.json", "spec": "evidence-bundle", "expected": "FAIL.MANIFEST_INVALID"},
+    {"file": "vectors/gate-pass.json", "spec": "gate-contract", "expected": "PASS"},
+    {"file": "vectors/gate-fail-exit-code.json", "spec": "gate-contract", "expected": "FAIL.GATE_FAILED"},
+    {"file": "vectors/reconciliation-pass.json", "spec": "reconciliation", "expected": "PASS"},
+    {"file": "vectors/reconciliation-untracked.json", "spec": "reconciliation", "expected": "RECON.UNTRACKED_DELTA"},
+    {"file": "vectors/permit-valid.json", "spec": "permit-token", "expected": "PASS"},
+    {"file": "vectors/permit-missing.json", "spec": "permit-token", "expected": "FAIL.PERMIT_MISSING"},
+    {"file": "vectors/permit-hash-mismatch.json", "spec": "permit-token", "expected": "FAIL.PERMIT_HASH_MISMATCH"},
+    {"file": "vectors/canonicalization-basic.json", "spec": "canonicalization", "expected": "PASS"},
+    {"file": "vectors/canonicalization-nested.json", "spec": "canonicalization", "expected": "PASS"},
+    {"file": "vectors/confvec-pass.json", "spec": "canonicalization", "expected": "PASS"},
+    {"file": "vectors/confvec-derived-mismatch.json", "spec": "canonicalization", "expected": "CONFVEC.DERIVED_MISMATCH"},
+    {"file": "vectors/confvec-oracle-missing.json", "spec": "canonicalization", "expected": "CONFVEC.ORACLE_MISSING"},
+    {"file": "vectors/complete-T01.json", "spec": "work-completion", "expected": "PASS"},
+    {"file": "vectors/complete-T02.json", "spec": "work-completion", "expected": "COMPLETE.EVIDENCE_MISSING"},
+    {"file": "vectors/complete-T03.json", "spec": "work-completion", "expected": "COMPLETE.EVIDENCE_INVALID"},
+    {"file": "vectors/complete-T04.json", "spec": "work-completion", "expected": "COMPLETE.EXCEPTION_REQUIRED"},
+    {"file": "vectors/complete-T05.json", "spec": "work-completion", "expected": "COMPLETE.SOURCE_STATE_MISMATCH"},
+    {"file": "vectors/complete-T06.json", "spec": "work-completion", "expected": "COMPLETE.SOURCE_NOT_HEAD"}
+  ]
+}

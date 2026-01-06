@@ -1,0 +1,63 @@
+{
+  "description": "WORK-COMPLETE-001 FAIL: gate failed and no exception grant present",
+  "oracle_ref": "work-completion@0.1.0#verify_completion",
+  "input": {
+    "head_commit_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "completion_receipt": {
+      "version": "0.1.0",
+      "work_item_id": "CR-2025-12-15-example",
+      "to_state": "done",
+      "target_ref": "refs/heads/main",
+      "verified_source_state": {
+        "vcs": "git",
+        "commit_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "ref": "refs/heads/main",
+        "dirty": false
+      },
+      "evidence_run_id": "run-fail1",
+      "evidence_run_hash": "4ee107efaf447396dd944c7a6e3c7a372f1f5461ca9217daef4fd5349f4855f5",
+      "verified_by": "ci",
+      "verified_at": "2025-12-15T00:00:00Z"
+    },
+    "evidence_manifest": {
+      "version": "1.0.0",
+      "run_id": "run-fail1",
+      "created_at": "2025-12-15T00:00:00Z",
+      "repo_dir": "/repo",
+      "policy_versions": {"skill_packs_registry": "0.1.0", "gates": "0.1.0"},
+      "plan": {
+        "kind": "inline",
+        "inline": {
+          "version": "0.1.0",
+          "policy_versions": {"skill_packs_registry": "0.1.0", "gates": "0.1.0"},
+          "packs": ["BP-PACK-BASELINE"],
+          "pack_versions": [
+            {"id": "BP-PACK-BASELINE", "version": "0.1.0", "owner": "Ben", "status": "active", "replacement": ""}
+          ],
+          "gate_tier": "T0",
+          "gates": ["GATE-PLAN-001"],
+          "pack_cap": {"cap": 5, "selected": 1, "exceeded": false}
+        }
+      },
+      "gate_results": [
+        {
+          "gate_id": "GATE-PLAN-001",
+          "status": "fail",
+          "exit_code": 1,
+          "duration_ms": 1,
+          "log_paths": ["logs/001-GATE-PLAN-001.stderr.txt"]
+        }
+      ],
+      "source_state": {
+        "vcs": "git",
+        "commit_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "ref": "refs/heads/main",
+        "dirty": false
+      },
+      "run_hash": "4ee107efaf447396dd944c7a6e3c7a372f1f5461ca9217daef4fd5349f4855f5"
+    }
+  },
+  "expected_outcome": "COMPLETE.EXCEPTION_REQUIRED",
+  "notes": "A required gate failed; completion must be denied unless an explicit exception grant covers it."
+}
+

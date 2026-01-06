@@ -1,0 +1,14 @@
+{
+  "description": "Reconciliation passes: D is subset of R",
+  "oracle_ref": "reconciliation@0.1.0#reconcile",
+  "input": {
+    "requested_scope": ["src/main.py", "src/utils.py", "tests/test_main.py"],
+    "actual_delta": ["src/main.py", "tests/test_main.py"]
+  },
+  "expected_outcome": "PASS",
+  "expected_result": {
+    "untracked_delta": [],
+    "outcome": "PASS"
+  },
+  "notes": "All changed files (actual_delta) are within requested_scope, D is subset of R"
+}

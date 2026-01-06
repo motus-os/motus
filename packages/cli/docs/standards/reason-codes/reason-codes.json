@@ -1,0 +1,151 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Motus Reason Codes",
+  "description": "Machine-readable codes for verification outcomes",
+  "version": "0.1.0",
+  "codes": {
+    "PASS": {
+      "description": "Verification succeeded",
+      "severity": "info"
+    },
+    "RECON.UNTRACKED_DELTA": {
+      "description": "Workspace contains changes not in requested scope (D not subset of R)",
+      "severity": "error",
+      "spec": "reconciliation.md"
+    },
+    "RECON.SCOPE_EXCEEDED": {
+      "description": "Changes exceed maximum allowed scope",
+      "severity": "error",
+      "spec": "reconciliation.md"
+    },
+    "FAIL.GATE_FAILED": {
+      "description": "Gate returned non-zero exit code",
+      "severity": "error",
+      "spec": "gate-contract.md"
+    },
+    "FAIL.GATE_TIMEOUT": {
+      "description": "Gate exceeded maximum execution time",
+      "severity": "error",
+      "spec": "gate-contract.md"
+    },
+    "FAIL.HASH_MISMATCH": {
+      "description": "Computed hash does not match claimed hash",
+      "severity": "error",
+      "spec": "evidence-bundle.md"
+    },
+    "FAIL.MANIFEST_INVALID": {
+      "description": "Evidence manifest fails schema validation",
+      "severity": "error",
+      "spec": "evidence-bundle.md"
+    },
+    "FAIL.PERMIT_MISSING": {
+      "description": "Required permit not provided",
+      "severity": "error",
+      "spec": "permit-token.md"
+    },
+    "FAIL.PERMIT_EXPIRED": {
+      "description": "Permit has expired",
+      "severity": "error",
+      "spec": "permit-token.md"
+    },
+    "FAIL.PERMIT_HASH_MISMATCH": {
+      "description": "Permit plan_hash does not match current plan",
+      "severity": "error",
+      "spec": "permit-token.md"
+    },
+    "FAIL.SEAL_MISSING": {
+      "description": "Plan seal required but not provided",
+      "severity": "error",
+      "spec": "plan-seal.md"
+    },
+    "FAIL.SEAL_INVALID": {
+      "description": "Plan seal signature verification failed",
+      "severity": "error",
+      "spec": "plan-seal.md"
+    },
+    "WARN.COVERAGE_LOW": {
+      "description": "Gate coverage below recommended threshold",
+      "severity": "warning",
+      "spec": "gate-contract.md"
+    },
+    "WARN.DRAFT_SPEC": {
+      "description": "Using features from draft specification",
+      "severity": "warning"
+    },
+    "CONFVEC.ORACLE_MISSING": {
+      "description": "Conformance vector is missing required oracle_ref",
+      "severity": "error",
+      "spec": "conformance-validity.md"
+    },
+    "CONFVEC.ORACLE_UNKNOWN": {
+      "description": "Conformance vector oracle_ref is unknown or unsupported",
+      "severity": "error",
+      "spec": "conformance-validity.md"
+    },
+    "CONFVEC.ORACLE_NONDETERMINISTIC": {
+      "description": "Protocol oracle produced non-deterministic outputs for the same input",
+      "severity": "error",
+      "spec": "conformance-validity.md"
+    },
+    "CONFVEC.VECTOR_INVALID": {
+      "description": "Conformance vector is structurally invalid (missing required fields or wrong types)",
+      "severity": "error",
+      "spec": "conformance-validity.md"
+    },
+    "CONFVEC.DERIVED_MISMATCH": {
+      "description": "Conformance vector expected derived fields do not match the protocol oracle output",
+      "severity": "error",
+      "spec": "conformance-validity.md"
+    },
+    "CONFVEC.OUTCOME_MISMATCH": {
+      "description": "Conformance vector expected outcome does not match the protocol oracle outcome",
+      "severity": "error",
+      "spec": "conformance-validity.md"
+    },
+    "COMPLETE.EVIDENCE_MISSING": {
+      "description": "Completion claim is missing required evidence references (run_id/run_hash/manifest)",
+      "severity": "error",
+      "spec": "work-completion.md"
+    },
+    "COMPLETE.EVIDENCE_INVALID": {
+      "description": "Referenced evidence bundle failed verification (e.g., hash mismatch)",
+      "severity": "error",
+      "spec": "work-completion.md"
+    },
+    "COMPLETE.SOURCE_STATE_MISSING": {
+      "description": "Evidence manifest is missing required source_state binding (commit/dirty)",
+      "severity": "error",
+      "spec": "work-completion.md"
+    },
+    "COMPLETE.SOURCE_STATE_MISMATCH": {
+      "description": "CompletionReceipt verified_source_state does not match EvidenceManifest.source_state",
+      "severity": "error",
+      "spec": "work-completion.md"
+    },
+    "COMPLETE.SOURCE_NOT_HEAD": {
+      "description": "Evidence commit is not equal to HEAD(target_ref) at transition time",
+      "severity": "error",
+      "spec": "work-completion.md"
+    },
+    "COMPLETE.GATE_FAILED": {
+      "description": "One or more required gates did not pass for the completion evidence",
+      "severity": "error",
+      "spec": "work-completion.md"
+    },
+    "COMPLETE.EXCEPTION_REQUIRED": {
+      "description": "A required gate failed and no explicit exception grant covers the failure",
+      "severity": "error",
+      "spec": "work-completion.md"
+    },
+    "COMPLETE.EXCEPTION_INVALID": {
+      "description": "Exception grants are present but do not cover the failing gates",
+      "severity": "error",
+      "spec": "work-completion.md"
+    },
+    "COMPLETE.RECON_UNTRACKED_DELTA": {
+      "description": "Workspace reconciliation reports untracked deltas; completion must fail",
+      "severity": "error",
+      "spec": "work-completion.md"
+    }
+  }
+}

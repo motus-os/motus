@@ -1,0 +1,14 @@
+{
+  "description": "Reconciliation fails: untracked changes outside requested scope",
+  "oracle_ref": "reconciliation@0.1.0#reconcile",
+  "input": {
+    "requested_scope": ["src/main.py"],
+    "actual_delta": ["src/main.py", "src/secret.py", "config.json"]
+  },
+  "expected_outcome": "RECON.UNTRACKED_DELTA",
+  "expected_result": {
+    "untracked_delta": ["src/secret.py", "config.json"],
+    "outcome": "FAIL"
+  },
+  "notes": "Agent modified files not in requested scope. D is NOT subset of R. Enforcement must fail-closed."
+}

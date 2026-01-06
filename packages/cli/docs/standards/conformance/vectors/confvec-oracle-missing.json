@@ -1,0 +1,12 @@
+{
+  "description": "CORE-CONF-002 FAIL: missing oracle_ref must be rejected",
+  "input": {
+    "b": 2,
+    "a": 1
+  },
+  "expected_outcome": "CONFVEC.ORACLE_MISSING",
+  "expected_canonical": "{\"a\":1,\"b\":2}",
+  "expected_hash": "43258cff783fe7036d8a43033f830adfc60ec037382473548ac742b888292777",
+  "notes": "oracle_ref is intentionally missing; validator must report CONFVEC.ORACLE_MISSING."
+}
+
