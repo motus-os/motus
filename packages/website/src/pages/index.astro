@@ -59,14 +59,15 @@ const heroCtaHref = `${base}${heroCtaPath}`;
       Context grows O(n) with each handoff. Receipts stay flat.
     </p>
 
-    <!-- Side-by-side comparison -->
-    <div class="grid md:grid-cols-2 gap-phi-4 mb-phi-4">
+    <!-- Side-by-side comparison - equal height panels -->
+    <div class="grid md:grid-cols-2 gap-phi-4 mb-phi-4 items-stretch">
       <!-- WITHOUT MOTUS -->
-      <div class="rounded-xl border border-line/50 overflow-hidden bg-surface">
+      <div class="rounded-xl border border-line/50 overflow-hidden bg-surface flex flex-col">
         <div class="px-phi-3 py-phi-2 border-b border-line/30 bg-surface-muted/50">
           <p class="text-xs uppercase tracking-wider text-text-secondary/60">Without Motus</p>
         </div>
-        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto">
+        <!-- theme-dark overrides text colors for dark bg inside light section -->
+        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto flex-1 theme-dark">
           <pre class="whitespace-pre-wrap"><code><span class="text-text-secondary/50"># Developer pastes context manually</span>
 
 Here's the code from the previous session:
@@ -87,17 +88,18 @@ Design decisions:
 The API endpoints are in src/api/...
 <span class="text-error/70"># 887 tokens of context</span></code></pre>
         </div>
-        <div class="px-phi-3 py-phi-2 border-t border-line/30 bg-surface-muted/30">
+        <div class="px-phi-3 py-phi-2 border-t border-line/30 bg-surface-muted/30 mt-auto">
           <p class="text-sm text-text-secondary/60 font-mono">887 tokens</p>
         </div>
       </div>
 
       <!-- WITH MOTUS -->
-      <div class="rounded-xl border border-mint/30 overflow-hidden bg-surface">
+      <div class="rounded-xl border border-mint/30 overflow-hidden bg-surface flex flex-col">
         <div class="px-phi-3 py-phi-2 border-b border-mint/20 bg-mint/5">
           <p class="text-xs uppercase tracking-wider text-mint">With Motus</p>
         </div>
-        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto">
+        <!-- theme-dark overrides text colors for dark bg inside light section -->
+        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto flex-1 theme-dark">
           <pre class="whitespace-pre-wrap"><code><span class="text-mint">$</span> motus work context TASK-003
 
 <span class="text-text-secondary/50">{</span>
@@ -112,7 +114,7 @@ The API endpoints are in src/api/...
 
 <span class="text-mint/70"># 43 tokens • 0.15ms</span></code></pre>
         </div>
-        <div class="px-phi-3 py-phi-2 border-t border-mint/20 bg-mint/5">
+        <div class="px-phi-3 py-phi-2 border-t border-mint/20 bg-mint/5 mt-auto">
           <p class="text-sm text-mint font-mono">43 tokens</p>
         </div>
       </div>
