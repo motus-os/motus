@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import Section from '../components/Section.astro';
 import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
-import SectionHeader from '../components/SectionHeader.astro';
 import Button from '../components/Button.astro';
 import messaging from '../data/messaging.json';
 
@@ -12,16 +11,15 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   : `${import.meta.env.BASE_URL}/`;
 
 const hero = messaging.hero || {};
-const heroHeadline = hero.headline || 'What did your agent actually do?';
 const heroSubheadline = hero.subheadline || 'Motus knows.';
-const heroValueProp = hero.value_prop || 'Every action logged. Every decision recorded. Every outcome, receipted.';
+const heroValueProp = hero.value_prop || 'Every action logged. Every decision recorded. Every outcome a receipt.';
 const heroCtaText = hero.cta_text || 'Get your first receipt';
 const heroCtaPath = hero.cta_url ? hero.cta_url.replace(/^\/+/, '') : 'get-started';
 const heroCtaHref = `${base}${heroCtaPath}`;
 ---
 
 <Layout title="Motus - What did your agent actually do?">
-  <!-- HERO: The Question -->
+  <!-- HERO -->
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-5xl">
     <h1 class="text-3xl md:text-5xl lg:text-6xl font-display text-text-secondary mb-phi-2">
       What did your agent <span class="whitespace-nowrap">actually do?</span>
@@ -46,214 +44,245 @@ const heroCtaHref = `${base}${heroCtaPath}`;
     </p>
   </Section>
 
-  <!-- VISION 1: The Transaction (Micro) -->
-  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl">
-    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2">Today</p>
-    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-4">
-      One task. One receipt.
+  <!-- ============================================================
+       SECTION 1: WORKFLOW COMPRESSION
+       Light background, side-by-side code comparison
+       ============================================================ -->
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2 text-center">Workflow Compression</p>
+
+    <h2 class="text-4xl md:text-5xl lg:text-6xl font-display text-text-primary mb-phi-2 text-center">
+      95<span class="text-mint">%</span> fewer tokens
     </h2>
 
-    <div class="grid md:grid-cols-3 gap-phi-4 text-center">
-      <div>
-        <p class="text-lg font-display text-mint mb-phi-1">Outcome</p>
-        <p class="text-sm text-text-secondary">What was delivered.</p>
-      </div>
-      <div>
-        <p class="text-lg font-display text-mint mb-phi-1">Evidence</p>
-        <p class="text-sm text-text-secondary">Proof it worked.</p>
-      </div>
-      <div>
-        <p class="text-lg font-display text-mint mb-phi-1">Decisions</p>
-        <p class="text-sm text-text-secondary">Why it was done.</p>
-      </div>
-    </div>
-  </Section>
-
-  <!-- VISION 2: The Chain (Meso) -->
-  <Section tone="dark" pad="tight" innerClass="max-w-4xl">
-    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2">Tomorrow</p>
-    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-4">
-      Receipts feed the next task.
-    </h2>
-
-    <div class="space-y-phi-2 text-lg text-text-secondary max-w-2xl">
-      <p><span class="text-mint">Agent A</span> builds the API. Ships a receipt.</p>
-      <p><span class="text-mint">Agent B</span> reads the receipt. Writes tests.</p>
-      <p><span class="text-mint">Agent C</span> sees both. Deploys with proof.</p>
-    </div>
-
-    <p class="mt-phi-4 text-sm text-text-secondary/70">
-      No context window. No re-prompting. Just receipts.
+    <p class="text-lg text-text-secondary text-center mb-phi-5 max-w-2xl mx-auto">
+      Context grows O(n) with each handoff. Receipts stay flat.
     </p>
-  </Section>
 
-  <!-- VISION 3: The Ecosystem (Macro) -->
-  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl">
-    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2">The Future</p>
-    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-4">
-      From solo agent to orchestrated fleet.
-    </h2>
+    <!-- Side-by-side comparison -->
+    <div class="grid md:grid-cols-2 gap-phi-4 mb-phi-4">
+      <!-- WITHOUT MOTUS -->
+      <div class="rounded-xl border border-line/50 overflow-hidden bg-surface">
+        <div class="px-phi-3 py-phi-2 border-b border-line/30 bg-surface-muted/50">
+          <p class="text-xs uppercase tracking-wider text-text-secondary/60">Without Motus</p>
+        </div>
+        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto">
+          <pre class="whitespace-pre-wrap"><code><span class="text-text-secondary/50"># Developer pastes context manually</span>
 
-    <div class="grid md:grid-cols-3 gap-phi-4 text-center">
-      <div>
-        <p class="text-lg font-display text-text-primary mb-phi-1">Audit</p>
-        <p class="text-sm text-text-secondary">Query any action.</p>
+Here's the code from the previous session:
+
+```python
+class Task(Base):
+    id = Column(UUID, primary_key=True)
+    title = Column(String(255))
+    status = Column(Enum(TaskStatus))
+    # ... 40 more lines
+```
+
+Design decisions:
+- Used UUID for distributed systems
+- Soft delete via deleted_at
+- Status transitions validated
+
+The API endpoints are in src/api/...
+<span class="text-error/70"># 887 tokens of context</span></code></pre>
+        </div>
+        <div class="px-phi-3 py-phi-2 border-t border-line/30 bg-surface-muted/30">
+          <p class="text-sm text-text-secondary/60 font-mono">887 tokens</p>
+        </div>
       </div>
-      <div>
-        <p class="text-lg font-display text-text-primary mb-phi-1">Coordinate</p>
-        <p class="text-sm text-text-secondary">No conflicts. Ever.</p>
+
+      <!-- WITH MOTUS -->
+      <div class="rounded-xl border border-mint/30 overflow-hidden bg-surface">
+        <div class="px-phi-3 py-phi-2 border-b border-mint/20 bg-mint/5">
+          <p class="text-xs uppercase tracking-wider text-mint">With Motus</p>
+        </div>
+        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto">
+          <pre class="whitespace-pre-wrap"><code><span class="text-mint">$</span> motus work context TASK-003
+
+<span class="text-text-secondary/50">{</span>
+  <span class="text-mint">"task"</span>: <span class="text-text-primary">"integration-tests"</span>,
+  <span class="text-mint">"parent_receipts"</span>: [<span class="text-text-primary">"rx_001"</span>, <span class="text-text-primary">"rx_002"</span>],
+  <span class="text-mint">"summary"</span>: {
+    <span class="text-mint">"model"</span>: <span class="text-text-primary">"Task (UUID, status enum)"</span>,
+    <span class="text-mint">"api"</span>: <span class="text-text-primary">"CRUD /tasks, auth required"</span>,
+    <span class="text-mint">"decisions"</span>: [<span class="text-text-primary">"soft delete"</span>, <span class="text-text-primary">"max 100"</span>]
+  }
+<span class="text-text-secondary/50">}</span>
+
+<span class="text-mint/70"># 43 tokens • 0.15ms</span></code></pre>
+        </div>
+        <div class="px-phi-3 py-phi-2 border-t border-mint/20 bg-mint/5">
+          <p class="text-sm text-mint font-mono">43 tokens</p>
+        </div>
       </div>
-      <div>
-        <p class="text-lg font-display text-text-primary mb-phi-1">Scale</p>
-        <p class="text-sm text-text-secondary">More agents, more trust.</p>
-      </div>
+    </div>
+
+    <!-- Proof link -->
+    <div class="text-center">
+      <a
+        href="https://github.com/motus-os/motus/tree/main/packages/cli/benchmarks"
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-phi-1 text-sm text-mint hover:underline"
+      >
+        Run the benchmark yourself
+        <span aria-hidden="true">&#8594;</span>
+      </a>
     </div>
   </Section>
 
-  <!-- PROOF: Agent + Motus vs Agent Alone -->
+  <!-- ============================================================
+       SECTION 2: MULTI-AGENT ORCHESTRATION
+       Dark background, receipt chain flow
+       ============================================================ -->
   <Section tone="dark" pad="tight" innerClass="max-w-5xl">
-    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary/60 mb-phi-2 text-center">Measured, not claimed</p>
-    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-5 text-center">
-      Agent + Motus vs Agent alone
+    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2 text-center">Multi-Agent</p>
+
+    <h2 class="text-4xl md:text-5xl lg:text-6xl font-display text-text-primary mb-phi-2 text-center">
+      Any agent<span class="text-mint">.</span> Any provider<span class="text-mint">.</span>
     </h2>
 
-    <div class="grid md:grid-cols-3 gap-phi-4">
-      <!-- Workflow Compression -->
-      <div class="bg-surface-muted rounded-lg border border-mint/30 overflow-hidden">
-        <div class="p-phi-3 border-b border-mint/20 bg-mint/5">
-          <p class="text-xs uppercase tracking-wider text-mint mb-phi-1">Workflow Compression</p>
-          <p class="text-2xl font-display text-text-primary">95% fewer tokens</p>
-        </div>
-        <div class="p-phi-3 space-y-phi-3">
-          <div>
-            <p class="text-xs text-text-secondary/60 mb-1">Without Motus</p>
-            <p class="text-sm text-text-secondary">Re-paste code, re-explain decisions. Context grows O(n).</p>
+    <p class="text-lg text-text-secondary text-center mb-phi-5 max-w-2xl mx-auto">
+      Receipts are the universal handoff format. Brand doesn't matter.
+    </p>
+
+    <!-- Receipt chain flow -->
+    <div class="flex flex-col md:flex-row items-center justify-center gap-phi-3 md:gap-phi-2 mb-phi-5">
+      <!-- Receipt 1 -->
+      <div class="w-full md:w-auto">
+        <Panel tone="dark" size="sm" class="text-center min-w-[160px]">
+          <p class="font-mono text-mint text-lg mb-phi-1">rx_001</p>
+          <p class="text-sm text-text-secondary mb-phi-2">Data model</p>
+          <div class="inline-flex items-center gap-phi-1 px-phi-2 py-1 rounded-full bg-surface-muted/50 text-xs text-text-secondary/70">
+            <span class="w-2 h-2 rounded-full bg-[#cc9b7a]"></span>
+            Claude
           </div>
-          <div>
-            <p class="text-xs text-mint mb-1">With Motus</p>
-            <p class="text-sm text-text-secondary">
-              <code class="text-mint">motus work context</code> — 0.15ms. Flat.
-            </p>
-          </div>
-        </div>
-        <div class="p-phi-3 border-t border-line/30 bg-surface-muted/50">
-          <p class="text-xs text-text-secondary/60">
-            887 → 43 tokens. <a href={`${base}docs/proof/token-reduction-benchmark`} class="text-mint hover:underline">Methodology →</a>
-          </p>
-        </div>
+        </Panel>
       </div>
 
-      <!-- Multi-Agent -->
-      <div class="bg-surface-muted rounded-lg border border-line/30 overflow-hidden">
-        <div class="p-phi-3 border-b border-line/30">
-          <p class="text-xs uppercase tracking-wider text-text-secondary/60 mb-phi-1">Multi-Agent</p>
-          <p class="text-2xl font-display text-text-primary">Any agent. Any provider.</p>
-        </div>
-        <div class="p-phi-3 space-y-phi-3">
-          <div>
-            <p class="text-xs text-text-secondary/60 mb-1">Without Motus</p>
-            <p class="text-sm text-text-secondary">Claude can't read GPT's logs. Each starts from scratch.</p>
+      <!-- Arrow -->
+      <div class="text-mint text-2xl md:rotate-0 rotate-90" aria-hidden="true">&#8594;</div>
+
+      <!-- Receipt 2 -->
+      <div class="w-full md:w-auto">
+        <Panel tone="dark" size="sm" class="text-center min-w-[160px]">
+          <p class="font-mono text-mint text-lg mb-phi-1">rx_002</p>
+          <p class="text-sm text-text-secondary mb-phi-2">API endpoints</p>
+          <div class="inline-flex items-center gap-phi-1 px-phi-2 py-1 rounded-full bg-surface-muted/50 text-xs text-text-secondary/70">
+            <span class="w-2 h-2 rounded-full bg-[#10a37f]"></span>
+            GPT
           </div>
-          <div>
-            <p class="text-xs text-text-secondary/60 mb-1">With Motus</p>
-            <p class="text-sm text-text-secondary">Receipts are agent-agnostic. A's receipt becomes B's context.</p>
-          </div>
-        </div>
-        <div class="p-phi-3 border-t border-line/30 bg-surface-muted/50 font-mono text-xs">
-          <p class="text-text-secondary/60">rx_001 → rx_002 → rx_003</p>
-          <p class="text-text-secondary/40 text-[10px]">claude · gpt · gemini</p>
-        </div>
+        </Panel>
       </div>
 
-      <!-- Ecosystem -->
-      <div class="bg-surface-muted rounded-lg border border-line/30 overflow-hidden">
-        <div class="p-phi-3 border-b border-line/30">
-          <p class="text-xs uppercase tracking-wider text-text-secondary/60 mb-phi-1">Ecosystem</p>
-          <p class="text-2xl font-display text-text-primary">1 + 1 = 3</p>
-        </div>
-        <div class="p-phi-3 space-y-phi-3">
-          <div>
-            <p class="text-xs text-text-secondary/60 mb-1">Without Motus</p>
-            <p class="text-sm text-text-secondary">Each session isolated. Work evaporates. No compound learning.</p>
+      <!-- Arrow -->
+      <div class="text-mint text-2xl md:rotate-0 rotate-90" aria-hidden="true">&#8594;</div>
+
+      <!-- Receipt 3 -->
+      <div class="w-full md:w-auto">
+        <Panel tone="dark" size="sm" class="text-center min-w-[160px]">
+          <p class="font-mono text-mint text-lg mb-phi-1">rx_003</p>
+          <p class="text-sm text-text-secondary mb-phi-2">Integration tests</p>
+          <div class="inline-flex items-center gap-phi-1 px-phi-2 py-1 rounded-full bg-surface-muted/50 text-xs text-text-secondary/70">
+            <span class="w-2 h-2 rounded-full bg-[#4285f4]"></span>
+            Gemini
           </div>
-          <div>
-            <p class="text-xs text-text-secondary/60 mb-1">With Motus</p>
-            <p class="text-sm text-text-secondary">Receipts accumulate. Decisions become institutional knowledge.</p>
-          </div>
-        </div>
-        <div class="p-phi-3 border-t border-line/30 bg-surface-muted/50">
-          <p class="text-xs text-text-secondary/60">
-            Outcome → Evidence → Decision. <span class="text-text-secondary">The work compounds.</span>
-          </p>
-        </div>
+        </Panel>
       </div>
+    </div>
+
+    <!-- The insight -->
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="text-text-secondary mb-phi-3">
+        <span class="text-text-primary">Claude</span> builds the model. Ships a receipt.<br/>
+        <span class="text-text-primary">GPT</span> reads the receipt. Builds the API.<br/>
+        <span class="text-text-primary">Gemini</span> sees both. Writes the tests.
+      </p>
+      <p class="text-sm text-text-secondary/60">
+        No context window limits. No re-prompting. Just receipts.
+      </p>
     </div>
   </Section>
 
-  <!-- THE LOOP: How It Works -->
-  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl">
-    <SectionHeader
-      eyebrow="The Loop"
-      title="Claim. Prove. Release."
-      subtitle="Three steps. Full accountability."
-      size="md"
-      class="mb-phi-4"
-    />
+  <!-- ============================================================
+       SECTION 3: ECOSYSTEM MULTIPLIER
+       Light background, receipt anatomy
+       ============================================================ -->
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2 text-center">Ecosystem</p>
 
-    <div class="grid md:grid-cols-3 gap-phi-3 text-center">
-      <Panel size="sm" class="space-y-phi-2">
-        <div class="text-3xl font-display text-mint">01</div>
-        <p class="text-lg font-display text-text-primary">Claim</p>
-        <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
-          motus work claim TASK-001
-        </code>
-        <p class="text-sm text-text-secondary">You own this work.</p>
-      </Panel>
-
-      <Panel size="sm" class="space-y-phi-2">
-        <div class="text-3xl font-display text-mint">02</div>
-        <p class="text-lg font-display text-text-primary">Prove</p>
-        <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
-          motus work evidence $LEASE test
-        </code>
-        <p class="text-sm text-text-secondary">Proof attached.</p>
-      </Panel>
-
-      <Panel size="sm" class="space-y-phi-2">
-        <div class="text-3xl font-display text-mint">03</div>
-        <p class="text-lg font-display text-text-primary">Release</p>
-        <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
-          motus work release $LEASE success
-        </code>
-        <p class="text-sm text-text-secondary">Receipt shipped.</p>
-      </Panel>
-    </div>
-  </Section>
-
-  <!-- TRUST -->
-  <Section tone="light" pad="tight" class="text-center border-t border-line/30" innerClass="max-w-4xl">
-    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-3">
-      Source available. Local first. Yours.
+    <h2 class="text-4xl md:text-5xl lg:text-6xl font-display text-text-primary mb-phi-2 text-center">
+      1 + 1 = 3
     </h2>
 
-    <div class="flex flex-col md:flex-row gap-phi-4 justify-center items-center mb-phi-4">
-      <div class="flex items-center gap-phi-1">
-        <span class="text-mint">&#10003;</span>
-        <span class="text-text-primary">Your receipts are your data</span>
-      </div>
-      <div class="flex items-center gap-phi-1">
-        <span class="text-mint">&#10003;</span>
-        <span class="text-text-primary">No cloud required</span>
-      </div>
-      <div class="flex items-center gap-phi-1">
-        <span class="text-mint">&#10003;</span>
-        <span class="text-text-primary">Audit everything</span>
+    <p class="text-lg text-text-secondary text-center mb-phi-5 max-w-2xl mx-auto">
+      Every agent makes the next one smarter. Work compounds, not evaporates.
+    </p>
+
+    <!-- Receipt anatomy -->
+    <div class="max-w-2xl mx-auto mb-phi-5">
+      <div class="rounded-xl border border-line/50 overflow-hidden bg-surface">
+        <div class="px-phi-4 py-phi-3 border-b border-line/30 bg-surface-muted/30">
+          <p class="font-mono text-mint">receipt rx_002</p>
+        </div>
+        <div class="divide-y divide-line/20">
+          <!-- Outcome -->
+          <div class="p-phi-4 flex gap-phi-4">
+            <div class="w-24 shrink-0">
+              <p class="text-sm font-display text-mint">Outcome</p>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm text-text-secondary">
+                <span class="text-text-primary">src/api/tasks.py</span> — CRUD endpoints with auth, pagination, soft delete
+              </p>
+            </div>
+          </div>
+          <!-- Evidence -->
+          <div class="p-phi-4 flex gap-phi-4">
+            <div class="w-24 shrink-0">
+              <p class="text-sm font-display text-mint">Evidence</p>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm text-text-secondary">
+                <span class="text-text-primary">14 tests passing</span> — OpenAPI spec generated, auth middleware verified
+              </p>
+            </div>
+          </div>
+          <!-- Decisions -->
+          <div class="p-phi-4 flex gap-phi-4">
+            <div class="w-24 shrink-0">
+              <p class="text-sm font-display text-mint">Decisions</p>
+            </div>
+            <div class="flex-1">
+              <p class="text-sm text-text-secondary">
+                <span class="text-text-primary">"403 on invalid transition"</span> — Pagination max 100, scope to authenticated user
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="px-phi-4 py-phi-3 border-t border-line/30 bg-surface-muted/30 flex justify-between items-center">
+          <p class="text-xs text-text-secondary/60 font-mono">parent: rx_001</p>
+          <p class="text-xs text-text-secondary/60 font-mono">sha256:a7f3...</p>
+        </div>
       </div>
     </div>
 
-    <Button href="https://pypi.org/project/motusos/" target="_blank" rel="noopener" variant="secondary" size="sm">
-      View on PyPI
-    </Button>
+    <!-- The insight -->
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="text-text-secondary mb-phi-3">
+        Outcomes become the next agent's starting point.<br/>
+        Evidence proves what actually happened.<br/>
+        Decisions become institutional knowledge.
+      </p>
+      <a
+        href={`${base}how-it-works`}
+        class="inline-flex items-center gap-phi-1 text-sm text-mint hover:underline"
+      >
+        See how it works
+        <span aria-hidden="true">&#8594;</span>
+      </a>
+    </div>
   </Section>
 
   <!-- FINAL CTA -->
