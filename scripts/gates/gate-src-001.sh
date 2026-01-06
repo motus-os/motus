@@ -46,12 +46,13 @@ blocklist_patterns=(
   "ben@.*\.com"
   "veritas\.associates"
   "KnowledgeVault"
-  "motus-command"  # internal repo name
+  "motus-command"  # internal repo name (legacy)
+  "motus-internal"  # internal repo name
   "192\.168\.[0-9]+\.[0-9]+"  # internal IPs
   "62\.72\.7\.98"  # specific VPS
 )
 
-# Allowlist: legitimate references that must mention motus-command
+# Allowlist: legitimate references that may mention motus-internal / motus-command
 allowlist_paths=(
   "src/motus/hardening/package_conflicts.py"
   "src/motus/commands/doctor_cmd.py"

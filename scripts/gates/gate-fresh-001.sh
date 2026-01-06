@@ -133,7 +133,7 @@ echo ""
 echo "Check 6: Content leak scan"
 
 # Look for strings that indicate dev data
-leak_patterns="ben@|/Users/ben|veritas|motus-command|bnvoss"
+leak_patterns="ben@|/Users/ben|veritas|motus-command|motus-internal|bnvoss"
 leaked_content=$(sqlite3 "$DB_PATH" "
   SELECT 'roadmap_items' as tbl, title FROM roadmap_items WHERE title LIKE '%ben%' OR title LIKE '%veritas%'
   UNION ALL

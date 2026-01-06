@@ -29,16 +29,16 @@ remote_url=$(git remote get-url origin 2>/dev/null || echo "NO_REMOTE")
 echo "Git remote: $remote_url"
 
 # Check for canonical repo patterns
-if echo "$remote_url" | grep -qE "motus-command|motus\.git$"; then
+if echo "$remote_url" | grep -qE "motus-command|motus-internal|motus\.git$"; then
   echo ""
-  echo "WARN: Working in docs/coordination repo"
+  echo "WARN: Working in internal docs/coordination repo"
   echo "  For code changes, use the canonical motus/packages/cli"
 fi
 
 # For release work, must be in canonical repo
-if echo "$cwd" | grep -q "motus-command"; then
+if echo "$cwd" | grep -qE "motus-command|motus-internal"; then
   echo ""
-  echo "INFO: In motus-command repo (docs/coordination)"
+  echo "INFO: In motus-internal repo (legacy: motus-command)"
   echo "  This is OK for documentation and handoffs"
   echo "  For code/release: use canonical motus repo"
 fi
