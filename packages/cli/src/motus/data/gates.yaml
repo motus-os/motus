@@ -1,142 +1,159 @@
 version: "1.0"
 
+tiers:
+  - id: "T0"
+    name: "Environment"
+    description: "Preflight checks for repo and environment integrity."
+
+  - id: "T1"
+    name: "Functionality"
+    description: "Core functionality and smoke tests."
+
+  - id: "T2"
+    name: "Security"
+    description: "Security and integrity gates."
+
+  - id: "T3"
+    name: "Release"
+    description: "Release validation gates."
+
 gates:
   - id: "GATE-PKG-001"
+    tier: "T0"
+    kind: "intake"
     description: "Detect conflicting local motus installs"
-    script: "scripts/gates/gate-pkg-001.sh"
-    phase: "environment"
+    command: "scripts/gates/gate-pkg-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-REPO-001"
+    tier: "T0"
+    kind: "intake"
     description: "Verify canonical repo context"
-    script: "scripts/gates/gate-repo-001.sh"
-    phase: "environment"
+    command: "scripts/gates/gate-repo-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-DB-001"
+    tier: "T0"
+    kind: "intake"
     description: "Schema version check"
-    script: "scripts/gates/gate-db-001.sh"
-    phase: "environment"
+    command: "scripts/gates/gate-db-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-ROADMAP-001"
+    tier: "T0"
+    kind: "plan"
     description: "Roadmap hygiene checks"
-    script: "scripts/gates/gate-roadmap-001.sh"
-    phase: "environment"
+    command: "scripts/gates/gate-roadmap-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-CLI-001"
+    tier: "T1"
+    kind: "test"
     description: "CLI smoke test"
-    script: "scripts/gates/gate-cli-001.sh"
-    phase: "functionality"
+    command: "scripts/gates/gate-cli-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-WEB-001"
+    tier: "T1"
+    kind: "test"
     description: "Web UI sanity checks"
-    script: "scripts/gates/gate-web-001.sh"
-    phase: "functionality"
+    command: "scripts/gates/gate-web-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-COV-001"
+    tier: "T1"
+    kind: "test"
     description: "Coverage baseline check"
-    script: "scripts/gates/gate-cov-001.sh"
-    phase: "functionality"
+    command: "scripts/gates/gate-cov-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-PERF-001"
+    tier: "T1"
+    kind: "test"
     description: "Performance budget check"
-    script: "scripts/gates/gate-perf-001.sh"
-    phase: "functionality"
+    command: "scripts/gates/gate-perf-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-SEC-002"
+    tier: "T2"
+    kind: "security"
     description: "Bandit security scan"
-    script: "scripts/gates/gate-sec-002.sh"
-    phase: "security"
+    command: "scripts/gates/gate-sec-002.sh"
     required: true
-    release_only: false
 
   - id: "GATE-DEP-002"
+    tier: "T2"
+    kind: "security"
     description: "Dependency audit"
-    script: "scripts/gates/gate-dep-002.sh"
-    phase: "security"
+    command: "scripts/gates/gate-dep-002.sh"
     required: true
-    release_only: false
 
   - id: "GATE-SRC-001"
+    tier: "T2"
+    kind: "security"
     description: "Source leak scan"
-    script: "scripts/gates/gate-src-001.sh"
-    phase: "security"
+    command: "scripts/gates/gate-src-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-MIG-001"
+    tier: "T2"
+    kind: "security"
     description: "Migration safety check"
-    script: "scripts/gates/gate-migrations-001.sh"
-    phase: "security"
+    command: "scripts/gates/gate-migrations-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-PKG-002"
+    tier: "T2"
+    kind: "artifact"
     description: "Package sanity check"
-    script: "scripts/gates/gate-pkg-002.sh"
-    phase: "security"
+    command: "scripts/gates/gate-pkg-002.sh"
     required: true
-    release_only: false
 
   - id: "GATE-TEST-001"
+    tier: "T2"
+    kind: "test"
     description: "Test suite sanity gate"
-    script: "scripts/gates/gate-test-001.sh"
-    phase: "security"
+    command: "scripts/gates/gate-test-001.sh"
     required: true
-    release_only: false
 
   - id: "GATE-INSTALL-001"
+    tier: "T3"
+    kind: "test"
     description: "Install verification"
-    script: "scripts/gates/gate-install-001.sh"
-    phase: "release"
+    command: "scripts/gates/gate-install-001.sh"
     required: true
-    release_only: true
 
   - id: "GATE-FRESH-001"
+    tier: "T3"
+    kind: "test"
     description: "Fresh install database validation"
-    script: "scripts/gates/gate-fresh-001.sh"
-    phase: "release"
+    command: "scripts/gates/gate-fresh-001.sh"
     required: true
-    release_only: true
 
   - id: "GATE-FRESH-002"
+    tier: "T3"
+    kind: "test"
     description: "Fresh install filesystem validation"
-    script: "scripts/gates/gate-fresh-002.sh"
-    phase: "release"
+    command: "scripts/gates/gate-fresh-002.sh"
     required: true
-    release_only: true
 
   - id: "GATE-UPGRADE-001"
+    tier: "T3"
+    kind: "test"
     description: "Upgrade path validation"
-    script: "scripts/gates/gate-upgrade-001.sh"
-    phase: "release"
+    command: "scripts/gates/gate-upgrade-001.sh"
     required: true
-    release_only: true
 
   - id: "GATE-ROLLBACK-001"
+    tier: "T3"
+    kind: "test"
     description: "Rollback safety gate"
-    script: "scripts/gates/gate-rollback-001.sh"
-    phase: "release"
+    command: "scripts/gates/gate-rollback-001.sh"
     required: true
-    release_only: true
 
   - id: "GATE-RELEASE-001"
+    tier: "T3"
+    kind: "egress"
     description: "Release coordination check"
-    script: "scripts/gates/gate-release-001.sh"
-    phase: "release"
+    command: "scripts/gates/gate-release-001.sh"
     required: true
-    release_only: true
