@@ -153,7 +153,7 @@ line-length = 100
 """
         )
 
-        with patch("motus.safety.Path.cwd", return_value=tmp_path):
+        with patch("motus.safety.test_harness.Path.cwd", return_value=tmp_path):
             harness = detect_test_harness()
 
         # Updated to match new harness.py behavior (no trailing slash)
@@ -179,7 +179,7 @@ line-length = 100
             )
         )
 
-        with patch("motus.safety.Path.cwd", return_value=tmp_path):
+        with patch("motus.safety.test_harness.Path.cwd", return_value=tmp_path):
             harness = detect_test_harness()
 
         assert harness["test_command"] == "npm test"
@@ -201,7 +201,7 @@ lint:
 """
         )
 
-        with patch("motus.safety.Path.cwd", return_value=tmp_path):
+        with patch("motus.safety.test_harness.Path.cwd", return_value=tmp_path):
             harness = detect_test_harness()
 
         assert harness["test_command"] is not None
@@ -211,7 +211,7 @@ lint:
         """Test when no config files exist."""
         from motus.safety import detect_test_harness
 
-        with patch("motus.safety.Path.cwd", return_value=tmp_path):
+        with patch("motus.safety.test_harness.Path.cwd", return_value=tmp_path):
             harness = detect_test_harness()
 
         assert len(harness["detected_from"]) == 0
@@ -348,7 +348,7 @@ class TestContextHints:
         """Test context hints with no data."""
         from motus.safety import get_context_hints
 
-        with patch("motus.safety.Path.cwd", return_value=tmp_path):
+        with patch("motus.safety.test_harness.Path.cwd", return_value=tmp_path):
             hints = get_context_hints([])
 
         # May be empty or have basic hints
@@ -361,7 +361,7 @@ class TestContextHints:
         pyproject = tmp_path / "pyproject.toml"
         pyproject.write_text("[tool.pytest.ini_options]")
 
-        with patch("motus.safety.Path.cwd", return_value=tmp_path):
+        with patch("motus.safety.test_harness.Path.cwd", return_value=tmp_path):
             hints = get_context_hints(["test.py"])
 
         assert "Test command" in hints or hints == ""

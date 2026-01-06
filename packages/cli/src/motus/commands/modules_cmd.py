@@ -16,7 +16,7 @@ import yaml
 from rich.console import Console
 from rich.table import Table
 
-from motus.cli.exit_codes import EXIT_ERROR, EXIT_SUCCESS, EXIT_USAGE
+from motus.cli.exit_codes import EXIT_SUCCESS, EXIT_USAGE
 
 console = Console()
 error_console = Console(stderr=True)
