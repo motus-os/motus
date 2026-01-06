@@ -50,9 +50,9 @@ jobs:
       - name: Module registry sync guard
         run: python scripts/ci/check_module_registry.py
       - name: Gate registry guard
-        run: python scripts/ci/check_gate_registry.py
+        run: python scripts/ci/check_gates_registry.py
       - name: Roadmap hygiene guard
-        run: python scripts/ci/check_roadmap_hygiene.py --strict --bootstrap
+        run: python scripts/ci/check_roadmap_hygiene.py --bootstrap --strict
       - name: Proof ledger sync guard
         run: python scripts/ci/check_proof_ledger.py
       - name: Ecosystem map sync guard

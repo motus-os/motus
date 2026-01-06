@@ -64,3 +64,5 @@ def test_mc_help_all_shows_advanced_commands(
     assert "  orient" in out
     assert "  standards" in out
     assert "  claims" in out
+    assert "  modules" in out
+    assert "  gates" in out

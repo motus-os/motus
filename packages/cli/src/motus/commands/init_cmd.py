@@ -64,6 +64,10 @@ def init_command(args: Namespace) -> None:
     console.print(f"  Mode: {mode}", markup=False)
     console.print(f"  Motus: {layout.motus_dir}", markup=False)
     console.print(f"  Current: {current_target}", markup=False)
+    console.print(
+        "  Docs: packages/cli/docs/implementation/base-userland.md",
+        markup=False,
+    )
     if packaged_release_dir is not None:
         console.print(f"  PackagedRelease: {packaged_release_dir}", markup=False)
     if init_config_path is not None:

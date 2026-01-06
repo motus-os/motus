@@ -7,6 +7,10 @@ and extending through bundled modules.
 
 - [Kernel Guide](kernel.md)
 
+## Base Userland
+
+- [Base Userland Contract](base-userland.md)
+
 ## Bundled Modules
 
 - [Module SDK](modules/module-sdk.md)

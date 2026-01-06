@@ -39,3 +39,13 @@ def test_handoffs_check_requires_root(capsys: pytest.CaptureFixture[str]) -> Non
             main()
 
     assert exc.value.code == 2
+
+
+def test_modules_list_help_exists(capsys: pytest.CaptureFixture[str]) -> None:
+    code = _run_help(["motus", "modules", "list", "--help"], capsys)
+    assert code == 0
+
+
+def test_gates_list_help_exists(capsys: pytest.CaptureFixture[str]) -> None:
+    code = _run_help(["motus", "gates", "list", "--help"], capsys)
+    assert code == 0

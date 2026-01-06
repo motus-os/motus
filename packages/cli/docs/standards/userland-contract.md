@@ -49,6 +49,10 @@ Purpose: define the required local layout and registries for Motus userland.
 - **Policy packs**: `<vault>/core/best-practices/skill-packs/registry.json`.
 - **Policy profiles**: `<vault>/core/best-practices/profiles/profiles.json`.
 
+Overrides:
+- `MOTUS_MODULE_REGISTRY` for module registry path.
+- `MOTUS_GATES_REGISTRY` for release gate registry path.
+
 ## Gates
 
 - **Release gates** are `GATE-*` scripts in `scripts/gates/` and must be registered.

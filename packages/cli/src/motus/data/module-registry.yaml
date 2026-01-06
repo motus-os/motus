@@ -1,0 +1,232 @@
+version: "1.0"
+status_semantics:
+  current: "Implemented + documented + runnable example."
+  building: "In active development; roadmap_id required."
+  future: "Concept only; no runnable examples."
+
+kernel:
+  id: kernel
+  marketing_name: "Motus Kernel"
+  scope: kernel
+  status: current
+  roadmap_id: null
+  target_release: "v0.1.0"
+  description: "Deterministic coordination layer and evidence ledger."
+  primary_surfaces:
+    - "Work Compiler (6-call API)"
+    - "Roadmap API"
+    - "Policy gates + evidence requirements"
+    - "Coordination DB + migrations"
+  data_paths:
+    - "~/.motus/coordination.db"
+  best_practices:
+    - "Treat coordination.db as the single source of truth."
+    - "Never bypass kernel APIs with raw SQL writes."
+    - "Record evidence before completion."
+    - "Keep migrations idempotent and append-only."
+    - "Use read-only DB connections for analysis."
+  implementation_guides:
+    website: "/implementation#kernel"
+    docs: "packages/cli/docs/implementation/kernel.md"
+
+bundled_modules:
+  - id: module-sdk
+    marketing_name: "Module SDK"
+    scope: bundled
+    status: building
+    roadmap_id: "RI-MOD-001"
+    target_release: null
+    description: "Interfaces and toggle behavior for bundled modules."
+    dependencies: []
+    best_practices:
+      - "Define module interfaces before implementations."
+      - "Module-off behavior must be deterministic missing_prereqs."
+      - "Never let modules bypass kernel APIs."
+      - "Keep interface surfaces small and stable."
+    implementation_guides:
+      website: "/implementation#module-sdk"
+      docs: "packages/cli/docs/implementation/modules/module-sdk.md"
+
+  - id: capability-matrix
+    marketing_name: "Capability Matrix"
+    scope: bundled
+    status: building
+    roadmap_id: "RI-MOD-010"
+    target_release: null
+    description: "Capability registry + grants with explainable eligibility."
+    dependencies:
+      - "module-sdk"
+    best_practices:
+      - "Capability IDs are stable and kernel-owned."
+      - "Skill-to-capability mapping lives in userland config."
+      - "Eligibility decisions must be explainable."
+      - "Capability changes require migration + docs update."
+    implementation_guides:
+      website: "/implementation#capability-matrix"
+      docs: "packages/cli/docs/implementation/modules/capability-matrix.md"
+
+  - id: contract-compiler
+    marketing_name: "Contract Compiler"
+    scope: bundled
+    status: building
+    roadmap_id: "RI-MOD-020"
+    target_release: null
+    description: "Compile standards into deterministic contracts and hashes."
+    dependencies:
+      - "capability-matrix"
+    best_practices:
+      - "Contract output must be deterministic for the same inputs."
+      - "Version standards; never mutate in place."
+      - "Store contract hashes in attempts and evidence."
+      - "Reject missing inputs early and explicitly."
+    implementation_guides:
+      website: "/implementation#contract-compiler"
+      docs: "packages/cli/docs/implementation/modules/contract-compiler.md"
+
+  - id: knowledge-engine
+    marketing_name: "Knowledge Engine"
+    scope: bundled
+    status: building
+    roadmap_id: "RI-MOD-030"
+    target_release: null
+    description: "Hot authority + cold reference with traceable retrieval."
+    dependencies:
+      - "module-sdk"
+    best_practices:
+      - "Hot knowledge overrides cold reference."
+      - "All retrievals are traceable as evidence."
+      - "Chunk lifecycle must be deterministic."
+      - "Never write directly to coordination.db."
+    implementation_guides:
+      website: "/implementation#knowledge-engine"
+      docs: "packages/cli/docs/implementation/modules/knowledge-engine.md"
+
+  - id: lens-engine
+    marketing_name: "Lens Engine"
+    scope: bundled
+    status: building
+    roadmap_id: "RI-MOD-040"
+    target_release: null
+    description: "Deterministic context assembly from contracts and knowledge."
+    dependencies:
+      - "contract-compiler"
+      - "knowledge-engine"
+    best_practices:
+      - "Context bundles must be deterministic and cacheable."
+      - "Missing prerequisites are explicit and reviewable."
+      - "No hidden data sources; list all inputs."
+      - "Bundle hashes must be stable."
+    implementation_guides:
+      website: "/implementation#lens-engine"
+      docs: "packages/cli/docs/implementation/modules/lens-engine.md"
+
+  - id: proof-engine
+    marketing_name: "Proof Engine"
+    scope: bundled
+    status: building
+    roadmap_id: "RI-MOD-050"
+    target_release: null
+    description: "Evidence bundles + validators for completion gates."
+    dependencies:
+      - "module-sdk"
+    best_practices:
+      - "Evidence bundles are append-only."
+      - "Validators are pure and deterministic."
+      - "Completion gates reference evidence types."
+      - "Store validator results in the ledger."
+    implementation_guides:
+      website: "/implementation#proof-engine"
+      docs: "packages/cli/docs/implementation/modules/proof-engine.md"
+
+  - id: module-manager
+    marketing_name: "Module Manager"
+    scope: bundled
+    status: building
+    roadmap_id: "RI-MOD-060"
+    target_release: null
+    description: "Enable/disable modules with explicit config."
+    dependencies:
+      - "module-sdk"
+    best_practices:
+      - "Module enablement is explicit and versioned."
+      - "Kernel must work with modules disabled."
+      - "Config defaults are read-only seeds."
+      - "Per-module data is non-authoritative."
+    implementation_guides:
+      website: "/implementation#module-manager"
+      docs: "packages/cli/docs/implementation/modules/module-manager.md"
+
+  - id: motus-blueprints
+    marketing_name: "Motus Blueprints"
+    scope: bundled
+    status: building
+    roadmap_id: "RI-MOD-070"
+    target_release: null
+    description: "Deterministic scaffolding for programs and projects."
+    dependencies:
+      - "knowledge-engine"
+      - "module-manager"
+    best_practices:
+      - "Scaffolds are deterministic and repeatable."
+      - "Templates never hide required evidence."
+      - "Optional register writes go through Work Compiler."
+      - "Generated files follow FILE-POLICY."
+    implementation_guides:
+      website: "/implementation#motus-blueprints"
+      docs: "packages/cli/docs/implementation/modules/motus-blueprints.md"
+
+  - id: work-ledger
+    marketing_name: "Work Ledger"
+    scope: bundled
+    status: future
+    roadmap_id: "RI-IP-002"
+    target_release: null
+    description: "Signed work receipts + provenance ledger for verified execution."
+    dependencies:
+      - "proof-engine"
+    best_practices:
+      - "Receipts are immutable and append-only."
+      - "Ledger entries reference evidence bundle hashes."
+      - "Signing keys are rotated and auditable."
+      - "Ledger writes flow through kernel APIs."
+    implementation_guides:
+      website: "/implementation#work-ledger"
+      docs: "packages/cli/docs/implementation/modules/work-ledger.md"
+
+  - id: asset-registry
+    marketing_name: "Asset Registry"
+    scope: bundled
+    status: future
+    roadmap_id: "RI-IP-001"
+    target_release: null
+    description: "Registry of IP assets, owners, license terms, and usage rules."
+    dependencies:
+      - "work-ledger"
+      - "module-manager"
+    best_practices:
+      - "Asset IDs are stable and namespace-scoped."
+      - "License terms are machine-readable."
+      - "Usage attribution references ledger entries."
+      - "Access policies are enforced by proof gates."
+    implementation_guides:
+      website: "/implementation#asset-registry"
+      docs: "packages/cli/docs/implementation/modules/asset-registry.md"
+
+  - id: motus-exchange
+    marketing_name: "Motus Exchange"
+    scope: bundled
+    status: future
+    roadmap_id: "RI-IP-005"
+    target_release: null
+    description: "Brokerage layer for licensing IP and routing verified work."
+    dependencies:
+      - "asset-registry"
+      - "work-ledger"
+    best_practices:
+      - "Transactions reference asset and ledger entries."
+      - "Pricing and usage terms are explicit."
+      - "Execution proofs are required for settlement."
+      - "No exchange writes bypass policy gates."
+    implementation_guides:
+      website: "/implementation#motus-exchange"
+      docs: "packages/cli/docs/implementation/modules/motus-exchange.md"

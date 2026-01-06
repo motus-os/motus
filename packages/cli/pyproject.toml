@@ -92,6 +92,8 @@ NOTICE = "motus/NOTICE"
 
 [tool.hatch.build.targets.wheel.force-include]
 "migrations" = "motus/migrations"
+"src/motus/data/module-registry.yaml" = "motus/data/module-registry.yaml"
+"src/motus/data/gates.yaml" = "motus/data/gates.yaml"
 
 [tool.hatch.build]
 include = [
