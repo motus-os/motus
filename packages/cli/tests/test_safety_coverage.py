@@ -31,9 +31,9 @@ class TestLoadCheckpointsErrorHandling:
         from motus.safety import load_checkpoints
 
         # Create invalid JSON file
-        mc_dir = tmp_path / ".mc"
-        mc_dir.mkdir()
-        (mc_dir / "checkpoints.json").write_text("invalid json{")
+        motus_dir = tmp_path / ".motus"
+        motus_dir.mkdir()
+        (motus_dir / "checkpoints.json").write_text("invalid json{")
 
         checkpoints = load_checkpoints(tmp_path)
         assert checkpoints == []
@@ -43,9 +43,9 @@ class TestLoadCheckpointsErrorHandling:
         from motus.safety import load_checkpoints
 
         # Create file with wrong data structure
-        mc_dir = tmp_path / ".mc"
-        mc_dir.mkdir()
-        (mc_dir / "checkpoints.json").write_text('["not", "checkpoint", "objects"]')
+        motus_dir = tmp_path / ".motus"
+        motus_dir.mkdir()
+        (motus_dir / "checkpoints.json").write_text('["not", "checkpoint", "objects"]')
 
         checkpoints = load_checkpoints(tmp_path)
         assert checkpoints == []
@@ -706,9 +706,9 @@ class TestLoadMemoryErrorHandling:
         """Test load_memory with invalid JSON."""
         from motus.safety import load_memory
 
-        mc_dir = tmp_path / ".mc"
-        mc_dir.mkdir()
-        (mc_dir / "memory.json").write_text("invalid json{")
+        motus_dir = tmp_path / ".motus"
+        motus_dir.mkdir()
+        (motus_dir / "memory.json").write_text("invalid json{")
 
         memories = load_memory(tmp_path)
         assert memories == []
@@ -717,9 +717,9 @@ class TestLoadMemoryErrorHandling:
         """Test load_memory with wrong data type."""
         from motus.safety import load_memory
 
-        mc_dir = tmp_path / ".mc"
-        mc_dir.mkdir()
-        (mc_dir / "memory.json").write_text('["not", "memory", "objects"]')
+        motus_dir = tmp_path / ".motus"
+        motus_dir.mkdir()
+        (motus_dir / "memory.json").write_text('["not", "memory", "objects"]')
 
         memories = load_memory(tmp_path)
         assert memories == []

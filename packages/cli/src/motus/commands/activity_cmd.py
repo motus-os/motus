@@ -13,6 +13,7 @@ from typing import Any
 from rich.console import Console
 
 from motus.cli.exit_codes import EXIT_SUCCESS
+from motus.migration.path_migration import find_workspace_dir
 from motus.observability.activity import load_activity_events
 
 console = Console()
@@ -22,18 +23,10 @@ def _resolve_activity_dir() -> Path:
     override = os.environ.get("MOTUS_ACTIVITY_DIR", "").strip()
     if override:
         return Path(override).expanduser()
-    motus_dir = _find_motus_dir(Path.cwd())
-    if motus_dir is not None:
-        return motus_dir / "state" / "ledger"
+    resolution = find_workspace_dir(Path.cwd())
+    if resolution is not None:
+        return resolution.path / "state" / "ledger"
     return Path.home() / ".motus" / "state" / "ledger"
-
-
-def _find_motus_dir(start: Path) -> Path | None:
-    for base in [start, *start.parents]:
-        motus_dir = base / ".motus"
-        if motus_dir.exists() and motus_dir.is_dir():
-            return motus_dir
-    return None
 
 
 def activity_list_command(args: Any) -> int:

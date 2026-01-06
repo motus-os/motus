@@ -40,8 +40,8 @@ python scripts/ci/health_ledger.py --write-baseline
 
 - The health ledger runs a deterministic `policy run` against test fixtures
   to populate policy performance metrics.
-- `.mc` state paths are preserved for compatibility; the ledger only enforces
-  health, not state directory naming.
+- `.motus` is canonical; legacy `.mc` paths are preserved for v0.1.x compatibility.
+  The ledger only enforces health, not state directory naming.
 
 ## Latest Review
 

@@ -751,7 +751,7 @@ class TestFindSdkTraces:
     def test_find_sdk_traces_no_directory(self):
         """Test find_sdk_traces when traces directory doesn't exist."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
+            mc_dir = Path(tmpdir) / ".motus"
             mc_dir.mkdir()
 
             with patch("motus.cli.core.MC_STATE_DIR", mc_dir):
@@ -764,7 +764,7 @@ class TestFindSdkTraces:
     def test_find_sdk_traces_empty_directory(self):
         """Test find_sdk_traces with empty traces directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
+            mc_dir = Path(tmpdir) / ".motus"
             mc_dir.mkdir()
             traces_dir = mc_dir / "traces"
             traces_dir.mkdir()
@@ -781,7 +781,7 @@ class TestFindSdkTraces:
         import json
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
+            mc_dir = Path(tmpdir) / ".motus"
             mc_dir.mkdir()
             traces_dir = mc_dir / "traces"
             traces_dir.mkdir()
@@ -804,7 +804,7 @@ class TestFindSdkTraces:
     def test_find_sdk_traces_invalid_json(self):
         """Test find_sdk_traces handles invalid JSON gracefully."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
+            mc_dir = Path(tmpdir) / ".motus"
             mc_dir.mkdir()
             traces_dir = mc_dir / "traces"
             traces_dir.mkdir()
@@ -829,7 +829,7 @@ class TestFindSdkTraces:
         import time
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
+            mc_dir = Path(tmpdir) / ".motus"
             mc_dir.mkdir()
             traces_dir = mc_dir / "traces"
             traces_dir.mkdir()
@@ -861,7 +861,7 @@ class TestFindSdkTraces:
         import json
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
+            mc_dir = Path(tmpdir) / ".motus"
             mc_dir.mkdir()
             traces_dir = mc_dir / "traces"
             traces_dir.mkdir()
@@ -885,7 +885,7 @@ class TestFindSdkTraces:
         import json
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
+            mc_dir = Path(tmpdir) / ".motus"
             mc_dir.mkdir()
             traces_dir = mc_dir / "traces"
             traces_dir.mkdir()

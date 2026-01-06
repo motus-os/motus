@@ -14,7 +14,7 @@ from pathlib import Path
 from motus.policy.contracts import SourceState
 from motus.subprocess_utils import GIT_SHORT_TIMEOUT_SECONDS, run_subprocess
 
-RECON_EXCLUDE_DIR_NAMES = {".mc", ".pytest_cache", ".ruff_cache", ".mypy_cache", "__pycache__"}
+RECON_EXCLUDE_DIR_NAMES = {".motus", ".mc", ".pytest_cache", ".ruff_cache", ".mypy_cache", "__pycache__"}
 RECON_EXCLUDE_FILE_NAMES = {".coverage", ".DS_Store"}
 
 SAFE_SUBPROCESS_ENV_KEYS = {

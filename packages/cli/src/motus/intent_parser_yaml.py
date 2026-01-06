@@ -25,8 +25,8 @@ def generate_intent_yaml(intent: Intent) -> str:
     )
 
 
-def load_intent(mc_dir: Path) -> Optional[Intent]:
-    intent_file = mc_dir / "intent.yaml"
+def load_intent(motus_dir: Path) -> Optional[Intent]:
+    intent_file = motus_dir / "intent.yaml"
 
     if not intent_file.exists():
         logger.debug("Intent file not found", intent_file=str(intent_file))
@@ -67,18 +67,18 @@ def load_intent(mc_dir: Path) -> Optional[Intent]:
         return None
 
 
-def save_intent(mc_dir: Path, intent: Intent) -> bool:
+def save_intent(motus_dir: Path, intent: Intent) -> bool:
     try:
-        mc_dir.mkdir(parents=True, exist_ok=True)
+        motus_dir.mkdir(parents=True, exist_ok=True)
     except OSError as e:
         logger.error(
-            "Failed to create .mc directory",
+            "Failed to create .motus directory",
             error_type=type(e).__name__,
             error=str(e),
         )
         return False
 
-    intent_file = mc_dir / "intent.yaml"
+    intent_file = motus_dir / "intent.yaml"
 
     try:
         yaml_str = generate_intent_yaml(intent)

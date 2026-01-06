@@ -15,8 +15,8 @@ All public APIs are re-exported here for backward compatibility.
 """
 
 import glob as _glob
-from pathlib import Path
 
+from motus.migration.path_migration import resolve_state_dir
 from .checkpoint import (
     Checkpoint,
     checkpoint_command,
@@ -52,7 +52,7 @@ from .test_harness import (
 )
 
 # Motus state directory
-MC_DIR = Path.home() / ".mc"
+MC_DIR = resolve_state_dir()
 MC_DIR.mkdir(exist_ok=True)
 
 glob = _glob

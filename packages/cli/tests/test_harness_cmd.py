@@ -76,7 +76,7 @@ class TestHarnessCommand:
                         harness_command(save=True)
 
                         # Check that file was created
-                        harness_file = Path(tmpdir) / ".mc" / "harness.json"
+                        harness_file = Path(tmpdir) / ".motus" / "harness.json"
                         assert harness_file.exists()
 
                         # Check content
@@ -89,7 +89,7 @@ class TestHarnessCommand:
                         assert mock_console.print.called
 
     def test_harness_command_save_creates_directory(self):
-        """Test harness command creates .mc directory if it doesn't exist."""
+        """Test harness command creates .motus directory if it doesn't exist."""
         mock_harness = MockHarness(test_command="pytest")
 
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -100,10 +100,10 @@ class TestHarnessCommand:
                     with patch("motus.commands.harness_cmd.console"):
                         harness_command(save=True)
 
-                        # .mc directory should have been created
-                        mc_dir = Path(tmpdir) / ".mc"
-                        assert mc_dir.exists()
-                        assert mc_dir.is_dir()
+                        # .motus directory should have been created
+                        motus_dir = Path(tmpdir) / ".motus"
+                        assert motus_dir.exists()
+                        assert motus_dir.is_dir()
 
     def test_harness_command_save_error_handling(self):
         """Test harness command handles file save errors gracefully."""
@@ -164,10 +164,10 @@ class TestHarnessCommand:
                     with patch("motus.commands.harness_cmd.console"):
                         harness_command(save=True)
 
-                        # .mc directory should NOT be created when no commands detected
-                        mc_dir = Path(tmpdir) / ".mc"
+                        # .motus directory should NOT be created when no commands detected
+                        motus_dir = Path(tmpdir) / ".motus"
                         # Command returns early, so directory is not created
-                        assert not mc_dir.exists()
+                        assert not motus_dir.exists()
 
     def test_harness_command_mixed_commands(self):
         """Test harness command with some commands but not all."""
@@ -188,10 +188,10 @@ class TestHarnessCommand:
         mock_harness = MockHarness(test_command="pytest -v")
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Create existing .mc/harness.json
-            mc_dir = Path(tmpdir) / ".mc"
-            mc_dir.mkdir()
-            harness_file = mc_dir / "harness.json"
+            # Create existing .motus/harness.json
+            motus_dir = Path(tmpdir) / ".motus"
+            motus_dir.mkdir()
+            harness_file = motus_dir / "harness.json"
             with open(harness_file, "w") as f:
                 json.dump({"test_command": "old command"}, f)
 

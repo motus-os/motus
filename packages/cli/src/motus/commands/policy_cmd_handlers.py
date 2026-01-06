@@ -199,7 +199,7 @@ def policy_verify_command(args) -> int:
 
 
 def policy_prune_command(args) -> int:
-    """Prune old evidence bundles under `.mc/evidence/`."""
+    """Prune old evidence bundles under `.motus/evidence/`."""
 
     repo_dir = Path(getattr(args, "repo", None) or Path.cwd()).expanduser().resolve()
     evidence_dir_arg = getattr(args, "evidence_dir", None)

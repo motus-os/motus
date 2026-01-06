@@ -125,7 +125,7 @@ def summary_command(session_id: Optional[str] = None) -> None:
             summary,
             title="[bold green]📋 Motus Summary[/bold green]",
             subtitle=(
-                "Copied to clipboard! [dim]and saved to .mc/[/dim]"
+                f"Copied to clipboard! [dim]and saved to {MC_STATE_DIR.name}/[/dim]"
                 if save_success
                 else "[red]Not saved[/red]"
             ),

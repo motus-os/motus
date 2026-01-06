@@ -115,15 +115,15 @@ class TestGetTouchedFilesFromGit:
             assert "src/main.py" in result
             assert "tests/test.py" in result
 
-    def test_excludes_mc_directory(self, tmp_path):
-        """Test that .mc/ files are excluded."""
+    def test_excludes_motus_directory(self, tmp_path):
+        """Test that .motus/ files are excluded."""
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(
-                returncode=0, stdout="M  src/main.py\nM  .mc/checkpoints.json\n"
+                returncode=0, stdout="M  src/main.py\nM  .motus/checkpoints.json\n"
             )
             result = get_touched_files_from_git(tmp_path)
             assert "src/main.py" in result
-            assert ".mc/checkpoints.json" not in result
+            assert ".motus/checkpoints.json" not in result
 
     def test_handles_renamed_files(self, tmp_path):
         """Test parsing renamed files."""
@@ -281,20 +281,20 @@ class TestCheckScope:
 
     def test_no_intent_file(self, tmp_path):
         """Test when no intent file exists."""
-        status = check_scope(repo_path=tmp_path, mc_dir=tmp_path / ".mc")
+        status = check_scope(repo_path=tmp_path, motus_dir=tmp_path / ".motus")
         assert status.expected_files == []
         assert status.drift_percentage == 0.0
 
     def test_with_intent_and_git(self, tmp_path):
         """Test with intent and mock git status."""
-        mc_dir = tmp_path / ".mc"
-        mc_dir.mkdir()
-        intent_file = mc_dir / "intent.yaml"
+        motus_dir = tmp_path / ".motus"
+        motus_dir.mkdir()
+        intent_file = motus_dir / "intent.yaml"
         intent_file.write_text("task: Test\npriority_files:\n  - main.py\n")
 
         with patch("motus.scope.get_touched_files_from_git") as mock_git:
             mock_git.return_value = {"main.py", "extra.py"}
-            status = check_scope(repo_path=tmp_path, mc_dir=mc_dir)
+            status = check_scope(repo_path=tmp_path, motus_dir=motus_dir)
             assert "main.py" in status.expected_files
             assert "extra.py" in status.unexpected_files
             assert status.drift_percentage == 200.0

@@ -16,6 +16,7 @@ from rich.table import Table
 
 from motus.atomic_io import atomic_write_json
 from motus.exceptions import SubprocessError, SubprocessTimeoutError
+from motus.migration.path_migration import resolve_workspace_dir
 from motus.subprocess_utils import (
     GIT_LONG_TIMEOUT_SECONDS,
     GIT_SHORT_TIMEOUT_SECONDS,
@@ -41,9 +42,8 @@ def get_checkpoints_file(project_dir: Optional[Path] = None) -> Path:
     if project_dir is None:
         project_dir = Path.cwd()
 
-    mc_project_dir = project_dir / ".mc"
-    mc_project_dir.mkdir(exist_ok=True)
-    return mc_project_dir / "checkpoints.json"
+    resolution = resolve_workspace_dir(project_dir, create=True)
+    return resolution.path / "checkpoints.json"
 
 
 def load_checkpoints(project_dir: Optional[Path] = None) -> list[Checkpoint]:

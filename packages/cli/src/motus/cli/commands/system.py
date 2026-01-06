@@ -37,11 +37,11 @@ def register_system_parsers(subparsers: argparse._SubParsersAction) -> None:
 
     intent_parser = subparsers.add_parser("intent", help="Extract/show intent from a session")
     intent_parser.add_argument("session_id", help="Session ID to analyze")
-    intent_parser.add_argument("--save", action="store_true", help="Save intent to .mc/intent.yaml")
+    intent_parser.add_argument("--save", action="store_true", help="Save intent to .motus/intent.yaml")
 
     harness_parser = subparsers.add_parser("harness", help="Detect test harness for a repository")
     harness_parser.add_argument(
-        "--save", action="store_true", help="Save detected harness to .mc/harness.yaml"
+        "--save", action="store_true", help="Save detected harness to .motus/harness.json"
     )
 
     checkpoint_parser = subparsers.add_parser("checkpoint", help="Create a state checkpoint")

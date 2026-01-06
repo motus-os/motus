@@ -24,11 +24,12 @@ class TestPathConfig:
         assert config.projects_dir == config.claude_dir / "projects"
 
     def test_state_dir_default(self):
-        """Test default MC state directory."""
+        """Test default Motus state directory."""
         from motus.config import PathConfig
+        from motus.migration.path_migration import resolve_state_dir
 
         config = PathConfig()
-        assert config.state_dir == Path.home() / ".mc"
+        assert config.state_dir == resolve_state_dir()
 
     def test_archive_dir_property(self):
         """Test archive_dir is derived from state_dir."""
@@ -125,10 +126,11 @@ class TestMCConfig:
             MC_STATE_DIR,
             PROJECTS_DIR,
         )
+        from motus.migration.path_migration import resolve_state_dir
 
         assert CLAUDE_DIR == Path.home() / ".claude"
         assert PROJECTS_DIR == Path.home() / ".claude" / "projects"
-        assert MC_STATE_DIR == Path.home() / ".mc"
+        assert MC_STATE_DIR == resolve_state_dir()
 
     def test_risk_levels_in_commands_models(self):
         """Test RISK_LEVELS is available from commands.models (canonical location)."""

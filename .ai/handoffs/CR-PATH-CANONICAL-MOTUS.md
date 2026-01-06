@@ -3,7 +3,7 @@
 **Decision**: `.motus/` is canonical
 **Status**: Ready for execution
 **Assigned**: Builder Agent
-**Release**: v0.1.3
+**Release**: v0.1.2
 
 ---
 
@@ -20,7 +20,7 @@
 
 ---
 
-## Phase 1: Deprecation Warning (v0.1.3)
+## Phase 1: Deprecation Warning (v0.1.2)
 
 ### 1.1 Add migration utility
 
@@ -105,7 +105,7 @@ Add `motus db migrate-path` subcommand that:
 
 ---
 
-## Phase 2: Documentation Update (v0.1.3)
+## Phase 2: Documentation Update (v0.1.2)
 
 ### 2.1 Files to update
 
@@ -152,7 +152,7 @@ find packages/cli/docs packages/cli/src/motus -name "*.py" -o -name "*.md" \
 
 ## Acceptance Criteria
 
-### v0.1.3
+### v0.1.2
 
 - [ ] `config.py` uses `~/.motus/` as default state_dir
 - [ ] Deprecation warning emitted when `~/.mc/` exists
@@ -190,4 +190,4 @@ cd packages/cli && pytest tests/ -x
 
 *CR created: 2026-01-06*
 *Decision: .motus/ canonical*
-*Target: v0.1.3 (deprecation), v0.2.0 (removal)*
+*Target: v0.1.2 (deprecation), v0.2.0 (removal)*

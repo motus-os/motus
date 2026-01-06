@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable, Iterator
 
 from motus.core.bootstrap import get_instance_id
+from motus.migration.path_migration import find_workspace_dir
 
 ACTIVITY_SCHEMA = "motus.activity.v1"
 DEFAULT_ACTIVITY_FILENAME = "activity.jsonl"
@@ -80,11 +81,8 @@ def _safe_instance_id() -> str:
 
 
 def _find_motus_dir(start: Path) -> Path | None:
-    for base in [start, *start.parents]:
-        motus_dir = base / ".motus"
-        if motus_dir.exists() and motus_dir.is_dir():
-            return motus_dir
-    return None
+    resolution = find_workspace_dir(start)
+    return resolution.path if resolution else None
 
 
 @dataclass(frozen=True, slots=True)

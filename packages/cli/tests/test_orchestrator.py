@@ -812,10 +812,10 @@ class TestIntegration:
             commands_dir.mkdir(parents=True)
             (commands_dir / "test-cmd.md").write_text("Run tests and validate code")
 
-            # Create .mc/intent.yaml
-            mc_dir = project_path / ".mc"
-            mc_dir.mkdir(parents=True)
-            (mc_dir / "intent.yaml").write_text("task: implement auth\nconstraints:\n  - secure")
+            # Create .motus/intent.yaml
+            motus_dir = project_path / ".motus"
+            motus_dir.mkdir(parents=True)
+            (motus_dir / "intent.yaml").write_text("task: implement auth\nconstraints:\n  - secure")
 
             # Create a session transcript
             transcript_file = project_path / "session.jsonl"

@@ -21,8 +21,9 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Literal
+from typing import Any, Literal
 
+from motus.migration.path_migration import find_workspace_dir
 from motus.orient.result import OrientResult
 from motus.orient.standards_cache import load_standard_yaml
 
@@ -33,14 +34,8 @@ MAX_STANDARD_DEPTH = int(os.environ.get("MC_STANDARDS_MAX_DEPTH", "6"))
 
 def find_motus_dir(start: Path) -> Path | None:
     """Find the nearest `.motus` directory walking upwards from start."""
-
-    cur = start.expanduser().resolve()
-    candidates: Iterable[Path] = [cur, *cur.parents]
-    for base in candidates:
-        motus_dir = base / ".motus"
-        if motus_dir.exists() and motus_dir.is_dir():
-            return motus_dir
-    return None
+    resolution = find_workspace_dir(start)
+    return resolution.path if resolution else None
 
 
 def _predicate_matches(applies_if: dict[str, Any], context: dict[str, Any]) -> bool:

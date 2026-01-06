@@ -96,7 +96,17 @@ def create_checkpoint(label: str, repo_path: Path) -> Checkpoint:
     stash_message = f"mc-checkpoint: {label}"
     result = _git(
         git_root,
-        ["stash", "push", "-u", "-m", stash_message, "--", ".", ":(exclude).mc"],
+        [
+            "stash",
+            "push",
+            "-u",
+            "-m",
+            stash_message,
+            "--",
+            ".",
+            ":(exclude).motus",
+            ":(exclude).mc",  # LEGACY: preserve .mc during transition
+        ],
         timeout_seconds=GIT_LONG_TIMEOUT_SECONDS,
     )
 
@@ -130,11 +140,25 @@ def rollback_checkpoint(checkpoint_id: str, repo_path: Path) -> Checkpoint:
 
     _ = _git(
         git_root,
-        ["stash", "push", "-u", "-m", "mc-rollback-safety", "--", ".", ":(exclude).mc"],
+        [
+            "stash",
+            "push",
+            "-u",
+            "-m",
+            "mc-rollback-safety",
+            "--",
+            ".",
+            ":(exclude).motus",
+            ":(exclude).mc",  # LEGACY: preserve .mc during transition
+        ],
         timeout_seconds=GIT_LONG_TIMEOUT_SECONDS,
     )
     _ = _git(git_root, ["reset", "--hard", "HEAD"], timeout_seconds=GIT_LONG_TIMEOUT_SECONDS)
-    _ = _git(git_root, ["clean", "-ffd", "-e", ".mc/"], timeout_seconds=GIT_LONG_TIMEOUT_SECONDS)
+    _ = _git(
+        git_root,
+        ["clean", "-ffd", "-e", ".motus/", "-e", ".mc/"],  # LEGACY: .mc
+        timeout_seconds=GIT_LONG_TIMEOUT_SECONDS,
+    )
 
     checkpoint_stash_ref = _resolve_checkpoint_stash_ref(target, git_root)
     result = _git(

@@ -79,6 +79,7 @@ def validate_session_path(session_path: str) -> Path:
     home = Path.home()
     allowed_dirs = [
         home / ".motus",
+        home / ".mc",  # LEGACY: allow v0.1.x transition
         home / ".claude",
     ]
 
@@ -89,4 +90,4 @@ def validate_session_path(session_path: str) -> Path:
         except ValueError:
             continue
 
-    raise PathTraversalError("Session path must be under ~/.motus/ or ~/.claude/")
+    raise PathTraversalError("Session path must be under ~/.motus, ~/.mc, or ~/.claude.")

@@ -47,6 +47,7 @@ motus policy plan --files src/main.py  # Plan policy gates for a file
 | `checkpoint` | Create a state checkpoint |
 | `checkpoints` | List all available checkpoints |
 | `config` | Manage Motus configuration |
+| `db` | Database maintenance utilities |
 | `diff` | Show changes between current state and a checkpoint |
 | `errors` | Summarize errors from a session |
 | `explain` | Explain a policy run decision trace |
@@ -106,6 +107,33 @@ motus scratch promote SCR-2026-01-06-001 --phase phase_h --item-type work
 ```bash
 motus scratch rebuild-index
 ```
+
+## Database Commands
+
+### motus db migrate-path
+
+Migrate legacy `.mc` directories to `.motus`.
+
+**Synopsis:**
+```bash
+motus db migrate-path [--dry-run] [--force] [--remove-legacy] [--global-only|--workspace-only]
+```
+
+**Examples:**
+```bash
+# Preview migration
+motus db migrate-path --dry-run
+
+# Migrate and remove legacy path after verification
+motus db migrate-path --force --remove-legacy
+```
+
+Other DB utilities:
+
+- `motus db vacuum`
+- `motus db analyze`
+- `motus db stats --json`
+- `motus db checkpoint`
 
 ## Session Commands
 
@@ -437,7 +465,7 @@ motus policy plan --files src/main.py --vault-dir ~/vault --profile team
 ```
 
 **Output:**
-Displays the gate plan showing which gates will run, their tier, and pack assignments. Creates trace files in `.mc/traces/`.
+Displays the gate plan showing which gates will run, their tier, and pack assignments. Creates trace files in `.motus/traces/`.
 
 ---
 
@@ -458,7 +486,7 @@ motus policy run --git-diff BASE HEAD [OPTIONS]
 - `--profile ID` - Profile ID (or set MC_PROFILE; default: personal)
 - `--repo PATH` - Repository root (default: current directory)
 - `--pack-cap N` - Override profile pack cap
-- `--evidence-dir PATH` - Evidence root (default: .mc/evidence or MC_EVIDENCE_DIR)
+- `--evidence-dir PATH` - Evidence root (default: .motus/evidence or MC_EVIDENCE_DIR)
 - `--json` - Emit machine-readable JSON
 
 **Examples:**
@@ -499,10 +527,10 @@ motus policy verify --evidence PATH [OPTIONS]
 **Examples:**
 ```bash
 # Verify evidence bundle
-motus policy verify --evidence .mc/evidence/run_abc123
+motus policy verify --evidence .motus/evidence/run_abc123
 
 # Verify with JSON output
-motus policy verify --evidence .mc/evidence/run_abc123 --json
+motus policy verify --evidence .motus/evidence/run_abc123 --json
 ```
 
 **Output:**
@@ -527,7 +555,7 @@ motus policy prune [--keep N] [--older-than DAYS] [--dry-run]
 - `--keep N` - Keep the N most recent bundles (default: 10)
 - `--older-than DAYS` - Delete bundles older than DAYS
 - `--repo PATH` - Repository root (default: current directory)
-- `--evidence-dir PATH` - Evidence root (default: .mc/evidence or MC_EVIDENCE_DIR)
+- `--evidence-dir PATH` - Evidence root (default: .motus/evidence or MC_EVIDENCE_DIR)
 - `--dry-run` - Show what would be deleted without deleting
 
 **Examples:**
@@ -834,7 +862,7 @@ motus harness [--save]
 ```
 
 **Options:**
-- `--save` - Save detected harness to .mc/harness.json
+- `--save` - Save detected harness to .motus/harness.json
 
 **Examples:**
 ```bash
@@ -863,7 +891,7 @@ motus intent <session_id> [--save]
 - `session_id` - Session ID to analyze
 
 **Options:**
-- `--save` - Save intent to .mc/intent.yaml
+- `--save` - Save intent to .motus/intent.yaml
 
 **Examples:**
 ```bash
@@ -1220,7 +1248,7 @@ motus diff chk_abc123
 | `MC_HELP_TIER` | Visible help tier override (0-3) | Auto-detected |
 | `MC_VAULT_DIR` | Vault root directory | None |
 | `MC_PROFILE` | Policy profile ID | "personal" |
-| `MC_EVIDENCE_DIR` | Evidence output directory | `.mc/evidence` |
+| `MC_EVIDENCE_DIR` | Evidence output directory | `.motus/evidence` |
 | `MC_AGENT_ID` | Agent ID for claims | None |
 | `MC_NAMESPACE_ACL` | Namespace ACL config path | `.motus/project/config/namespace-acl.yaml` |
 | `MC_USE_SQLITE` | Use SQLite for sessions (1=yes, 0=no) | "1" |
@@ -1235,7 +1263,7 @@ motus diff chk_abc123
 
 ## Configuration
 
-Motus stores configuration in `~/.mc/config.yaml`. Use `motus config` to manage settings:
+Motus stores configuration in `~/.motus/config.yaml`. Use `motus config` to manage settings:
 
 ```bash
 # View current config

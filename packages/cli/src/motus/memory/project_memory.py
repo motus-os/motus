@@ -3,7 +3,7 @@
 
 """Project + global memory for Motus.
 
-Project memory is stored under `<project_root>/.mc/memory.db`.
+Project memory is stored under `<project_root>/.motus/memory.db` (legacy .mc supported).
 Global memory is stored under `~/.motus/global.db`.
 """
 
@@ -14,6 +14,7 @@ from pathlib import Path
 
 from motus.core.bootstrap import ensure_database_at_path
 from motus.core.database import DatabaseManager
+from motus.migration.path_migration import resolve_workspace_dir
 
 from .schema import DetectedPattern, LearnedPattern
 from .skills import get_unlocked_skills, record_progress, skill_deltas_for_command
@@ -27,7 +28,8 @@ class _Paths:
 
 
 def _project_db_path(project_root: Path) -> Path:
-    return project_root / ".mc" / "memory.db"
+    resolution = resolve_workspace_dir(project_root, create=True)
+    return resolution.path / "memory.db"
 
 
 def _default_global_db_path() -> Path:
@@ -242,4 +244,3 @@ class ProjectMemory:
             "UPDATE sessions SET learnings_captured = learnings_captured + ? WHERE id = ?",
             (delta, self._active_session_id),
         )
-

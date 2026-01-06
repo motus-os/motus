@@ -16,9 +16,9 @@ from .list_cmd import find_claude_sessions
 try:
     from ..config import ARCHIVE_DIR, MC_STATE_DIR
 except ImportError:
-    from pathlib import Path
+    from motus.migration.path_migration import resolve_state_dir
 
-    MC_STATE_DIR = Path.home() / ".mc"
+    MC_STATE_DIR = resolve_state_dir()
     ARCHIVE_DIR = MC_STATE_DIR / "archive"
 
 console = Console()

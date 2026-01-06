@@ -34,7 +34,7 @@ graph TD
 | Awareness | Health and continuity signals | Planned (0.6.0) | `src/motus/process_detector.py` |
 | SDK | Syscall layer for agent instrumentation | Implemented | `src/motus/tracer.py` |
 | Governance Plane | Risk and safety surface | Implemented | `src/motus/schema/event_types.py` |
-| Local-First Sovereignty | No cloud dependency; data stays local | Core principle | `src/motus/config.py` (state dir `~/.mc`) |
+| Local-First Sovereignty | No cloud dependency; data stays local | Core principle | `src/motus/config.py` (state dir `~/.motus`) |
 
 ## Surfaces
 The kernel powers multiple surfaces (CLI, TUI, Web) while keeping the same underlying trace and teleport primitives. This keeps observability consistent across interfaces and agent runtimes.

@@ -52,7 +52,7 @@ When using Motus:
 * **Session Data**: Motus reads Claude Code session files from `~/.claude/projects/`. These may contain sensitive information about your codebase. Motus does not transmit this data anywhere.
 * **Hooks**: The `motus install-hooks` command modifies your Claude Code settings. Review the changes before approving.
 * **Web Dashboard**: The web dashboard runs on localhost only by default. Do not expose it to public networks.
-* **Trace Files**: SDK trace files stored in `~/.mc/traces/` may contain sensitive information. Secure this directory appropriately.
+* **Trace Files**: SDK trace files stored in `~/.motus/traces/` may contain sensitive information. Secure this directory appropriately.
 
 ## Dependency Update Policy
 

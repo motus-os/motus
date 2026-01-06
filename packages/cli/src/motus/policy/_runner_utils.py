@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from motus.harness import detect_harness
+from motus.migration.path_migration import resolve_workspace_dir
 from motus.policy._git_helpers import (
     SAFE_SUBPROCESS_ENV_KEYS,
     SAFE_SUBPROCESS_ENV_PREFIXES,
@@ -55,7 +56,8 @@ def _evidence_base_dir(repo_dir: Path, override: Path | None = None) -> Path:
     if env:
         return Path(env).expanduser()
 
-    return repo_dir / ".mc" / "evidence"
+    resolution = resolve_workspace_dir(repo_dir, create=False)
+    return resolution.path / "evidence"
 
 
 def _find_gate(policy: VaultPolicyBundle, gate_id: str) -> GateDefinition | None:

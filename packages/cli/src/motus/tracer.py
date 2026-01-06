@@ -57,7 +57,7 @@ class Tracer:
     """
     Motus Tracer for AI agent observability.
 
-    Logs events to Motus state directory (~/.mc/traces/<session_id>.jsonl) for Motus to watch.
+    Logs events to Motus state directory (~/.motus/traces/<session_id>.jsonl) for Motus to watch.
     """
 
     def __init__(

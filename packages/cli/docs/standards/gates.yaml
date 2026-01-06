@@ -95,6 +95,13 @@ gates:
     command: "scripts/gates/gate-src-001.sh"
     required: true
 
+  - id: "GATE-PATH-001"
+    tier: "T2"
+    kind: "security"
+    description: "Legacy path reference guard"
+    command: "scripts/gates/gate-path-001.sh"
+    required: true
+
   - id: "GATE-MIG-001"
     tier: "T2"
     kind: "security"

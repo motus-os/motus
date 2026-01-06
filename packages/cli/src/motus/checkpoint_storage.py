@@ -14,6 +14,7 @@ from .checkpoint_models import Checkpoint
 from .exceptions import SubprocessError, SubprocessTimeoutError
 from .file_lock import FileLockError, file_lock
 from .logging import get_logger
+from .migration.path_migration import resolve_workspace_dir
 from .subprocess_utils import GIT_SHORT_TIMEOUT_SECONDS, run_subprocess
 
 logger = get_logger(__name__)
@@ -42,9 +43,8 @@ def _git(
 
 def _get_checkpoints_file(repo_path: Path) -> Path:
     """Get the checkpoints metadata file for a repository."""
-    mc_dir = repo_path / ".mc"
-    mc_dir.mkdir(exist_ok=True)
-    return mc_dir / "checkpoints.json"
+    resolution = resolve_workspace_dir(repo_path, create=True)
+    return resolution.path / "checkpoints.json"
 
 
 def _is_git_repo(repo_path: Path) -> bool:
@@ -72,7 +72,7 @@ def _get_modified_files(repo_path: Path) -> list[str]:
     for line in result.stdout.strip().split("\n"):
         if line.strip():
             filename = line[3:]
-            if not filename.startswith(".mc/"):
+            if not filename.startswith(".motus/") and not filename.startswith(".mc/"):  # LEGACY: .mc
                 files.append(filename)
 
     return files

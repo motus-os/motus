@@ -21,6 +21,7 @@ from typing import Optional
 
 from .exceptions import SubprocessError, SubprocessTimeoutError
 from .intent import Intent, load_intent
+from .migration.path_migration import resolve_workspace_dir
 from .logging import get_logger
 from .orchestrator import get_orchestrator
 from .schema.events import EventType
@@ -137,8 +138,8 @@ def get_touched_files_from_git(repo_path: Path) -> set[str]:
             # Handle renamed files (format: "R  old -> new")
             if " -> " in filename:
                 filename = filename.split(" -> ")[1]
-            # Exclude .mc/ directory
-            if not filename.startswith(".mc/"):
+            # Exclude workspace metadata directories
+            if not filename.startswith(".motus/") and not filename.startswith(".mc/"):  # LEGACY: .mc
                 files.add(filename)
 
     return files
@@ -193,19 +194,19 @@ def calculate_scope_status(
 def check_scope(
     session_path: Optional[Path] = None,
     repo_path: Optional[Path] = None,
-    mc_dir: Optional[Path] = None,
+    motus_dir: Optional[Path] = None,
     threshold: float = 150.0,
     use_git: bool = True,
 ) -> ScopeStatus:
     """Check current scope status.
 
     Can use either session transcript or git status to determine touched files.
-    Loads intent from .mc/intent.yaml if available.
+    Loads intent from .motus/intent.yaml if available (legacy .mc supported).
 
     Args:
         session_path: Path to session transcript (optional)
         repo_path: Path to git repository (defaults to cwd)
-        mc_dir: Path to .mc directory (defaults to repo_path/.mc)
+        motus_dir: Path to workspace directory (defaults to repo_path/.motus or legacy .mc)
         threshold: Alert threshold percentage
         use_git: If True, use git status instead of session transcript
 
@@ -215,11 +216,12 @@ def check_scope(
     if repo_path is None:
         repo_path = Path.cwd()
 
-    if mc_dir is None:
-        mc_dir = repo_path / ".mc"
+    if motus_dir is None:
+        resolution = resolve_workspace_dir(repo_path, create=False)
+        motus_dir = resolution.path
 
     # Load intent
-    intent = load_intent(mc_dir)
+    intent = load_intent(motus_dir)
     if intent is None:
         # Create empty intent if none exists
         intent = Intent(task="Unknown task")

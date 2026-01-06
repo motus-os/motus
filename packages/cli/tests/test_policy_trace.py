@@ -52,7 +52,7 @@ def _make_policy(tmp_path: Path) -> VaultPolicyBundle:
 def test_decision_trace_writer_hash_chain(tmp_path: Path) -> None:
     repo_dir = tmp_path / "repo"
     repo_dir.mkdir()
-    evidence_dir = repo_dir / ".mc" / "evidence" / "run-1"
+    evidence_dir = repo_dir / ".motus" / "evidence" / "run-1"
     evidence_dir.mkdir(parents=True)
 
     trace_paths = ensure_trace_paths(

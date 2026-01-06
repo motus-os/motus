@@ -13,6 +13,7 @@ from rich.console import Console
 from rich.table import Table
 
 from motus.atomic_io import atomic_write_json
+from motus.migration.path_migration import resolve_workspace_dir
 
 console = Console()
 
@@ -33,9 +34,8 @@ def get_memory_file(project_dir: Optional[Path] = None) -> Path:
     if project_dir is None:
         project_dir = Path.cwd()
 
-    mc_project_dir = project_dir / ".mc"
-    mc_project_dir.mkdir(exist_ok=True)
-    return mc_project_dir / "memory.json"
+    resolution = resolve_workspace_dir(project_dir, create=True)
+    return resolution.path / "memory.json"
 
 
 def load_memory(project_dir: Optional[Path] = None) -> list[MemoryEntry]:

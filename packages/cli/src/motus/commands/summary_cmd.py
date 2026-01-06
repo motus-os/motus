@@ -5,8 +5,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from rich.console import Console
 from rich.markup import escape
 
@@ -28,7 +26,9 @@ from .summary_cmd_formatters import (
 try:
     from ..config import MC_STATE_DIR
 except ImportError:
-    MC_STATE_DIR = Path.home() / ".mc"
+    from motus.migration.path_migration import resolve_state_dir
+
+    MC_STATE_DIR = resolve_state_dir()
 
 console = Console()
 

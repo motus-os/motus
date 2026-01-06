@@ -78,7 +78,7 @@ motus web
 
 ## Notes
 
-- Motus stores its own logs and traces under `~/.mc/`.
+- Motus stores its own logs and traces under `~/.motus/`.
 - Use `motus list --fast` to skip process detection when you only want cached
   session discovery.
 

@@ -14,7 +14,7 @@ from rich.markup import escape
 from rich.table import Table
 
 from motus.cli.exit_codes import EXIT_ERROR, EXIT_SUCCESS, EXIT_USAGE
-from motus.orient.fs_resolver import find_motus_dir
+from motus.migration.path_migration import find_legacy_workspace_dir, find_workspace_dir
 from motus.policy._runner_utils import _evidence_base_dir
 
 console = Console()
@@ -27,12 +27,20 @@ def _find_decision_trace(repo_dir: Path, run_id: str) -> Path | None:
     if candidate.exists():
         return candidate
 
-    base_dir = find_motus_dir(repo_dir) or (repo_dir / ".mc")
-    traces_dir = base_dir / "traces"
-    if traces_dir.exists():
-        matches = list(traces_dir.rglob(f"decision_trace_{run_id}.jsonl"))
-        if matches:
-            return matches[0]
+    candidates: list[Path] = []
+    resolution = find_workspace_dir(repo_dir)
+    if resolution is not None:
+        candidates.append(resolution.path)
+    legacy_dir = find_legacy_workspace_dir(repo_dir)
+    if legacy_dir is not None and legacy_dir not in candidates:
+        candidates.append(legacy_dir)
+
+    for base_dir in candidates:
+        traces_dir = base_dir / "traces"
+        if traces_dir.exists():
+            matches = list(traces_dir.rglob(f"decision_trace_{run_id}.jsonl"))
+            if matches:
+                return matches[0]
     return None
 
 

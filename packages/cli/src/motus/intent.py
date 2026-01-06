@@ -12,7 +12,7 @@ Key features:
 - Parse task from first user message in session
 - Extract constraints and out-of-scope items
 - Track priority files
-- Save/load from .mc/intent.yaml
+- Save/load from .motus/intent.yaml
 - Generate YAML output for easy inspection
 """
 

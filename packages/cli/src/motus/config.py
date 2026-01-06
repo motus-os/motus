@@ -13,6 +13,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
 
+from .migration.path_migration import resolve_state_dir
 
 @dataclass(frozen=True)
 class PathConfig:
@@ -27,7 +28,7 @@ class PathConfig:
         return self.claude_dir / "projects"
 
     # Motus state directory
-    state_dir: Path = field(default_factory=lambda: Path.home() / ".mc")
+    state_dir: Path = field(default_factory=resolve_state_dir)
 
     @property
     def coordination_db_path(self) -> Path:

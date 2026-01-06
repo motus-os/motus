@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Dict, List
 
 from ..logging import get_logger
+from ..migration.path_migration import resolve_workspace_dir
 from ..protocols import EventType, TeleportBundle, UnifiedEvent, UnifiedSession
 
 logger = get_logger(__name__)
@@ -159,8 +160,9 @@ def detect_planning_docs(project_path: str) -> Dict[str, str]:
             if len(command_summary) > 50:  # Only add if we got content
                 planning_docs[".claude/commands"] = command_summary
 
-    # Check for .mc/intent.yaml
-    intent_file = project_dir / ".mc" / "intent.yaml"
+    # Check for .motus/intent.yaml (legacy .mc supported)
+    resolution = resolve_workspace_dir(project_dir, create=False)
+    intent_file = resolution.path / "intent.yaml"
     if intent_file.is_file():
         try:
             # Security: Check for symlinks and validate resolved path

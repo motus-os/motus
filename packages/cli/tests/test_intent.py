@@ -247,12 +247,12 @@ class TestSaveLoadIntent:
         )
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
-            success = save_intent(mc_dir, intent)
+            motus_dir = Path(tmpdir) / ".motus"
+            success = save_intent(motus_dir, intent)
             assert success
 
             # Load it back
-            loaded = load_intent(mc_dir)
+            loaded = load_intent(motus_dir)
             assert loaded is not None
             assert loaded.task == "Test task"
             assert len(loaded.constraints) == 1
@@ -264,24 +264,24 @@ class TestSaveLoadIntent:
         from motus.intent import load_intent
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
-            loaded = load_intent(mc_dir)
+            motus_dir = Path(tmpdir) / ".motus"
+            loaded = load_intent(motus_dir)
             assert loaded is None
 
     def test_save_creates_directory(self):
-        """Test that save_intent creates .mc directory if needed."""
+        """Test that save_intent creates .motus directory if needed."""
         from motus.intent import Intent, save_intent
 
         intent = Intent(task="Test")
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            mc_dir = Path(tmpdir) / ".mc"
-            assert not mc_dir.exists()
+            motus_dir = Path(tmpdir) / ".motus"
+            assert not motus_dir.exists()
 
-            success = save_intent(mc_dir, intent)
+            success = save_intent(motus_dir, intent)
             assert success
-            assert mc_dir.exists()
-            assert (mc_dir / "intent.yaml").exists()
+            assert motus_dir.exists()
+            assert (motus_dir / "intent.yaml").exists()
 
 
 class TestParseIntent:

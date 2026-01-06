@@ -6,6 +6,7 @@ Purpose: define the required local layout and registries for Motus userland.
 
 - Applies to workspace `.motus/` and global `~/.motus/` storage.
 - Missing paths are a hard failure unless repaired via `motus init --force`.
+- Legacy `.mc/` paths are supported in v0.1.x; migrate with `motus db migrate-path` before v0.2.0.
 
 ## Storage Roots
 
@@ -63,6 +64,6 @@ Overrides:
 
 ## Evidence Bundles
 
-- Policy evidence bundles live under `<repo>/.mc/evidence/<run_id>` by default.
+- Policy evidence bundles live under `<repo>/.motus/evidence/<run_id>` by default.
 - Override via `MC_EVIDENCE_DIR` or `evidence_dir` in config.
 - Evidence bundles are append-only; do not edit artifacts in place.

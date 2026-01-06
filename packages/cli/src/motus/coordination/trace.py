@@ -44,7 +44,7 @@ def _trace_base_dir(repo_dir: Path) -> Path:
     motus_dir = find_motus_dir(repo_dir)
     if motus_dir is not None:
         return motus_dir
-    return repo_dir / ".mc"
+    return repo_dir / ".motus"
 
 
 def ensure_trace_paths(

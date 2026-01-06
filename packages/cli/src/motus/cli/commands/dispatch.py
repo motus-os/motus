@@ -13,6 +13,11 @@ from motus import __version__
 from motus.cli.exit_codes import EXIT_ERROR, EXIT_USAGE
 from motus.cli.help import format_cli_resource_id, print_parser_help
 from motus.core.errors import DatabaseError, MigrationError
+from motus.migration.path_migration import (
+    check_legacy_path,
+    find_legacy_workspace_dir,
+    legacy_workspace_warning,
+)
 from motus.observability.activity import ActivityLedger
 
 
@@ -45,6 +50,15 @@ def dispatch_command(
         SystemExit: For commands that exit with explicit status codes.
     """
     command = args.command
+
+    legacy_warning = check_legacy_path()
+    if legacy_warning:
+        error_console.print(f"[yellow]{legacy_warning}[/yellow]", markup=False)
+    legacy_workspace = find_legacy_workspace_dir(Path.cwd())
+    if legacy_workspace:
+        error_console.print(
+            f"[yellow]{legacy_workspace_warning(legacy_workspace)}[/yellow]", markup=False
+        )
 
     # Bootstrap database on first run (Phase 0 Foundation)
     bootstrap_ok = True
@@ -225,6 +239,7 @@ def dispatch_command(
         from motus.commands.db_cmd import (
             db_analyze_command,
             db_checkpoint_command,
+            db_migrate_path_command,
             db_stats_command,
             db_vacuum_command,
         )
@@ -238,6 +253,8 @@ def dispatch_command(
             raise SystemExit(db_stats_command(args))
         if db_cmd == "checkpoint":
             raise SystemExit(db_checkpoint_command(args))
+        if db_cmd == "migrate-path":
+            raise SystemExit(db_migrate_path_command(args))
 
         print_parser_help(console, bundle.db_parser)
         raise SystemExit(EXIT_USAGE)

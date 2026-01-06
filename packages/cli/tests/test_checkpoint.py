@@ -202,9 +202,9 @@ class TestListCheckpoints:
         from motus.checkpoint import list_checkpoints
 
         # Create corrupted metadata file
-        mc_dir = git_repo / ".mc"
-        mc_dir.mkdir(exist_ok=True)
-        (mc_dir / "checkpoints.json").write_text("invalid json{")
+        motus_dir = git_repo / ".motus"
+        motus_dir.mkdir(exist_ok=True)
+        (motus_dir / "checkpoints.json").write_text("invalid json{")
 
         # Should return empty list instead of crashing
         checkpoints = list_checkpoints(git_repo)
@@ -350,7 +350,7 @@ class TestCheckpointPersistence:
     """Test checkpoint metadata persistence."""
 
     def test_checkpoint_metadata_saved(self, git_repo):
-        """Test checkpoint metadata is saved to .mc/checkpoints.json."""
+        """Test checkpoint metadata is saved to .motus/checkpoints.json."""
         from motus.checkpoint import create_checkpoint
 
         # Create checkpoint
@@ -359,7 +359,7 @@ class TestCheckpointPersistence:
         checkpoint = create_checkpoint("test checkpoint", git_repo)
 
         # Check metadata file exists
-        metadata_file = git_repo / ".mc" / "checkpoints.json"
+        metadata_file = git_repo / ".motus" / "checkpoints.json"
         assert metadata_file.exists()
 
         # Check content
@@ -378,7 +378,7 @@ class TestCheckpointPersistence:
         create_checkpoint("test", git_repo)  # Result not needed for this test
 
         # Load and validate JSON structure
-        metadata_file = git_repo / ".mc" / "checkpoints.json"
+        metadata_file = git_repo / ".motus" / "checkpoints.json"
         data = json.loads(metadata_file.read_text())
 
         assert isinstance(data, list)

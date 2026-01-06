@@ -14,6 +14,8 @@ from rich.console import Console
 from rich.markup import escape
 from rich.table import Table
 
+from motus.migration.path_migration import resolve_workspace_dir
+
 console = Console()
 
 
@@ -21,7 +23,7 @@ def harness_command(save: bool = False) -> None:
     """Detect and display test harness for current directory.
 
     Args:
-        save: If True, save harness config to .mc/harness.json
+        save: If True, save harness config to .motus/harness.json
     """
     from ..harness import detect_harness
 
@@ -62,11 +64,10 @@ def harness_command(save: bool = False) -> None:
 
     console.print(table)
 
-    # Save to .mc/harness.json if requested
+    # Save to .motus/harness.json if requested
     if save:
-        mc_dir = repo_path / ".mc"
-        mc_dir.mkdir(exist_ok=True)
-        harness_file = mc_dir / "harness.json"
+        resolution = resolve_workspace_dir(repo_path, create=True)
+        harness_file = resolution.path / "harness.json"
 
         try:
             with open(harness_file, "w") as f:

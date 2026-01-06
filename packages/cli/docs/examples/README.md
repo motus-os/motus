@@ -864,7 +864,7 @@ All examples are designed to be extended:
 ## Key Concepts Demonstrated
 
 ### Trace Plane
-All examples log events to `~/.mc/traces/<session-id>.jsonl`:
+All examples log events to `~/.motus/traces/<session-id>.jsonl`:
 - Thinking events (reasoning)
 - Tool calls (input/output/timing)
 - Decisions (with alternatives)

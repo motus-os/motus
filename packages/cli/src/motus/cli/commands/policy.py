@@ -58,7 +58,7 @@ def register_policy_parsers(
     _add_policy_common_flags(policy_run_parser)
     policy_run_parser.add_argument(
         "--evidence-dir",
-        help="Evidence root directory (defaults to <repo>/.mc/evidence or MC_EVIDENCE_DIR)",
+        help="Evidence root directory (defaults to <repo>/.motus/evidence or MC_EVIDENCE_DIR)",
     )
 
     policy_verify_parser = policy_subparsers.add_parser(
@@ -77,12 +77,12 @@ def register_policy_parsers(
     )
 
     policy_prune_parser = policy_subparsers.add_parser(
-        "prune", help="Prune old evidence bundles under .mc/evidence"
+        "prune", help="Prune old evidence bundles under .motus/evidence"
     )
     policy_prune_parser.add_argument("--repo", help="Repository root (default: current directory)")
     policy_prune_parser.add_argument(
         "--evidence-dir",
-        help="Evidence root directory (defaults to <repo>/.mc/evidence or MC_EVIDENCE_DIR)",
+        help="Evidence root directory (defaults to <repo>/.motus/evidence or MC_EVIDENCE_DIR)",
     )
     policy_prune_parser.add_argument(
         "--keep",
