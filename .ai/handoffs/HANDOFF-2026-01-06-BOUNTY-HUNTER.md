@@ -145,37 +145,48 @@ Table name is interpolated directly. While `name` comes from a hardcoded list (n
 
 ---
 
-### CR-DEFECT-007: [LOW] Incomplete TODO in bridge.py
+### CR-DEFECT-007: [MEDIUM] OTLP Ingest Bypasses Policy Gates
 
 **Status**: OPEN
-**Severity**: LOW
+**Severity**: MEDIUM
 **Assigned**: Builder Agent
-**File**: `packages/cli/src/motus/ingest/bridge.py:13`
+**Files**:
+- `packages/cli/src/motus/ingest/bridge.py:13`
+- `packages/cli/src/motus/ingest/otlp.py:45` (caller)
 
 **Issue**:
 ```python
 # TODO: Wire to policy/runner.py run_gates() for full gate execution
 ```
 
+**Impact**: Tool spans ingested via OTLP only get a simple `safety_score` check, not full gate evaluation. This is a **governance gap** - OTLP-ingested spans bypass the policy runner entirely.
+
 **Acceptance Criteria**:
-- [ ] Complete the wiring or remove if no longer needed
+- [ ] Wire `bridge.py` to `policy/runner.py run_gates()`
+- [ ] Ensure OTLP spans pass through full gate evaluation
+- [ ] Add test coverage for OTLP → gate flow
 
 ---
 
-### CR-DEFECT-008: [LOW] Incomplete TODO in coordinator.py
+### CR-DEFECT-008: [LOW] Checkpoint Events Missing lens_delta
 
 **Status**: OPEN
 **Severity**: LOW
 **Assigned**: Builder Agent
-**File**: `packages/cli/src/motus/coordination/api/coordinator.py:490`
+**Files**:
+- `packages/cli/src/motus/coordination/api/coordinator.py:490`
+- `packages/cli/src/motus/coordination/api/types.py:235` (StatusResponse.lens_delta)
 
 **Issue**:
 ```python
 # TODO: Compute Lens delta
 ```
 
+**Impact**: `status()` never computes `lens_delta` on checkpoint events, leaving it `None` even though `StatusResponse` supports it. Clients cannot consume delta updates on checkpoints.
+
 **Acceptance Criteria**:
-- [ ] Implement lens delta computation or document why deferred
+- [ ] Implement lens delta computation in `status()`
+- [ ] Or document why deferred (if delta is expensive to compute)
 
 ---
 
@@ -252,10 +263,10 @@ These are not defects but areas recommended for deeper testing:
 3. **MEDIUM** (fix in v0.2.x):
    - CR-DEFECT-005 (SQL interpolation)
    - CR-DEFECT-006 (outdated install)
+   - CR-DEFECT-007 (OTLP bypasses gates - governance gap)
 
 4. **LOW** (backlog):
-   - CR-DEFECT-007 (bridge.py TODO)
-   - CR-DEFECT-008 (coordinator.py TODO)
+   - CR-DEFECT-008 (lens_delta not computed)
 
 ---
 
