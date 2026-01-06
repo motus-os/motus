@@ -52,6 +52,14 @@ benefits:
     icon: "lock"
 
 # ============================================
+# INSTALL (One-time setup)
+# ============================================
+
+install:
+  command: "pip install motusos"
+  expected: "Run `motus --help` to verify the CLI is available."
+
+# ============================================
 # QUICKSTART (Exact Commands)
 # ============================================
 

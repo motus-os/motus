@@ -16,7 +16,12 @@
 
 ![Motus claim-evidence-release loop](docs/assets/demo.gif)
 
+## Install
 
+```bash
+pip install motusos
+```
+Expected: Run `motus --help` to verify the CLI is available.
 
 ## Quickstart
 

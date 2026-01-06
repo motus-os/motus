@@ -39,6 +39,10 @@
       "icon": "lock"
     }
   ],
+  "install": {
+    "command": "pip install motusos",
+    "expected": "Run `motus --help` to verify the CLI is available."
+  },
   "quickstart": {
     "title": "Claim. Prove. Release.",
     "subtitle": "Three commands. One receipt.",

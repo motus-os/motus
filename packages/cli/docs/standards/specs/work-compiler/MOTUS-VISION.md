@@ -164,7 +164,7 @@ The model is the CPU. Motus is the GPU.
 ## Get Started (Coming Soon)
 
 ```bash
-pip install motus
+pip install motusos
 motus init
 motus scope ./src --allow-read
 motus run "Refactor the auth module"

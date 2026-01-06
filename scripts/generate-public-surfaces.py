@@ -83,18 +83,23 @@ def _render_quickstart(steps: list[dict]) -> str:
     return "\n".join(output)
 
 
-def _render_install(steps: list[dict]) -> str:
-    install = next((step for step in steps if step.get("id") == "install"), None)
-    if not install:
+def _render_install(install_block: dict | None, steps: list[dict]) -> str:
+    install = install_block if isinstance(install_block, dict) else None
+    if not install or not install.get("command"):
+        install = next((step for step in steps if step.get("id") == "install"), None)
+    if not install or not install.get("command"):
         return ""
-    return "\n".join([
+    lines = [
         "## Install",
         "",
         "```bash",
         install["command"],
         "```",
-        f"Expected: {install.get('expected', '')}",
-    ])
+    ]
+    expected = install.get("expected", "")
+    if expected:
+        lines.append(f"Expected: {expected}")
+    return "\n".join(lines)
 
 
 def _render_benefits(benefits: list[dict]) -> str:
@@ -200,7 +205,7 @@ def _render_readme(messaging: dict) -> str:
         parts.append("")
 
     if section_ids.get("install"):
-        parts.append(_render_install(steps))
+        parts.append(_render_install(messaging.get("install"), steps))
         parts.append("")
 
     if section_ids.get("quickstart"):
