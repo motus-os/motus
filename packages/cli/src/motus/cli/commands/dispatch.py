@@ -147,6 +147,14 @@ def dispatch_command(
             raise SystemExit(activity_status_command(args))
         print_parser_help(console, bundle.activity_parser)
         raise SystemExit(EXIT_USAGE)
+    if command == "modules":
+        from motus.commands.modules_cmd import modules_list_command
+
+        modules_cmd = getattr(args, "modules_command", None)
+        if modules_cmd == "list":
+            raise SystemExit(modules_list_command(args))
+        print_parser_help(console, bundle.modules_parser)
+        raise SystemExit(EXIT_USAGE)
     if command == "audit":
         from motus.commands.audit_cmd import (
             audit_add_command,

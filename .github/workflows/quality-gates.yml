@@ -49,6 +49,10 @@ jobs:
         run: python scripts/ci/check_sqlite_usage.py
       - name: Module registry sync guard
         run: python scripts/ci/check_module_registry.py
+      - name: Gate registry guard
+        run: python scripts/ci/check_gate_registry.py
+      - name: Roadmap hygiene guard
+        run: python scripts/ci/check_roadmap_hygiene.py --strict --bootstrap
       - name: Proof ledger sync guard
         run: python scripts/ci/check_proof_ledger.py
       - name: Ecosystem map sync guard

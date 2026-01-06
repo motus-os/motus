@@ -38,6 +38,7 @@ _COMMAND_HELP_TIERS: dict[str, int] = {
     "intent": 2,
     "explain": 2,
     "claude": 2,
+    "modules": 2,
     # Tier 3: advanced / power users
     "orient": 3,
     "standards": 3,
@@ -90,6 +91,7 @@ _COMMAND_HELP_TEXTS: dict[str, str] = {
     "db": "Database maintenance utilities",
     "release": "Release evidence gates",
     "claude": "Manage CLAUDE.md instructions safely",
+    "modules": "List modules from the registry",
 }
 
 

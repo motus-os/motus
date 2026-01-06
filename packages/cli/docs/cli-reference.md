@@ -4,6 +4,8 @@
 
 Motus (`motus`) provides a comprehensive CLI for monitoring AI agent sessions, enforcing policy gates, and managing workspace state.
 
+See also: [Userland Contract](standards/userland-contract.md) (workspace layout + registries).
+
 ```bash
 motus [COMMAND] [OPTIONS]
 ```
@@ -50,6 +52,7 @@ motus policy plan --files src/main.py  # Plan policy gates for a file
 | `explain` | Explain a policy run decision trace |
 | `history` | Show command history |
 | `intent` | Extract/show intent from a session |
+| `modules` | List registered Motus modules |
 | `policy` | Plan and run Vault OS policy gates (proof of compliance) |
 | `rollback` | Restore state to a previous checkpoint |
 | `teleport` | Export a session bundle for cross-session context transfer |
@@ -687,6 +690,33 @@ motus init --full --force
 
 **Output:**
 Reports workspace root, mode, Motus directory, and current release pointer.
+
+---
+
+### motus modules
+
+List modules from the canonical module registry.
+
+**Synopsis:**
+```bash
+motus modules list [--registry PATH] [--json]
+```
+
+**Options:**
+- `--registry PATH` - Override registry path (default: packages/cli/docs/standards/module-registry.yaml)
+- `--json` - Emit JSON instead of a table
+
+**Examples:**
+```bash
+# List modules (table)
+motus modules list
+
+# List modules as JSON
+motus modules list --json
+```
+
+**Output:**
+Shows module id, name, status, and target release (version).
 
 ---
 

@@ -16,6 +16,7 @@ factually accurate and contextually useful for different roles.
 - [Kernel Guide](implementation/kernel.md)
 - [Module Guides](implementation/modules/)
 - [Module Registry (canonical)](standards/module-registry.yaml)
+- [Gate Registry (canonical)](standards/gates.yaml)
 - [Module Audit (surface mapping)](quality/module-audit.yaml)
 - [Health Ledger](quality/health-ledger.md)
 
@@ -27,6 +28,7 @@ factually accurate and contextually useful for different roles.
 - [CLI Reference](cli-reference.md)
 - [Architecture](../../ARCHITECTURE.md)
 - [Terminology](TERMINOLOGY.md)
+- [Userland Contract](standards/userland-contract.md)
 - [Website Publishing](website-publishing.md)
 - [Website Persona Map](website/persona-map.yaml)
 - [Website Ecosystem Map](website/ecosystem-map.yaml)

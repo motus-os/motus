@@ -16,6 +16,7 @@ from .claims import register_claims_parsers
 from .db import register_db_parsers
 from .handoffs import register_handoffs_parsers
 from .health import register_health_parsers
+from .modules import register_modules_parsers
 from .policy import register_policy_parsers
 from .release import register_release_parsers
 from .review import register_review_parsers
@@ -38,6 +39,7 @@ class ParserBundle:
     roadmap_parser: argparse.ArgumentParser
     work_parser: argparse.ArgumentParser
     health_parser: argparse.ArgumentParser
+    modules_parser: argparse.ArgumentParser
     verify_parser: argparse.ArgumentParser
     handoffs_parser: argparse.ArgumentParser
     activity_parser: argparse.ArgumentParser
@@ -76,6 +78,7 @@ Run 'motus --help' for a list of commands.
     roadmap_parser = register_roadmap_parsers(subparsers)
     work_parser = register_work_parsers(subparsers)
     health_parser = register_health_parsers(subparsers)
+    modules_parser = register_modules_parsers(subparsers)
     verify_parser = register_verify_parsers(subparsers)
     handoffs_parser = register_handoffs_parsers(subparsers)
     audit_parser = register_audit_parsers(subparsers)
@@ -92,6 +95,7 @@ Run 'motus --help' for a list of commands.
         roadmap_parser=roadmap_parser,
         work_parser=work_parser,
         health_parser=health_parser,
+        modules_parser=modules_parser,
         verify_parser=verify_parser,
         handoffs_parser=handoffs_parser,
         activity_parser=activity_parser,

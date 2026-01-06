@@ -1,0 +1,130 @@
+version: "1.0"
+tiers:
+  - id: T0
+    name: Environment
+    description: "Baseline repository and environment checks."
+  - id: T1
+    name: Functionality
+    description: "Core CLI and web behavior checks."
+  - id: T2
+    name: Security
+    description: "Security, dependency, and migration safeguards."
+  - id: T3
+    name: Release
+    description: "Release-only install and upgrade validations."
+
+gates:
+  - id: GATE-PKG-001
+    tier: T0
+    kind: tool
+    description: "Package integrity check"
+    command: "scripts/gates/gate-pkg-001.sh"
+    required: true
+  - id: GATE-REPO-001
+    tier: T0
+    kind: intake
+    description: "Repository context verification"
+    command: "scripts/gates/gate-repo-001.sh"
+    required: true
+  - id: GATE-DB-001
+    tier: T0
+    kind: tool
+    description: "Schema version verification"
+    command: "scripts/gates/gate-db-001.sh"
+    required: true
+  - id: GATE-CLI-001
+    tier: T1
+    kind: test
+    description: "CLI smoke test"
+    command: "scripts/gates/gate-cli-001.sh"
+    required: true
+  - id: GATE-WEB-001
+    tier: T1
+    kind: test
+    description: "Web UI smoke test"
+    command: "scripts/gates/gate-web-001.sh"
+    required: true
+  - id: GATE-COV-001
+    tier: T1
+    kind: test
+    description: "Coverage baseline check"
+    command: "scripts/gates/gate-cov-001.sh"
+    required: true
+  - id: GATE-PERF-001
+    tier: T1
+    kind: test
+    description: "Startup performance baseline"
+    command: "scripts/gates/gate-perf-001.sh"
+    required: true
+  - id: GATE-SEC-002
+    tier: T2
+    kind: security
+    description: "Secrets scan"
+    command: "scripts/gates/gate-sec-002.sh"
+    required: true
+  - id: GATE-DEP-002
+    tier: T2
+    kind: security
+    description: "Dependency license check"
+    command: "scripts/gates/gate-dep-002.sh"
+    required: true
+  - id: GATE-SRC-001
+    tier: T2
+    kind: security
+    description: "Source sanitization check"
+    command: "scripts/gates/gate-src-001.sh"
+    required: true
+  - id: GATE-MIG-001
+    tier: T2
+    kind: lint
+    description: "Migration safety scan"
+    command: "scripts/gates/gate-migrations-001.sh"
+    required: true
+  - id: GATE-PKG-002
+    tier: T2
+    kind: security
+    description: "Wheel content audit"
+    command: "scripts/gates/gate-pkg-002.sh"
+    required: true
+  - id: GATE-TEST-001
+    tier: T1
+    kind: test
+    description: "Test isolation verification"
+    command: "scripts/gates/gate-test-001.sh"
+    required: true
+  - id: GATE-INSTALL-001
+    tier: T3
+    kind: egress
+    description: "Fresh install test"
+    command: "scripts/gates/gate-install-001.sh"
+    required: true
+  - id: GATE-FRESH-001
+    tier: T3
+    kind: egress
+    description: "Fresh install database validation"
+    command: "scripts/gates/gate-fresh-001.sh"
+    required: true
+  - id: GATE-FRESH-002
+    tier: T3
+    kind: egress
+    description: "Fresh install directory validation"
+    command: "scripts/gates/gate-fresh-002.sh"
+    required: true
+  - id: GATE-UPGRADE-001
+    tier: T3
+    kind: egress
+    description: "Upgrade capability verification"
+    command: "scripts/gates/gate-upgrade-001.sh"
+    required: true
+  - id: GATE-ROLLBACK-001
+    tier: T3
+    kind: egress
+    description: "Rollback capability verification"
+    command: "scripts/gates/gate-rollback-001.sh"
+    required: true
+  - id: GATE-RELEASE-001
+    tier: T3
+    kind: egress
+    description: "Release coordination check"
+    command: "scripts/gates/gate-release-001.sh"
+    required: true
