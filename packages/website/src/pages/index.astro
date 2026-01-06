@@ -110,8 +110,88 @@ const heroCtaHref = `${base}${heroCtaPath}`;
     </div>
   </Section>
 
+  <!-- PROOF: Agent + Motus vs Agent Alone -->
+  <Section tone="dark" pad="tight" innerClass="max-w-5xl">
+    <p class="text-xs uppercase tracking-[0.2em] text-text-secondary/60 mb-phi-2 text-center">Measured, not claimed</p>
+    <h2 class="text-2xl md:text-3xl font-display text-text-primary mb-phi-5 text-center">
+      Agent + Motus vs Agent alone
+    </h2>
+
+    <div class="grid md:grid-cols-3 gap-phi-4">
+      <!-- Workflow Compression -->
+      <div class="bg-surface-muted rounded-lg border border-mint/30 overflow-hidden">
+        <div class="p-phi-3 border-b border-mint/20 bg-mint/5">
+          <p class="text-xs uppercase tracking-wider text-mint mb-phi-1">Workflow Compression</p>
+          <p class="text-2xl font-display text-text-primary">95% fewer tokens</p>
+        </div>
+        <div class="p-phi-3 space-y-phi-3">
+          <div>
+            <p class="text-xs text-text-secondary/60 mb-1">Without Motus</p>
+            <p class="text-sm text-text-secondary">Re-paste code, re-explain decisions. Context grows O(n).</p>
+          </div>
+          <div>
+            <p class="text-xs text-mint mb-1">With Motus</p>
+            <p class="text-sm text-text-secondary">
+              <code class="text-mint">motus work context</code> — 0.15ms. Flat.
+            </p>
+          </div>
+        </div>
+        <div class="p-phi-3 border-t border-line/30 bg-surface-muted/50">
+          <p class="text-xs text-text-secondary/60">
+            887 → 43 tokens. <a href={`${base}docs/proof/token-reduction-benchmark`} class="text-mint hover:underline">Methodology →</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Multi-Agent -->
+      <div class="bg-surface-muted rounded-lg border border-line/30 overflow-hidden">
+        <div class="p-phi-3 border-b border-line/30">
+          <p class="text-xs uppercase tracking-wider text-text-secondary/60 mb-phi-1">Multi-Agent</p>
+          <p class="text-2xl font-display text-text-primary">Any agent. Any provider.</p>
+        </div>
+        <div class="p-phi-3 space-y-phi-3">
+          <div>
+            <p class="text-xs text-text-secondary/60 mb-1">Without Motus</p>
+            <p class="text-sm text-text-secondary">Claude can't read GPT's logs. Each starts from scratch.</p>
+          </div>
+          <div>
+            <p class="text-xs text-text-secondary/60 mb-1">With Motus</p>
+            <p class="text-sm text-text-secondary">Receipts are agent-agnostic. A's receipt becomes B's context.</p>
+          </div>
+        </div>
+        <div class="p-phi-3 border-t border-line/30 bg-surface-muted/50 font-mono text-xs">
+          <p class="text-text-secondary/60">rx_001 → rx_002 → rx_003</p>
+          <p class="text-text-secondary/40 text-[10px]">claude · gpt · gemini</p>
+        </div>
+      </div>
+
+      <!-- Ecosystem -->
+      <div class="bg-surface-muted rounded-lg border border-line/30 overflow-hidden">
+        <div class="p-phi-3 border-b border-line/30">
+          <p class="text-xs uppercase tracking-wider text-text-secondary/60 mb-phi-1">Ecosystem</p>
+          <p class="text-2xl font-display text-text-primary">1 + 1 = 3</p>
+        </div>
+        <div class="p-phi-3 space-y-phi-3">
+          <div>
+            <p class="text-xs text-text-secondary/60 mb-1">Without Motus</p>
+            <p class="text-sm text-text-secondary">Each session isolated. Work evaporates. No compound learning.</p>
+          </div>
+          <div>
+            <p class="text-xs text-text-secondary/60 mb-1">With Motus</p>
+            <p class="text-sm text-text-secondary">Receipts accumulate. Decisions become institutional knowledge.</p>
+          </div>
+        </div>
+        <div class="p-phi-3 border-t border-line/30 bg-surface-muted/50">
+          <p class="text-xs text-text-secondary/60">
+            Outcome → Evidence → Decision. <span class="text-text-secondary">The work compounds.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </Section>
+
   <!-- THE LOOP: How It Works -->
-  <Section tone="dark" pad="tight" innerClass="max-w-4xl">
+  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl">
     <SectionHeader
       eyebrow="The Loop"
       title="Claim. Prove. Release."
