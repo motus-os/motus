@@ -115,7 +115,7 @@ def _check_package_conflicts() -> EvidenceCheckResult:
         installed = ", ".join(f"{name}=={ver}" for name, ver in result.conflicts.items())
         message = f"Conflicting packages installed: {installed}"
     else:
-        message = "Motus import resolves to motus-command path"
+        message = "Motus import resolves to a non-packaged path"
     return EvidenceCheckResult(
         name="package_conflicts",
         passed=False,

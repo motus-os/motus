@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 CONFLICTING_DISTS = ("motus", "motus-command")
+_SHADOWED_MARKERS = ("motus-command",)
 
 
 @dataclass(frozen=True)
@@ -36,7 +37,7 @@ def detect_package_conflicts() -> PackageConflictResult:
         import motus as motus_pkg  # type: ignore
 
         origin = str(Path(motus_pkg.__file__).resolve())
-        shadowed = "motus-command" in origin
+        shadowed = any(marker in origin for marker in _SHADOWED_MARKERS)
     except Exception:
         pass
 

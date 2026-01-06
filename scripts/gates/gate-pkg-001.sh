@@ -24,7 +24,7 @@ echo "Found $pkg_count motus package(s):"
 echo "$pkg_list"
 
 # Expected: motusos (required), motus-loom (optional)
-# NOT expected: motus, motus-command (old packages)
+# NOT expected: motus, motus-command (legacy packages)
 if echo "$pkg_list" | grep -qE "^motus[[:space:]]|^motus-command"; then
   echo ""
   echo "FAIL: Found conflicting package(s)"
@@ -32,6 +32,7 @@ if echo "$pkg_list" | grep -qE "^motus[[:space:]]|^motus-command"; then
   echo "$pkg_list" | grep -E "^motus[[:space:]]|^motus-command"
   echo ""
   echo "FIX: pip3 uninstall motus motus-command -y"
+  echo "     pip3 install motusos"
   exit 1
 fi
 
@@ -49,13 +50,14 @@ echo ""
 echo "Import path: $import_path"
 
 # Check for wrong repo in path
-if echo "$import_path" | grep -q "motus-command"; then
+if echo "$import_path" | grep -qE "motus-command"; then
   echo ""
   echo "FAIL: motus imports from wrong repository"
   echo "  Expected: .../motus/packages/cli/src/motus/__init__.py"
   echo "  Actual:   $import_path"
   echo ""
   echo "FIX: pip3 uninstall motus motus-command -y"
+  echo "     pip3 install motusos"
   exit 1
 fi
 

@@ -129,6 +129,8 @@ def main() -> int:
         motus_path = motus_info.get("file", "")
         expected_prefix = str(venv_dir)
         import_ok = bool(motus_path) and expected_prefix in str(motus_path)
+        shadowed = any(marker in str(motus_path) for marker in ("motus-command",))
+        payload["shadowed"] = shadowed
 
         motus_bin = _bin_dir(venv_dir) / "motus"
         help_result = _run([str(motus_bin), "--help"], env=env)
@@ -138,6 +140,7 @@ def main() -> int:
             not payload["conflicts"]
             and import_ok
             and payload["motus_help_ok"]
+            and not payload["shadowed"]
             and "error" not in motus_info
         )
 

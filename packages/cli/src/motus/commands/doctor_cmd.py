@@ -40,9 +40,16 @@ def _package_conflict_check() -> HealthResult:
 
     if result.conflicts:
         installed = ", ".join(f"{name}=={ver}" for name, ver in result.conflicts.items())
-        message = f"Conflicting packages installed: {installed}. Remove with: pip uninstall motus motus-command -y"
+        message = (
+            "Conflicting packages installed: "
+            f"{installed}. Remove with: pip uninstall motus motus-command -y "
+            "and install motusos."
+        )
     else:
-        message = "Motus import resolves to motus-command path. Remove old packages: pip uninstall motus motus-command -y"
+        message = (
+            "Motus import resolves to a non-packaged path. "
+            "Remove old packages: pip uninstall motus motus-command -y and install motusos."
+        )
 
     return HealthResult(
         name="package_conflict",
