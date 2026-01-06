@@ -34,6 +34,7 @@ Purpose: define the required local layout and registries for Motus userland.
 | `.motus/state/orient-cache/` | Orient cache | Safe to clear |
 | `.motus/state/proposals/` | Standards proposals | Safe to clear after promotion |
 | `.motus/state/locks/` | Claim registry locks | Safe to clear when idle |
+| `.motus/scratch/` | Scratch entries + index | File-backed cache, rebuildable |
 
 ## Databases and Caches
 

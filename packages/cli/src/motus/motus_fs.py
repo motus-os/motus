@@ -28,6 +28,7 @@ MOTUS_TREE_DIRS: tuple[str, ...] = (
     "state/orient-cache",
     "state/proposals",
     "state/locks",
+    "scratch",
 )
 
 DEFAULT_NAMESPACE_ACL_YAML = """\

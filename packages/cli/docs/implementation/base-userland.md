@@ -18,6 +18,7 @@ It is the minimum structure required for a safe, deterministic setup.
 - `.motus/user/{skills,standards,config}/`
 - `.motus/project/{skills,standards,config}/`
 - `.motus/state/{ledger,evidence,orient,orient-cache,proposals,locks}/`
+- `.motus/scratch/` (scratch entries + index)
 
 ## Kernel databases
 
