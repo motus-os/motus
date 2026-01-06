@@ -18,6 +18,13 @@ graph TD
   Governance --> Surfaces
 ```
 
+## Core Principles
+
+| Principle | Description | Reference |
+| --- | --- | --- |
+| Local-First Sovereignty | No cloud dependency; data stays local | `src/motus/config.py` |
+| Ecosystem Agnostic | Works with any agent runtime; doesn't compete with ecosystem features | ADR-005, `src/motus/ingestors/` |
+
 ## Six Kernel Primitives
 
 | Primitive | Role | Status | Anchor |
