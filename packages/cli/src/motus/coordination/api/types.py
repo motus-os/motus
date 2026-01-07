@@ -34,10 +34,12 @@ ReasonCode = Literal[
     "TIMED_OUT_WAIT",
     "TIMED_OUT_INTERNAL",
     # RELEASE outcomes
+    "LEASE_NOT_FOUND",
     "RELEASED_OK",
     "RELEASED_IDEMPOTENT_REPLAY",
     "RELEASED_ROLLBACK_OK",
     "RELEASED_ROLLBACK_FAILED",
+    "RELEASED_ROLLBACK_UNSUPPORTED",
     # OVERRIDES
     "OVERRIDE_FORCE_RELEASE",
     "OVERRIDE_STOP_AGENT",
@@ -116,10 +118,12 @@ HUMAN_MESSAGES: dict[str, str] = {
     "DENY_SANDBOX_UNSAFE": "Operation not safe in sandbox.",
     "TIMED_OUT_WAIT": "Wait timed out.",
     "TIMED_OUT_INTERNAL": "Internal timeout.",
+    "LEASE_NOT_FOUND": "Lease not found.",
     "RELEASED_OK": "Lease released successfully.",
     "RELEASED_IDEMPOTENT_REPLAY": "Lease already released (idempotent).",
     "RELEASED_ROLLBACK_OK": "Rollback completed successfully.",
     "RELEASED_ROLLBACK_FAILED": "Rollback failed.",
+    "RELEASED_ROLLBACK_UNSUPPORTED": "Rollback requested but unsupported.",
     "OVERRIDE_FORCE_RELEASE": "Force released by operator.",
     "OVERRIDE_STOP_AGENT": "Agent stopped by operator.",
 }
