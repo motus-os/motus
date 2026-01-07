@@ -44,6 +44,22 @@ const statusLabel = (status) => getStatusLabel(status);
         </a>
       </div>
     </div>
+    <Panel size="sm" class="mb-phi-4 flex flex-col md:flex-row md:items-center md:justify-between gap-phi-2">
+      <div class="space-y-phi-1">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Canonical patterns</p>
+        <p class="text-sm text-text-secondary">
+          The source patterns live in GitHub. This page is a compact index.
+        </p>
+      </div>
+      <a
+        href="https://github.com/motus-os/motus/blob/main/packages/website/src/data/implementation-patterns.json"
+        class="text-mint hover:text-text-primary transition-colors text-sm"
+        target="_blank"
+        rel="noopener"
+      >
+        Open patterns file &#8594;
+      </a>
+    </Panel>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-phi-3">
       {patterns.map((pattern) => (

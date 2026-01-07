@@ -28,7 +28,7 @@ const statusClass = (status) => getStatusClass(status, 'badge');
   <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-3xl">
     <SectionHeader
       eyebrow="Evidence Registry"
-      subtitle="Every claim on the site links to a proof artifact. This registry is the canonical index."
+      subtitle="Every claim on the site links to a proof artifact. This page is the public index."
       size="xl"
     >
       <span slot="title">Proof-first by default.</span>
@@ -38,6 +38,25 @@ const statusClass = (status) => getStatusClass(status, 'badge');
       <a href={`${base}docs/ecosystem`} class="text-mint hover:text-text-primary transition-colors">Ecosystem map</a>
       <a href={`${base}open-source`} class="text-mint hover:text-text-primary transition-colors">Source available</a>
     </div>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <Panel size="sm" class="flex flex-col md:flex-row md:items-center md:justify-between gap-phi-2">
+      <div class="space-y-phi-1">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Canonical ledger</p>
+        <p class="text-sm text-text-secondary">
+          The authoritative proof ledger lives in GitHub. This page stays in sync.
+        </p>
+      </div>
+      <a
+        href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/website/proof-ledger.yaml"
+        class="text-mint hover:text-text-primary transition-colors text-sm"
+        target="_blank"
+        rel="noopener"
+      >
+        Open proof ledger &#8594;
+      </a>
+    </Panel>
   </Section>
 
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
@@ -83,10 +102,6 @@ const statusClass = (status) => getStatusClass(status, 'badge');
               <div class="space-y-phi-1">
                 <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">How it works</p>
                 <p class="text-sm text-text-secondary">{claim.claim}</p>
-              </div>
-              <div class="space-y-phi-1">
-                <p class="text-xs uppercase tracking-[0.2em] text-text-secondary">Method</p>
-                <p class="text-sm text-text-secondary">{claim.method}</p>
               </div>
             </div>
             <div class="space-y-phi-1 text-sm">

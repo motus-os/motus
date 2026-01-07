@@ -49,6 +49,22 @@ if (missingProof.length > 0) {
     <p class="text-xs text-text-secondary/70 mb-phi-2">
       Current is released. Building is the next 3 releases. Future is beyond.
     </p>
+    <Panel size="sm" class="mb-phi-3 flex flex-col md:flex-row md:items-center md:justify-between gap-phi-2">
+      <div class="space-y-phi-1">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Canonical map</p>
+        <p class="text-sm text-text-secondary">
+          The authoritative ecosystem map lives in GitHub. This view stays in sync.
+        </p>
+      </div>
+      <a
+        href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/website/ecosystem-map.yaml"
+        class="text-mint hover:text-text-primary transition-colors text-sm"
+        target="_blank"
+        rel="noopener"
+      >
+        Open ecosystem map &#8594;
+      </a>
+    </Panel>
     <div class="max-w-6xl mx-auto">
       <div class="md:hidden">
         <EcosystemFlowMobile groups={groups} nodes={nodes} base={base} proofIndex={proofIndex} />
@@ -70,8 +86,7 @@ if (missingProof.length > 0) {
         <div class="space-y-phi-1">
           <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Navigate</p>
           <ul class="space-y-phi-1">
-            <li>- Open a lane to explore its modules, integrations, and proofs.</li>
-            <li>- The “Motus adds” line makes the lift explicit for each input.</li>
+            <li>- Open a lane to explore modules, integrations, and proofs.</li>
             <li>- Status chips mark current, building, future, and external.</li>
           </ul>
         </div>
@@ -87,7 +102,7 @@ if (missingProof.length > 0) {
     <SectionHeader
       eyebrow="Implementation Path"
       title="Build the ecosystem in phases"
-      subtitle="Scale without drift: kernel → governance → modules with exit criteria."
+      subtitle="Kernel → governance → modules. Full exit criteria live in the implementation guide."
       class="mb-phi-3"
       maxWidth="max-w-3xl"
     />
@@ -95,62 +110,25 @@ if (missingProof.length > 0) {
       <Panel size="sm" class="space-y-phi-2">
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 1</p>
         <h3 class="text-lg font-display text-text-primary">Kernel Foundation</h3>
-        <p class="text-sm text-text-secondary">Lease closes with outcome, evidence, and decision.</p>
-        <p class="text-sm text-text-secondary">Coordination DB + six-call loop.</p>
-        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
-        <ul class="text-sm text-text-secondary space-y-phi-1">
-          <li>- Lease released with outcome</li>
-          <li>- Evidence + decision logged</li>
-          <li>- Status visible via <span class="text-text-primary">motus work status</span></li>
-        </ul>
+        <p class="text-sm text-text-secondary">Six-call loop, coordination DB, and receipts.</p>
       </Panel>
       <Panel size="sm" class="space-y-phi-2">
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 2</p>
         <h3 class="text-lg font-display text-text-primary">Governance + Evidence</h3>
-        <p class="text-sm text-text-secondary">Audit trail is complete before completion.</p>
-        <p class="text-sm text-text-secondary">Evidence bundles + decision log + policy gates.</p>
-        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
-        <ul class="text-sm text-text-secondary space-y-phi-1">
-          <li>- Evidence bundles are stored</li>
-          <li>- Decision log is populated</li>
-          <li>- Policy gates are satisfied</li>
-        </ul>
+        <p class="text-sm text-text-secondary">Evidence bundles, decision log, and gates.</p>
       </Panel>
       <Panel size="sm" class="space-y-phi-2">
         <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Phase 3</p>
         <h3 class="text-lg font-display text-text-primary">Bundled Modules</h3>
-        <p class="text-sm text-text-secondary">Capabilities scale without breaking invariants.</p>
-        <p class="text-sm text-text-secondary">Module registry + dependency checks.</p>
-        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Exit criteria</p>
-        <ul class="text-sm text-text-secondary space-y-phi-1">
-          <li>- Module dependencies satisfied</li>
-          <li>- Registry status matches release</li>
-          <li>- Module docs + tests exist</li>
-        </ul>
+        <p class="text-sm text-text-secondary">Module registry, dependencies, and scale-up.</p>
       </Panel>
     </div>
     <div class="mt-phi-3 flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
-      <span>Need the step-by-step commands?</span>
+      <span>Need exit criteria and commands?</span>
       <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
         Open the Implementation Guide &#8594;
       </a>
     </div>
-    <Panel size="sm" class="mt-phi-3 space-y-phi-2">
-      <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Future</p>
-      <div class="flex flex-wrap items-center gap-phi-2 text-sm text-text-secondary">
-        <span class="text-text-primary">Signed work receipts</span>
-        <span class="text-text-secondary/60">&#8594;</span>
-        <span class="text-text-primary">Asset registry</span>
-        <span class="text-text-secondary/60">&#8594;</span>
-        <span class="text-text-primary">Motus Exchange</span>
-      </div>
-      <p class="text-text-secondary text-sm">These layers remain future until verified and promoted in the registry.</p>
-      <div class="flex flex-wrap gap-phi-2 text-sm">
-        <a href={`${base}implementation`} class="text-mint hover:text-text-primary transition-colors">
-          See future module definitions &#8594;
-        </a>
-      </div>
-    </Panel>
   </Section>
 
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
