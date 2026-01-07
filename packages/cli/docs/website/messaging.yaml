@@ -104,6 +104,8 @@ links:
   docs: "https://motus-os.github.io/motus/docs/"
   pypi: "https://pypi.org/project/motusos/"
   github: "https://github.com/motus-os/motus"
+  contributing: "CONTRIBUTING.md"
+  release_standard: "PRE-RELEASE-REVIEW-STANDARD.md"
   license: "https://github.com/motus-os/motus/blob/main/LICENSE"
 
 # ============================================

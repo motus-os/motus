@@ -59,6 +59,8 @@ Full registry: https://motus-os.github.io/motus/docs/evidence
 - Docs: https://motus-os.github.io/motus/docs/
 - PyPI: https://pypi.org/project/motusos/
 - GitHub: https://github.com/motus-os/motus
+- Contributing: CONTRIBUTING.md
+- Release Standard: PRE-RELEASE-REVIEW-STANDARD.md
 
 ## License
 

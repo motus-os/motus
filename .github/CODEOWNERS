@@ -1,0 +1,23 @@
+# CODEOWNERS for Motus
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default: all files
+* @bnvoss
+
+# CLI package
+/packages/cli/ @bnvoss
+
+# Website package
+/packages/website/ @bnvoss
+
+# Security-sensitive files (require explicit review)
+SECURITY.md @bnvoss
+.github/workflows/ @bnvoss
+/scripts/gates/ @bnvoss
+
+# Release gates
+/scripts/gates/*.sh @bnvoss
+
+# Standards and content (proof verification)
+/packages/cli/docs/standards/ @bnvoss
+/packages/website/src/data/ @bnvoss

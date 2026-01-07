@@ -117,6 +117,8 @@ def _render_links(links: dict) -> str:
         "Docs": links.get("docs"),
         "PyPI": links.get("pypi"),
         "GitHub": links.get("github"),
+        "Contributing": links.get("contributing"),
+        "Release Standard": links.get("release_standard"),
     }
     lines = ["## Links", ""]
     for label, url in items.items():

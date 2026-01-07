@@ -40,7 +40,7 @@ graph TD
 The kernel powers multiple surfaces (CLI, TUI, Web) while keeping the same underlying trace and teleport primitives. This keeps observability consistent across interfaces and agent runtimes.
 
 ## Related Docs
-- ROADMAP.md
-- docs/cli-reference.md
-- specs/trace-schema-v1.md
-- specs/teleport-spec-v1.md
+- packages/cli/docs/standards/specs/work-compiler/MOTUS-ROADMAP.md
+- packages/cli/docs/cli-reference.md
+- packages/cli/docs/schema/index.md
+- packages/cli/docs/schema/kernel.md
