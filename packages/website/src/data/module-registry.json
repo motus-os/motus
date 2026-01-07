@@ -2,8 +2,8 @@
   "version": "1.0",
   "status_semantics": {
     "current": "Implemented + documented + runnable example.",
-    "building": "In active development; roadmap_id required.",
-    "future": "Concept only; no runnable examples."
+    "building": "Scheduled for the next 3 releases; roadmap_id required.",
+    "future": "Beyond the next 3 releases; concept only; no runnable examples."
   },
   "kernel": {
     "id": "kernel",

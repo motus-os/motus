@@ -64,6 +64,22 @@ const docs = [
   </Section>
 
   <Section tone="light" pad="tight" class="border-t border-line/30">
+    <Panel size="sm" class="mb-phi-3 flex flex-col md:flex-row md:items-center md:justify-between gap-phi-2">
+      <div class="space-y-phi-1">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Canonical source</p>
+        <p class="text-sm text-text-secondary">
+          These pages are curated summaries. Full technical docs live in GitHub.
+        </p>
+      </div>
+      <a
+        href="https://github.com/motus-os/motus/tree/main/packages/cli/docs"
+        class="text-mint hover:text-text-primary transition-colors text-sm"
+        target="_blank"
+        rel="noopener"
+      >
+        Open docs in GitHub &#8594;
+      </a>
+    </Panel>
     <div class="grid md:grid-cols-2 gap-phi-3">
       {docs.map((item) => (
         <Panel size="sm" class="space-y-phi-2">

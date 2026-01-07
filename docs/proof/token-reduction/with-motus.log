@@ -1,0 +1,57 @@
+# Motus receipts (workflow runner demo)
+
+This log is generated directly from coordination.db events.
+
+## Receipt 1: ADHOC-WR-001
+
+Lease: lease-20260107-92a943de
+Agent: model-agent
+Issued: 2026-01-07T00:20:20Z
+Status: released (success)
+Resources:
+- file:src/workflow_runner.py
+
+Outcomes:
+- file: src/workflow_runner.py (Workflow runner models and in-memory store)
+
+Decisions:
+- Use dataclasses and enums for workflows and run states | rationale: Keeps the data model explicit and easy to serialize | alternatives: Pydantic models
+
+Evidence:
+- log | log: Scaffolded workflow runner models and in-memory store.
+
+## Receipt 2: ADHOC-WR-002
+
+Lease: lease-20260107-03906160
+Agent: api-agent
+Issued: 2026-01-07T00:20:21Z
+Status: released (success)
+Resources:
+- file:src/api.py
+
+Outcomes:
+- file: src/api.py (API helpers for workflows, runs, and logs)
+
+Decisions:
+- Require X-API-Key and keep the store module-level | rationale: Keeps the demo focused and avoids complex dependency injection | alternatives: Pass store instance per call
+
+Evidence:
+- diff | diff: Added API helpers: create_workflow, list_workflows, start_run, list_run_logs.
+
+## Receipt 3: ADHOC-WR-003
+
+Lease: lease-20260107-01738e5d
+Agent: test-agent
+Issued: 2026-01-07T00:20:22Z
+Status: released (success)
+Resources:
+- file:src/test_workflows.py
+
+Outcomes:
+- file: src/test_workflows.py (Integration tests for workflow runner demo)
+
+Decisions:
+- Keep tests lightweight and run in-memory | rationale: Matches the demo scope while proving behavior | alternatives: Spin up external services
+
+Evidence:
+- test_result | tests: passed=2, failed=0, skipped=0 | log: 2 passed in 0.02s

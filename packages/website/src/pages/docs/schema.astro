@@ -26,6 +26,17 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       <p class="text-text-secondary mb-2">Scope: Kernel schema + coordination.db</p>
       <p class="text-text-secondary mb-2">Version: 0.1.3</p>
       <p class="text-text-secondary">Date: 2025-12-29</p>
+      <p class="text-text-secondary mt-phi-2">
+        Canonical source:
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/index.md"
+          class="text-mint hover:text-text-primary transition-colors"
+          target="_blank"
+          rel="noopener"
+        >
+          schema docs on GitHub
+        </a>
+      </p>
     </Panel>
   </Section>
 
@@ -41,85 +52,37 @@ const base = import.meta.env.BASE_URL.endsWith('/')
       <p class="text-text-secondary mt-2 text-sm">
         Kernel truth. Append-only governance. Deterministic replay.
       </p>
-      <p class="text-text-secondary text-sm flex flex-wrap items-center gap-phi-1">
-        <span class="status-badge status-future">Future</span>
-        <span>Impact: stable contracts keep coordination repeatable across teams.</span>
-      </p>
     </Panel>
   </Section>
 
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
     <SectionHeader
-      title="6-Call Coordination API"
-      subtitle="These calls keep coordination small and outcomes reviewable."
+      title="Schema reference"
+      subtitle="Keep the site lightweight; the full schema lives in GitHub."
       class="mb-phi-4"
       maxWidth="max-w-2xl"
     />
-    <div class="grid md:grid-cols-2 gap-phi-3">
-      <Panel size="sm">
-        <code class="text-mint font-mono text-lg">claim_work()</code>
-        <p class="text-text-secondary mt-2">Claim a task, acquire a lease, and receive context.</p>
-      </Panel>
-      <Panel size="sm">
-        <code class="text-mint font-mono text-lg">get_context()</code>
-        <p class="text-text-secondary mt-2">Refresh the Lens mid-task with current prerequisites.</p>
-      </Panel>
-      <Panel size="sm">
-        <code class="text-mint font-mono text-lg">put_outcome()</code>
-        <p class="text-text-secondary mt-2">Record the outcome of an attempt.</p>
-      </Panel>
-      <Panel size="sm">
-        <code class="text-mint font-mono text-lg">record_evidence()</code>
-        <p class="text-text-secondary mt-2">Attach proof artifacts tied to outcomes.</p>
-      </Panel>
-      <Panel size="sm">
-        <code class="text-mint font-mono text-lg">record_decision()</code>
-        <p class="text-text-secondary mt-2">Append governance decisions and waivers.</p>
-      </Panel>
-      <Panel size="sm">
-        <code class="text-mint font-mono text-lg">release_work()</code>
-        <p class="text-text-secondary mt-2">Finalize, attach proof, and release the lease.</p>
-      </Panel>
-    </div>
-  </Section>
-
-  <Section tone="muted" pad="tight" innerClass="max-w-5xl">
-    <SectionHeader
-      title="Core Tables (v0.1.3)"
-      subtitle="The kernel is intentionally small. Outcomes live on attempts and are proven by evidence."
-      class="mb-phi-4"
-      maxWidth="max-w-2xl"
-    />
-    <p class="text-sm text-text-secondary mb-phi-3 flex flex-wrap items-center gap-phi-1">
-      <span class="status-badge status-future">Future</span>
-      <span>Impact: small tables mean fewer moving parts to keep aligned.</span>
-    </p>
-    <div class="grid md:grid-cols-2 gap-phi-3">
-      <Panel size="sm">
-        <p class="text-text-primary font-medium">roadmap_items</p>
-        <p class="text-text-secondary text-sm">Planning intent and dependency graph.</p>
-      </Panel>
-      <Panel size="sm">
-        <p class="text-text-primary font-medium">attempts</p>
-        <p class="text-text-secondary text-sm">Execution instances + outcome status.</p>
-      </Panel>
-      <Panel size="sm">
-        <p class="text-text-primary font-medium">decisions</p>
-        <p class="text-text-secondary text-sm">Append-only approvals, waivers, reviews.</p>
-      </Panel>
-      <Panel size="sm">
-        <p class="text-text-primary font-medium">evidence</p>
-        <p class="text-text-secondary text-sm">Typed, hashed proof artifacts.</p>
-      </Panel>
-      <Panel size="sm">
-        <p class="text-text-primary font-medium">blockers</p>
-        <p class="text-text-secondary text-sm">Execution issues with resolution tracking.</p>
-      </Panel>
-      <Panel size="sm">
-        <p class="text-text-primary font-medium">leases</p>
-        <p class="text-text-secondary text-sm">Resource coordination and exclusivity.</p>
-      </Panel>
-    </div>
+    <Panel size="sm" class="space-y-phi-2">
+      <p class="text-sm text-text-secondary">
+        The schema details tables, invariants, and migrations for coordination.db.
+      </p>
+      <div class="flex flex-wrap gap-phi-2 text-sm">
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/index.md"
+          class="text-mint hover:text-text-primary transition-colors"
+          target="_blank"
+          rel="noopener"
+        >
+          Open schema docs &#8594;
+        </a>
+        <a
+          href={`${base}docs/evidence#claim-kernel_schema`}
+          class="text-mint hover:text-text-primary transition-colors"
+        >
+          Evidence entry &#8594;
+        </a>
+      </div>
+    </Panel>
   </Section>
 
   <Section tone="light" class="text-center" innerClass="max-w-4xl">

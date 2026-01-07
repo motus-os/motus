@@ -15,7 +15,7 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     <SectionHeader
       eyebrow="Demos"
       title="See the verified loop in action"
-      subtitle="These commands reflect v0.1.0 output. No placeholders."
+      subtitle="These examples track the current release. Full scripts live in GitHub."
       size="xl"
     />
     <div class="mt-phi-3 flex flex-wrap justify-center gap-phi-2 text-sm">
@@ -31,63 +31,89 @@ const base = import.meta.env.BASE_URL.endsWith('/')
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
     <SectionHeader
       eyebrow="Current"
-      title="Verified loop (6 calls)"
-      subtitle="Claim, context, outcome, evidence, decision, release."
+      title="Run the demos"
+      subtitle="Short summaries here. Full scripts and outputs live in GitHub."
       align="left"
       size="md"
       class="mb-phi-4"
       maxWidth="max-w-3xl"
     />
-    <Panel size="sm" class="space-y-phi-2">
-      <div class="flex flex-wrap items-center gap-phi-2">
-        <Chip>Current</Chip>
-        <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">CLI</span>
-      </div>
-      <div class="space-y-phi-1">
-        <code class="text-mint font-mono text-sm block">motus work claim TASK-042 --intent &quot;Fix authentication bug&quot;</code>
-        <code class="text-mint font-mono text-sm block">motus work context &lt;lease_id&gt;</code>
-        <code class="text-mint font-mono text-sm block">motus work outcome &lt;lease_id&gt; file --path src/auth.py --description &quot;Patch&quot;</code>
-        <code class="text-mint font-mono text-sm block">motus work evidence &lt;lease_id&gt; test_result --passed 12 --failed 0</code>
-        <code class="text-mint font-mono text-sm block">motus work decision &lt;lease_id&gt; &quot;Used retry logic&quot; --rationale &quot;Transient failures&quot;</code>
-        <code class="text-mint font-mono text-sm block">motus work release &lt;lease_id&gt; success</code>
-        <code class="text-mint font-mono text-sm block">motus work status &lt;lease_id&gt;</code>
-      </div>
-      <p class="text-sm text-text-secondary">
-        Expected: lease granted, context assembled, evidence + decision recorded, release success, status shows the receipt.
-      </p>
-    </Panel>
-  </Section>
-
-  <Section tone="light" pad="tight" innerClass="max-w-5xl">
-    <SectionHeader
-      eyebrow="Current"
-      title="Multi-agent conflict prevention"
-      subtitle="Leases prevent two agents from claiming the same task."
-      align="left"
-      size="md"
-      class="mb-phi-4"
-      maxWidth="max-w-3xl"
-    />
-    <Panel size="sm" class="space-y-phi-2">
-      <div class="flex flex-wrap items-center gap-phi-2">
-        <Chip>Current</Chip>
-        <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">CLI</span>
-      </div>
-      <div class="space-y-phi-1">
-        <code class="text-mint font-mono text-sm block">MC_AGENT_ID=agent-a motus work claim TASK-100 --intent &quot;Refactor database&quot;</code>
-        <code class="text-mint font-mono text-sm block">MC_AGENT_ID=agent-b motus work claim TASK-100 --intent &quot;Also refactor&quot;</code>
-      </div>
-      <p class="text-sm text-text-secondary">
-        Expected: Agent B is denied with the current holder and lease details.
-      </p>
-    </Panel>
+    <div class="grid md:grid-cols-2 gap-phi-3">
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="flex flex-wrap items-center gap-phi-2">
+          <Chip>Current</Chip>
+          <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">CLI</span>
+        </div>
+        <h3 class="text-lg font-display text-text-primary">Six-call loop</h3>
+        <p class="text-sm text-text-secondary">
+          Claim work, attach evidence, and release a receipt in one deterministic loop.
+        </p>
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md"
+          class="text-sm text-mint hover:text-text-primary transition-colors"
+          target="_blank"
+          rel="noopener"
+        >
+          CLI reference &#8594;
+        </a>
+      </Panel>
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="flex flex-wrap items-center gap-phi-2">
+          <Chip>Current</Chip>
+          <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">Coordination</span>
+        </div>
+        <h3 class="text-lg font-display text-text-primary">Lease conflict prevention</h3>
+        <p class="text-sm text-text-secondary">
+          Two agents can’t claim the same task. Leases enforce exclusivity.
+        </p>
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/cli/docs/cli-reference.md"
+          class="text-sm text-mint hover:text-text-primary transition-colors"
+          target="_blank"
+          rel="noopener"
+        >
+          CLI reference &#8594;
+        </a>
+      </Panel>
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="flex flex-wrap items-center gap-phi-2">
+          <Chip>Current</Chip>
+          <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">Proof</span>
+        </div>
+        <h3 class="text-lg font-display text-text-primary">Workflow compression logs</h3>
+        <p class="text-sm text-text-secondary">
+          Side-by-side logs showing manual vs receipt handoffs.
+        </p>
+        <a
+          href="https://github.com/motus-os/motus/tree/main/docs/proof/token-reduction"
+          class="text-sm text-mint hover:text-text-primary transition-colors"
+          target="_blank"
+          rel="noopener"
+        >
+          View logs &#8594;
+        </a>
+      </Panel>
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="flex flex-wrap items-center gap-phi-2">
+          <Chip>Current</Chip>
+          <span class="text-xs uppercase tracking-[0.2em] text-text-secondary">Hands-on</span>
+        </div>
+        <h3 class="text-lg font-display text-text-primary">Guided walkthrough</h3>
+        <p class="text-sm text-text-secondary">
+          Build a workflow runner and ship three receipts end to end.
+        </p>
+        <a href={`${base}get-started`} class="text-sm text-mint hover:text-text-primary transition-colors">
+          Get Started &#8594;
+        </a>
+      </Panel>
+    </div>
   </Section>
 
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
     <SectionHeader
       eyebrow="Future"
       title="Strict enforcement demos"
-      subtitle="These scenarios require gates that are not enforced in v0.1.0."
+      subtitle="These scenarios require gates that are not enforced yet."
       align="left"
       size="md"
       class="mb-phi-4"
@@ -105,8 +131,16 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         <li>Context transfer between agents on handoff.</li>
       </ul>
       <p class="text-sm text-text-secondary">
-        These require enforcement gates. Track progress in the roadmap and evidence registry.
+        These require enforcement gates. Track progress in the ecosystem map and evidence registry.
       </p>
+      <div class="flex flex-wrap gap-phi-2 text-sm">
+        <a href={`${base}docs/ecosystem`} class="text-mint hover:text-text-primary transition-colors">
+          Ecosystem map &#8594;
+        </a>
+        <a href={`${base}docs/evidence`} class="text-mint hover:text-text-primary transition-colors">
+          Evidence registry &#8594;
+        </a>
+      </div>
     </Panel>
   </Section>
 </Layout>

@@ -3,7 +3,7 @@
 # Edit this file, run generator, everything stays in sync
 
 version: "1.0"
-last_updated: "2026-01-04"
+last_updated: "2026-01-06"
 
 # ============================================
 # THE THREE STATUSES (and only three)
@@ -21,7 +21,7 @@ statuses:
   building:
     id: "building"
     label: "Building"
-    description: "In active development. Roadmap item exists."
+    description: "Scheduled for the next 3 releases. Roadmap item required."
     css_class: "status-building"
     color_token: "mint"
     badge_style: "outline"
@@ -29,7 +29,7 @@ statuses:
   future:
     id: "future"
     label: "Future"
-    description: "Planned but not started. Concept only."
+    description: "Beyond the next 3 releases. Concept only."
     css_class: "status-future"
     color_token: "future"
     badge_style: "outline"

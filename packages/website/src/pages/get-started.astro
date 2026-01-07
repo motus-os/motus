@@ -11,6 +11,7 @@ import SectionHeader from '../components/SectionHeader.astro';
 import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import Button from '../components/Button.astro';
+import messaging from '../data/messaging.json';
 
 import yaml from 'js-yaml';
 import fs from 'node:fs';
@@ -29,12 +30,9 @@ const meta = tutorial.meta;
 const hero = meta.hero;
 const prerequisites = tutorial.prerequisites || [];
 const setup = tutorial.setup;
-const features = tutorial.features || [];
-const reveal = tutorial.reveal;
+const quickstart = messaging.quickstart?.steps || [];
 const nextSteps = tutorial.next_steps || [];
 
-// Helper to check if GIF exists (placeholder logic - actual check in production)
-const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
 ---
 
 <Layout title="Get Started - Motus">
@@ -126,167 +124,66 @@ const getGifPath = (gifName: string) => `${base}assets/tutorial/${gifName}.gif`;
     </details>
   </Section>
 
-  <!-- Features (The Build) -->
+  <!-- Quick Loop -->
   <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-5xl">
     <SectionHeader
-      eyebrow="The Build"
-      title="3 features. 3 receipts."
-      subtitle="Each feature follows the same loop: claim, work, evidence, release."
+      eyebrow="Quick Loop"
+      title="Claim. Prove. Release."
+      subtitle="Three commands. One receipt."
       align="left"
       size="md"
       maxWidth="max-w-3xl"
       class="mb-phi-4"
     />
-
-    <div class="relative">
-      <span class="absolute left-phi-3 top-0 bottom-0 w-px bg-line/20"></span>
-      <ol class="space-y-phi-4 pl-phi-5 md:pl-phi-6">
-        {features.map((feature: any, featureIndex: number) => (
-          <li id={feature.id} class="relative scroll-mt-24">
-            <span class="absolute left-phi-3 top-phi-2 -translate-x-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-line/30 bg-surface text-sm font-mono text-text-secondary">
-              {String(featureIndex + 1).padStart(2, '0')}
-            </span>
-
-            <Panel size="sm" class="space-y-phi-3">
-              <div class="flex flex-wrap items-center justify-between gap-phi-2">
-                <div>
-                  <p class="text-sm uppercase tracking-[0.22em] text-text-secondary">
-                    Feature {String(featureIndex + 1).padStart(2, '0')}
-                  </p>
-                  <h3 class="text-xl font-display text-text-primary">{feature.title}</h3>
-                </div>
-                <span class="text-sm px-2 py-1 rounded-full border border-mint/30 text-mint">
-                  {feature.id}
-                </span>
-              </div>
-
-              <p class="text-sm text-text-secondary">{feature.description}</p>
-
-              <!-- Feature Steps -->
-              <div class="space-y-phi-2">
-                {feature.steps.map((step: any) => (
-                  <div class="rounded-lg border border-line/30 bg-surface-muted p-phi-2 space-y-phi-1">
-                    <div class="flex items-center justify-between">
-                      <p class="text-sm uppercase tracking-[0.2em] text-text-secondary">{step.title}</p>
-                      {step.gif && (
-                        <img
-                          src={getGifPath(step.gif_name)}
-                          alt={`${step.title} demo`}
-                          loading="lazy"
-                          class="h-10 w-auto rounded border border-line/30"
-                        />
-                      )}
-                    </div>
-
-                    {step.type === 'command' && (
-                      <code class="text-mint font-mono text-sm block">{step.command}</code>
-                    )}
-
-                    {step.type === 'file' && (
-                      <div class="space-y-phi-1">
-                        <p class="text-sm text-text-secondary">Create file: <code class="text-mint">{step.path}</code></p>
-                        <pre class="text-sm text-text-secondary bg-surface p-phi-2 rounded overflow-x-auto max-h-32 overflow-y-auto">{step.content}</pre>
-                      </div>
-                    )}
-
-                    {step.explanation && (
-                      <p class="text-sm text-text-secondary/80 italic">{step.explanation}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <!-- Sneak peek after first feature -->
-              {featureIndex === 0 && (
-                <Panel size="sm" class="border-mint/30 border bg-mint/5">
-                  <p class="text-sm text-text-primary">
-                    You just completed your first receipt.
-                  </p>
-                  <p class="text-sm text-text-secondary">
-                    By the end, you'll have 3 of these with full evidence trails.
-                  </p>
-                </Panel>
-              )}
-            </Panel>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </Section>
-
-  <!-- The Reveal -->
-  <Section id="reveal" tone="light" pad="tight" class="border-t border-line/30 scroll-mt-24" innerClass="max-w-4xl">
-    <SectionHeader
-      eyebrow="The Reveal"
-      title={reveal.title}
-      subtitle={reveal.description}
-      align="left"
-      size="md"
-      maxWidth="max-w-3xl"
-      class="mb-phi-4"
-    />
-
-    <div class="space-y-phi-3">
-      {reveal.steps.map((step: any) => (
+    <div class="grid md:grid-cols-3 gap-phi-3">
+      {quickstart.map((step: any) => (
         <Panel size="sm" class="space-y-phi-2">
-          <div class="flex items-center justify-between">
-            <p class="text-sm font-medium text-text-primary">{step.title}</p>
-            {step.gif && (
-              <img
-                src={getGifPath(step.gif_name)}
-                alt={`${step.title} demo`}
-                loading="lazy"
-                class="h-10 w-auto rounded border border-line/30"
-              />
-            )}
-          </div>
-
-          {step.type === 'command' && (
-            <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
-              {step.command}
-            </code>
-          )}
-
-          {step.explanation && (
-            <div class="text-sm text-text-secondary whitespace-pre-line">
-              {step.explanation}
-            </div>
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">{step.title}</p>
+          <code class="text-mint font-mono text-sm block bg-surface-muted p-phi-2 rounded-lg">
+            {step.command}
+          </code>
+          {step.expected && (
+            <p class="text-sm text-text-secondary">Expected: {step.expected}</p>
           )}
         </Panel>
       ))}
     </div>
-
-    <!-- Contrast: Without vs With Motus -->
-    <Panel size="sm" class="mt-phi-4 space-y-phi-2">
-      <div class="grid md:grid-cols-2 gap-phi-3">
-        <div class="space-y-phi-1">
-          <p class="text-sm uppercase tracking-[0.25em] text-text-secondary/60">Without Motus</p>
-          <p class="text-sm text-text-secondary">"I think I did that? Maybe?"</p>
-        </div>
-        <div class="space-y-phi-1">
-          <p class="text-sm uppercase tracking-[0.25em] text-mint">With Motus</p>
-          <p class="text-sm text-text-primary">3 receipts with outcome, evidence, and decisions.</p>
-        </div>
-      </div>
-    </Panel>
   </Section>
 
-  <!-- Demo Repo -->
-  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl text-center">
+  <!-- Full Walkthrough -->
+  <Section tone="light" pad="tight" class="border-t border-line/30" innerClass="max-w-4xl">
     <SectionHeader
-      title="Get the complete demo"
-      subtitle="Download the finished app with all receipts included."
+      eyebrow="Full Walkthrough"
+      title="Canonical tutorial lives in GitHub"
+      subtitle="This page stays lightweight. The full build script and assets are source-tracked."
+      align="left"
       size="md"
-      class="mb-phi-3"
+      maxWidth="max-w-3xl"
+      class="mb-phi-4"
     />
-    <div class="flex flex-wrap justify-center gap-phi-2">
-      <Button href="https://github.com/motus-os/motus-demo-app" variant="secondary" size="sm" target="_blank" rel="noopener">
-        View on GitHub &#8594;
-      </Button>
-      <span class="text-sm text-text-secondary self-center">
-        (Demo repo generated on each release)
-      </span>
-    </div>
+    <Panel size="sm" class="space-y-phi-2">
+      <p class="text-sm text-text-secondary">
+        Validated against {tutorial.validated_against} on {tutorial.last_validated}.
+      </p>
+      <div class="flex flex-wrap gap-phi-2 text-sm">
+        <a
+          href="https://github.com/motus-os/motus/blob/main/packages/website/src/data/tutorial.yaml"
+          class="text-mint hover:text-text-primary transition-colors"
+          target="_blank"
+          rel="noopener"
+        >
+          Tutorial spec &#8594;
+        </a>
+        <a
+          href="https://github.com/motus-os/motus-demo-app"
+          class="text-mint hover:text-text-primary transition-colors"
+          target="_blank"
+          rel="noopener"
+        >
+          Demo repo &#8594;
+        </a>
+      </div>
+    </Panel>
   </Section>
 
   <!-- Next Steps -->

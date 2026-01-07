@@ -1,0 +1,8 @@
+{
+  "encoding": "char_count",
+  "tokenizer": "char_count",
+  "unit_label": "chars",
+  "manual_units": 14945,
+  "motus_units": 1639,
+  "reduction_percent": 89.03
+}

@@ -1,0 +1,618 @@
+# Manual handoff context
+
+This is the full context a developer might paste when no receipts exist.
+
+## Spec
+
+# Workflow Runner Spec (Demo)
+
+Goal: implement a small workflow runner service with clear receipts.
+
+## Scope
+
+- Create workflows with ordered steps.
+- Start runs for a workflow and capture per-step logs.
+- Provide read APIs for workflows, runs, and logs.
+
+## Data Model
+
+Entities and constraints:
+
+### Workflow
+- id: UUID (public)
+- name: string (1-80 chars)
+- status: draft | active | archived
+- created_at, updated_at: ISO8601
+
+### Step
+- id: UUID
+- workflow_id: UUID (FK)
+- name: string (1-80 chars)
+- step_type: http | transform | delay
+- config: JSON (per step_type)
+- sort_order: integer (0..99)
+
+### Run
+- id: UUID
+- workflow_id: UUID (FK)
+- status: queued | running | succeeded | failed
+- started_at, finished_at: ISO8601
+- idempotency_key: string (1-64 chars, unique per workflow)
+
+### Run Log
+- id: UUID
+- run_id: UUID (FK)
+- step_id: UUID (FK)
+- status: queued | running | succeeded | failed
+- output: string (0..2000 chars)
+- started_at, finished_at: ISO8601
+
+## API Requirements
+
+- Auth: API key via header `X-API-Key`.
+- Pagination: `limit` (1..50) and `offset` (0..1000) on list endpoints.
+- Errors: 400 for validation, 401 for missing/invalid key, 404 for missing IDs.
+- Idempotency: `POST /workflows/{id}/runs` must honor `Idempotency-Key`.
+
+## Definition of Done
+
+- Models implement constraints above.
+- API functions enforce auth + idempotency.
+- Tests cover create workflow, list workflows, start run, read run logs.
+- Receipt recorded for each step: outcome, evidence, decision, release.
+
+## API Contract
+
+```yaml
+openapi: "3.0.3"
+info:
+  title: Workflow Runner API
+  version: "0.1"
+servers:
+  - url: https://api.example.test
+paths:
+  /workflows:
+    post:
+      summary: Create a workflow
+      parameters:
+        - $ref: "#/components/parameters/ApiKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkflowCreate"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workflow"
+    get:
+      summary: List workflows
+      parameters:
+        - $ref: "#/components/parameters/ApiKey"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkflowList"
+
+  /workflows/{workflow_id}:
+    get:
+      summary: Get workflow
+      parameters:
+        - $ref: "#/components/parameters/ApiKey"
+        - $ref: "#/components/parameters/WorkflowId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workflow"
+    patch:
+      summary: Update workflow
+      parameters:
+        - $ref: "#/components/parameters/ApiKey"
+        - $ref: "#/components/parameters/WorkflowId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WorkflowUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Workflow"
+
+  /workflows/{workflow_id}/runs:
+    post:
+      summary: Start workflow run
+      parameters:
+        - $ref: "#/components/parameters/ApiKey"
+        - $ref: "#/components/parameters/WorkflowId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "202":
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Run"
+
+  /workflows/{workflow_id}/runs/{run_id}:
+    get:
+      summary: Get workflow run
+      parameters:
+        - $ref: "#/components/parameters/ApiKey"
+        - $ref: "#/components/parameters/WorkflowId"
+        - $ref: "#/components/parameters/RunId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Run"
+
+  /runs/{run_id}/logs:
+    get:
+      summary: List run logs
+      parameters:
+        - $ref: "#/components/parameters/ApiKey"
+        - $ref: "#/components/parameters/RunId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RunLogList"
+
+components:
+  parameters:
+    ApiKey:
+      name: X-API-Key
+      in: header
+      required: true
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+    Offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 1000
+        default: 0
+    WorkflowId:
+      name: workflow_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    RunId:
+      name: run_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        maxLength: 64
+
+  schemas:
+    Step:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        step_type:
+          type: string
+          enum: [http, transform, delay]
+        config:
+          type: object
+        sort_order:
+          type: integer
+      required: [id, name, step_type, sort_order]
+
+    Workflow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum: [draft, active, archived]
+        steps:
+          type: array
+          items:
+            $ref: "#/components/schemas/Step"
+      required: [id, name, status, steps]
+
+    WorkflowCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        steps:
+          type: array
+          items:
+            $ref: "#/components/schemas/Step"
+      required: [name, steps]
+
+    WorkflowUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          type: string
+          enum: [draft, active, archived]
+
+    WorkflowList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Workflow"
+        total:
+          type: integer
+
+    Run:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workflow_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [queued, running, succeeded, failed]
+      required: [id, workflow_id, status]
+
+    RunLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        run_id:
+          type: string
+          format: uuid
+        step_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [queued, running, succeeded, failed]
+        output:
+          type: string
+      required: [id, run_id, step_id, status]
+
+    RunLogList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RunLog"
+        total:
+          type: integer
+```
+
+## Database Schema
+
+```sql
+-- Workflow runner schema (SQLite-ish syntax)
+
+CREATE TABLE workflows (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('draft','active','archived')),
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE workflow_steps (
+  id TEXT PRIMARY KEY,
+  workflow_id TEXT NOT NULL,
+  name TEXT NOT NULL,
+  step_type TEXT NOT NULL CHECK (step_type IN ('http','transform','delay')),
+  config_json TEXT NOT NULL,
+  sort_order INTEGER NOT NULL,
+  FOREIGN KEY (workflow_id) REFERENCES workflows(id)
+);
+
+CREATE TABLE workflow_runs (
+  id TEXT PRIMARY KEY,
+  workflow_id TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('queued','running','succeeded','failed')),
+  idempotency_key TEXT NOT NULL,
+  started_at TEXT NOT NULL,
+  finished_at TEXT,
+  FOREIGN KEY (workflow_id) REFERENCES workflows(id),
+  UNIQUE (workflow_id, idempotency_key)
+);
+
+CREATE TABLE workflow_run_logs (
+  id TEXT PRIMARY KEY,
+  run_id TEXT NOT NULL,
+  step_id TEXT NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('queued','running','succeeded','failed')),
+  output TEXT,
+  started_at TEXT,
+  finished_at TEXT,
+  FOREIGN KEY (run_id) REFERENCES workflow_runs(id),
+  FOREIGN KEY (step_id) REFERENCES workflow_steps(id)
+);
+```
+
+## Acceptance Tests
+
+# Acceptance Tests
+
+1. Create workflow
+   - Input: name + 2 steps
+   - Expect: workflow id, status=draft, 2 steps
+
+2. List workflows
+   - Expect: new workflow returned with total=1
+
+3. Start run
+   - Input: workflow id + idempotency key
+   - Expect: run id, status=queued
+
+4. Read run logs
+   - Expect: empty list for new run
+
+5. Auth enforcement
+   - Missing API key should raise error
+
+## Decisions
+
+# Decisions
+
+- Use UUID strings for workflow and run IDs.
+- Model status values as enums to avoid string drift.
+- Store run logs per step (not a single blob).
+- Require idempotency key for starting runs.
+- Keep store in-memory for demo simplicity.
+
+## Roadmap
+
+# Demo Roadmap
+
+1. Model + store
+   - Implement workflow, step, run, and log models
+   - Add in-memory store with create/list/start
+
+2. API layer
+   - Wrap store operations in API-style functions
+   - Enforce auth + idempotency
+
+3. Integration tests
+   - Verify create/list workflow
+   - Verify start run and log retrieval
+
+## workflow_runner.py
+
+```python
+"""Workflow runner models and in-memory store."""
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Dict, List, Optional
+from uuid import uuid4
+
+
+class WorkflowStatus(str, Enum):
+    DRAFT = "draft"
+    ACTIVE = "active"
+    ARCHIVED = "archived"
+
+
+class RunStatus(str, Enum):
+    QUEUED = "queued"
+    RUNNING = "running"
+    SUCCEEDED = "succeeded"
+    FAILED = "failed"
+
+
+class StepType(str, Enum):
+    HTTP = "http"
+    TRANSFORM = "transform"
+    DELAY = "delay"
+
+
+@dataclass
+class Step:
+    id: str
+    name: str
+    step_type: StepType
+    config: dict
+    sort_order: int
+
+
+@dataclass
+class Workflow:
+    id: str
+    name: str
+    status: WorkflowStatus
+    steps: List[Step] = field(default_factory=list)
+
+
+@dataclass
+class RunLog:
+    id: str
+    run_id: str
+    step_id: str
+    status: RunStatus
+    output: str
+
+
+@dataclass
+class Run:
+    id: str
+    workflow_id: str
+    status: RunStatus
+    logs: List[RunLog] = field(default_factory=list)
+
+
+class WorkflowStore:
+    """In-memory store for workflows and runs."""
+
+    def __init__(self) -> None:
+        self._workflows: Dict[str, Workflow] = {}
+        self._runs: Dict[str, Run] = {}
+        self._idempotency: Dict[str, str] = {}
+
+    def create_workflow(self, name: str, steps: List[Step]) -> Workflow:
+        workflow_id = str(uuid4())
+        workflow = Workflow(
+            id=workflow_id,
+            name=name,
+            status=WorkflowStatus.DRAFT,
+            steps=sorted(steps, key=lambda s: s.sort_order),
+        )
+        self._workflows[workflow_id] = workflow
+        return workflow
+
+    def list_workflows(self) -> List[Workflow]:
+        return list(self._workflows.values())
+
+    def get_workflow(self, workflow_id: str) -> Optional[Workflow]:
+        return self._workflows.get(workflow_id)
+
+    def start_run(self, workflow_id: str, idempotency_key: str) -> Run:
+        if workflow_id not in self._workflows:
+            raise KeyError("workflow_not_found")
+        if idempotency_key in self._idempotency:
+            run_id = self._idempotency[idempotency_key]
+            return self._runs[run_id]
+
+        run_id = str(uuid4())
+        run = Run(id=run_id, workflow_id=workflow_id, status=RunStatus.QUEUED)
+        self._runs[run_id] = run
+        self._idempotency[idempotency_key] = run_id
+        return run
+
+    def list_run_logs(self, run_id: str) -> List[RunLog]:
+        run = self._runs.get(run_id)
+        if not run:
+            raise KeyError("run_not_found")
+        return list(run.logs)
+```
+
+## api.py
+
+```python
+"""API-like wrappers for the workflow runner store."""
+from __future__ import annotations
+
+from typing import List
+
+from workflow_runner import Step, Workflow, Run, RunLog, WorkflowStore
+
+API_KEY = "demo-key"
+_STORE = WorkflowStore()
+
+
+class ApiError(Exception):
+    pass
+
+
+def _require_key(api_key: str | None) -> None:
+    if not api_key or api_key != API_KEY:
+        raise ApiError("unauthorized")
+
+
+def create_workflow(name: str, steps: List[Step], api_key: str | None) -> Workflow:
+    _require_key(api_key)
+    return _STORE.create_workflow(name, steps)
+
+
+def list_workflows(api_key: str | None) -> List[Workflow]:
+    _require_key(api_key)
+    return _STORE.list_workflows()
+
+
+def start_run(workflow_id: str, idempotency_key: str, api_key: str | None) -> Run:
+    _require_key(api_key)
+    return _STORE.start_run(workflow_id, idempotency_key)
+
+
+def list_run_logs(run_id: str, api_key: str | None) -> List[RunLog]:
+    _require_key(api_key)
+    return _STORE.list_run_logs(run_id)
+```
+
+## test_workflows.py
+
+```python
+"""Integration tests for the workflow runner demo."""
+from workflow_runner import Step, StepType
+from api import API_KEY, create_workflow, list_workflows, start_run, list_run_logs
+
+
+def test_create_and_list_workflow():
+    steps = [
+        Step(id="step-1", name="Fetch", step_type=StepType.HTTP, config={}, sort_order=1),
+        Step(id="step-2", name="Transform", step_type=StepType.TRANSFORM, config={}, sort_order=2),
+    ]
+    workflow = create_workflow("Demo flow", steps, api_key=API_KEY)
+    assert workflow.id
+    assert workflow.name == "Demo flow"
+    assert workflow.status.value == "draft"
+    assert len(workflow.steps) == 2
+
+    workflows = list_workflows(api_key=API_KEY)
+    assert workflow.id in [wf.id for wf in workflows]
+
+
+def test_start_run_and_logs_empty():
+    steps = [
+        Step(id="step-3", name="Delay", step_type=StepType.DELAY, config={}, sort_order=1),
+    ]
+    workflow = create_workflow("Delay flow", steps, api_key=API_KEY)
+    run = start_run(workflow.id, idempotency_key="run-1", api_key=API_KEY)
+    assert run.workflow_id == workflow.id
+    assert run.status.value == "queued"
+
+    logs = list_run_logs(run.id, api_key=API_KEY)
+    assert logs == []
+```

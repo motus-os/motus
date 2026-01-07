@@ -5,6 +5,9 @@ import Panel from '../components/Panel.astro';
 import InstallCommand from '../components/InstallCommand.astro';
 import Button from '../components/Button.astro';
 import messaging from '../data/messaging.json';
+import ecosystemMap from '../data/ecosystem-map.json';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -16,6 +19,27 @@ const heroValueProp = hero.value_prop || 'Every action logged. Every decision re
 const heroCtaText = hero.cta_text || 'Get your first receipt';
 const heroCtaPath = hero.cta_url ? hero.cta_url.replace(/^\/+/, '') : 'get-started';
 const heroCtaHref = `${base}${heroCtaPath}`;
+
+const proofDir = path.resolve(process.cwd(), '../../docs/proof/token-reduction');
+const manualLog = fs.readFileSync(path.join(proofDir, 'without-motus.log'), 'utf-8');
+const motusLog = fs.readFileSync(path.join(proofDir, 'with-motus.log'), 'utf-8');
+const tokenResults = JSON.parse(fs.readFileSync(path.join(proofDir, 'results.json'), 'utf-8'));
+const manualUnits = tokenResults.manual_units ?? 0;
+const motusUnits = tokenResults.motus_units ?? 0;
+const unitLabelRaw = tokenResults.unit_label || 'tokens';
+const unitLabel = unitLabelRaw === 'chars' ? 'characters' : unitLabelRaw;
+const formatUnits = (value: number) => new Intl.NumberFormat('en-US').format(value);
+
+const ecosystemNodes = ecosystemMap.nodes || [];
+const internalNodes = ecosystemNodes.filter((node) => node.origin === 'internal');
+const currentNodes = internalNodes.filter((node) => node.status === 'current');
+const buildingNodes = internalNodes.filter((node) => node.status === 'building');
+const futureNodes = internalNodes.filter((node) => node.status === 'future');
+
+const currentCore = currentNodes.filter((node) => node.group === 'core');
+const currentGovernance = currentNodes.filter((node) => node.group === 'governance');
+const buildingModules = buildingNodes.filter((node) => node.group === 'modules');
+const futureEconomy = futureNodes.filter((node) => node.group === 'future');
 ---
 
 <Layout title="Motus - What did your agent actually do?">
@@ -40,7 +64,7 @@ const heroCtaHref = `${base}${heroCtaPath}`;
     </div>
 
     <p class="text-sm text-text-secondary/60">
-      Works with Claude, GPT, Gemini, LangChain, n8n, and local agents.
+      Works with Claude, Codex, Gemini, and local agents.
     </p>
   </Section>
 
@@ -52,11 +76,11 @@ const heroCtaHref = `${base}${heroCtaPath}`;
     <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2 text-center">Workflow Compression</p>
 
     <h2 class="text-4xl md:text-5xl lg:text-6xl font-display text-text-primary mb-phi-2 text-center">
-      <span class="text-mint">95%</span> fewer tokens
+      See the difference
     </h2>
 
     <p class="text-lg text-text-secondary text-center mb-phi-5 max-w-2xl mx-auto">
-      Manual context doubles with each handoff. Receipts stay flat.
+      A 3-step handoff: {formatUnits(manualUnits)} {unitLabel} manually. {formatUnits(motusUnits)} {unitLabel} with Motus receipts.
     </p>
 
     <!-- Side-by-side comparison - equal height panels -->
@@ -67,29 +91,11 @@ const heroCtaHref = `${base}${heroCtaPath}`;
           <p class="text-xs uppercase tracking-wider text-text-secondary/60">Without Motus</p>
         </div>
         <!-- theme-dark overrides text colors for dark bg inside light section -->
-        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto flex-1 theme-dark">
-          <pre class="whitespace-pre-wrap"><code><span class="text-text-secondary/50"># Developer pastes context manually</span>
-
-Here's the code from the previous session:
-
-```python
-class Task(Base):
-    id = Column(UUID, primary_key=True)
-    title = Column(String(255))
-    status = Column(Enum(TaskStatus))
-    # ... 40 more lines
-```
-
-Design decisions:
-- Used UUID for distributed systems
-- Soft delete via deleted_at
-- Status transitions validated
-
-The API endpoints are in src/api/...
-<span class="text-error/70"># 887 tokens of context</span></code></pre>
+        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto overflow-y-auto max-h-96 flex-1 theme-dark">
+          <pre class="whitespace-pre-wrap"><code lang="text">{manualLog}</code></pre>
         </div>
         <div class="px-phi-3 py-phi-2 border-t border-line/30 bg-surface-muted/30 mt-auto">
-          <p class="text-sm text-text-secondary/60 font-mono">887 tokens</p>
+          <p class="text-sm text-text-secondary/60 font-mono">{formatUnits(manualUnits)} {unitLabel}</p>
         </div>
       </div>
 
@@ -99,23 +105,11 @@ The API endpoints are in src/api/...
           <p class="text-xs uppercase tracking-wider text-mint">With Motus</p>
         </div>
         <!-- theme-dark overrides text colors for dark bg inside light section -->
-        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto flex-1 theme-dark">
-          <pre class="whitespace-pre-wrap"><code><span class="text-mint">$</span> motus work context TASK-003
-
-<span class="text-text-secondary/50">{</span>
-  <span class="text-mint">"task"</span>: <span class="text-text-primary">"integration-tests"</span>,
-  <span class="text-mint">"parent_receipts"</span>: [<span class="text-text-primary">"rx_001"</span>, <span class="text-text-primary">"rx_002"</span>],
-  <span class="text-mint">"summary"</span>: {
-    <span class="text-mint">"model"</span>: <span class="text-text-primary">"Task (UUID, status enum)"</span>,
-    <span class="text-mint">"api"</span>: <span class="text-text-primary">"CRUD /tasks, auth required"</span>,
-    <span class="text-mint">"decisions"</span>: [<span class="text-text-primary">"soft delete"</span>, <span class="text-text-primary">"max 100"</span>]
-  }
-<span class="text-text-secondary/50">}</span>
-
-<span class="text-mint/70"># 43 tokens • 0.15ms</span></code></pre>
+        <div class="p-phi-4 font-mono text-sm bg-charcoal text-text-secondary overflow-x-auto overflow-y-auto max-h-96 flex-1 theme-dark">
+          <pre class="whitespace-pre-wrap"><code lang="text">{motusLog}</code></pre>
         </div>
         <div class="px-phi-3 py-phi-2 border-t border-mint/20 bg-mint/5 mt-auto">
-          <p class="text-sm text-mint font-mono">43 tokens</p>
+          <p class="text-sm text-mint font-mono">{formatUnits(motusUnits)} {unitLabel}</p>
         </div>
       </div>
     </div>
@@ -123,12 +117,12 @@ The API endpoints are in src/api/...
     <!-- Proof link -->
     <div class="text-center">
       <a
-        href="https://github.com/motus-os/motus/tree/main/packages/cli/benchmarks"
+        href="https://github.com/motus-os/motus/tree/main/docs/proof/token-reduction"
         target="_blank"
         rel="noopener"
         class="inline-flex items-center gap-phi-1 text-sm text-mint hover:underline"
       >
-        Run the benchmark yourself
+        View the example logs
         <span aria-hidden="true">&#8594;</span>
       </a>
     </div>
@@ -142,11 +136,11 @@ The API endpoints are in src/api/...
     <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2 text-center">Multi-Agent</p>
 
     <h2 class="text-4xl md:text-5xl lg:text-6xl font-display text-text-primary mb-phi-2 text-center">
-      Any agent<span class="text-mint">.</span> Any provider<span class="text-mint">.</span>
+      Receipts move across providers<span class="text-mint">.</span>
     </h2>
 
     <p class="text-lg text-text-secondary text-center mb-phi-5 max-w-2xl mx-auto">
-      Receipts are the universal handoff format. Brand doesn't matter.
+      Receipts are the handoff format across Claude, Codex, Gemini, and local agents.
     </p>
 
     <!-- Receipt chain flow -->
@@ -173,7 +167,7 @@ The API endpoints are in src/api/...
           <p class="text-sm text-text-secondary mb-phi-2">API endpoints</p>
           <div class="inline-flex items-center gap-phi-1 px-phi-2 py-1 rounded-full bg-surface-muted/50 text-xs text-text-secondary/70">
             <span class="w-2 h-2 rounded-full bg-[#10a37f]"></span>
-            GPT
+            Codex
           </div>
         </Panel>
       </div>
@@ -198,90 +192,97 @@ The API endpoints are in src/api/...
     <div class="max-w-2xl mx-auto text-center">
       <p class="text-text-secondary mb-phi-3">
         <span class="text-text-primary">Claude</span> builds the model. Ships a receipt.<br/>
-        <span class="text-text-primary">GPT</span> reads the receipt. Builds the API.<br/>
+        <span class="text-text-primary">Codex</span> reads the receipt. Builds the API.<br/>
         <span class="text-text-primary">Gemini</span> sees both. Writes the tests.
       </p>
       <p class="text-sm text-text-secondary/60">
-        No context window limits. No re-prompting. Just receipts.
+        Receipts keep handoffs small and explicit. The logs above show the reduction.
       </p>
     </div>
   </Section>
 
   <!-- ============================================================
-       SECTION 3: ECOSYSTEM MULTIPLIER
-       Light background, receipt anatomy
+       SECTION 3: SYSTEM VISION
+       Light background, current/building/future map
        ============================================================ -->
-  <Section tone="light" pad="tight" innerClass="max-w-5xl">
-    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2 text-center">Ecosystem</p>
+  <Section tone="light" pad="tight" innerClass="max-w-6xl">
+    <p class="text-xs uppercase tracking-[0.2em] text-mint mb-phi-2 text-center">System Vision</p>
 
     <h2 class="text-4xl md:text-5xl lg:text-6xl font-display text-text-primary mb-phi-2 text-center">
-      1 + 1 = 3
+      Current. Building. Future.
     </h2>
 
-    <p class="text-lg text-text-secondary text-center mb-phi-5 max-w-2xl mx-auto">
-      Every agent makes the next one smarter. Work compounds, not evaporates.
+    <p class="text-lg text-text-secondary text-center mb-phi-5 max-w-3xl mx-auto">
+      Current is released. Building is the next 3 releases. Future is beyond.
     </p>
 
-    <!-- Receipt anatomy -->
-    <div class="max-w-2xl mx-auto mb-phi-5">
-      <div class="rounded-xl border border-line/50 overflow-hidden bg-surface">
-        <div class="px-phi-4 py-phi-3 border-b border-line/30 bg-surface-muted/30">
-          <p class="font-mono text-mint">receipt rx_002</p>
+    <div class="grid md:grid-cols-3 gap-phi-3">
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="flex items-center gap-phi-2">
+          <span class="status-badge status-current">Current</span>
+          <span class="text-xs uppercase tracking-[0.25em] text-text-secondary">Released</span>
         </div>
-        <div class="divide-y divide-line/20">
-          <!-- Outcome -->
-          <div class="p-phi-4 flex gap-phi-4">
-            <div class="w-24 shrink-0">
-              <p class="text-sm font-display text-mint">Outcome</p>
-            </div>
-            <div class="flex-1">
-              <p class="text-sm text-text-secondary">
-                <span class="text-text-primary">src/api/tasks.py</span> — CRUD endpoints with auth, pagination, soft delete
-              </p>
-            </div>
+        <p class="text-sm text-text-secondary">Shipped, documented, proven.</p>
+        <div class="space-y-phi-2">
+          <div class="space-y-phi-1">
+            <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Core</p>
+            <ul class="space-y-phi-1 text-sm text-text-secondary">
+              {currentCore.map((node) => (
+                <li>- {node.label}</li>
+              ))}
+            </ul>
           </div>
-          <!-- Evidence -->
-          <div class="p-phi-4 flex gap-phi-4">
-            <div class="w-24 shrink-0">
-              <p class="text-sm font-display text-mint">Evidence</p>
-            </div>
-            <div class="flex-1">
-              <p class="text-sm text-text-secondary">
-                <span class="text-text-primary">14 tests passing</span> — OpenAPI spec generated, auth middleware verified
-              </p>
-            </div>
-          </div>
-          <!-- Decisions -->
-          <div class="p-phi-4 flex gap-phi-4">
-            <div class="w-24 shrink-0">
-              <p class="text-sm font-display text-mint">Decisions</p>
-            </div>
-            <div class="flex-1">
-              <p class="text-sm text-text-secondary">
-                <span class="text-text-primary">"403 on invalid transition"</span> — Pagination max 100, scope to authenticated user
-              </p>
-            </div>
+          <div class="space-y-phi-1">
+            <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Governance</p>
+            <ul class="space-y-phi-1 text-sm text-text-secondary">
+              {currentGovernance.map((node) => (
+                <li>- {node.label}</li>
+              ))}
+            </ul>
           </div>
         </div>
-        <div class="px-phi-4 py-phi-3 border-t border-line/30 bg-surface-muted/30 flex justify-between items-center">
-          <p class="text-xs text-text-secondary/60 font-mono">parent: rx_001</p>
-          <p class="text-xs text-text-secondary/60 font-mono">sha256:a7f3...</p>
+      </Panel>
+
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="flex items-center gap-phi-2">
+          <span class="status-badge status-building">Building</span>
+          <span class="text-xs uppercase tracking-[0.25em] text-text-secondary">Next 3 releases</span>
         </div>
-      </div>
+        <p class="text-sm text-text-secondary">Modules scheduled for the near-term release window.</p>
+        <div class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Bundled Modules</p>
+          <ul class="space-y-phi-1 text-sm text-text-secondary">
+            {buildingModules.map((node) => (
+              <li>- {node.label}</li>
+            ))}
+          </ul>
+        </div>
+      </Panel>
+
+      <Panel size="sm" class="space-y-phi-2">
+        <div class="flex items-center gap-phi-2">
+          <span class="status-badge status-future">Future</span>
+          <span class="text-xs uppercase tracking-[0.25em] text-text-secondary">Beyond</span>
+        </div>
+        <p class="text-sm text-text-secondary">Longer-term layers held back until verified.</p>
+        <div class="space-y-phi-2">
+          <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Future Economy</p>
+          <ul class="space-y-phi-1 text-sm text-text-secondary">
+            {futureEconomy.map((node) => (
+              <li>- {node.label}</li>
+            ))}
+          </ul>
+        </div>
+      </Panel>
     </div>
 
-    <!-- The insight -->
-    <div class="max-w-2xl mx-auto text-center">
-      <p class="text-text-secondary mb-phi-3">
-        Outcomes become the next agent's starting point.<br/>
-        Evidence proves what actually happened.<br/>
-        Decisions become institutional knowledge.
-      </p>
+    <div class="mt-phi-4 flex flex-wrap items-center justify-center gap-phi-2 text-sm text-text-secondary">
+      <span>Want the full map and evidence trail?</span>
       <a
-        href={`${base}how-it-works`}
+        href={`${base}docs/ecosystem`}
         class="inline-flex items-center gap-phi-1 text-sm text-mint hover:underline"
       >
-        See how it works
+        Open the ecosystem map
         <span aria-hidden="true">&#8594;</span>
       </a>
     </div>
@@ -293,7 +294,7 @@ The API endpoints are in src/api/...
       Know what your agents did.
     </h2>
     <p class="text-text-secondary mb-phi-4">
-      Get your first receipt in 5 minutes.
+      Get your first receipt with three commands.
     </p>
     <InstallCommand />
   </Section>
