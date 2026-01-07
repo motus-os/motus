@@ -15,6 +15,7 @@ labels: release
 - [ ] Evidence artifacts updated in `packages/cli/docs/quality/`
 - [ ] Public surfaces regenerated (`python scripts/generate-public-surfaces.py`)
 - [ ] Tutorial validated (`python scripts/validate-tutorial.py --status-filter current`)
+- [ ] Dependency lock updated (`packages/cli/uv.lock`)
 - [ ] Release gates pass (`RUN_RELEASE_GATES=true ./scripts/gates/run-all-gates.sh`)
 - [ ] Internal reference check clean
 
