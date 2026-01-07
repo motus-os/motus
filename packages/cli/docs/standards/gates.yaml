@@ -84,8 +84,15 @@ gates:
   - id: "GATE-SEC-002"
     tier: "T2"
     kind: "security"
-    description: "Bandit security scan"
+    description: "Secrets scan"
     command: "scripts/gates/gate-sec-002.sh"
+    required: true
+
+  - id: "GATE-SEC-003"
+    tier: "T2"
+    kind: "security"
+    description: "Bandit security scan"
+    command: "scripts/gates/gate-sec-003.sh"
     required: true
 
   - id: "GATE-DEP-002"
