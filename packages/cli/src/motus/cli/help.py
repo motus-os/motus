@@ -113,25 +113,20 @@ def _visible_help_tier_from_env() -> int | None:
 def _get_cli_run_count() -> int | None:
     """Best-effort total run count for tier gating (Phase 0 DB audit_log)."""
     try:
-        import sqlite3
-
-        from ..core.database import configure_connection, get_database_path
+        from ..core.database import get_database_path, get_db_manager
 
         max_sample = 20
         db_path = get_database_path()
         if not db_path.exists():
             return 0
 
-        conn = sqlite3.connect(str(db_path))
-        configure_connection(conn, set_row_factory=False)
-        try:
+        db = get_db_manager()
+        with db.readonly_connection() as conn:
             row = conn.execute(
                 "SELECT 1 FROM audit_log WHERE event_type = ? AND action = ? LIMIT ?",
                 ("cli", "invoke", max_sample),
             ).fetchall()
             return len(row)
-        finally:
-            conn.close()
     except Exception:
         return None
 

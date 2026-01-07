@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,6 +20,7 @@ from motus.coordination.schemas import (
     GateStatus,
     StateHistoryEntry,
 )
+from motus.file_lock import FileLockError, file_lock
 
 
 class CRStateMachineError(Exception):
@@ -70,6 +72,9 @@ def _safe_filename(cr_id: str) -> str:
     return f"{cr_id}.json"
 
 
+_INDEX_LOCK_TIMEOUT_SECONDS = float(os.environ.get("MOTUS_CR_INDEX_LOCK_TIMEOUT", "5"))
+
+
 class CRStateMachine:
     def __init__(self, root_dir: str | Path) -> None:
         self._root = Path(root_dir)
@@ -91,6 +96,9 @@ class CRStateMachine:
     def _write_index(self, index: dict[str, list[str]]) -> None:
         self._states_dir.mkdir(parents=True, exist_ok=True)
         atomic_write_json(self._index_path, index)
+
+    def _index_lock(self) -> Any:
+        return file_lock(self._index_path, timeout=_INDEX_LOCK_TIMEOUT_SECONDS)
 
     def _index_remove(self, index: dict[str, list[str]], state: str, cr_id: str) -> None:
         items = index.get(state, [])
@@ -125,9 +133,13 @@ class CRStateMachine:
         self._states_dir.mkdir(parents=True, exist_ok=True)
         atomic_write_json(path, record.to_json())
 
-        index = self._load_index()
-        self._index_add(index, "QUEUED", cr_id)
-        self._write_index(index)
+        try:
+            with self._index_lock():
+                index = self._load_index()
+                self._index_add(index, "QUEUED", cr_id)
+                self._write_index(index)
+        except FileLockError as exc:
+            raise CRStateMachineError("failed to lock CR index") from exc
 
         return record
 
@@ -189,10 +201,14 @@ class CRStateMachine:
 
         atomic_write_json(self._state_path(cr_id), updated.to_json())
 
-        index = self._load_index()
-        self._index_remove(index, from_state, cr_id)
-        self._index_add(index, to_state_norm, cr_id)
-        self._write_index(index)
+        try:
+            with self._index_lock():
+                index = self._load_index()
+                self._index_remove(index, from_state, cr_id)
+                self._index_add(index, to_state_norm, cr_id)
+                self._write_index(index)
+        except FileLockError as exc:
+            raise CRStateMachineError("failed to lock CR index") from exc
 
         gate_results = {r.gate_name: ("PASS" if r.passed else "FAIL") for r in results}
         payload: dict[str, Any] = {

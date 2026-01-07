@@ -67,7 +67,7 @@ class QuotaManager:
         self._now = now
 
     def get_quota(self, resource_type: str) -> Quota:
-        with self._db.connection() as conn:
+        with self._db.connection(read_only=True) as conn:
             row = conn.execute(
                 """
                 SELECT
@@ -177,4 +177,3 @@ class QuotaManager:
                 (new_usage, resource_type),
             )
         return new_usage
-

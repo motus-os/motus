@@ -96,7 +96,7 @@ class CircuitBreaker:
             )
 
     def get_state(self) -> CircuitBreakerState:
-        with self._db.connection() as conn:
+        with self._db.connection(read_only=True) as conn:
             row = conn.execute(
                 """
                 SELECT

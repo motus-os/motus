@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,6 +37,7 @@ class ReconciliationError(BatchCoordinatorError):
 
 
 _LOCK_TIMEOUT_SECONDS = 5.0
+_BATCH_LOCK_TIMEOUT_SECONDS = float(os.environ.get("MOTUS_BATCH_LOCK_TIMEOUT", "5"))
 
 
 ALLOWED_STATUS_TRANSITIONS: dict[str, set[str]] = {
@@ -78,6 +80,10 @@ class _BatchStorage:
     def _batch_path_active(self, batch_id: str) -> Path:
         return self._active_dir / f"{batch_id}.json"
 
+    def _batch_lock_path(self, batch_id: str) -> Path:
+        safe = "".join(ch if ch.isalnum() or ch in {"-", "_"} else "_" for ch in batch_id)
+        return self._root / ".locks" / f"{safe}.lock"
+
     def _batch_path_closed(self, batch_id: str, *, created_at: datetime) -> Path:
         month = created_at.strftime("%Y-%m")
         return self._closed_dir / month / f"{batch_id}.json"
@@ -119,18 +125,28 @@ class _BatchStorage:
 
     def _write_active(self, batch: WorkBatch) -> None:
         self._active_dir.mkdir(parents=True, exist_ok=True)
-        atomic_write_json(self._batch_path_active(batch.batch_id), batch.to_json())
+        lock_path = self._batch_lock_path(batch.batch_id)
+        try:
+            with file_lock(lock_path, timeout=_BATCH_LOCK_TIMEOUT_SECONDS):
+                atomic_write_json(self._batch_path_active(batch.batch_id), batch.to_json())
+        except FileLockError as exc:
+            raise BatchCoordinatorError(f"failed to lock batch file: {lock_path}") from exc
 
     def _archive_closed(self, batch: WorkBatch) -> None:
         src = self._batch_path_active(batch.batch_id)
         dest = self._batch_path_closed(batch.batch_id, created_at=batch.created_at)
         dest.parent.mkdir(parents=True, exist_ok=True)
-        atomic_write_json(dest, batch.to_json())
-        if src.exists():
-            try:
-                src.unlink()
-            except OSError:
-                pass
+        lock_path = self._batch_lock_path(batch.batch_id)
+        try:
+            with file_lock(lock_path, timeout=_BATCH_LOCK_TIMEOUT_SECONDS):
+                atomic_write_json(dest, batch.to_json())
+                if src.exists():
+                    try:
+                        src.unlink()
+                    except OSError:
+                        pass
+        except FileLockError as exc:
+            raise BatchCoordinatorError(f"failed to lock batch file: {lock_path}") from exc
 
     def _latest_batch_hash(self) -> tuple[int, str] | None:
         candidates: list[tuple[int, str]] = []

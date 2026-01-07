@@ -126,7 +126,7 @@ class ProjectMemory:
             self._increment_learnings(conn, delta=1)
 
     def get_patterns(self, pattern_type: str) -> list[LearnedPattern]:
-        with self._project_db.connection() as conn:
+        with self._project_db.connection(read_only=True) as conn:
             cursor = conn.execute(
                 """
                 SELECT pattern_type, pattern_value, learned_at, source, frequency, last_seen_at
@@ -149,7 +149,7 @@ class ProjectMemory:
             ]
 
     def get_detections(self, pattern_type: str) -> list[DetectedPattern]:
-        with self._project_db.connection() as conn:
+        with self._project_db.connection(read_only=True) as conn:
             cursor = conn.execute(
                 """
                 SELECT pattern_type, pattern_value, confidence, detected_from, detected_at, last_confirmed_at
@@ -172,13 +172,13 @@ class ProjectMemory:
             ]
 
     def is_first_session(self) -> bool:
-        with self._project_db.connection() as conn:
+        with self._project_db.connection(read_only=True) as conn:
             row = conn.execute("SELECT COUNT(*) FROM sessions").fetchone()
             count = int(row[0]) if row else 0
             return count == 0
 
     def get_session_count(self) -> int:
-        with self._project_db.connection() as conn:
+        with self._project_db.connection(read_only=True) as conn:
             row = conn.execute("SELECT COUNT(*) FROM sessions WHERE ended_at IS NOT NULL").fetchone()
             return int(row[0]) if row else 0
 
@@ -223,7 +223,7 @@ class ProjectMemory:
                 record_progress(conn, skill_name=skill_name, delta=delta)
 
     def get_unlocked_skills(self) -> list[str]:
-        with self._global_db.connection() as conn:
+        with self._global_db.connection(read_only=True) as conn:
             return get_unlocked_skills(conn)
 
     def unlock_skill(self, skill_name: str) -> bool:

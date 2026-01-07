@@ -29,6 +29,25 @@ def register_db_parsers(subparsers: argparse._SubParsersAction) -> argparse.Argu
 
     db_subparsers.add_parser("checkpoint", help="Force WAL checkpoint")
 
+    lock_parser = db_subparsers.add_parser("lock-info", help="Show DB lock info")
+    lock_parser.add_argument("--json", action="store_true", help="Emit JSON output")
+
+    wait_parser = db_subparsers.add_parser("wait", help="Wait for DB write lock")
+    wait_parser.add_argument(
+        "--max-seconds",
+        type=float,
+        default=30,
+        help="Max seconds to wait for a write lock",
+    )
+    wait_parser.add_argument(
+        "--interval",
+        type=float,
+        default=0.2,
+        help="Polling interval between lock attempts",
+    )
+
+    db_subparsers.add_parser("recover", help="Recover from stale DB locks")
+
     migrate_parser = db_subparsers.add_parser(
         "migrate-path",
         help="Migrate legacy .mc paths to .motus",

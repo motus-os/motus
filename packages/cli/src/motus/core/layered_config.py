@@ -80,6 +80,7 @@ class LayeredConfig:
         """Load hardcoded defaults (lowest priority)."""
         self._layers["defaults"] = {
             "database.path": "~/.motus/coordination.db",
+            "database.wal_mode": True,
             "database.backup_dir": "~/.motus/backups",
             "federation.enabled": False,
             "federation.upstream_url": "",
@@ -152,6 +153,8 @@ class LayeredConfig:
         normalized = dict(data)
         if "db_path" in normalized and "database.path" not in normalized:
             normalized["database.path"] = normalized["db_path"]
+        if "sqlite_wal_mode" in normalized and "database.wal_mode" not in normalized:
+            normalized["database.wal_mode"] = normalized["sqlite_wal_mode"]
         return normalized
 
     def _load_environment(self) -> None:

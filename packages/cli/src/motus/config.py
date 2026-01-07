@@ -15,6 +15,7 @@ from typing import List
 
 from .migration.path_migration import resolve_state_dir
 
+
 @dataclass(frozen=True)
 class PathConfig:
     """File system paths used by Motus."""
@@ -33,10 +34,9 @@ class PathConfig:
     @property
     def coordination_db_path(self) -> Path:
         """Coordination SQLite database path."""
-        from motus.config_loader import load_config
+        from motus.core.database_connection import get_database_path
 
-        db_path = load_config().db_path
-        return Path(db_path).expanduser()
+        return get_database_path()
 
     @property
     def context_cache_db_path(self) -> Path:

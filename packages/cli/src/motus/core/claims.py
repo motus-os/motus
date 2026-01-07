@@ -24,7 +24,7 @@ class DeployStatus:
 def can_deploy() -> DeployStatus:
     """Check if website can be deployed (all claims verified)."""
     db = get_db_manager()
-    with db.connection() as conn:
+    with db.connection(read_only=True) as conn:
         row = conn.execute("SELECT * FROM v_can_deploy").fetchone()
 
         if row["status"] == "BLOCKED":

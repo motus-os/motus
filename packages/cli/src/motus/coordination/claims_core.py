@@ -12,11 +12,13 @@ from pathlib import Path
 from motus.atomic_io import atomic_write_json
 from motus.coordination.namespace_acl import NamespaceACL
 from motus.coordination.schemas import CLAIM_RECORD_SCHEMA, ClaimedResource, ClaimRecord
+from motus.file_lock import FileLockError, file_lock
 
 from .claims_validation import (
     ClaimRegistryError,
     _ClaimStorage,
     _norm_namespace,
+    _normalize_resource_path,
     _resources_overlap,
     _utcnow,
 )
@@ -67,12 +69,22 @@ class ClaimRegistry(_ClaimStorage):
         now = _utcnow()
         requested_namespace = _norm_namespace(namespace)
         requested = [
-            (r if isinstance(r, ClaimedResource) else ClaimedResource(type=r["type"], path=r["path"]))
+            (
+                r
+                if isinstance(r, ClaimedResource)
+                else ClaimedResource(type=r["type"], path=r["path"])
+            )
             for r in resources
+        ]
+        requested = [
+            ClaimedResource(type=r.type, path=_normalize_resource_path(r.path))
+            for r in requested
         ]
         conflicts: list[ClaimRecord] = []
         for claim_path in self._list_claim_files():
             claim = self._load_claim(claim_path)
+            if claim is None:
+                continue
             if claim.schema != CLAIM_RECORD_SCHEMA:
                 continue
             if claim.status != "active":
@@ -113,6 +125,8 @@ class ClaimRegistry(_ClaimStorage):
         claims: list[ClaimRecord] = []
         for claim_path in self._list_claim_files():
             claim = self._load_claim(claim_path)
+            if claim is None:
+                continue
             if claim.schema != CLAIM_RECORD_SCHEMA:
                 continue
             if claim.status != "active":
@@ -153,6 +167,8 @@ class ClaimRegistry(_ClaimStorage):
                 return None
             for claim_path in self._list_claim_files():
                 claim = self._load_claim(claim_path)
+                if claim is None:
+                    continue
                 if (
                     claim.schema == CLAIM_RECORD_SCHEMA
                     and claim.status == "active"
@@ -176,46 +192,70 @@ class ClaimRegistry(_ClaimStorage):
                 f"timeout acquiring claim lock for namespace {resolved_namespace}"
             )
         try:
-            # Double-check inside lock (prevents race condition)
-            # Two threads with same key could both pass the fast path check
-            existing = find_existing_claim_by_key()
-            if existing is not None:
-                return existing
+            lock_path = self._namespace_lock_path(resolved_namespace)
+            try:
+                with file_lock(lock_path, timeout=NAMESPACE_LOCK_TIMEOUT_SECONDS):
+                    # Double-check inside lock (prevents race condition)
+                    # Two threads with same key could both pass the fast path check
+                    existing = find_existing_claim_by_key()
+                    if existing is not None:
+                        return existing
 
-            conflicts = self.check_claims(resources, namespace=resolved_namespace)
-            if conflicts:
-                return ClaimConflict(conflicts=conflicts)
-            seq = self._next_sequence()
-            claim_id = f"cl-{now.date().isoformat()}-{seq:04d}"
-            normalized_resources = [
-                (r if isinstance(r, ClaimedResource) else ClaimedResource(type=r["type"], path=r["path"]))
-                for r in resources
-            ]
-            record = ClaimRecord(
-                schema=CLAIM_RECORD_SCHEMA,
-                claim_id=claim_id,
-                agent_id=agent_id,
-                session_id=session_id,
-                task_id=task_id,
-                task_type=task_type,
-                namespace=resolved_namespace,
-                claimed_resources=normalized_resources,
-                claimed_at=now,
-                expires_at=now + timedelta(seconds=lease_s),
-                lease_duration_s=lease_s,
-                status="active",
-                idempotency_key=idempotency_key,
-            )
-            atomic_write_json(self._claim_path(claim_id), record.to_json())
-            return record
+                    conflicts = self.check_claims(resources, namespace=resolved_namespace)
+                    if conflicts:
+                        return ClaimConflict(conflicts=conflicts)
+                    seq = self._next_sequence()
+                    claim_id = f"cl-{now.date().isoformat()}-{seq:04d}"
+                    normalized_resources = [
+                        (
+                            r
+                            if isinstance(r, ClaimedResource)
+                            else ClaimedResource(type=r["type"], path=r["path"])
+                        )
+                        for r in resources
+                    ]
+                    normalized_resources = [
+                        ClaimedResource(
+                            type=r.type,
+                            path=_normalize_resource_path(r.path),
+                        )
+                        for r in normalized_resources
+                    ]
+                    record = ClaimRecord(
+                        schema=CLAIM_RECORD_SCHEMA,
+                        claim_id=claim_id,
+                        agent_id=agent_id,
+                        session_id=session_id,
+                        task_id=task_id,
+                        task_type=task_type,
+                        namespace=resolved_namespace,
+                        claimed_resources=normalized_resources,
+                        claimed_at=now,
+                        expires_at=now + timedelta(seconds=lease_s),
+                        lease_duration_s=lease_s,
+                        status="active",
+                        idempotency_key=idempotency_key,
+                    )
+                    atomic_write_json(self._claim_path(claim_id), record.to_json())
+                    return record
+            except FileLockError as exc:
+                raise ClaimRegistryError(
+                    f"failed to lock claim namespace file: {lock_path}"
+                ) from exc
         finally:
             lock.release()
+
+    def _namespace_lock_path(self, namespace: str) -> Path:
+        safe = "".join(ch if ch.isalnum() or ch in {"-", "_"} else "_" for ch in namespace)
+        return self._root / ".locks" / f"{safe}.lock"
 
     def renew_claim(self, claim_id: str, *, lease_duration_s: int | None = None) -> ClaimRecord:
         now = _utcnow()
         lease_s = self._lease_duration_s if lease_duration_s is None else int(lease_duration_s)
         claim_path = self._claim_path(claim_id)
         claim = self._load_claim(claim_path)
+        if claim is None:
+            raise ClaimRegistryError(f"claim file corrupted or missing: {claim_id}")
         if claim.status != "active":
             raise ClaimRegistryError(f"cannot renew non-active claim: {claim_id}")
         renewed = ClaimRecord(

@@ -239,8 +239,11 @@ def dispatch_command(
         from motus.commands.db_cmd import (
             db_analyze_command,
             db_checkpoint_command,
+            db_lock_info_command,
             db_migrate_path_command,
+            db_recover_command,
             db_stats_command,
+            db_wait_command,
             db_vacuum_command,
         )
 
@@ -253,6 +256,12 @@ def dispatch_command(
             raise SystemExit(db_stats_command(args))
         if db_cmd == "checkpoint":
             raise SystemExit(db_checkpoint_command(args))
+        if db_cmd == "lock-info":
+            raise SystemExit(db_lock_info_command(args))
+        if db_cmd == "wait":
+            raise SystemExit(db_wait_command(args))
+        if db_cmd == "recover":
+            raise SystemExit(db_recover_command(args))
         if db_cmd == "migrate-path":
             raise SystemExit(db_migrate_path_command(args))
 

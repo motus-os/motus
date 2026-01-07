@@ -3,13 +3,19 @@
 
 """Database connection management for Motus."""
 
+import json
 import os
 import sqlite3
 import stat
+import sys
+import threading
+import time
 from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Generator
+from typing import Any, Generator
 
+from motus.atomic_io import atomic_write_json
 from motus.logging import get_logger
 
 from .database_queries import DatabaseQueryMixin
@@ -43,7 +49,8 @@ def configure_connection(
         read_only: If True, configure the connection for read-only access.
     """
     if not read_only:
-        conn.execute("PRAGMA journal_mode = WAL")
+        wal_mode = bool(get_config().get_value("database.wal_mode", True))
+        conn.execute("PRAGMA journal_mode = WAL" if wal_mode else "PRAGMA journal_mode = DELETE")
         conn.execute("PRAGMA synchronous = NORMAL")
     conn.execute("PRAGMA foreign_keys = ON")
     conn.execute("PRAGMA busy_timeout = 30000")
@@ -119,6 +126,13 @@ class DatabaseManager(DatabaseQueryMixin):
         self.db_path = db_path or get_database_path()
         self._connection: sqlite3.Connection | None = None
         self._ro_connection: sqlite3.Connection | None = None
+        self._write_lock = threading.RLock()
+        self._write_lock_timeout_s = float(
+            os.environ.get("MOTUS_DB_WRITE_LOCK_TIMEOUT", "5")
+        )
+        self._write_lock_owner: str | None = None
+        self._write_lock_acquired_at: float | None = None
+        self._lock_registry_path = self._build_lock_registry_path()
 
     def ensure_database(self) -> None:
         """Ensure database exists and schema version is valid."""
@@ -185,11 +199,20 @@ class DatabaseManager(DatabaseQueryMixin):
     @contextmanager
     def connection(self, *, read_only: bool = False) -> Generator[sqlite3.Connection, None, None]:
         """Context manager for database connections."""
-        conn = self.get_connection(read_only=read_only)
-        try:
-            yield conn
-        finally:
-            self.release_connection(conn)
+        if read_only:
+            conn = self.get_connection(read_only=True)
+            try:
+                yield conn
+            finally:
+                self.release_connection(conn)
+            return
+
+        with self._write_guard():
+            conn = self.get_connection(read_only=False)
+            try:
+                yield conn
+            finally:
+                self.release_connection(conn)
 
     @contextmanager
     def readonly_connection(self) -> Generator[sqlite3.Connection, None, None]:
@@ -203,16 +226,99 @@ class DatabaseManager(DatabaseQueryMixin):
     @contextmanager
     def transaction(self) -> Generator[sqlite3.Connection, None, None]:
         """Context manager for BEGIN IMMEDIATE transactions."""
-        conn = self.get_connection()
-        conn.execute("BEGIN IMMEDIATE")
+        with self._write_guard():
+            conn = self.get_connection()
+            self._begin_immediate(conn)
+            try:
+                yield conn
+                conn.execute("COMMIT")
+            except Exception:
+                conn.execute("ROLLBACK")
+                raise
+            finally:
+                self.release_connection(conn)
+
+    def _begin_immediate(self, conn: sqlite3.Connection) -> None:
+        deadline = time.monotonic() + self._write_lock_timeout_s
+        while True:
+            try:
+                conn.execute("BEGIN IMMEDIATE")
+                self._write_lock_registry(status="active")
+                return
+            except sqlite3.OperationalError as exc:
+                if "database is locked" not in str(exc).lower():
+                    raise
+                if time.monotonic() >= deadline:
+                    lock_info = self.lock_info()
+                    if lock_info:
+                        logger.warning(
+                            "DB lock timeout; lock registry=%s",
+                            lock_info,
+                        )
+                    raise DatabaseError.from_sqlite_error(exc, "begin immediate") from exc
+                time.sleep(0.05)
+
+    @contextmanager
+    def _write_guard(self) -> Generator[None, None, None]:
+        if not self._write_lock.acquire(timeout=self._write_lock_timeout_s):
+            raise DatabaseError(
+                "[DB-LOCK-002] Timed out waiting for local write lock."
+            )
+        self._write_lock_owner = threading.current_thread().name
+        self._write_lock_acquired_at = time.monotonic()
+        self._write_lock_registry(status="pending")
         try:
-            yield conn
-            conn.execute("COMMIT")
-        except Exception:
-            conn.execute("ROLLBACK")
-            raise
+            yield
         finally:
-            self.release_connection(conn)
+            self._write_lock_owner = None
+            self._write_lock_acquired_at = None
+            self._clear_lock_registry()
+            self._write_lock.release()
+
+    def lock_info(self) -> dict[str, Any] | None:
+        """Return lock registry info if present."""
+        path = self._lock_registry_path
+        if path is None or not path.exists():
+            return None
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+        payload["lock_registry_path"] = str(path)
+        return payload
+
+    def _build_lock_registry_path(self) -> Path | None:
+        try:
+            base = self.db_path.parent / "state" / "locks"
+        except Exception:
+            return None
+        return base / "db_lock.json"
+
+    def _write_lock_registry(self, *, status: str) -> None:
+        if self._lock_registry_path is None:
+            return
+        try:
+            self._lock_registry_path.parent.mkdir(parents=True, exist_ok=True)
+            payload = {
+                "pid": os.getpid(),
+                "thread": self._write_lock_owner,
+                "command": " ".join(sys.argv) if sys.argv else "",
+                "status": status,
+                "db_path": str(self.db_path),
+                "started_at": _utc_now_iso_z(),
+            }
+            atomic_write_json(self._lock_registry_path, payload)
+        except Exception as exc:  # noqa: BLE001
+            logger.debug(f"lock registry write failed: {exc}")
+
+    def _clear_lock_registry(self) -> None:
+        if self._lock_registry_path is None:
+            return
+        try:
+            if self._lock_registry_path.exists():
+                self._lock_registry_path.unlink()
+        except Exception as exc:  # noqa: BLE001
+            logger.debug(f"lock registry cleanup failed: {exc}")
 
     def close(self) -> None:
         """Close database connection."""
@@ -249,3 +355,7 @@ def reset_db_manager() -> None:
     if _db_manager is not None:
         _db_manager.checkpoint_and_close()
     _db_manager = None
+
+
+def _utc_now_iso_z() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")

@@ -39,6 +39,13 @@ gates:
     command: "scripts/gates/gate-db-001.sh"
     required: true
 
+  - id: "GATE-DB-002"
+    tier: "T0"
+    kind: "intake"
+    description: "DB lock health check"
+    command: "scripts/gates/gate-db-002.sh"
+    required: true
+
   - id: "GATE-ROADMAP-001"
     tier: "T0"
     kind: "plan"

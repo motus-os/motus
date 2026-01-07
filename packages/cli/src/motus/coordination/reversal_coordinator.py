@@ -5,9 +5,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import uuid
 from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
+
+from motus.atomic_io import atomic_write_json
 
 from .reversal_types import VerificationResult
 from .schemas import REVERSAL_BATCH_SCHEMA, CompensatingAction, ReversalBatch, ReversalItem
@@ -136,11 +139,9 @@ class ReversalCoordinator:
 
     def _generate_reversal_id(self) -> str:
         now = datetime.now(timezone.utc)
-        date_str = now.strftime("%Y-%m-%d")
-        existing = list(self.active_dir.glob(f"rev-{date_str}-*.json"))
-        existing.extend(self.closed_dir.glob(f"**/rev-{date_str}-*.json"))
-        sequence = len(existing) + 1
-        return f"rev-{date_str}-{sequence:04d}"
+        date_str = now.strftime("%Y%m%d")
+        nonce = uuid.uuid4().hex[:8]
+        return f"rev-{date_str}-{nonce}"
 
     def _build_reversal_items(self, actions: list[CompensatingAction], work_items: list[str] | None) -> list[ReversalItem]:
         items = []
@@ -180,8 +181,7 @@ class ReversalCoordinator:
 
     def _save_reversal(self, reversal: ReversalBatch) -> None:
         reversal_path = self.active_dir / f"{reversal.reversal_id}.json"
-        with open(reversal_path, "w") as f:
-            json.dump(reversal.to_json(), f, indent=2)
+        atomic_write_json(reversal_path, reversal.to_json())
 
     def _load_reversal(self, reversal_id: str) -> ReversalBatch | None:
         active_path = self.active_dir / f"{reversal_id}.json"

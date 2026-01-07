@@ -13,6 +13,8 @@ import hashlib
 import json
 import os
 import sqlite3
+import threading
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -110,8 +112,14 @@ class ContextCache:
         if self._db_path != ":memory:":
             Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 
-        self._conn = sqlite3.connect(self._db_path, check_same_thread=False)
+        self._conn = sqlite3.connect(
+            self._db_path, isolation_level=None, check_same_thread=False
+        )
         configure_connection(self._conn)
+        self._write_lock = threading.Lock()
+        self._write_lock_timeout_s = float(
+            os.environ.get("MOTUS_CONTEXT_CACHE_LOCK_TIMEOUT", "5")
+        )
         self._init_schema()
 
     def _init_schema(self) -> None:
@@ -120,29 +128,43 @@ class ContextCache:
         Raises:
             RuntimeError: If database schema version is incompatible.
         """
-        cursor = self._conn.cursor()
-        cursor.executescript(_INIT_SQL)
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.executescript(_INIT_SQL)
 
-        # Check/set schema version
-        cursor.execute("SELECT version FROM schema_version LIMIT 1")
-        row = cursor.fetchone()
-        if row is None:
-            # Fresh database - set version
-            cursor.execute("INSERT INTO schema_version (version) VALUES (?)", (_SCHEMA_VERSION,))
-        else:
-            # Existing database - validate version
-            db_version = row[0]
-            if db_version != _SCHEMA_VERSION:
-                raise RuntimeError(
-                    f"[CONTEXT-CACHE-001] Incompatible ContextCache schema version. "
-                    f"Database has v{db_version}, code expects v{_SCHEMA_VERSION}. "
-                    f"Delete {self._db_path} to reset (data will be regenerated)."
-                )
-        self._conn.commit()
+            # Check/set schema version
+            cursor.execute("SELECT version FROM schema_version LIMIT 1")
+            row = cursor.fetchone()
+            if row is None:
+                # Fresh database - set version
+                cursor.execute("INSERT INTO schema_version (version) VALUES (?)", (_SCHEMA_VERSION,))
+            else:
+                # Existing database - validate version
+                db_version = row[0]
+                if db_version != _SCHEMA_VERSION:
+                    raise RuntimeError(
+                        f"[CONTEXT-CACHE-001] Incompatible ContextCache schema version. "
+                        f"Database has v{db_version}, code expects v{_SCHEMA_VERSION}. "
+                        f"Delete {self._db_path} to reset (data will be regenerated)."
+                    )
 
     def close(self) -> None:
         """Close database connection."""
         self._conn.close()
+
+    @contextmanager
+    def _write_txn(self) -> Any:
+        if not self._write_lock.acquire(timeout=self._write_lock_timeout_s):
+            raise RuntimeError("[CONTEXT-CACHE-LOCK-001] Timed out waiting for cache lock")
+        try:
+            self._conn.execute("BEGIN IMMEDIATE")
+            yield self._conn
+            self._conn.execute("COMMIT")
+        except Exception:
+            self._conn.execute("ROLLBACK")
+            raise
+        finally:
+            self._write_lock.release()
 
     # =========================================================================
     # ContextCacheReader protocol implementation
@@ -354,37 +376,37 @@ class ContextCache:
         Returns:
             The resource ID.
         """
-        cursor = self._conn.cursor()
-        cursor.execute("SELECT mc_strip_prefix(?, ?)", (resource_path, "./"))
-        normalized_path = cursor.fetchone()[0] or resource_path
-        resource_id = f"{resource_type}:{normalized_path}"
-        payload_json = json.dumps(spec, sort_keys=True, separators=(",", ":"))
-        cursor.execute("SELECT mc_sha256(?)", (payload_json,))
-        source_hash = cursor.fetchone()[0]
-        observed_value = _iso_z(observed_at) if observed_at else None
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT mc_strip_prefix(?, ?)", (resource_path, "./"))
+            normalized_path = cursor.fetchone()[0] or resource_path
+            resource_id = f"{resource_type}:{normalized_path}"
+            payload_json = json.dumps(spec, sort_keys=True, separators=(",", ":"))
+            cursor.execute("SELECT mc_sha256(?)", (payload_json,))
+            source_hash = cursor.fetchone()[0]
+            observed_value = _iso_z(observed_at) if observed_at else None
 
-        cursor.execute(
-            """
-            INSERT INTO resource_specs
-                (id, resource_type, resource_path, payload, source_hash, observed_at, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, COALESCE(?, mc_now_iso()), mc_now_iso(), mc_now_iso())
-            ON CONFLICT(id) DO UPDATE SET
-                payload = excluded.payload,
-                source_hash = excluded.source_hash,
-                observed_at = excluded.observed_at,
-                updated_at = mc_now_iso()
-            """,
-            (
-                resource_id,
-                resource_type,
-                normalized_path,
-                payload_json,
-                source_hash,
-                observed_value,
-            ),
-        )
-        self._conn.commit()
-        return resource_id
+            cursor.execute(
+                """
+                INSERT INTO resource_specs
+                    (id, resource_type, resource_path, payload, source_hash, observed_at, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, COALESCE(?, mc_now_iso()), mc_now_iso(), mc_now_iso())
+                ON CONFLICT(id) DO UPDATE SET
+                    payload = excluded.payload,
+                    source_hash = excluded.source_hash,
+                    observed_at = excluded.observed_at,
+                    updated_at = mc_now_iso()
+                """,
+                (
+                    resource_id,
+                    resource_type,
+                    normalized_path,
+                    payload_json,
+                    source_hash,
+                    observed_value,
+                ),
+            )
+            return resource_id
 
     def put_policy_bundle(
         self,
@@ -402,32 +424,32 @@ class ContextCache:
         Returns:
             The policy version.
         """
-        payload_json = json.dumps(bundle, sort_keys=True, separators=(",", ":"))
-        cursor = self._conn.cursor()
-        cursor.execute("SELECT mc_sha256(?)", (payload_json,))
-        source_hash = cursor.fetchone()[0]
-        observed_value = _iso_z(observed_at) if observed_at else None
+        with self._write_txn() as conn:
+            payload_json = json.dumps(bundle, sort_keys=True, separators=(",", ":"))
+            cursor = conn.cursor()
+            cursor.execute("SELECT mc_sha256(?)", (payload_json,))
+            source_hash = cursor.fetchone()[0]
+            observed_value = _iso_z(observed_at) if observed_at else None
 
-        cursor.execute(
-            """
-            INSERT INTO policy_bundles
-                (policy_version, payload, source_hash, observed_at, created_at, updated_at)
-            VALUES (?, ?, ?, COALESCE(?, mc_now_iso()), mc_now_iso(), mc_now_iso())
-            ON CONFLICT(policy_version) DO UPDATE SET
-                payload = excluded.payload,
-                source_hash = excluded.source_hash,
-                observed_at = excluded.observed_at,
-                updated_at = mc_now_iso()
-            """,
-            (
-                policy_version,
-                payload_json,
-                source_hash,
-                observed_value,
-            ),
-        )
-        self._conn.commit()
-        return policy_version
+            cursor.execute(
+                """
+                INSERT INTO policy_bundles
+                    (policy_version, payload, source_hash, observed_at, created_at, updated_at)
+                VALUES (?, ?, ?, COALESCE(?, mc_now_iso()), mc_now_iso(), mc_now_iso())
+                ON CONFLICT(policy_version) DO UPDATE SET
+                    payload = excluded.payload,
+                    source_hash = excluded.source_hash,
+                    observed_at = excluded.observed_at,
+                    updated_at = mc_now_iso()
+                """,
+                (
+                    policy_version,
+                    payload_json,
+                    source_hash,
+                    observed_value,
+                ),
+            )
+            return policy_version
 
     def put_tool_spec(
         self,
@@ -445,32 +467,32 @@ class ContextCache:
         Returns:
             The tool name.
         """
-        payload_json = json.dumps(spec, sort_keys=True, separators=(",", ":"))
-        cursor = self._conn.cursor()
-        cursor.execute("SELECT mc_sha256(?)", (payload_json,))
-        source_hash = cursor.fetchone()[0]
-        observed_value = _iso_z(observed_at) if observed_at else None
+        with self._write_txn() as conn:
+            payload_json = json.dumps(spec, sort_keys=True, separators=(",", ":"))
+            cursor = conn.cursor()
+            cursor.execute("SELECT mc_sha256(?)", (payload_json,))
+            source_hash = cursor.fetchone()[0]
+            observed_value = _iso_z(observed_at) if observed_at else None
 
-        cursor.execute(
-            """
-            INSERT INTO tool_specs
-                (name, payload, source_hash, observed_at, created_at, updated_at)
-            VALUES (?, ?, ?, COALESCE(?, mc_now_iso()), mc_now_iso(), mc_now_iso())
-            ON CONFLICT(name) DO UPDATE SET
-                payload = excluded.payload,
-                source_hash = excluded.source_hash,
-                observed_at = excluded.observed_at,
-                updated_at = mc_now_iso()
-            """,
-            (
-                name,
-                payload_json,
-                source_hash,
-                observed_value,
-            ),
-        )
-        self._conn.commit()
-        return name
+            cursor.execute(
+                """
+                INSERT INTO tool_specs
+                    (name, payload, source_hash, observed_at, created_at, updated_at)
+                VALUES (?, ?, ?, COALESCE(?, mc_now_iso()), mc_now_iso(), mc_now_iso())
+                ON CONFLICT(name) DO UPDATE SET
+                    payload = excluded.payload,
+                    source_hash = excluded.source_hash,
+                    observed_at = excluded.observed_at,
+                    updated_at = mc_now_iso()
+                """,
+                (
+                    name,
+                    payload_json,
+                    source_hash,
+                    observed_value,
+                ),
+            )
+            return name
 
     def put_outcome(
         self,
@@ -492,31 +514,31 @@ class ContextCache:
         Returns:
             The outcome ID.
         """
-        payload_json = json.dumps(outcome, sort_keys=True, separators=(",", ":"))
-        cursor = self._conn.cursor()
-        cursor.execute("SELECT mc_strip_prefix(?, ?)", (resource_path, "./"))
-        normalized_path = cursor.fetchone()[0] or resource_path
-        occurred_value = _iso_z(occurred_at) if occurred_at else None
+        with self._write_txn() as conn:
+            payload_json = json.dumps(outcome, sort_keys=True, separators=(",", ":"))
+            cursor = conn.cursor()
+            cursor.execute("SELECT mc_strip_prefix(?, ?)", (resource_path, "./"))
+            normalized_path = cursor.fetchone()[0] or resource_path
+            occurred_value = _iso_z(occurred_at) if occurred_at else None
 
-        cursor.execute(
-            """
-            INSERT INTO outcomes
-                (outcome_id, resource_type, resource_path, payload, occurred_at, created_at)
-            VALUES (?, ?, ?, ?, COALESCE(?, mc_now_iso()), mc_now_iso())
-            ON CONFLICT(outcome_id) DO UPDATE SET
-                payload = excluded.payload,
-                occurred_at = excluded.occurred_at
-            """,
-            (
-                outcome_id,
-                resource_type,
-                normalized_path,
-                payload_json,
-                occurred_value,
-            ),
-        )
-        self._conn.commit()
-        return outcome_id
+            cursor.execute(
+                """
+                INSERT INTO outcomes
+                    (outcome_id, resource_type, resource_path, payload, occurred_at, created_at)
+                VALUES (?, ?, ?, ?, COALESCE(?, mc_now_iso()), mc_now_iso())
+                ON CONFLICT(outcome_id) DO UPDATE SET
+                    payload = excluded.payload,
+                    occurred_at = excluded.occurred_at
+                """,
+                (
+                    outcome_id,
+                    resource_type,
+                    normalized_path,
+                    payload_json,
+                    occurred_value,
+                ),
+            )
+            return outcome_id
 
     # =========================================================================
     # Delete operations (for maintenance)
@@ -524,37 +546,37 @@ class ContextCache:
 
     def delete_resource_spec(self, resource_type: str, resource_path: str) -> bool:
         """Delete a ResourceSpec."""
-        cursor = self._conn.cursor()
-        cursor.execute(
-            "DELETE FROM resource_specs WHERE resource_type = ? AND resource_path = ?",
-            (resource_type, resource_path),
-        )
-        self._conn.commit()
-        return cursor.rowcount > 0
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "DELETE FROM resource_specs WHERE resource_type = ? AND resource_path = ?",
+                (resource_type, resource_path),
+            )
+            return cursor.rowcount > 0
 
     def delete_policy_bundle(self, policy_version: str) -> bool:
         """Delete a PolicyBundle."""
-        cursor = self._conn.cursor()
-        cursor.execute(
-            "DELETE FROM policy_bundles WHERE policy_version = ?",
-            (policy_version,),
-        )
-        self._conn.commit()
-        return cursor.rowcount > 0
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "DELETE FROM policy_bundles WHERE policy_version = ?",
+                (policy_version,),
+            )
+            return cursor.rowcount > 0
 
     def delete_tool_spec(self, name: str) -> bool:
         """Delete a ToolSpec."""
-        cursor = self._conn.cursor()
-        cursor.execute("DELETE FROM tool_specs WHERE name = ?", (name,))
-        self._conn.commit()
-        return cursor.rowcount > 0
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM tool_specs WHERE name = ?", (name,))
+            return cursor.rowcount > 0
 
     def prune_old_outcomes(self, older_than: datetime) -> int:
         """Delete outcomes older than a threshold."""
-        cursor = self._conn.cursor()
-        cursor.execute(
-            "DELETE FROM outcomes WHERE occurred_at < ?",
-            (_iso_z(older_than),),
-        )
-        self._conn.commit()
-        return cursor.rowcount
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "DELETE FROM outcomes WHERE occurred_at < ?",
+                (_iso_z(older_than),),
+            )
+            return cursor.rowcount

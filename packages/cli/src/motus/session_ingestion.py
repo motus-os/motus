@@ -160,7 +160,7 @@ def sync_session_cache(
             return _empty_result(start)
         if not full and not force and autosync_min_interval_seconds > 0:
             try:
-                with db.connection() as conn:
+                with db.connection(read_only=True) as conn:
                     row = conn.execute(
                         "SELECT value FROM session_cache_state WHERE key = ?",
                         ("session_cache:last_sync",),
@@ -181,7 +181,7 @@ def sync_session_cache(
             projects_dir, full=full, max_age_hours=max_age_hours
         )
         files_seen = 0
-        with db.connection() as conn:
+        with db.connection(read_only=True) as conn:
             existing = {
                 row["file_path"]: int(row["file_mtime_ns"])
                 for row in conn.execute(

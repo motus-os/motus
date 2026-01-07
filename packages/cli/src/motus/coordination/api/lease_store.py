@@ -6,8 +6,11 @@
 from __future__ import annotations
 
 import json
+import os
 import sqlite3
+import threading
 import uuid
+from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
@@ -118,8 +121,14 @@ class LeaseStore:
         if self._db_path != ":memory:":
             Path(db_path).parent.mkdir(parents=True, exist_ok=True)
 
-        self._conn = sqlite3.connect(self._db_path, check_same_thread=False)
+        self._conn = sqlite3.connect(
+            self._db_path, isolation_level=None, check_same_thread=False
+        )
         configure_connection(self._conn)
+        self._write_lock = threading.Lock()
+        self._write_lock_timeout_s = float(
+            os.environ.get("MOTUS_LEASE_WRITE_LOCK_TIMEOUT", "5")
+        )
         self._init_schema()
 
     def _init_schema(self) -> None:
@@ -128,25 +137,28 @@ class LeaseStore:
         Raises:
             RuntimeError: If database schema version is incompatible.
         """
-        cursor = self._conn.cursor()
-        cursor.executescript(_INIT_SQL)
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.executescript(_INIT_SQL)
 
-        cursor.execute("SELECT version FROM schema_version LIMIT 1")
-        row = cursor.fetchone()
-        if row is None:
-            # Fresh database - set version
-            cursor.execute("INSERT INTO schema_version (version) VALUES (?)", (_SCHEMA_VERSION,))
-        else:
-            # Existing database - validate version
-            db_version = row[0]
-            if db_version != _SCHEMA_VERSION:
-                raise RuntimeError(
-                    f"[LEASE-STORE-001] Incompatible LeaseStore schema version. "
-                    f"Database has v{db_version}, code expects v{_SCHEMA_VERSION}. "
-                    f"Delete {self._db_path} to reset (leases will be lost)."
+            cursor.execute("SELECT version FROM schema_version LIMIT 1")
+            row = cursor.fetchone()
+            if row is None:
+                # Fresh database - set version
+                cursor.execute(
+                    "INSERT INTO schema_version (version) VALUES (?)",
+                    (_SCHEMA_VERSION,),
                 )
-        self._ensure_lease_columns()
-        self._conn.commit()
+            else:
+                # Existing database - validate version
+                db_version = row[0]
+                if db_version != _SCHEMA_VERSION:
+                    raise RuntimeError(
+                        f"[LEASE-STORE-001] Incompatible LeaseStore schema version. "
+                        f"Database has v{db_version}, code expects v{_SCHEMA_VERSION}. "
+                        f"Delete {self._db_path} to reset (leases will be lost)."
+                    )
+            self._ensure_lease_columns()
 
     def _ensure_lease_columns(self) -> None:
         """Ensure optional lease metadata columns exist."""
@@ -162,6 +174,20 @@ class LeaseStore:
     def close(self) -> None:
         """Close database connection."""
         self._conn.close()
+
+    @contextmanager
+    def _write_txn(self) -> Any:
+        if not self._write_lock.acquire(timeout=self._write_lock_timeout_s):
+            raise RuntimeError("[LEASE-LOCK-001] Timed out waiting for lease store lock")
+        try:
+            self._conn.execute("BEGIN IMMEDIATE")
+            yield self._conn
+            self._conn.execute("COMMIT")
+        except Exception:
+            self._conn.execute("ROLLBACK")
+            raise
+        finally:
+            self._write_lock.release()
 
     # =========================================================================
     # Lease operations
@@ -205,35 +231,35 @@ class LeaseStore:
             sort_keys=True,
         )
 
-        cursor = self._conn.cursor()
-        cursor.execute(
-            """
-            INSERT INTO coordination_leases
-                (lease_id, owner_agent_id, mode, resources, issued_at, expires_at,
-                 heartbeat_deadline, snapshot_id, policy_version, lens_digest,
-                 work_id, attempt_id, status, outcome, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                lease_id,
-                owner_agent_id,
-                mode,
-                resources_json,
-                _iso_z(now),
-                _iso_z(expires_at),
-                _iso_z(heartbeat_deadline),
-                snapshot_id,
-                policy_version,
-                lens_digest,
-                work_id,
-                attempt_id,
-                "active",
-                None,
-                _iso_z(now),
-                _iso_z(now),
-            ),
-        )
-        self._conn.commit()
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO coordination_leases
+                    (lease_id, owner_agent_id, mode, resources, issued_at, expires_at,
+                     heartbeat_deadline, snapshot_id, policy_version, lens_digest,
+                     work_id, attempt_id, status, outcome, created_at, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    lease_id,
+                    owner_agent_id,
+                    mode,
+                    resources_json,
+                    _iso_z(now),
+                    _iso_z(expires_at),
+                    _iso_z(heartbeat_deadline),
+                    snapshot_id,
+                    policy_version,
+                    lens_digest,
+                    work_id,
+                    attempt_id,
+                    "active",
+                    None,
+                    _iso_z(now),
+                    _iso_z(now),
+                ),
+            )
 
         return Lease(
             lease_id=lease_id,
@@ -267,15 +293,16 @@ class LeaseStore:
         if lease.status == "active":
             now = _utcnow()
             if lease.expires_at <= now or lease.heartbeat_deadline <= now:
-                cursor.execute(
-                    """
-                    UPDATE coordination_leases
-                    SET status = 'expired', updated_at = ?
-                    WHERE lease_id = ?
-                    """,
-                    (_iso_z(now), lease_id),
-                )
-                self._conn.commit()
+                with self._write_txn() as conn:
+                    cursor = conn.cursor()
+                    cursor.execute(
+                        """
+                        UPDATE coordination_leases
+                        SET status = 'expired', updated_at = ?
+                        WHERE lease_id = ?
+                        """,
+                        (_iso_z(now), lease_id),
+                    )
                 refreshed = self._conn.execute(
                     f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?",
                     (lease_id,),
@@ -340,16 +367,16 @@ class LeaseStore:
         now = _utcnow()
         new_deadline = now + timedelta(seconds=ttl_s)
 
-        cursor = self._conn.cursor()
-        cursor.execute(
-            """
-            UPDATE coordination_leases
-            SET heartbeat_deadline = ?, updated_at = ?
-            WHERE lease_id = ? AND status = 'active'
-            """,
-            (_iso_z(new_deadline), _iso_z(now), lease_id),
-        )
-        self._conn.commit()
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE coordination_leases
+                SET heartbeat_deadline = ?, updated_at = ?
+                WHERE lease_id = ? AND status = 'active'
+                """,
+                (_iso_z(new_deadline), _iso_z(now), lease_id),
+            )
 
         if cursor.rowcount == 0:
             return None
@@ -359,16 +386,16 @@ class LeaseStore:
     def update_lens_digest(self, lease_id: str, lens_digest: str) -> Lease | None:
         """Update lens digest for an active lease."""
         now = _utcnow()
-        cursor = self._conn.cursor()
-        cursor.execute(
-            """
-            UPDATE coordination_leases
-            SET lens_digest = ?, updated_at = ?
-            WHERE lease_id = ? AND status = 'active'
-            """,
-            (lens_digest, _iso_z(now), lease_id),
-        )
-        self._conn.commit()
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE coordination_leases
+                SET lens_digest = ?, updated_at = ?
+                WHERE lease_id = ? AND status = 'active'
+                """,
+                (lens_digest, _iso_z(now), lease_id),
+            )
 
         if cursor.rowcount == 0:
             return None
@@ -390,16 +417,16 @@ class LeaseStore:
         """
         now = _utcnow()
 
-        cursor = self._conn.cursor()
-        cursor.execute(
-            """
-            UPDATE coordination_leases
-            SET status = ?, outcome = ?, updated_at = ?
-            WHERE lease_id = ?
-            """,
-            (status, outcome, _iso_z(now), lease_id),
-        )
-        self._conn.commit()
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE coordination_leases
+                SET status = ?, outcome = ?, updated_at = ?
+                WHERE lease_id = ?
+                """,
+                (status, outcome, _iso_z(now), lease_id),
+            )
 
         if cursor.rowcount == 0:
             return None
@@ -428,15 +455,16 @@ class LeaseStore:
 
         if expired_ids:
             placeholders = ",".join("?" * len(expired_ids))
-            cursor.execute(
-                f"""
-                UPDATE coordination_leases
-                SET status = 'expired', updated_at = ?
-                WHERE lease_id IN ({placeholders})
-                """,  # nosec B608 - placeholders are ?,?,? count
-                [now_iso] + expired_ids,
-            )
-            self._conn.commit()
+            with self._write_txn() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    f"""
+                    UPDATE coordination_leases
+                    SET status = 'expired', updated_at = ?
+                    WHERE lease_id IN ({placeholders})
+                    """,  # nosec B608 - placeholders are ?,?,? count
+                    [now_iso] + expired_ids,
+                )
 
         return expired_ids
 
@@ -469,16 +497,16 @@ class LeaseStore:
             sort_keys=True,
         )
 
-        cursor = self._conn.cursor()
-        cursor.execute(
-            """
-            UPDATE coordination_leases
-            SET resources = ?, updated_at = ?
-            WHERE lease_id = ? AND status = 'active'
-            """,
-            (resources_json, _iso_z(now), lease_id),
-        )
-        self._conn.commit()
+        with self._write_txn() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE coordination_leases
+                SET resources = ?, updated_at = ?
+                WHERE lease_id = ? AND status = 'active'
+                """,
+                (resources_json, _iso_z(now), lease_id),
+            )
 
         return self.get_lease(lease_id)
 
@@ -510,16 +538,16 @@ class LeaseStore:
         now = _utcnow()
         payload_json = json.dumps(payload, sort_keys=True)
 
-        cursor = self._conn.cursor()
         try:
-            cursor.execute(
-                """
-                INSERT INTO events (event_id, lease_id, event_type, payload, created_at)
-                VALUES (?, ?, ?, ?, ?)
-                """,
-                (event_id, lease_id, event_type, payload_json, _iso_z(now)),
-            )
-            self._conn.commit()
+            with self._write_txn() as conn:
+                cursor = conn.cursor()
+                cursor.execute(
+                    """
+                    INSERT INTO events (event_id, lease_id, event_type, payload, created_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (event_id, lease_id, event_type, payload_json, _iso_z(now)),
+                )
         except sqlite3.IntegrityError:
             # Idempotent - event already exists
             pass

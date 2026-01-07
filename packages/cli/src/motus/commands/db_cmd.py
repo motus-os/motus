@@ -9,6 +9,9 @@ import json
 import os
 import re
 import shutil
+import sqlite3
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -16,7 +19,12 @@ from rich.console import Console
 
 from motus.cli.exit_codes import EXIT_ERROR, EXIT_SUCCESS
 from motus.core.database import get_database_path, get_db_manager
-from motus.migration.path_migration import CANONICAL_DIRNAME, LEGACY_DIRNAME, find_legacy_workspace_dir
+from motus.core.database_connection import configure_connection
+from motus.migration.path_migration import (
+    CANONICAL_DIRNAME,
+    LEGACY_DIRNAME,
+    find_legacy_workspace_dir,
+)
 
 console = Console()
 _SAFE_TABLE_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
@@ -40,6 +48,54 @@ def _record_preference(conn, key: str, value: str) -> None:
     )
 
 
+def _parse_iso(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    raw = value.replace("Z", "+00:00")
+    try:
+        return datetime.fromisoformat(raw)
+    except ValueError:
+        return None
+
+
+def _pid_alive(pid: int | None) -> bool | None:
+    if pid is None:
+        return None
+    try:
+        os.kill(pid, 0)
+        return True
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+
+
+def _try_acquire_write_lock(db_path: Path) -> bool:
+    conn: sqlite3.Connection | None = None
+    try:
+        conn = sqlite3.connect(
+            str(db_path),
+            isolation_level=None,
+            check_same_thread=False,
+            timeout=0.1,
+        )
+        configure_connection(conn, set_row_factory=False)
+        conn.execute("PRAGMA busy_timeout = 200")
+        conn.execute("BEGIN IMMEDIATE")
+        conn.execute("ROLLBACK")
+        return True
+    except sqlite3.OperationalError as exc:
+        if "database is locked" in str(exc).lower():
+            return False
+        raise
+    finally:
+        if conn is not None:
+            try:
+                conn.close()
+            except Exception:
+                pass
+
+
 def db_vacuum_command(args: Any) -> int:
     db_path = get_database_path()
     if not _db_exists(db_path):
@@ -47,12 +103,12 @@ def db_vacuum_command(args: Any) -> int:
         return EXIT_ERROR
 
     db = get_db_manager()
-    conn = db.get_connection()
-    conn.execute("VACUUM")
-    if getattr(args, "full", False):
-        conn.execute("ANALYZE")
-    db.checkpoint_wal()
-    _record_preference(conn, "db.last_vacuum", "vacuum")
+    with db.connection() as conn:
+        conn.execute("VACUUM")
+        if getattr(args, "full", False):
+            conn.execute("ANALYZE")
+        db.checkpoint_wal()
+        _record_preference(conn, "db.last_vacuum", "vacuum")
     console.print("VACUUM completed", markup=False)
     return EXIT_SUCCESS
 
@@ -64,9 +120,9 @@ def db_analyze_command(args: Any) -> int:
         return EXIT_ERROR
 
     db = get_db_manager()
-    conn = db.get_connection()
-    conn.execute("ANALYZE")
-    _record_preference(conn, "db.last_analyze", "analyze")
+    with db.connection() as conn:
+        conn.execute("ANALYZE")
+        _record_preference(conn, "db.last_analyze", "analyze")
     console.print("ANALYZE completed", markup=False)
     return EXIT_SUCCESS
 
@@ -97,7 +153,7 @@ def db_stats_command(args: Any) -> int:
     file_size = db_path.stat().st_size
     wal_size = db.get_wal_size()
 
-    with db.connection() as conn:
+    with db.connection(read_only=True) as conn:
         counts = _table_counts(
             conn,
             [
@@ -151,6 +207,110 @@ def db_checkpoint_command(args: Any) -> int:
     db = get_db_manager()
     db.checkpoint_wal()
     console.print("WAL checkpoint complete", markup=False)
+    return EXIT_SUCCESS
+
+
+def db_lock_info_command(args: Any) -> int:
+    db = get_db_manager()
+    info = db.lock_info()
+    if not info:
+        console.print("No lock registry found", markup=False)
+        return EXIT_SUCCESS
+
+    started_at = _parse_iso(str(info.get("started_at") or ""))
+    age_s = None
+    if started_at is not None:
+        age_s = (datetime.now(timezone.utc) - started_at).total_seconds()
+
+    pid = info.get("pid")
+    alive = _pid_alive(pid if isinstance(pid, int) else None)
+
+    payload = dict(info)
+    payload["age_seconds"] = int(age_s) if age_s is not None else None
+    payload["pid_alive"] = alive
+
+    if getattr(args, "json", False):
+        console.print_json(json.dumps(payload, sort_keys=True))
+        return EXIT_SUCCESS
+
+    console.print(f"Lock status: {payload.get('status')}", markup=False)
+    console.print(f"PID: {pid} (alive={alive})", markup=False)
+    console.print(f"Thread: {payload.get('thread')}", markup=False)
+    console.print(f"Command: {payload.get('command')}", markup=False)
+    if age_s is not None:
+        console.print(f"Age: {int(age_s)}s", markup=False)
+    console.print(f"DB: {payload.get('db_path')}", markup=False)
+    console.print(f"Registry: {payload.get('lock_registry_path')}", markup=False)
+    return EXIT_SUCCESS
+
+
+def db_wait_command(args: Any) -> int:
+    db_path = get_database_path()
+    if not _db_exists(db_path):
+        console.print("[red]Database not found. Run motus doctor first.[/red]")
+        return EXIT_ERROR
+
+    max_seconds = float(getattr(args, "max_seconds", 30) or 30)
+    interval = float(getattr(args, "interval", 0.2) or 0.2)
+    deadline = time.monotonic() + max_seconds
+
+    while True:
+        if _try_acquire_write_lock(db_path):
+            console.print("Write lock available", markup=False)
+            return EXIT_SUCCESS
+        if time.monotonic() >= deadline:
+            console.print("Timed out waiting for write lock", markup=False)
+            return EXIT_ERROR
+        time.sleep(interval)
+
+
+def db_recover_command(args: Any) -> int:
+    db_path = get_database_path()
+    if not _db_exists(db_path):
+        console.print("[red]Database not found. Run motus doctor first.[/red]")
+        return EXIT_ERROR
+
+    db = get_db_manager()
+    info = db.lock_info()
+    if info:
+        pid = info.get("pid")
+        alive = _pid_alive(pid if isinstance(pid, int) else None)
+        if alive:
+            console.print("Active lock holder detected; recovery aborted", markup=False)
+            return EXIT_ERROR
+
+    if not _try_acquire_write_lock(db_path):
+        console.print("Database still locked; recovery aborted", markup=False)
+        return EXIT_ERROR
+
+    from motus.core.layered_config import get_config
+
+    backup_dir = Path(
+        get_config().get_value("database.backup_dir", "~/.motus/backups")
+    ).expanduser()
+    backup_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    backup_path = backup_dir / f"coordination.db.{timestamp}.bak"
+    shutil.copy2(db_path, backup_path)
+
+    for suffix in ("-wal", "-shm"):
+        aux = Path(str(db_path) + suffix)
+        if aux.exists():
+            aux.unlink()
+
+    conn = sqlite3.connect(
+        str(db_path),
+        isolation_level=None,
+        check_same_thread=False,
+        timeout=1.0,
+    )
+    try:
+        configure_connection(conn, set_row_factory=False)
+        conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+    finally:
+        conn.close()
+
+    console.print(f"Recovery complete. Backup: {backup_path}", markup=False)
     return EXIT_SUCCESS
 
 

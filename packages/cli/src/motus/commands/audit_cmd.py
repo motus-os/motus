@@ -137,7 +137,7 @@ def audit_add_command(args: Any) -> int:
         return EXIT_USAGE
 
     db = get_db_manager()
-    with db.connection() as conn:
+    with db.connection(read_only=True) as conn:
         finding_id = _next_finding_id(conn)
 
     finding = {

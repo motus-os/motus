@@ -96,7 +96,7 @@ def get_missing_prereqs(item_id: str) -> list[MissingPrereq]:
     """
     try:
         db = get_db_manager()
-        with db.connection() as conn:
+        with db.connection(read_only=True) as conn:
             rows = conn.execute(
                 """
                 SELECT item_id, prereq_type, prereq_id, prereq_status, prereq_title
@@ -144,7 +144,7 @@ class RoadmapAPI:
             RoadmapResponse with list of RoadmapItem
         """
         try:
-            with self._db.connection() as conn:
+            with self._db.connection(read_only=True) as conn:
                 rows = conn.execute(
                     """
                     SELECT id, title, rank
@@ -446,7 +446,7 @@ class RoadmapAPI:
             RoadmapResponse with item status and blockers
         """
         try:
-            with self._db.connection() as conn:
+            with self._db.connection(read_only=True) as conn:
                 item = conn.execute(
                     """
                     SELECT id, title, status_key, rank
@@ -622,7 +622,7 @@ class RoadmapAPI:
             RoadmapResponse with list of assigned items
         """
         try:
-            with self._db.connection() as conn:
+            with self._db.connection(read_only=True) as conn:
                 rows = conn.execute(
                     """
                     SELECT ri.id, ri.title, ri.status_key, ri.rank,

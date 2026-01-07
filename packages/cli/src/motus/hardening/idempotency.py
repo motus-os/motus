@@ -73,7 +73,7 @@ class IdempotencyManager:
         return f"idem_{digest}"
 
     def get(self, key: str) -> Optional[IdempotencyRecord]:
-        with self._db.connection() as conn:
+        with self._db.connection(read_only=True) as conn:
             row = conn.execute(
                 """
                 SELECT key, operation, request_hash, response, status, expires_at

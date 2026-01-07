@@ -117,7 +117,7 @@ def cmd_roadmap_list(args: Any) -> int:
     phase_filter = getattr(args, "phase", None)
     as_json = getattr(args, "json", False)
 
-    with db.connection() as conn:
+    with db.connection(read_only=True) as conn:
         query = """
             SELECT ri.id, ri.title, ri.phase_key, ri.status_key, ri.item_type, ri.deleted_at,
                    COUNT(rd.depends_on_id) as dep_count
@@ -323,7 +323,7 @@ def cmd_roadmap_export(args: Any) -> int:
     include_deleted = getattr(args, "include_deleted", False)
     output_file = getattr(args, "output", None)
 
-    with db.connection() as conn:
+    with db.connection(read_only=True) as conn:
         query = """
             SELECT id, title, phase_key, status_key, deleted_at
             FROM roadmap_items

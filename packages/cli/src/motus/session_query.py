@@ -33,7 +33,7 @@ def query_session_cache(*, db: DatabaseManager, max_age_hours: int) -> list[Cach
     cutoff = datetime.now(tz=timezone.utc) - timedelta(hours=max_age_hours)
     cutoff_ns = int(cutoff.timestamp() * 1e9)
 
-    with db.connection() as conn:
+    with db.connection(read_only=True) as conn:
         rows = conn.execute(
             """
             SELECT

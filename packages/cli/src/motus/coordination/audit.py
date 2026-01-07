@@ -12,6 +12,7 @@ from typing import Any
 from uuid import uuid4
 
 from motus.coordination.schemas import AUDIT_EVENT_SCHEMA, AuditEvent
+from motus.file_lock import FileLockError, file_lock
 
 
 class AuditLogError(Exception):
@@ -34,6 +35,9 @@ def _generate_uuidv7() -> str:
     time_prefix = f"{timestamp_ms:012x}"
     random_suffix = uuid4().hex[:20]
     return f"evt-{time_prefix}-{random_suffix}"
+
+
+_AUDIT_LOCK_TIMEOUT_SECONDS = float(os.environ.get("MOTUS_AUDIT_LOCK_TIMEOUT", "5"))
 
 
 class AuditLog:
@@ -134,8 +138,11 @@ class AuditLog:
         # Note: On POSIX, appends <PIPE_BUF bytes are atomic
         # For production, consider using file locking for safety
         try:
-            with ledger_path.open("a", encoding="utf-8") as f:
-                f.write(json_line)
+            with file_lock(ledger_path, timeout=_AUDIT_LOCK_TIMEOUT_SECONDS):
+                with ledger_path.open("a", encoding="utf-8") as f:
+                    f.write(json_line)
+        except FileLockError as e:
+            raise AuditLogError(f"failed to lock audit log {ledger_path}") from e
         except Exception as e:
             raise AuditLogError(f"failed to append event to {ledger_path}") from e
 

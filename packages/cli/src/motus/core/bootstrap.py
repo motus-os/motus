@@ -176,7 +176,7 @@ def get_instance_id() -> str:
     from .database import get_db_manager
 
     db = get_db_manager()
-    with db.connection() as conn:
+    with db.readonly_connection() as conn:
         result = conn.execute(
             "SELECT value FROM instance_config WHERE key = 'instance_id'"
         ).fetchone()
@@ -200,7 +200,7 @@ def get_instance_name() -> str:
     from .database import get_db_manager
 
     db = get_db_manager()
-    with db.connection() as conn:
+    with db.readonly_connection() as conn:
         result = conn.execute(
             "SELECT value FROM instance_config WHERE key = 'instance_name'"
         ).fetchone()
@@ -221,18 +221,12 @@ def set_instance_name(name: str) -> None:
     from .database import get_db_manager
 
     db = get_db_manager()
-    with db.connection() as conn:
-        conn.execute("BEGIN IMMEDIATE")
-        try:
-            conn.execute(
-                """
-                UPDATE instance_config
-                SET value = ?, updated_at = datetime('now')
-                WHERE key = 'instance_name'
+    with db.transaction() as conn:
+        conn.execute(
+            """
+            UPDATE instance_config
+            SET value = ?, updated_at = datetime('now')
+            WHERE key = 'instance_name'
             """,
-                (name,),
-            )
-            conn.execute("COMMIT")
-        except Exception:
-            conn.execute("ROLLBACK")
-            raise
+            (name,),
+        )

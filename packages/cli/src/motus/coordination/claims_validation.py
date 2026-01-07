@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import posixpath
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 
@@ -11,6 +12,9 @@ from motus.atomic_io import atomic_write_text
 from motus.coordination.namespace_acl import NamespaceACL
 from motus.coordination.schemas import ClaimedResource, ClaimRecord
 from motus.file_lock import FileLockError, file_lock
+from motus.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class ClaimRegistryError(Exception):
@@ -24,8 +28,13 @@ def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _normalize_resource_path(path: str) -> str:
+    normalized = posixpath.normpath(path.replace("\\", "/"))
+    return normalized if normalized != "." else ""
+
+
 def _posix(path: str) -> PurePosixPath:
-    return PurePosixPath(path.replace("\\", "/"))
+    return PurePosixPath(_normalize_resource_path(path))
 
 
 def _norm_namespace(namespace: str | None) -> str:
@@ -67,15 +76,28 @@ class _ClaimStorage:
             return []
         return sorted(p for p in self._root.glob("cl-*.json") if p.is_file())
 
-    def _load_claim(self, path: Path) -> ClaimRecord:
+    def _load_claim(self, path: Path) -> ClaimRecord | None:
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except Exception as e:  # noqa: BLE001
-            raise ClaimRegistryError(f"failed to read claim file: {path}") from e
+            self._quarantine_corrupt(path, f"failed to read claim file: {e}")
+            return None
         try:
             return ClaimRecord.from_json(payload)
         except Exception as e:  # noqa: BLE001
-            raise ClaimRegistryError(f"invalid claim payload: {path}") from e
+            self._quarantine_corrupt(path, f"invalid claim payload: {e}")
+            return None
+
+    def _quarantine_corrupt(self, path: Path, reason: str) -> None:
+        try:
+            corrupt_dir = self._root / "corrupt"
+            corrupt_dir.mkdir(parents=True, exist_ok=True)
+            target = corrupt_dir / f"{path.name}.corrupt"
+            if path.exists():
+                path.replace(target)
+            logger.warning("quarantined corrupt claim file", path=str(path), reason=reason)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("failed to quarantine corrupt claim file", path=str(path), error=str(exc))
 
     def _is_expired(self, claim: ClaimRecord, *, now: datetime) -> bool:
         return now >= claim.expires_at

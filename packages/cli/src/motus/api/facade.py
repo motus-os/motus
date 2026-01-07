@@ -846,7 +846,7 @@ class WorkCompiler:
 
         # Persist to kernel table (PA-061)
         work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
-        _persist_outcome(
+        persisted = _persist_outcome(
             outcome_id=outcome_id,
             lease_id=lease_id,
             outcome_type=outcome_type,
@@ -856,6 +856,26 @@ class WorkCompiler:
             description=description,
             metadata=metadata,
         )
+
+        if not persisted:
+            self._record_metric(
+                "work_compiler.put_outcome",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "outcome_id": outcome_id,
+                    "outcome_type": outcome_type,
+                    "work_id": work_id,
+                    "attempt_id": attempt_id,
+                    "error": "persistence_failed",
+                },
+            )
+            return OutcomeResponse(
+                accepted=False,
+                outcome_id=outcome_id,
+                message="Outcome registered but not persisted",
+            )
 
         self._record_metric(
             "work_compiler.put_outcome",
@@ -980,7 +1000,7 @@ class WorkCompiler:
 
         # Persist to kernel table (PA-061, PA-099)
         work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
-        _persist_evidence(
+        persisted = _persist_evidence(
             evidence_id=evidence_id,
             lease_id=lease_id,
             evidence_type=evidence_type,
@@ -991,6 +1011,26 @@ class WorkCompiler:
             diff_summary=diff_summary,
             log_excerpt=log_excerpt,
         )
+
+        if not persisted:
+            self._record_metric(
+                "work_compiler.record_evidence",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "evidence_id": evidence_id,
+                    "evidence_type": evidence_type,
+                    "work_id": work_id,
+                    "attempt_id": attempt_id,
+                    "error": "persistence_failed",
+                },
+            )
+            return EvidenceResponse(
+                accepted=False,
+                evidence_id=evidence_id,
+                message="Evidence recorded but not persisted",
+            )
 
         self._record_metric(
             "work_compiler.record_evidence",
@@ -1108,7 +1148,7 @@ class WorkCompiler:
 
         # Persist to kernel table (PA-061, PA-099)
         work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
-        _persist_decision(
+        persisted = _persist_decision(
             decision_id=decision_id,
             lease_id=lease_id,
             decision_type="approval",  # Default type for record_decision
@@ -1119,6 +1159,25 @@ class WorkCompiler:
             alternatives_considered=alternatives_considered,
             constraints=constraints,
         )
+
+        if not persisted:
+            self._record_metric(
+                "work_compiler.record_decision",
+                start_time,
+                success=False,
+                metadata={
+                    "lease_id": lease_id,
+                    "decision_id": decision_id,
+                    "work_id": work_id,
+                    "attempt_id": attempt_id,
+                    "error": "persistence_failed",
+                },
+            )
+            return DecisionResponse(
+                accepted=False,
+                decision_id=decision_id,
+                message="Decision logged but not persisted",
+            )
 
         self._record_metric(
             "work_compiler.record_decision",
