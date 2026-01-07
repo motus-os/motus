@@ -24,7 +24,24 @@ labels: release
 - [ ] PyPI publish completed (`publish.yml`) when releasing CLI
 - [ ] Website deploy completed (`deploy-website.yml`) if site changed
 
-## Post-release
+## Post-release monitoring
 - [ ] Release notes verified
 - [ ] Demo repo artifacts attached (Validate Tutorial workflow)
+- [ ] 24h review issue created (automatic via `post-release-24h.yml`)
+- [ ] 24h review completed and closed
+- [ ] 7d review issue created (automatic via `post-release-7d.yml`)
+- [ ] 7d review completed with decision: STABLE / PATCH / HOTFIX
+- [ ] 30d review scheduled (calendar reminder)
 - [ ] Open defects triaged for the next release
+
+## Post-release review links
+<!-- Fill in after reviews are created -->
+- 24h review: #
+- 7d review: #
+- 30d review: #
+
+## Incident readiness
+- [ ] Rollback gate verified (`./scripts/gates/gate-rollback-001.sh`)
+- [ ] Previous version available on PyPI for rollback
+- [ ] [Incident Response Playbook](../../docs/quality/INCIDENT-RESPONSE-PLAYBOOK.md) reviewed
+- [ ] PyPI Trusted Publisher configured for `publish.yml`
