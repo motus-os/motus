@@ -9,6 +9,7 @@ from pathlib import Path
 
 ALLOWED = {
     "src/motus/cli/help.py",
+    "src/motus/commands/db_cmd.py",
     "src/motus/context_cache/store.py",
     "src/motus/coordination/api/lease_store.py",
     "src/motus/core/database_connection.py",

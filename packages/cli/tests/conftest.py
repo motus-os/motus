@@ -40,7 +40,10 @@ SNAPSHOT_TEST_FILES = {"test_cli_snapshots.py"}
 
 
 def _module_missing(module: str) -> bool:
-    return importlib.util.find_spec(module) is None
+    try:
+        return importlib.util.find_spec(module) is None
+    except ModuleNotFoundError:
+        return True
 
 # Ensure tests import the local package, not a globally installed motus.
 PROJECT_ROOT = Path(__file__).resolve().parents[1]

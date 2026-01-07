@@ -130,7 +130,7 @@ jobs:
           python -m pip install --upgrade pip pip-audit
           pip install dist/*.whl
           motus --version
-          motus doctor --skip-claude-check
+          motus doctor
           pip-audit --strict --desc on
           deactivate
 

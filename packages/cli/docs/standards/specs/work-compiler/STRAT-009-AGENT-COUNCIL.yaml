@@ -193,7 +193,7 @@ examples:
       - D5: "The only open source framework that enforces scope and proves compliance"
 
       BLOCKERS SURFACED:
-      - GitHub org inconsistency (motus-os vs bnvoss)
+      - GitHub org inconsistency (motus-os vs legacy org)
       - License clarity needed
     tokens_used: ~1.5M (high due to research depth)
     files:

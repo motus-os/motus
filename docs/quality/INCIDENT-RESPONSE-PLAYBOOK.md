@@ -2,7 +2,7 @@
 
 This playbook defines procedures for responding to post-release incidents, including rollback decisions, user communication, and postmortem processes.
 
-**Owner:** @bnvoss (CODEOWNERS)
+**Owner:** CODEOWNERS
 **Last Updated:** 2026-01-07
 **Version:** 1.0.0
 
@@ -700,10 +700,10 @@ This playbook integrates with:
 
 ### Related Documents
 
-- [`docs/quality/release-checklist.md`](/Users/ben/GitHub/motus/docs/quality/release-checklist.md)
-- [`CHANGELOG.md`](/Users/ben/GitHub/motus/CHANGELOG.md)
-- [`SECURITY.md`](/Users/ben/GitHub/motus/SECURITY.md)
-- [`.github/BRANCH-PROTECTION.md`](/Users/ben/GitHub/motus/.github/BRANCH-PROTECTION.md)
+- [`docs/quality/release-checklist.md`](release-checklist.md)
+- [`CHANGELOG.md`](../../CHANGELOG.md)
+- [`SECURITY.md`](../../SECURITY.md)
+- [`.github/BRANCH-PROTECTION.md`](../../.github/BRANCH-PROTECTION.md)
 
 ---
 
@@ -738,7 +738,7 @@ pip install motusos==X.Y.Z
 
 | Role | Contact |
 |------|---------|
-| Maintainer | @bnvoss |
+| Maintainer | Release maintainers (CODEOWNERS) |
 | Security Issues | GitHub Security Advisories |
 | PyPI Access | Maintainer only |
 
