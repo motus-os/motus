@@ -5,6 +5,8 @@
       "featured": true,
       "status": "current",
       "verified_on": "2026-01-02",
+      "expires_on": "2026-04-02",
+      "verified_by": "motus-release-review",
       "method": "Docs-backed: coordination API reference",
       "claim": "Six API calls run the full loop: claim, context, outcome, evidence, decision, release.",
       "impact": "Work stays coordinated without sprawl.",
@@ -20,6 +22,8 @@
       "featured": true,
       "status": "current",
       "verified_on": "2026-01-02",
+      "expires_on": "2026-04-02",
+      "verified_by": "motus-release-review",
       "method": "Docs-backed: module registry definitions",
       "claim": "The registry labels what is current, building, and future.",
       "impact": "Teams align on what is real versus in progress.",
@@ -35,6 +39,8 @@
       "featured": true,
       "status": "current",
       "verified_on": "2026-01-02",
+      "expires_on": "2026-04-02",
+      "verified_by": "motus-release-review",
       "method": "Docs-backed: kernel schema definition",
       "claim": "Kernel schema v0.1.3 defines the authoritative tables.",
       "impact": "Stable contracts keep integrations aligned.",
@@ -50,6 +56,8 @@
       "featured": true,
       "status": "current",
       "verified_on": "2026-01-02",
+      "expires_on": "2026-04-02",
+      "verified_by": "motus-release-review",
       "method": "CI-backed: registry sync gate",
       "claim": "A registry sync gate keeps docs and website aligned.",
       "impact": "Published guidance stays in lockstep with releases.",
@@ -61,10 +69,33 @@
       ]
     },
     {
+      "id": "token-reduction",
+      "featured": false,
+      "status": "current",
+      "verified_on": "2026-01-07",
+      "expires_on": "2026-04-07",
+      "verified_by": "motus-release-review",
+      "method": "Demo logs: workflow runner benchmark (character counts; tokenizer recorded in results.json)",
+      "claim": "Example handoff: 14945 characters manually vs 1639 characters with Motus receipts.",
+      "impact": "Receipts compress handoffs without losing fidelity.",
+      "evidence": [
+        {
+          "label": "Demo logs + results",
+          "url": "https://github.com/motus-os/motus/tree/main/docs/proof/token-reduction"
+        },
+        {
+          "label": "Methodology",
+          "url": "https://github.com/motus-os/motus/blob/main/docs/proof/token-reduction/methodology.md"
+        }
+      ]
+    },
+    {
       "id": "no_cloud_dependency",
       "featured": false,
       "status": "current",
       "verified_on": "2026-01-03",
+      "expires_on": "2026-04-03",
+      "verified_by": "motus-release-review",
       "method": "Docs-backed: architecture principle",
       "claim": "No cloud dependency; data stays local by default.",
       "impact": "Local-first setup keeps teams moving.",
@@ -80,6 +111,8 @@
       "featured": false,
       "status": "current",
       "verified_on": "2026-01-03",
+      "expires_on": "2026-04-03",
+      "verified_by": "motus-release-review",
       "method": "Docs-backed: kernel invariants",
       "claim": "coordination.db is the single source of truth for work state.",
       "impact": "Deterministic state stays reviewable.",

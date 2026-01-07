@@ -7,6 +7,7 @@
     "evidence_path",
     "methodology",
     "last_verified",
+    "verified_by",
     "commit_sha"
   ],
   "status_values": [
@@ -16,22 +17,14 @@
   ],
   "claims": [
     {
-      "id": "token-reduction-95",
-      "claim": "Up to 95% fewer context tokens",
+      "id": "token-reduction",
+      "claim": "Example handoff: 14945 characters manually vs 1639 characters with Motus receipts",
       "status": "verified",
-      "evidence_path": "../../docs/proof/token-reduction-benchmark.md",
-      "methodology": "4 scenarios, reproducible benchmark",
-      "last_verified": "2026-01-06",
-      "commit_sha": "968c798135c646f1962267a6a57fa8839d6b4fbc"
-    },
-    {
-      "id": "token-reduction-88-avg",
-      "claim": "Average 88% reduction across usage patterns",
-      "status": "verified",
-      "evidence_path": "../../docs/proof/token-reduction-benchmark.md",
-      "methodology": "4 scenarios, reproducible benchmark",
-      "last_verified": "2026-01-06",
-      "commit_sha": "968c798135c646f1962267a6a57fa8839d6b4fbc"
+      "evidence_path": "../../docs/proof/token-reduction/",
+      "methodology": "Workflow runner demo logs; character counts (tokenizer recorded in results.json)",
+      "last_verified": "2026-01-07",
+      "verified_by": "motus-release-review",
+      "commit_sha": "4e10bd7c64a68a71ae3632adcdacfca2000d7c13"
     },
     {
       "id": "ecosystem-agnostic",
@@ -40,6 +33,7 @@
       "evidence_path": "../../packages/cli/docs/adr/ADR-005-ecosystem-agnostic-principle.md",
       "methodology": "ADR-005 ecosystem-agnostic principle; ingestors for Claude, Codex, Gemini",
       "last_verified": "2026-01-06",
+      "verified_by": "motus-release-review",
       "commit_sha": "968c798135c646f1962267a6a57fa8839d6b4fbc"
     }
   ]

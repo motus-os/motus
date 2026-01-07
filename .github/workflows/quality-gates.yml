@@ -44,7 +44,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install gate dependencies
-        run: python -m pip install pyyaml bandit
+        run: python -m pip install pyyaml bandit jsonschema
       - name: SQLite usage guard
         run: python scripts/ci/check_sqlite_usage.py
       - name: Module registry sync guard

@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import posixpath
 import sys
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -86,6 +87,13 @@ def _clean_url(url: str) -> str:
     return url
 
 
+def _parse_date(value: str) -> date | None:
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        return None
+
+
 def _validate_internal_url(url: str, routes: set[str], public_paths: set[str]) -> bool:
     if not url:
         return True
@@ -139,8 +147,20 @@ def main() -> int:
         if status not in ALLOWED_STATUSES:
             errors.append(f"Claim {claim_id} has invalid status: {status}")
 
-        if status == "current" and not claim.get("verified_on"):
-            errors.append(f"Claim {claim_id} is current but missing verified_on")
+        if status == "current":
+            if not claim.get("verified_on"):
+                errors.append(f"Claim {claim_id} is current but missing verified_on")
+            if not claim.get("expires_on"):
+                errors.append(f"Claim {claim_id} is current but missing expires_on")
+            if not claim.get("verified_by"):
+                errors.append(f"Claim {claim_id} is current but missing verified_by")
+            expires_on = str(claim.get("expires_on", "")).strip()
+            if expires_on:
+                parsed = _parse_date(expires_on)
+                if not parsed:
+                    errors.append(f"Claim {claim_id} has invalid expires_on: {expires_on}")
+                elif parsed < datetime.now(timezone.utc).date():
+                    errors.append(f"Claim {claim_id} expired on {expires_on}")
 
         evidence = claim.get("evidence", [])
         if not isinstance(evidence, list) or not evidence:
