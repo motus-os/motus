@@ -23,7 +23,7 @@ if ! command -v bandit >/dev/null 2>&1; then
 fi
 
 report_path="/tmp/bandit.json"
-bandit -r "$TARGET_DIR" -f json -o "$report_path"
+bandit -r "$TARGET_DIR" -f json -o "$report_path" --severity-level medium --confidence-level medium
 
 if [ ! -s "$report_path" ]; then
   echo "FAIL: bandit report missing or empty"

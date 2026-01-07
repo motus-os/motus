@@ -148,7 +148,7 @@ jobs:
       - name: Install gate dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install detect-secrets pip-licenses bandit
+          python -m pip install detect-secrets pip-licenses bandit build
           python -m pip install -e packages/cli[dev,web,mcp,gemini]
       - name: Run release gates
         run: scripts/gates/run-all-gates.sh

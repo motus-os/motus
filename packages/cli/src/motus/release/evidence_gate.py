@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+import tempfile
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -317,17 +318,20 @@ def run_release_evidence(repo_root: Path) -> EvidenceBundleResult:
     if not checks[-1].passed:
         return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
 
-    checks.append(_check_pytest(cli_root, Path("/tmp/pytest.json")))
-    if not checks[-1].passed:
-        return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+    with tempfile.TemporaryDirectory(prefix="motus-evidence-") as temp_dir:
+        temp_root = Path(temp_dir)
 
-    checks.append(_check_bandit(cli_root, Path("/tmp/bandit.json")))
-    if not checks[-1].passed:
-        return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+        checks.append(_check_pytest(cli_root, temp_root / "pytest.json"))
+        if not checks[-1].passed:
+            return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
 
-    checks.append(_check_pip_audit(cli_root, Path("/tmp/pip-audit.json")))
-    if not checks[-1].passed:
-        return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+        checks.append(_check_bandit(cli_root, temp_root / "bandit.json"))
+        if not checks[-1].passed:
+            return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
+
+        checks.append(_check_pip_audit(cli_root, temp_root / "pip-audit.json"))
+        if not checks[-1].passed:
+            return EvidenceBundleResult(False, checks, blocked=checks[-1].name)
 
     checks.append(_check_clean_venv(repo_root))
     if not checks[-1].passed:

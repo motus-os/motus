@@ -425,6 +425,21 @@ class WorkCompiler:
             )
             return None
 
+    def _attempt_exists(self, attempt_id: str) -> bool | None:
+        try:
+            db = get_db_manager()
+            with db.readonly_connection() as conn:
+                row = conn.execute(
+                    "SELECT 1 FROM attempts WHERE id = ?",
+                    (attempt_id,),
+                ).fetchone()
+            return row is not None
+        except Exception as exc:
+            _kernel_logger.warning(
+                f"Attempt ID validation skipped for {attempt_id}: {exc}"
+            )
+            return None
+
     def _resolve_lease_metadata(
         self,
         lease_id: str,
@@ -437,8 +452,17 @@ class WorkCompiler:
             work_id = self._lease_task_ids.get(lease_id)
         if attempt_id is None:
             attempt_id = self._lease_attempt_ids.get(lease_id)
-        if attempt_id is None:
-            attempt_id = lease_id
+
+        if work_id:
+            exists = self._roadmap_item_exists(work_id)
+            # Fail closed when kernel state cannot be validated.
+            if exists is not True:
+                work_id = None
+
+        if attempt_id:
+            exists = self._attempt_exists(attempt_id)
+            if exists is not True:
+                attempt_id = None
 
         return work_id, attempt_id
 

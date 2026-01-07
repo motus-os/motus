@@ -19,6 +19,9 @@ from motus.observability.audit import AuditEvent, AuditLogger
 
 console = Console()
 
+_ID_TABLES = {"change_requests", "roadmap_items"}
+_ID_COLUMNS = {"id"}
+
 
 @dataclass(frozen=True, slots=True)
 class AuditFinding:
@@ -45,9 +48,13 @@ def _utc_today() -> str:
 
 
 def _next_id(conn, *, prefix: str, table: str, column: str = "id") -> str:
+    if table not in _ID_TABLES:
+        raise ValueError(f"Unsupported table for id generation: {table}")
+    if column not in _ID_COLUMNS:
+        raise ValueError(f"Unsupported column for id generation: {column}")
     like = f"{prefix}-%"
     row = conn.execute(
-        f"SELECT {column} FROM {table} WHERE {column} LIKE ? ORDER BY {column} DESC LIMIT 1",
+        f"SELECT {column} FROM {table} WHERE {column} LIKE ? ORDER BY {column} DESC LIMIT 1",  # nosec B608
         (like,),
     ).fetchone()
     if row and row[0]:
