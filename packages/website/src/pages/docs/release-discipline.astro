@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Section from '../../components/Section.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import Panel from '../../components/Panel.astro';
+import DocsWayfinding from '../../components/DocsWayfinding.astro';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -101,5 +102,9 @@ const base = import.meta.env.BASE_URL.endsWith('/')
         See the gate criteria &#8594;
       </a>
     </div>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <DocsWayfinding pageId="release-discipline" base={base} />
   </Section>
 </Layout>

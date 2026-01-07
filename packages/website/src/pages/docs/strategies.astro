@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Section from '../../components/Section.astro';
 import Panel from '../../components/Panel.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
+import DocsWayfinding from '../../components/DocsWayfinding.astro';
 import patternsData from '../../data/implementation-patterns.json';
 import { validatePatterns } from '../../data/validate-patterns.js';
 import { getStatusClass, getStatusLabel } from '../../lib/status.js';
@@ -61,5 +62,9 @@ const statusLabel = (status) => getStatusLabel(status);
         </Panel>
       ))}
     </div>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <DocsWayfinding pageId="strategies" base={base} />
   </Section>
 </Layout>

@@ -5,6 +5,7 @@ import SectionHeader from '../../components/SectionHeader.astro';
 import Panel from '../../components/Panel.astro';
 import EcosystemFlow from '../../components/EcosystemFlow.astro';
 import EcosystemFlowMobile from '../../components/EcosystemFlowMobile.astro';
+import DocsWayfinding from '../../components/DocsWayfinding.astro';
 
 import ecosystemMap from '../../data/ecosystem-map.json';
 import proofLedger from '../../data/proof-ledger.json';
@@ -150,5 +151,9 @@ if (missingProof.length > 0) {
         </a>
       </div>
     </Panel>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <DocsWayfinding pageId="ecosystem" base={base} />
   </Section>
 </Layout>

@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Section from '../../components/Section.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import Panel from '../../components/Panel.astro';
+import DocsWayfinding from '../../components/DocsWayfinding.astro';
 import proofLedger from '../../data/proof-ledger.json';
 import { getStatusClass, getStatusLabel } from '../../lib/status.js';
 
@@ -104,5 +105,9 @@ const statusClass = (status) => getStatusClass(status, 'badge');
         </div>
       ))}
     </div>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <DocsWayfinding pageId="evidence" base={base} />
   </Section>
 </Layout>

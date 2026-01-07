@@ -1,0 +1,81 @@
+---
+import Panel from './Panel.astro';
+import docsNav from '../data/docs-nav.json';
+
+const { pageId, base = '/' } = Astro.props;
+
+const pages = docsNav.pages || {};
+const order = docsNav.order || [];
+const page = pages[pageId];
+
+if (!page) {
+  throw new Error(`Docs navigation missing page: ${pageId}`);
+}
+
+const normalizedBase = base.endsWith('/') ? base : `${base}/`;
+const withBase = (path) => {
+  if (!path) return null;
+  return path.startsWith('http') ? path : `${normalizedBase}${path.replace(/^\/+/, '')}`;
+};
+
+const index = order.indexOf(pageId);
+const prevId = index > 0 ? order[index - 1] : null;
+const nextId = index >= 0 && index < order.length - 1 ? order[index + 1] : null;
+
+const prev = prevId ? pages[prevId] : null;
+const next = nextId ? pages[nextId] : null;
+const related = (page.related || []).map((id) => pages[id]).filter(Boolean);
+const docsIndex = pages['docs-index'];
+const canonicalUrl = page.canonical_url || null;
+const canonicalLabel = page.canonical_label || 'Canonical source';
+---
+
+<Panel size="sm" class="space-y-phi-2">
+  <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Docs wayfinding</p>
+
+  <div class="flex flex-wrap items-center gap-phi-2 text-sm">
+    {docsIndex ? (
+      <a href={withBase(docsIndex.path)} class="text-mint hover:text-text-primary transition-colors">
+        {docsIndex.title} &#8594;
+      </a>
+    ) : null}
+    {canonicalUrl ? (
+      <a
+        href={canonicalUrl}
+        class="text-mint hover:text-text-primary transition-colors"
+        target="_blank"
+        rel="noopener"
+      >
+        {canonicalLabel} &#8594;
+      </a>
+    ) : null}
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-phi-2 text-sm">
+    {prev ? (
+      <a href={withBase(prev.path)} class="text-text-secondary hover:text-text-primary transition-colors">
+        Previous: <span class="text-text-primary">{prev.title}</span>
+      </a>
+    ) : (
+      <span class="text-text-secondary/60">Previous: —</span>
+    )}
+    {next ? (
+      <a href={withBase(next.path)} class="text-text-secondary hover:text-text-primary transition-colors">
+        Next: <span class="text-text-primary">{next.title}</span>
+      </a>
+    ) : (
+      <span class="text-text-secondary/60">Next: —</span>
+    )}
+  </div>
+
+  {related.length > 0 ? (
+    <div class="flex flex-wrap items-center gap-phi-2 text-xs text-text-secondary">
+      <span class="uppercase tracking-[0.25em]">Related</span>
+      {related.map((item) => (
+        <a href={withBase(item.path)} class="text-mint hover:text-text-primary transition-colors">
+          {item.title}
+        </a>
+      ))}
+    </div>
+  ) : null}
+</Panel>

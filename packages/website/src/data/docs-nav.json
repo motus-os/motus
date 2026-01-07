@@ -1,0 +1,106 @@
+{
+  "order": [
+    "evidence",
+    "gates",
+    "strategies",
+    "ecosystem",
+    "release-discipline",
+    "demos",
+    "schema",
+    "implementation"
+  ],
+  "pages": {
+    "docs-index": {
+      "title": "Docs Home",
+      "path": "docs"
+    },
+    "get-started": {
+      "title": "Get Started",
+      "path": "get-started"
+    },
+    "how-it-works": {
+      "title": "How It Works",
+      "path": "how-it-works"
+    },
+    "implementation": {
+      "title": "Implementation Guide",
+      "path": "implementation",
+      "canonical_label": "Implementation docs (GitHub)",
+      "canonical_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/implementation/README.md",
+      "related": [
+        "strategies",
+        "get-started"
+      ]
+    },
+    "evidence": {
+      "title": "Evidence Registry",
+      "path": "docs/evidence",
+      "canonical_label": "Proof ledger (GitHub)",
+      "canonical_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/website/proof-ledger.yaml",
+      "related": [
+        "gates",
+        "ecosystem"
+      ]
+    },
+    "gates": {
+      "title": "Gates",
+      "path": "docs/gates",
+      "canonical_label": "Gate standards (GitHub)",
+      "canonical_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/standards/gates.yaml",
+      "related": [
+        "evidence",
+        "strategies"
+      ]
+    },
+    "strategies": {
+      "title": "Strategies",
+      "path": "docs/strategies",
+      "canonical_label": "Implementation patterns (GitHub)",
+      "canonical_url": "https://github.com/motus-os/motus/blob/main/packages/website/src/data/implementation-patterns.json",
+      "related": [
+        "implementation",
+        "gates"
+      ]
+    },
+    "ecosystem": {
+      "title": "Ecosystem Map",
+      "path": "docs/ecosystem",
+      "canonical_label": "Ecosystem map (GitHub)",
+      "canonical_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/website/ecosystem-map.yaml",
+      "related": [
+        "implementation",
+        "evidence"
+      ]
+    },
+    "release-discipline": {
+      "title": "Release Discipline",
+      "path": "docs/release-discipline",
+      "canonical_label": "Release standard (GitHub)",
+      "canonical_url": "https://github.com/motus-os/motus/blob/main/PRE-RELEASE-REVIEW-STANDARD.md",
+      "related": [
+        "evidence",
+        "gates"
+      ]
+    },
+    "demos": {
+      "title": "Demos",
+      "path": "docs/demos",
+      "canonical_label": "Demo benchmark (GitHub)",
+      "canonical_url": "https://github.com/motus-os/motus/blob/main/packages/website/benchmark/README.md",
+      "related": [
+        "get-started",
+        "how-it-works"
+      ]
+    },
+    "schema": {
+      "title": "Kernel Schema",
+      "path": "docs/schema",
+      "canonical_label": "Schema docs (GitHub)",
+      "canonical_url": "https://github.com/motus-os/motus/blob/main/packages/cli/docs/schema/index.md",
+      "related": [
+        "implementation",
+        "evidence"
+      ]
+    }
+  }
+}

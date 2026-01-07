@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Section from '../../components/Section.astro';
 import Panel from '../../components/Panel.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
+import DocsWayfinding from '../../components/DocsWayfinding.astro';
 
 const base = import.meta.env.BASE_URL.endsWith('/')
   ? import.meta.env.BASE_URL
@@ -98,5 +99,9 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     >
       View Schema Evidence
     </a>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <DocsWayfinding pageId="schema" base={base} />
   </Section>
 </Layout>
