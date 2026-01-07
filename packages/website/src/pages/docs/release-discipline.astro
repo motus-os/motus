@@ -1,0 +1,130 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Section from '../../components/Section.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import Panel from '../../components/Panel.astro';
+
+const base = import.meta.env.BASE_URL.endsWith('/')
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<Layout title="Release Discipline - Motus">
+  <Section tone="dark" pad="hero" class="text-center" innerClass="max-w-3xl">
+    <SectionHeader
+      eyebrow="Release Discipline"
+      title="Every release writes its own roadmap"
+      subtitle="A release is a contract: required items, gates, and evidence are created before the work starts."
+      as="h1"
+      size="xl"
+    />
+    <div class="mt-phi-3 flex flex-wrap justify-center gap-phi-2 text-sm">
+      <a href={`${base}docs/gates`} class="text-mint hover:text-text-primary transition-colors">Evidence gates</a>
+      <a href={`${base}docs/evidence`} class="text-mint hover:text-text-primary transition-colors">Evidence registry</a>
+      <a href={`${base}implementation#phase-gates`} class="text-mint hover:text-text-primary transition-colors">
+        Implementation gates
+      </a>
+    </div>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <SectionHeader
+      eyebrow="Release Loop"
+      title="Roadmap first, work second"
+      subtitle="The checklist is not optional. It defines the required artifacts, gates, and proofs."
+      align="left"
+      size="md"
+      class="mb-phi-4"
+      maxWidth="max-w-3xl"
+    />
+    <div class="grid md:grid-cols-2 gap-phi-3">
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 1</p>
+        <h3 class="text-xl font-display text-text-primary">Instantiate the release</h3>
+        <p class="text-sm text-text-secondary">
+          Opening a release phase seeds the roadmap with required work items and acceptance criteria.
+        </p>
+        <ul class="text-sm text-text-secondary space-y-phi-1">
+          <li>Release checklist and gating plan</li>
+          <li>Proof requirements for public claims</li>
+          <li>Docs and tutorial sync requirements</li>
+        </ul>
+      </Panel>
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 2</p>
+        <h3 class="text-xl font-display text-text-primary">Execute inside the gates</h3>
+        <p class="text-sm text-text-secondary">
+          Work proceeds only through registered gates. Evidence bundles are generated per run.
+        </p>
+        <ul class="text-sm text-text-secondary space-y-phi-1">
+          <li>Release gates for repo hygiene and safety</li>
+          <li>Policy gates for scoped work</li>
+          <li>Evidence artifacts captured automatically</li>
+        </ul>
+      </Panel>
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 3</p>
+        <h3 class="text-xl font-display text-text-primary">Verify the proof trail</h3>
+        <p class="text-sm text-text-secondary">
+          Claims are only eligible when a proof artifact exists and is registered.
+        </p>
+        <ul class="text-sm text-text-secondary space-y-phi-1">
+          <li>Proof ledger entries required for claims</li>
+          <li>Evidence links kept within one click</li>
+          <li>Audit-ready artifacts in docs/quality</li>
+        </ul>
+      </Panel>
+      <Panel size="sm" class="space-y-phi-2">
+        <p class="text-xs uppercase tracking-[0.25em] text-text-secondary">Step 4</p>
+        <h3 class="text-xl font-display text-text-primary">Ship with confidence</h3>
+        <p class="text-sm text-text-secondary">
+          If any required item is missing, the release stays blocked. No exceptions.
+        </p>
+        <ul class="text-sm text-text-secondary space-y-phi-1">
+          <li>Checks pass before tagging</li>
+          <li>Release notes align with evidence</li>
+          <li>Website and docs publish in sync</li>
+        </ul>
+      </Panel>
+    </div>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-5xl">
+    <SectionHeader
+      eyebrow="Release Artifacts"
+      title="What every release must produce"
+      subtitle="These are the required outputs, not optional nice-to-haves."
+      align="left"
+      size="md"
+      class="mb-phi-4"
+      maxWidth="max-w-3xl"
+    />
+    <Panel size="sm" class="space-y-phi-2">
+      <ul class="text-sm text-text-secondary space-y-phi-1">
+        <li>Release checklist and gate plan</li>
+        <li>Updated proof ledger entries for claims touched</li>
+        <li>Health ledger and release evidence artifacts</li>
+        <li>Validated tutorial steps and demo outputs</li>
+        <li>Public surface regeneration and sync checks</li>
+      </ul>
+    </Panel>
+  </Section>
+
+  <Section tone="light" pad="tight" innerClass="max-w-4xl text-center">
+    <SectionHeader
+      eyebrow="Why this exists"
+      title="We do the hard work before we write the copy"
+      subtitle="The roadmap engine prevents drift and keeps every claim tied to proof."
+      size="md"
+      class="mb-phi-3"
+    />
+    <div class="flex flex-wrap justify-center gap-phi-2 text-sm">
+      <a href={`${base}docs/evidence`} class="text-mint hover:text-text-primary transition-colors">
+        View the proof ledger &#8594;
+      </a>
+      <a href={`${base}docs/gates`} class="text-mint hover:text-text-primary transition-colors">
+        See the gate criteria &#8594;
+      </a>
+    </div>
+  </Section>
+</Layout>
