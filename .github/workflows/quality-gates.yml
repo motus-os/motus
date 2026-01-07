@@ -58,7 +58,7 @@ jobs:
       - name: Ecosystem map sync guard
         run: python scripts/ci/check_ecosystem_map.py
       - name: Bandit security scan
-        run: ../scripts/gates/gate-sec-003.sh
+        run: ../../scripts/gates/gate-sec-003.sh
 
   messaging-sync:
     runs-on: ubuntu-latest

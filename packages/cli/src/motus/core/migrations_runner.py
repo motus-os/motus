@@ -135,10 +135,10 @@ def apply_migration(conn: sqlite3.Connection, migration: Migration) -> int:
         _execute_migration_up(conn, migration)
         duration_ms = int((time.monotonic() - start) * 1000)
         _record_migration(conn, migration, duration_ms)
-        conn.execute("COMMIT")
+        conn.commit()
         return duration_ms
     except Exception:
-        conn.execute("ROLLBACK")
+        conn.rollback()
         raise
 def run_migrations(
     conn: sqlite3.Connection,
