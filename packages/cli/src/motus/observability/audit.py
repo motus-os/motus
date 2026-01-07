@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict
 
-from motus.core.bootstrap import get_instance_id
 from motus.core.database import DatabaseManager, get_db_manager
 
 
@@ -45,7 +44,12 @@ class AuditLogger:
 
     def emit(self, event: AuditEvent) -> None:
         ts = _format_ts(event.timestamp or _utc_now())
-        instance_id = get_instance_id()
+        try:
+            from motus.core.bootstrap import get_instance_id
+
+            instance_id = get_instance_id()
+        except Exception:
+            instance_id = "unknown"
 
         with self._db.transaction() as conn:
             conn.execute(
