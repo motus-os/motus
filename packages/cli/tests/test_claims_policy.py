@@ -41,7 +41,7 @@ class ClaimsDBManager:
     def __init__(self, conn: sqlite3.Connection):
         self._connection = conn
 
-    def connection(self):
+    def connection(self, *, read_only: bool = False):
         @contextmanager
         def ctx():
             yield self._connection
@@ -54,9 +54,10 @@ class ClaimsDBManager:
             self._connection.execute("BEGIN IMMEDIATE")
             try:
                 yield self._connection
-                self._connection.execute("COMMIT")
+                self._connection.commit()
             except Exception:
-                self._connection.execute("ROLLBACK")
+                if self._connection.in_transaction:
+                    self._connection.rollback()
                 raise
 
         return ctx()

@@ -159,9 +159,10 @@ class ContextCache:
         try:
             self._conn.execute("BEGIN IMMEDIATE")
             yield self._conn
-            self._conn.execute("COMMIT")
+            self._conn.commit()
         except Exception:
-            self._conn.execute("ROLLBACK")
+            if self._conn.in_transaction:
+                self._conn.rollback()
             raise
         finally:
             self._write_lock.release()

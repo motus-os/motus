@@ -261,9 +261,10 @@ class MigrationRunner:
                 self.conn.execute(
                     "DELETE FROM schema_version WHERE version = ?", (version,)
                 )
-                self.conn.execute("COMMIT")
+                self.conn.commit()
             except Exception:
-                self.conn.execute("ROLLBACK")
+                if self.conn.in_transaction:
+                    self.conn.rollback()
                 raise
 
             logger.info(f"Migration {version} rolled back")

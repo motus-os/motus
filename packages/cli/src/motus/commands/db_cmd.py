@@ -82,7 +82,8 @@ def _try_acquire_write_lock(db_path: Path) -> bool:
         configure_connection(conn, set_row_factory=False)
         conn.execute("PRAGMA busy_timeout = 200")
         conn.execute("BEGIN IMMEDIATE")
-        conn.execute("ROLLBACK")
+        if conn.in_transaction:
+            conn.rollback()
         return True
     except sqlite3.OperationalError as exc:
         if "database is locked" in str(exc).lower():

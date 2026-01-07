@@ -223,7 +223,7 @@ class ProjectMemory:
                 record_progress(conn, skill_name=skill_name, delta=delta)
 
     def get_unlocked_skills(self) -> list[str]:
-        with self._global_db.connection(read_only=True) as conn:
+        with self._global_db.connection() as conn:
             return get_unlocked_skills(conn)
 
     def unlock_skill(self, skill_name: str) -> bool:
