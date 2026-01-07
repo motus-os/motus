@@ -12,7 +12,7 @@ This document lists GitHub settings that must be configured manually via the Git
 | Required approving reviews | 1 |
 | Dismiss stale PR reviews | Yes |
 | Require status checks to pass | Yes |
-| Required checks | `hygiene-gates`, `messaging-sync`, `package-validation` |
+| Required checks | `hygiene-gates`, `messaging-sync`, `package-validation`, `gates` |
 | Require branches to be up to date | Yes |
 | Require conversation resolution | Yes |
 
