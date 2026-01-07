@@ -78,6 +78,38 @@ echo "=== File Inventory ==="
 file_count=$(find "$tmpdir" -type f | wc -l | tr -d ' ')
 echo "Total files: $file_count"
 
+# Allowlist check (fail-closed on unexpected top-level entries)
+echo ""
+echo "=== Allowlist Check ==="
+allowlist_failed=0
+unexpected_top=$(find "$tmpdir" -mindepth 1 -maxdepth 1 -print | while read -r entry; do
+  base=$(basename "$entry")
+  case "$base" in
+    motus|motusos) ;;
+    *.dist-info|*.data) ;;
+    *) echo "$base";;
+  esac
+done)
+
+if [ -n "$unexpected_top" ]; then
+  echo "  [BLOCK] Unexpected top-level entries:"
+  echo "$unexpected_top" | sed 's/^/    /'
+  allowlist_failed=1
+else
+  echo "  [OK] Only expected top-level entries"
+fi
+
+echo ""
+echo "=== Internal Artifact Scan ==="
+internal_hits=$(find "$tmpdir" \( -path "*/.ai/*" -o -path "*/.github/*" -o -path "*/scripts/*" -o -path "*/.codex/*" \) -print 2>/dev/null | head -10)
+if [ -n "$internal_hits" ]; then
+  echo "  [BLOCK] Internal artifacts found:"
+  echo "$internal_hits" | sed 's/^/    /'
+  allowlist_failed=1
+else
+  echo "  [OK] No internal artifacts found"
+fi
+
 # Check for blocklisted patterns
 echo ""
 echo "=== Blocklist Check ==="
@@ -195,7 +227,7 @@ fi
 # Final verdict
 echo ""
 echo "=================================="
-if [ $blocklist_failed -eq 1 ] || [ $path_failed -eq 1 ]; then
+if [ $blocklist_failed -eq 1 ] || [ $path_failed -eq 1 ] || [ $allowlist_failed -eq 1 ]; then
   echo "FAIL: Wheel contains prohibited content"
   echo ""
   echo "The wheel includes files or content that should not ship."
