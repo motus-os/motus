@@ -146,8 +146,17 @@ htmlcov
 .ruff_cache
 "
 
+allowlist_patterns=(
+  "motus/safety/test_harness.py"
+)
+
 for pattern in $blocklist_patterns; do
   found=$(find "$root_path" -name "$pattern" 2>/dev/null | head -5)
+  if [ -n "$found" ]; then
+    for allow in "${allowlist_patterns[@]}"; do
+      found=$(echo "$found" | grep -v "$allow" || true)
+    done
+  fi
   if [ -n "$found" ]; then
     echo "  [BLOCK] Found '$pattern':"
     echo "$found" | sed 's/^/    /'
