@@ -27,7 +27,7 @@ factually accurate and contextually useful for different roles.
 - [API Index](api/index.md)
 - [Kernel Schema](schema/index.md)
 - [CLI Reference](cli-reference.md)
-- [Architecture](../../ARCHITECTURE.md)
+- [Architecture](../../../ARCHITECTURE.md)
 - [Terminology](TERMINOLOGY.md)
 - [Userland Contract](standards/userland-contract.md)
 - [Website Publishing](website-publishing.md)

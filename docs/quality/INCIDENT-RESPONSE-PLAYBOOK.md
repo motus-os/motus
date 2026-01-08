@@ -266,7 +266,7 @@ gh workflow run publish.yml -f tag=v0.1.2
 2. **Update README** (temporarily):
    ```markdown
    > **Warning:** v0.1.1 has a known issue. Please use v0.1.0 until v0.1.2 is released.
-   > See [Issue #XX](link) for details.
+   > See the incident issue for details.
    ```
 
 #### Downgrade Instructions Template

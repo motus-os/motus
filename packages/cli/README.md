@@ -14,7 +14,7 @@
 
 ## Demo
 
-![Motus claim-evidence-release loop](docs/assets/demo.gif)
+![Motus claim-evidence-release loop](../../docs/assets/demo.gif)
 
 ## Install
 

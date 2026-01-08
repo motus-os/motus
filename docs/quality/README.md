@@ -1,10 +1,9 @@
-# Quality Documentation Index
+# Quality Docs
 
-This directory contains release and quality references used during hardening and review.
+This folder holds release-quality and incident-response references.
 
 ## Core References
 
-- `release-checklist.md` - Release readiness checklist
-- `../PRE-RELEASE-REVIEW-STANDARD.md` - Release review standard (authoritative)
-- `MANUAL-GITHUB-SETUP.md` - Required GitHub UI configuration
-- `INCIDENT-RESPONSE-PLAYBOOK.md` - Incident response and rollback procedures
+- [Manual GitHub Setup](MANUAL-GITHUB-SETUP.md)
+- [Incident Response Playbook](INCIDENT-RESPONSE-PLAYBOOK.md)
+- [Outcomes](outcomes/)
