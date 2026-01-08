@@ -16,7 +16,6 @@ from typing import Any
 
 from motus.hardening.package_conflicts import detect_package_conflicts
 
-
 MAX_HEALTH_LEDGER_AGE_HOURS = 24
 
 

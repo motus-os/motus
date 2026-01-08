@@ -14,8 +14,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Iterator
 
 from motus.config import config
-from motus.core.cache import TTLCache, register_cache
 from motus.core import configure_connection
+from motus.core.cache import TTLCache, register_cache
 from motus.exceptions import SessionNotFoundError
 
 from .session_store_queries import SessionStoreQueries, _format_ts, _normalize_outcome, _utc_now

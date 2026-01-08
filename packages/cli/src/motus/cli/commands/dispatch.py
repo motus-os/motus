@@ -243,8 +243,8 @@ def dispatch_command(
             db_migrate_path_command,
             db_recover_command,
             db_stats_command,
-            db_wait_command,
             db_vacuum_command,
+            db_wait_command,
         )
 
         db_cmd = getattr(args, "db_command", None)

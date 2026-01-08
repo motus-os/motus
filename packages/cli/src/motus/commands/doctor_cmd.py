@@ -14,14 +14,13 @@ from typing import Any, Dict
 from rich.console import Console
 
 from motus.cli.exit_codes import EXIT_ERROR, EXIT_SUCCESS
+from motus.config import config as motus_config
+from motus.config_loader import get_config_path
 from motus.core import get_db_manager, verify_schema_version
 from motus.core.database_connection import get_database_path
 from motus.core.errors import DatabaseError, SchemaError
-from motus.config import config as motus_config
-from motus.config_loader import get_config_path
 from motus.hardening.health import HealthChecker, HealthResult, HealthStatus
 from motus.hardening.package_conflicts import detect_package_conflicts
-
 
 MIN_DISK_FREE_BYTES = 100 * 1024 * 1024
 MAX_LOG_BYTES = 100 * 1024 * 1024

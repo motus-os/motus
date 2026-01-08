@@ -5,14 +5,14 @@
 
 from __future__ import annotations
 
+import re
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-import re
 
-from motus.ingest.parser import SpanAction
 from motus.config import config
 from motus.exceptions import ConfigError
+from motus.ingest.parser import SpanAction
 
 _GATE_TIER_RE = re.compile(r"^T(\d+)$")
 
@@ -124,8 +124,8 @@ def process_span_action(span: SpanAction) -> GateDecision:
     declared_files = _extract_declared_files(span, repo_dir)
 
     try:
-        from motus.policy.loader import compute_gate_plan
         from motus.policy.load import load_vault_policy
+        from motus.policy.loader import compute_gate_plan
         from motus.policy.runner import run_gate_plan
 
         policy = load_vault_policy(vault_dir)

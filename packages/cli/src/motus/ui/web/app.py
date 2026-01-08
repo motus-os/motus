@@ -29,8 +29,8 @@ except ImportError:
 if TYPE_CHECKING:
     from fastapi.staticfiles import StaticFiles
 
-from motus.logging import get_logger
 from motus.hardening.package_conflicts import detect_package_conflicts
+from motus.logging import get_logger
 from motus.ui.web.routes import register_routes
 from motus.ui.web.state import SessionState
 from motus.ui.web.websocket import WebSocketHandler

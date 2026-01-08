@@ -14,7 +14,6 @@ import yaml
 from motus.config import config
 from motus.core.cache import TTLCache, register_cache
 
-
 _CACHE_TTL_S = int(os.environ.get("MC_STANDARDS_CACHE_TTL_S", "300"))
 _CACHE_SIZE = int(os.environ.get("MC_STANDARDS_CACHE_SIZE", "256"))
 

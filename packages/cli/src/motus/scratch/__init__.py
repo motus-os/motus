@@ -10,7 +10,7 @@ from .schemas import (
     ScratchRoadmapLink,
 )
 from .store import (
-    ScratchEntryNotFound,
+    ScratchEntryNotFoundError,
     ScratchPromotionError,
     ScratchPromotionResult,
     ScratchStore,
@@ -23,7 +23,7 @@ __all__ = [
     "ScratchIndex",
     "ScratchIndexEntry",
     "ScratchRoadmapLink",
-    "ScratchEntryNotFound",
+    "ScratchEntryNotFoundError",
     "ScratchPromotionError",
     "ScratchPromotionResult",
     "ScratchStore",
