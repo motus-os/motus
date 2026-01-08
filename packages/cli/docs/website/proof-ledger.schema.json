@@ -78,7 +78,25 @@
               }
             }
           }
-        }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "current"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "verified_on",
+                "expires_on",
+                "verified_by"
+              ]
+            }
+          }
+        ]
       }
     }
   }
