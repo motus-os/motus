@@ -40,6 +40,7 @@ if [ -z "$sdist_path" ]; then
     echo "  Install build: pip install build"
     exit 1
   }
+  DIST_DIR="$REPO_ROOT/packages/cli/dist"
   sdist_path=$(find "$DIST_DIR" -name "*.tar.gz" -type f | sort -V | tail -1)
 fi
 

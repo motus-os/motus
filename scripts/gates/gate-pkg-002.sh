@@ -36,11 +36,12 @@ fi
 if [ -z "$wheel_path" ]; then
   echo "No wheel found in dist/, building..."
   cd "$REPO_ROOT/packages/cli"
-  python3 -m build --wheel -q 2>/dev/null || {
+  python3 -m build --wheel || {
     echo "FAIL: Cannot build wheel"
     echo "  Install build: pip install build"
     exit 1
   }
+  DIST_DIR="$REPO_ROOT/packages/cli/dist"
   wheel_path=$(find "$DIST_DIR" -name "*.whl" -type f | sort -V | tail -1)
 fi
 
