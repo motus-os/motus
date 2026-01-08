@@ -10,6 +10,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from motus.atomic_io import atomic_write_json
+
 from .schemas import SNAPSHOT_SCHEMA, FileState, Snapshot
 
 
@@ -60,8 +62,7 @@ class SnapshotManager:
             return None
 
         with open(snapshot_path) as f:
-            data = json.load(f)
-        return Snapshot.from_json(data)
+            return Snapshot.from_json(json.load(f))
 
     def _generate_snapshot_id(self, reversal_id: str) -> str:
         """Generate snapshot ID from reversal ID."""
@@ -79,5 +80,4 @@ class SnapshotManager:
     def _save_snapshot(self, snapshot: Snapshot) -> None:
         """Save snapshot to disk."""
         snapshot_path = self.snapshot_dir / f"{snapshot.snapshot_id}.json"
-        with open(snapshot_path, "w") as f:
-            json.dump(snapshot.to_json(), f, indent=2)
+        atomic_write_json(snapshot_path, snapshot.to_json())
