@@ -53,6 +53,13 @@ gates:
     command: "scripts/gates/gate-roadmap-001.sh"
     required: true
 
+  - id: "GATE-STD-001"
+    tier: "T0"
+    kind: "plan"
+    description: "Standards registry seed + version check"
+    command: "scripts/gates/gate-std-001.sh"
+    required: true
+
   - id: "GATE-CLI-001"
     tier: "T1"
     kind: "test"

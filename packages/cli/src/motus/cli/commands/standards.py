@@ -142,4 +142,35 @@ def register_standards_parsers(
         "--json", action="store_true", help="Emit machine-readable JSON"
     )
 
+    standards_registry_parser = standards_subparsers.add_parser(
+        "registry", help="List standards from coordination.db"
+    )
+    standards_registry_parser.add_argument(
+        "--level",
+        choices=["program", "product", "feature", "release", "cr"],
+        help="Filter by standard level",
+    )
+    standards_registry_parser.add_argument(
+        "--check-type",
+        dest="check_type",
+        choices=["boolean", "threshold", "pattern", "manual"],
+        help="Filter by check type",
+    )
+    standards_registry_parser.add_argument(
+        "--blocking",
+        choices=["yes", "no"],
+        help="Filter by blocking status",
+    )
+    standards_registry_parser.add_argument(
+        "--json", action="store_true", help="Emit machine-readable JSON"
+    )
+
+    standards_show_parser = standards_subparsers.add_parser(
+        "show", help="Show a standard from coordination.db"
+    )
+    standards_show_parser.add_argument("standard_id", help="Standard id")
+    standards_show_parser.add_argument(
+        "--json", action="store_true", help="Emit machine-readable JSON"
+    )
+
     return standards_parser

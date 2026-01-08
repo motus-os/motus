@@ -24,7 +24,7 @@ from .layered_config import get_config
 
 logger = get_logger(__name__)
 
-EXPECTED_SCHEMA_VERSION = 20
+EXPECTED_SCHEMA_VERSION = 21
 
 
 def configure_connection(

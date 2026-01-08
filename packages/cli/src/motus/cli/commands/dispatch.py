@@ -131,6 +131,8 @@ def dispatch_command(
         raise SystemExit(orient_command(args))
     if command == "standards":
         from motus.commands.standards_cmd import (
+            standards_registry_command,
+            standards_show_command,
             standards_list_proposals_command,
             standards_promote_command,
             standards_propose_command,
@@ -145,6 +147,10 @@ def dispatch_command(
             raise SystemExit(standards_propose_command(args))
         if standards_cmd == "list-proposals":
             raise SystemExit(standards_list_proposals_command(args))
+        if standards_cmd == "registry":
+            raise SystemExit(standards_registry_command(args))
+        if standards_cmd == "show":
+            raise SystemExit(standards_show_command(args))
         if standards_cmd == "promote":
             raise SystemExit(standards_promote_command(args))
         if standards_cmd == "reject":

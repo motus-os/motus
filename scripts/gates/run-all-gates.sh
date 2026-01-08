@@ -60,6 +60,7 @@ run_gate "GATE-REPO-001" "$SCRIPT_DIR/gate-repo-001.sh"
 run_gate "GATE-DB-001" "$SCRIPT_DIR/gate-db-001.sh"
 run_gate "GATE-DB-002" "$SCRIPT_DIR/gate-db-002.sh"
 run_gate "GATE-ROADMAP-001" "$SCRIPT_DIR/gate-roadmap-001.sh"
+run_gate "GATE-STD-001" "$SCRIPT_DIR/gate-std-001.sh"
 
 # Phase 2: Functionality checks
 echo ""

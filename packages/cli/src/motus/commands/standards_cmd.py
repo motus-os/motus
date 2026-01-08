@@ -12,9 +12,11 @@ from typing import Any
 
 import yaml
 from rich.console import Console
+from rich.table import Table
 
 from motus.cli.exit_codes import EXIT_ERROR, EXIT_SUCCESS, EXIT_USAGE
 from motus.orient.fs_resolver import find_motus_dir
+from motus.core.database import get_db_manager
 from motus.standards.proposals import PromotionError, ProposalManager
 from motus.standards.validator import StandardsValidator
 
@@ -177,6 +179,132 @@ def standards_list_proposals_command(args) -> int:
                 markup=False,
             )
 
+    return EXIT_SUCCESS
+
+
+def _fetch_standards(
+    *,
+    standard_id: str | None = None,
+    level: str | None = None,
+    check_type: str | None = None,
+    blocking: str | None = None,
+) -> list[dict[str, Any]]:
+    db = get_db_manager()
+    query = (
+        "SELECT id, name, description, level_key, check_type_key, "
+        "check_command, check_pattern, threshold_min, threshold_max, "
+        "failure_message, is_blocking, sort_order, doc_path, created_at, updated_at "
+        "FROM standards WHERE deleted_at IS NULL"
+    )
+    params: list[Any] = []
+    if standard_id:
+        query += " AND id = ?"
+        params.append(standard_id)
+    if level:
+        query += " AND level_key = ?"
+        params.append(level)
+    if check_type:
+        query += " AND check_type_key = ?"
+        params.append(check_type)
+    if blocking:
+        query += " AND is_blocking = ?"
+        params.append(1 if blocking == "yes" else 0)
+    query += " ORDER BY level_key, sort_order, id"
+
+    with db.readonly_connection() as conn:
+        rows = conn.execute(query, params).fetchall()
+    return [dict(row) for row in rows]
+
+
+def standards_registry_command(args) -> int:
+    try:
+        standards = _fetch_standards(
+            level=getattr(args, "level", None),
+            check_type=getattr(args, "check_type", None),
+            blocking=getattr(args, "blocking", None),
+        )
+    except Exception as exc:
+        error_console.print(str(exc), style="red", markup=False)
+        return EXIT_USAGE
+
+    if getattr(args, "json", False):
+        console.print(
+            json.dumps(
+                {"count": len(standards), "standards": standards},
+                indent=2,
+                sort_keys=True,
+            ),
+            markup=False,
+        )
+        return EXIT_SUCCESS
+
+    table = Table(title="Motus Standards", show_lines=False)
+    table.add_column("ID", style="dim")
+    table.add_column("Level")
+    table.add_column("Type")
+    table.add_column("Blocking")
+    table.add_column("Name")
+
+    for standard in standards:
+        table.add_row(
+            str(standard.get("id", "")),
+            str(standard.get("level_key", "")),
+            str(standard.get("check_type_key", "")),
+            "yes" if standard.get("is_blocking") else "no",
+            str(standard.get("name", "")),
+        )
+
+    console.print(table)
+    return EXIT_SUCCESS
+
+
+def standards_show_command(args) -> int:
+    standard_id = (getattr(args, "standard_id", None) or "").strip()
+    if not standard_id:
+        error_console.print("Standard id required", style="red", markup=False)
+        return EXIT_USAGE
+
+    try:
+        standards = _fetch_standards(standard_id=standard_id)
+    except Exception as exc:
+        error_console.print(str(exc), style="red", markup=False)
+        return EXIT_USAGE
+
+    if not standards:
+        error_console.print(f"Standard not found: {standard_id}", style="red", markup=False)
+        return EXIT_USAGE
+
+    standard = standards[0]
+    if getattr(args, "json", False):
+        console.print(json.dumps(standard, indent=2, sort_keys=True), markup=False)
+        return EXIT_SUCCESS
+
+    table = Table(title=f"Standard {standard_id}", show_lines=False)
+    table.add_column("Field", style="dim")
+    table.add_column("Value")
+    for key in (
+        "name",
+        "description",
+        "level_key",
+        "check_type_key",
+        "check_command",
+        "check_pattern",
+        "threshold_min",
+        "threshold_max",
+        "failure_message",
+        "is_blocking",
+        "doc_path",
+        "created_at",
+        "updated_at",
+    ):
+        value = standard.get(key)
+        if isinstance(value, bool):
+            value = "yes" if value else "no"
+        if value is None:
+            value = ""
+        table.add_row(key, str(value))
+
+    console.print(table)
     return EXIT_SUCCESS
 
 
