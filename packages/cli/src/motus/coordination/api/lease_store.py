@@ -182,9 +182,10 @@ class LeaseStore:
         try:
             self._conn.execute("BEGIN IMMEDIATE")
             yield self._conn
-            self._conn.execute("COMMIT")
+            self._conn.commit()
         except Exception:
-            self._conn.execute("ROLLBACK")
+            if self._conn.in_transaction:
+                self._conn.rollback()
             raise
         finally:
             self._write_lock.release()
@@ -282,7 +283,7 @@ class LeaseStore:
         """Get a lease by ID."""
         cursor = self._conn.cursor()
         cursor.execute(
-            f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?",
+            f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?",  # nosec B608
             (lease_id,),
         )
         row = cursor.fetchone()
@@ -304,7 +305,7 @@ class LeaseStore:
                         (_iso_z(now), lease_id),
                     )
                 refreshed = self._conn.execute(
-                    f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?",
+                    f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?",  # nosec B608
                     (lease_id,),
                 ).fetchone()
                 if refreshed is None:
@@ -333,7 +334,7 @@ class LeaseStore:
             WHERE status = 'active'
             AND expires_at > ?
             AND heartbeat_deadline > ?
-        """
+        """  # nosec B608
         params: list[Any] = [_iso_z(now), _iso_z(now)]
 
         if mode is not None:

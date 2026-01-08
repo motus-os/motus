@@ -18,7 +18,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
-from motus.core.bootstrap import get_instance_id
 from motus.migration.path_migration import find_workspace_dir
 
 ACTIVITY_SCHEMA = "motus.activity.v1"
@@ -75,6 +74,8 @@ def _event_id() -> str:
 
 def _safe_instance_id() -> str:
     try:
+        from motus.core.bootstrap import get_instance_id
+
         return get_instance_id()
     except Exception:
         return "unknown"

@@ -488,10 +488,10 @@ Phase 7: Strategy Engine (Minimal)
 
 | Document | Location | Purpose |
 |----------|----------|---------|
-| MOTUS-VISION.md | /Users/ben/Downloads/ | Website agent handoff |
-| MOTUS-ROADMAP.md | /Users/ben/Downloads/ | Go-live path |
-| MOTUS-COMPLETE-SYNTHESIS.md | /Users/ben/Downloads/ | This document |
-| WORK-COMPILER-SPEC.md | /Users/ben/Downloads/ | Full algorithm spec |
+| MOTUS-VISION.md | Handoff archive | Website agent handoff |
+| MOTUS-ROADMAP.md | Handoff archive | Go-live path |
+| MOTUS-COMPLETE-SYNTHESIS.md | Handoff archive | This document |
+| WORK-COMPILER-SPEC.md | Handoff archive | Full algorithm spec |
 | STRAT-009-AGENT-COUNCIL.yaml | .ai/specs/strategies/ | Agent Council strategy |
 | Dogfooding artifacts | .scratch/ | Process audit trail |
 

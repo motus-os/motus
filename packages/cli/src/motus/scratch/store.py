@@ -30,7 +30,7 @@ class ScratchStoreError(Exception):
     pass
 
 
-class ScratchEntryNotFound(ScratchStoreError):
+class ScratchEntryNotFoundError(ScratchStoreError):
     pass
 
 
@@ -179,7 +179,7 @@ class ScratchStore:
     def load_entry(self, entry_id: str) -> ScratchEntry:
         path = self._entry_path(entry_id)
         if not path.exists():
-            raise ScratchEntryNotFound(f"Scratch entry not found: {entry_id}")
+            raise ScratchEntryNotFoundError(f"Scratch entry not found: {entry_id}")
         raw = json.loads(path.read_text(encoding="utf-8"))
         if not isinstance(raw, dict):
             raise ScratchStoreError(f"Scratch entry invalid: {entry_id}")
@@ -356,7 +356,7 @@ class ScratchStore:
 
 __all__ = [
     "ScratchStore",
-    "ScratchEntryNotFound",
+    "ScratchEntryNotFoundError",
     "ScratchPromotionError",
     "ScratchPromotionResult",
 ]

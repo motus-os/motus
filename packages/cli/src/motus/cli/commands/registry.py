@@ -18,11 +18,11 @@ from .gates import register_gates_parsers
 from .handoffs import register_handoffs_parsers
 from .health import register_health_parsers
 from .modules import register_modules_parsers
-from .scratch import register_scratch_parsers
 from .policy import register_policy_parsers
 from .release import register_release_parsers
 from .review import register_review_parsers
 from .roadmap import register_roadmap_parsers
+from .scratch import register_scratch_parsers
 from .sessions import register_session_parsers
 from .standards import register_standards_parsers
 from .system import register_system_parsers

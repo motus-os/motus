@@ -13,7 +13,7 @@ from rich.console import Console
 from rich.table import Table
 
 from motus.cli.exit_codes import EXIT_ERROR, EXIT_SUCCESS, EXIT_USAGE
-from motus.scratch import ScratchEntryNotFound, ScratchPromotionError, ScratchStore
+from motus.scratch import ScratchEntryNotFoundError, ScratchPromotionError, ScratchStore
 
 console = Console()
 error_console = Console(stderr=True)
@@ -99,7 +99,7 @@ def scratch_show_command(args: Namespace) -> int:
         if not entry_id:
             raise ValueError("entry_id is required")
         entry = store.load_entry(entry_id)
-    except ScratchEntryNotFound as exc:
+    except ScratchEntryNotFoundError as exc:
         error_console.print(str(exc), style="red", markup=False)
         return EXIT_ERROR
     except Exception as exc:

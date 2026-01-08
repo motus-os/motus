@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 
-
 CONFLICTING_DISTS = ("motus", "motus-command")
 _SHADOWED_MARKERS = ("motus-command", "motus-internal")
 

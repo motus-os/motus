@@ -82,7 +82,8 @@ def _try_acquire_write_lock(db_path: Path) -> bool:
         configure_connection(conn, set_row_factory=False)
         conn.execute("PRAGMA busy_timeout = 200")
         conn.execute("BEGIN IMMEDIATE")
-        conn.execute("ROLLBACK")
+        if conn.in_transaction:
+            conn.rollback()
         return True
     except sqlite3.OperationalError as exc:
         if "database is locked" in str(exc).lower():
@@ -138,7 +139,8 @@ def _table_counts(conn, tables: list[str]) -> dict[str, int]:
         ).fetchone()
         if not row:
             continue
-        count = conn.execute(f'SELECT COUNT(*) FROM "{name}"').fetchone()[0]
+        # Table names are validated against sqlite_master and a strict regex.
+        count = conn.execute(f'SELECT COUNT(*) FROM "{name}"').fetchone()[0]  # nosec B608
         counts[name] = int(count)
     return counts
 

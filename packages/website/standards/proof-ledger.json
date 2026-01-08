@@ -20,7 +20,7 @@
       "id": "token-reduction",
       "claim": "Example handoff: 14945 characters manually vs 1639 characters with Motus receipts",
       "status": "verified",
-      "evidence_path": "../../docs/proof/token-reduction/",
+      "evidence_path": "../../docs/proof/token-reduction-benchmark.md",
       "methodology": "Workflow runner demo logs; character counts (tokenizer recorded in results.json)",
       "last_verified": "2026-01-07",
       "verified_by": "motus-release-review",

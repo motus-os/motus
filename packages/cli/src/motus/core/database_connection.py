@@ -231,9 +231,9 @@ class DatabaseManager(DatabaseQueryMixin):
             self._begin_immediate(conn)
             try:
                 yield conn
-                conn.execute("COMMIT")
+                conn.commit()
             except Exception:
-                conn.execute("ROLLBACK")
+                conn.rollback()
                 raise
             finally:
                 self.release_connection(conn)

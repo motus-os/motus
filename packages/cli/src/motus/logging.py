@@ -11,9 +11,9 @@ import json
 import logging
 import os
 import sys
-from logging.handlers import RotatingFileHandler
 from collections import OrderedDict
 from datetime import datetime
+from logging.handlers import RotatingFileHandler
 from typing import Any
 
 from .config import config

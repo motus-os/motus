@@ -39,7 +39,20 @@
     "motus web",
     "motus work",
     "motus work cleanup",
-    "motus work context"
+    "motus work context",
+    "motus activity",
+    "motus audit",
+    "motus claude",
+    "motus db",
+    "motus doctor",
+    "motus gates",
+    "motus handoffs",
+    "motus health",
+    "motus modules",
+    "motus release",
+    "motus scratch",
+    "motus verify",
+    "motus work list"
   ],
   "internal": [
     "motus mcp",

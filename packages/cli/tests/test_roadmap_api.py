@@ -136,7 +136,7 @@ def api(db_path: Path, setup_db: sqlite3.Connection, monkeypatch) -> RoadmapAPI:
             self.db_path = db_path
             self._connection = setup_db
 
-        def connection(self):
+        def connection(self, *, read_only: bool = False):
             from contextlib import contextmanager
 
             @contextmanager
@@ -153,9 +153,9 @@ def api(db_path: Path, setup_db: sqlite3.Connection, monkeypatch) -> RoadmapAPI:
                 self._connection.execute("BEGIN IMMEDIATE")
                 try:
                     yield self._connection
-                    self._connection.execute("COMMIT")
+                    self._connection.commit()
                 except Exception:
-                    self._connection.execute("ROLLBACK")
+                    self._connection.rollback()
                     raise
 
             return ctx()

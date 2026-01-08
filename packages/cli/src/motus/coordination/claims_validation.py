@@ -81,12 +81,12 @@ class _ClaimStorage:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except Exception as e:  # noqa: BLE001
             self._quarantine_corrupt(path, f"failed to read claim file: {e}")
-            return None
+            raise ClaimRegistryError(f"failed to read claim file: {path}") from e
         try:
             return ClaimRecord.from_json(payload)
         except Exception as e:  # noqa: BLE001
             self._quarantine_corrupt(path, f"invalid claim payload: {e}")
-            return None
+            raise ClaimRegistryError(f"invalid claim payload: {path}") from e
 
     def _quarantine_corrupt(self, path: Path, reason: str) -> None:
         try:

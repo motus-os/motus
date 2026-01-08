@@ -21,8 +21,8 @@ from typing import Optional
 
 from .exceptions import SubprocessError, SubprocessTimeoutError
 from .intent import Intent, load_intent
-from .migration.path_migration import resolve_workspace_dir
 from .logging import get_logger
+from .migration.path_migration import resolve_workspace_dir
 from .orchestrator import get_orchestrator
 from .schema.events import EventType
 from .subprocess_utils import GIT_SHORT_TIMEOUT_SECONDS, run_subprocess

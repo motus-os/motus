@@ -17,6 +17,7 @@ All public APIs are re-exported here for backward compatibility.
 import glob as _glob
 
 from motus.migration.path_migration import resolve_state_dir
+
 from .checkpoint import (
     Checkpoint,
     checkpoint_command,

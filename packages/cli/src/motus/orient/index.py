@@ -17,8 +17,8 @@ from pathlib import Path
 from typing import Any, Literal, Mapping
 
 from motus.atomic_io import atomic_write_json
-from motus.standards.schema import Standard
 from motus.orient.standards_cache import load_standard_yaml
+from motus.standards.schema import Standard
 
 Layer = Literal["user", "project", "system"]
 

@@ -139,8 +139,8 @@ class ReversalCoordinator:
 
     def _generate_reversal_id(self) -> str:
         now = datetime.now(timezone.utc)
-        date_str = now.strftime("%Y%m%d")
-        nonce = uuid.uuid4().hex[:8]
+        date_str = now.strftime("%Y-%m-%d")
+        nonce = f"{uuid.uuid4().int % 10000:04d}"
         return f"rev-{date_str}-{nonce}"
 
     def _build_reversal_items(self, actions: list[CompensatingAction], work_items: list[str] | None) -> list[ReversalItem]:
