@@ -17,6 +17,7 @@ from motus.core.database import DatabaseManager
 from motus.core.database_connection import configure_connection
 
 _SCHEMA_VERSION = 1
+PRAGMA_SET_USER_VERSION = f"PRAGMA user_version = {_SCHEMA_VERSION}"
 
 _BASE_SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS knowledge_items (
@@ -193,7 +194,7 @@ class KnowledgeStore:
 
         current = self._conn.execute("PRAGMA user_version").fetchone()[0]
         if current == 0:
-            self._conn.execute(f"PRAGMA user_version = {_SCHEMA_VERSION}")
+            self._conn.execute(PRAGMA_SET_USER_VERSION)
         elif current != _SCHEMA_VERSION:
             raise RuntimeError(
                 f"[KNOWLEDGE-001] Incompatible knowledge schema. "

@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import shutil
 import sqlite3
 import time
@@ -27,7 +26,13 @@ from motus.migration.path_migration import (
 )
 
 console = Console()
-_SAFE_TABLE_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+_TABLE_COUNT_QUERIES = {
+    "roadmap_items": "SELECT COUNT(*) FROM roadmap_items",
+    "change_requests": "SELECT COUNT(*) FROM change_requests",
+    "audit_log": "SELECT COUNT(*) FROM audit_log",
+    "coordination_leases": "SELECT COUNT(*) FROM coordination_leases",
+    "evidence": "SELECT COUNT(*) FROM evidence",
+}
 
 
 def _db_exists(db_path: Path) -> bool:
@@ -131,16 +136,10 @@ def db_analyze_command(args: Any) -> int:
 def _table_counts(conn, tables: list[str]) -> dict[str, int]:
     counts: dict[str, int] = {}
     for name in tables:
-        if not _SAFE_TABLE_RE.fullmatch(name):
+        query = _TABLE_COUNT_QUERIES.get(name)
+        if query is None:
             continue
-        row = conn.execute(
-            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
-            (name,),
-        ).fetchone()
-        if not row:
-            continue
-        # Table names are validated against sqlite_master and a strict regex.
-        count = conn.execute(f'SELECT COUNT(*) FROM "{name}"').fetchone()[0]  # nosec B608
+        count = conn.execute(query).fetchone()[0]
         counts[name] = int(count)
     return counts
 

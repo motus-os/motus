@@ -19,8 +19,14 @@ from motus.observability.audit import AuditEvent, AuditLogger
 
 console = Console()
 
-_ID_TABLES = {"change_requests", "roadmap_items"}
-_ID_COLUMNS = {"id"}
+_ID_QUERIES = {
+    "change_requests": (
+        "SELECT id FROM change_requests WHERE id LIKE ? ORDER BY id DESC LIMIT 1"
+    ),
+    "roadmap_items": (
+        "SELECT id FROM roadmap_items WHERE id LIKE ? ORDER BY id DESC LIMIT 1"
+    ),
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -47,16 +53,12 @@ def _utc_today() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
 
-def _next_id(conn, *, prefix: str, table: str, column: str = "id") -> str:
-    if table not in _ID_TABLES:
+def _next_id(conn, *, prefix: str, table: str) -> str:
+    query = _ID_QUERIES.get(table)
+    if query is None:
         raise ValueError(f"Unsupported table for id generation: {table}")
-    if column not in _ID_COLUMNS:
-        raise ValueError(f"Unsupported column for id generation: {column}")
     like = f"{prefix}-%"
-    row = conn.execute(
-        f"SELECT {column} FROM {table} WHERE {column} LIKE ? ORDER BY {column} DESC LIMIT 1",  # nosec B608
-        (like,),
-    ).fetchone()
+    row = conn.execute(query, (like,)).fetchone()
     if row and row[0]:
         last = str(row[0])
         try:

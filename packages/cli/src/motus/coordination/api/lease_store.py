@@ -30,6 +30,16 @@ LEASE_COLUMNS = (
     "heartbeat_deadline, snapshot_id, policy_version, lens_digest, work_id, "
     "attempt_id, status, outcome"
 )
+LEASE_SELECT_BY_ID = (
+    f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?"
+)
+LEASE_SELECT_ACTIVE_BASE = f"""
+    SELECT {LEASE_COLUMNS} FROM coordination_leases
+    WHERE status = 'active'
+    AND expires_at > ?
+    AND heartbeat_deadline > ?
+"""
+LEASE_SELECT_ACTIVE_WITH_MODE = LEASE_SELECT_ACTIVE_BASE + " AND mode = ?"
 
 _INIT_SQL = """
 CREATE TABLE IF NOT EXISTS schema_version (
@@ -282,10 +292,7 @@ class LeaseStore:
     def get_lease(self, lease_id: str) -> Lease | None:
         """Get a lease by ID."""
         cursor = self._conn.cursor()
-        cursor.execute(
-            f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?",  # nosec B608
-            (lease_id,),
-        )
+        cursor.execute(LEASE_SELECT_BY_ID, (lease_id,))
         row = cursor.fetchone()
         if row is None:
             return None
@@ -305,7 +312,7 @@ class LeaseStore:
                         (_iso_z(now), lease_id),
                     )
                 refreshed = self._conn.execute(
-                    f"SELECT {LEASE_COLUMNS} FROM coordination_leases WHERE lease_id = ?",  # nosec B608
+                    LEASE_SELECT_BY_ID,
                     (lease_id,),
                 ).fetchone()
                 if refreshed is None:
@@ -329,17 +336,13 @@ class LeaseStore:
         now = _utcnow()
         cursor = self._conn.cursor()
 
-        query = f"""
-            SELECT {LEASE_COLUMNS} FROM coordination_leases
-            WHERE status = 'active'
-            AND expires_at > ?
-            AND heartbeat_deadline > ?
-        """  # nosec B608
         params: list[Any] = [_iso_z(now), _iso_z(now)]
 
         if mode is not None:
-            query += " AND mode = ?"
+            query = LEASE_SELECT_ACTIVE_WITH_MODE
             params.append(mode)
+        else:
+            query = LEASE_SELECT_ACTIVE_BASE
 
         cursor.execute(query, params)
 
@@ -455,16 +458,16 @@ class LeaseStore:
         expired_ids = [row["lease_id"] for row in cursor.fetchall()]
 
         if expired_ids:
-            placeholders = ",".join("?" * len(expired_ids))
+            update_rows = [(_iso_z(now), lease_id) for lease_id in expired_ids]
             with self._write_txn() as conn:
                 cursor = conn.cursor()
-                cursor.execute(
-                    f"""
+                cursor.executemany(
+                    """
                     UPDATE coordination_leases
                     SET status = 'expired', updated_at = ?
-                    WHERE lease_id IN ({placeholders})
-                    """,  # nosec B608 - placeholders are ?,?,? count
-                    [now_iso] + expired_ids,
+                    WHERE lease_id = ?
+                    """,
+                    update_rows,
                 )
 
         return expired_ids
