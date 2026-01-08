@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 import yaml
@@ -253,6 +254,41 @@ def _check_proof_ledger_evidence() -> tuple[bool, str]:
     return True, "Proof ledger evidence entries present"
 
 
+def _parse_date(value: str | None, claim_id: str, field: str, errors: list[str]) -> date | None:
+    if not value:
+        errors.append(f"proof-ledger claim '{claim_id}' missing {field}")
+        return None
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        errors.append(f"proof-ledger claim '{claim_id}' invalid {field}: {value}")
+        return None
+
+
+def _check_proof_freshness() -> tuple[bool, str]:
+    proof_ledger = _load_yaml(PROOF_YAML)
+    errors: list[str] = []
+    today = date.today()
+    for claim in proof_ledger.get("claims", []):
+        claim_id = claim.get("id") or "<unknown>"
+        if claim.get("status") != "current":
+            continue
+        verified_by = claim.get("verified_by")
+        if not verified_by:
+            errors.append(f"proof-ledger claim '{claim_id}' missing verified_by")
+        verified_on = _parse_date(claim.get("verified_on"), claim_id, "verified_on", errors)
+        expires_on = _parse_date(claim.get("expires_on"), claim_id, "expires_on", errors)
+        if verified_on and expires_on and expires_on < verified_on:
+            errors.append(
+                f"proof-ledger claim '{claim_id}' expires_on precedes verified_on"
+            )
+        if expires_on and expires_on < today:
+            errors.append(f"proof-ledger claim '{claim_id}' expired on {expires_on}")
+    if errors:
+        return False, "; ".join(errors)
+    return True, "Proof ledger freshness valid"
+
+
 def _check_import_scope() -> tuple[bool, str]:
     allowed = {
         REPO_ROOT / "packages" / "website" / "src" / "pages" / "index.astro",
@@ -288,6 +324,7 @@ def main() -> int:
         ("Status terms", _check_status_terms),
         ("Evidence links", _check_evidence_links),
         ("Proof ledger evidence", _check_proof_ledger_evidence),
+        ("Proof ledger freshness", _check_proof_freshness),
         ("Demo status", _check_demo_status),
         ("Import scope", _check_import_scope),
         ("Readiness tests", _check_tests_recorded),
