@@ -79,6 +79,7 @@ run_gate "GATE-SRC-001" "$SCRIPT_DIR/gate-src-001.sh"
 run_gate "GATE-PATH-001" "$SCRIPT_DIR/gate-path-001.sh"
 run_gate "GATE-MIG-001" "$SCRIPT_DIR/gate-migrations-001.sh"
 run_gate "GATE-PKG-002" "$SCRIPT_DIR/gate-pkg-002.sh"
+run_gate "GATE-PKG-003" "$SCRIPT_DIR/gate-pkg-003.sh"
 run_gate "GATE-TEST-001" "$SCRIPT_DIR/gate-test-001.sh"
 
 # Phase 4: Release validation (optional - pass version as arg)

@@ -130,6 +130,13 @@ gates:
     command: "scripts/gates/gate-pkg-002.sh"
     required: true
 
+  - id: "GATE-PKG-003"
+    tier: "T2"
+    kind: "artifact"
+    description: "SDist content audit"
+    command: "scripts/gates/gate-pkg-003.sh"
+    required: true
+
   - id: "GATE-TEST-001"
     tier: "T2"
     kind: "test"
