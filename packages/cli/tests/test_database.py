@@ -343,6 +343,56 @@ DROP TABLE IF EXISTS test;
 
         conn.close()
 
+    def test_migrations_are_atomic(self, tmp_path):
+        """Failing migration should roll back earlier migrations."""
+        migrations_dir = tmp_path / "migrations"
+        migrations_dir.mkdir()
+
+        (migrations_dir / "001_create_ok.sql").write_text(
+            """
+-- Migration: 001_create_ok
+-- Version: 1
+
+-- UP
+CREATE TABLE ok_table (id INTEGER PRIMARY KEY);
+
+-- DOWN
+DROP TABLE IF EXISTS ok_table;
+"""
+        )
+
+        (migrations_dir / "002_fail.sql").write_text(
+            """
+-- Migration: 002_fail
+-- Version: 2
+
+-- UP
+CREATE TABLE broken_table (id INTEGER PRIMARY KEY
+
+-- DOWN
+DROP TABLE IF EXISTS broken_table;
+"""
+        )
+
+        db_path = tmp_path / "test.db"
+        conn = sqlite3.connect(db_path)
+
+        runner = MigrationRunner(conn, migrations_dir)
+        with pytest.raises(MigrationError, match="MIGRATE-003"):
+            runner.apply_migrations()
+
+        cursor = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='ok_table'"
+        )
+        assert cursor.fetchone() is None
+
+        row = conn.execute(
+            "SELECT 1 FROM schema_version WHERE version = 1"
+        ).fetchone()
+        assert row is None
+
+        conn.close()
+
     def test_migration_checksum_verification(self, tmp_path):
         """Test that modified migrations are detected."""
         migrations_dir = tmp_path / "migrations"

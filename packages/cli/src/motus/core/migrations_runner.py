@@ -109,12 +109,29 @@ def _prepare_legacy_leases(conn: sqlite3.Connection) -> None:
 
     rename_sql = f'ALTER TABLE leases RENAME TO "{legacy_name}"'
     conn.execute(rename_sql)
+
+def _execute_script(conn: sqlite3.Connection, script: str) -> None:
+    statement = ""
+    for line in script.splitlines():
+        statement += f"{line}\n"
+        if sqlite3.complete_statement(statement):
+            if statement.strip():
+                conn.execute(statement)
+            statement = ""
+    if statement.strip():
+        if sqlite3.complete_statement(statement):
+            conn.execute(statement)
+        else:
+            raise MigrationError(
+                "[MIGRATE-003] Migration script ended with incomplete SQL statement"
+            )
+
 def _execute_migration_up(conn: sqlite3.Connection, migration: Migration) -> None:
     try:
         if migration.version == 19:
             _prepare_legacy_leases(conn)
         if migration.up_sql.strip():
-            conn.executescript(migration.up_sql)
+            _execute_script(conn, migration.up_sql)
 
         if migration.name == "add_audit_columns":
             _apply_audit_columns(conn)
@@ -133,17 +150,26 @@ def _record_migration(
     """,
         (migration.version, migration.name, migration.checksum, duration_ms),
     )
-def apply_migration(conn: sqlite3.Connection, migration: Migration) -> int:
+def _apply_migration_in_txn(
+    conn: sqlite3.Connection,
+    migration: Migration,
+) -> int:
     start = time.monotonic()
+    _execute_migration_up(conn, migration)
+    duration_ms = int((time.monotonic() - start) * 1000)
+    _record_migration(conn, migration, duration_ms)
+    return duration_ms
+
+
+def apply_migration(conn: sqlite3.Connection, migration: Migration) -> int:
     conn.execute("BEGIN IMMEDIATE")
     try:
-        _execute_migration_up(conn, migration)
-        duration_ms = int((time.monotonic() - start) * 1000)
-        _record_migration(conn, migration, duration_ms)
+        duration_ms = _apply_migration_in_txn(conn, migration)
         conn.commit()
         return duration_ms
     except Exception:
-        conn.rollback()
+        if conn.in_transaction:
+            conn.rollback()
         raise
 def run_migrations(
     conn: sqlite3.Connection,
@@ -165,7 +191,9 @@ def run_migrations(
     applied = _get_applied_versions(conn)
     pending = discover_migrations(migrations_dir)
 
-    count = 0
+    checksum_updates: list[Migration] = []
+    to_apply: list[Migration] = []
+
     for migration in pending:
         if migration.version in applied:
             if applied[migration.version].checksum != migration.checksum:
@@ -176,38 +204,55 @@ def run_migrations(
                         "allowed; updating schema_version record"
                     )
                     if not dry_run:
-                        conn.execute(
-                            """
-                            UPDATE schema_version
-                            SET checksum = ?, migration_name = ?
-                            WHERE version = ?
-                            """,
-                            (migration.checksum, migration.name, migration.version),
-                        )
-                        conn.commit()
+                        checksum_updates.append(migration)
                     continue
                 raise MigrationError(
                     f"[MIGRATE-002] Migration {migration.version} "
                     "changed after application (checksum mismatch)"
                 )
             continue
+        to_apply.append(migration)
 
-        if dry_run:
+    count = len(to_apply)
+
+    if dry_run:
+        for migration in to_apply:
             logger.info(
                 f"[DRY-RUN] Would apply migration {migration.version}: "
                 f"{migration.name} (checksum: {migration.checksum[:8]})"
             )
+        if count == 0:
+            logger.info("No pending migrations")
         else:
+            logger.info(f"[DRY-RUN] {count} migration(s) would be applied")
+        return count
+
+    if not to_apply and not checksum_updates:
+        logger.info("No pending migrations")
+        return 0
+
+    conn.execute("BEGIN IMMEDIATE")
+    try:
+        for migration in checksum_updates:
+            conn.execute(
+                """
+                UPDATE schema_version
+                SET checksum = ?, migration_name = ?
+                WHERE version = ?
+                """,
+                (migration.checksum, migration.name, migration.version),
+            )
+
+        for migration in to_apply:
             logger.info(f"Applying migration {migration.version}: {migration.name}")
-            duration_ms = apply_migration(conn, migration)
+            duration_ms = _apply_migration_in_txn(conn, migration)
             logger.info(f"Migration {migration.version} applied in {duration_ms}ms")
 
-        count += 1
-
-    if count == 0:
-        logger.info("No pending migrations")
-    elif dry_run:
-        logger.info(f"[DRY-RUN] {count} migration(s) would be applied")
+        conn.commit()
+    except Exception:
+        if conn.in_transaction:
+            conn.rollback()
+        raise
 
     return count
 class MigrationRunner:
@@ -259,7 +304,8 @@ class MigrationRunner:
         logger.info(f"Rolling back migration {version}: {migration.name}")
 
         try:
-            self.conn.executescript(migration.down_sql)
+            if migration.down_sql.strip():
+                _execute_script(self.conn, migration.down_sql)
 
             self.conn.execute("BEGIN IMMEDIATE")
             try:
