@@ -10,6 +10,7 @@ import os
 import sqlite3
 import threading
 import uuid
+import time
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -100,6 +101,19 @@ def _utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _get_busy_timeout(conn: sqlite3.Connection) -> int | None:
+    try:
+        row = conn.execute("PRAGMA busy_timeout").fetchone()
+    except sqlite3.OperationalError:
+        return None
+    if row is None:
+        return None
+    try:
+        return int(row[0])
+    except (TypeError, ValueError):
+        return None
+
+
 def _generate_lease_id() -> str:
     """Generate a unique lease ID."""
     now = _utcnow()
@@ -168,11 +182,10 @@ class LeaseStore:
                         f"Database has v{db_version}, code expects v{_SCHEMA_VERSION}. "
                         f"Delete {self._db_path} to reset (leases will be lost)."
                     )
-            self._ensure_lease_columns()
+            self._ensure_lease_columns(cursor)
 
-    def _ensure_lease_columns(self) -> None:
+    def _ensure_lease_columns(self, cursor: sqlite3.Cursor) -> None:
         """Ensure optional lease metadata columns exist."""
-        cursor = self._conn.cursor()
         cursor.execute("PRAGMA table_info(coordination_leases)")
         columns = {row["name"] for row in cursor.fetchall()}
 
@@ -185,12 +198,43 @@ class LeaseStore:
         """Close database connection."""
         self._conn.close()
 
+    def _begin_immediate(self, conn: sqlite3.Connection) -> None:
+        deadline = time.monotonic() + self._write_lock_timeout_s
+        previous_timeout_ms = _get_busy_timeout(conn)
+        if previous_timeout_ms is not None:
+            try:
+                conn.execute("PRAGMA busy_timeout = 0")
+            except sqlite3.OperationalError:
+                previous_timeout_ms = None
+        try:
+            while True:
+                try:
+                    conn.execute("BEGIN IMMEDIATE")
+                    return
+                except sqlite3.OperationalError as exc:
+                    if "database is locked" not in str(exc).lower():
+                        raise
+                    if time.monotonic() >= deadline:
+                        raise RuntimeError(
+                            "[LEASE-LOCK-002] Database busy, please retry."
+                        ) from exc
+                    time.sleep(0.05)
+        finally:
+            if previous_timeout_ms is not None:
+                try:
+                    conn.execute(
+                        "PRAGMA busy_timeout = ?",
+                        (previous_timeout_ms,),
+                    )
+                except sqlite3.OperationalError:
+                    pass
+
     @contextmanager
     def _write_txn(self) -> Any:
         if not self._write_lock.acquire(timeout=self._write_lock_timeout_s):
             raise RuntimeError("[LEASE-LOCK-001] Timed out waiting for lease store lock")
         try:
-            self._conn.execute("BEGIN IMMEDIATE")
+            self._begin_immediate(self._conn)
             yield self._conn
             self._conn.commit()
         except Exception:

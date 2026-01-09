@@ -250,25 +250,43 @@ class DatabaseManager(DatabaseQueryMixin):
 
     def _begin_immediate(self, conn: sqlite3.Connection) -> None:
         deadline = time.monotonic() + self._write_lock_timeout_s
-        while True:
-            try:
-                conn.execute("BEGIN IMMEDIATE")
-                self._write_lock_registry(status="active")
-                return
-            except sqlite3.OperationalError as exc:
-                if "database is locked" not in str(exc).lower():
-                    raise
-                if time.monotonic() >= deadline:
-                    lock_info = self.lock_info()
-                    if lock_info:
-                        logger.warning(
-                            "DB lock timeout; lock registry=%s",
-                            lock_info,
-                        )
-                    raise DatabaseError(
-                        f"[DB-LOCK-001] Database busy, please retry.{self._lock_holder_hint()}"
-                    ) from exc
-                time.sleep(0.05)
+        previous_timeout_ms: int | None = None
+        try:
+            row = conn.execute("PRAGMA busy_timeout").fetchone()
+            if row is not None:
+                try:
+                    previous_timeout_ms = int(row[0])
+                except (TypeError, ValueError):
+                    previous_timeout_ms = None
+                else:
+                    conn.execute("PRAGMA busy_timeout = 0")
+        except sqlite3.OperationalError:
+            previous_timeout_ms = None
+        try:
+            while True:
+                try:
+                    conn.execute("BEGIN IMMEDIATE")
+                    self._write_lock_registry(status="active")
+                    return
+                except sqlite3.OperationalError as exc:
+                    if "database is locked" not in str(exc).lower():
+                        raise
+                    if time.monotonic() >= deadline:
+                        lock_info = self.lock_info()
+                        if lock_info:
+                            logger.warning(
+                                f"DB lock timeout; lock registry={lock_info}"
+                            )
+                        raise DatabaseError(
+                            f"[DB-LOCK-001] Database busy, please retry.{self._lock_holder_hint()}"
+                        ) from exc
+                    time.sleep(0.05)
+        finally:
+            if previous_timeout_ms is not None:
+                try:
+                    conn.execute("PRAGMA busy_timeout = ?", (previous_timeout_ms,))
+                except sqlite3.OperationalError:
+                    pass
 
     @contextmanager
     def _write_guard(self) -> Generator[None, None, None]:

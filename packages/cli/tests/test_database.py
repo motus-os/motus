@@ -15,6 +15,7 @@ from pathlib import Path
 import pytest
 
 from motus.core import (
+    DatabaseError,
     DatabaseManager,
     MigrationError,
     SchemaError,
@@ -89,6 +90,22 @@ class TestDatabaseManager:
             assert result[0] == 1
 
         db.checkpoint_and_close()
+
+    def test_transaction_times_out_on_locked_db(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("MOTUS_DB_WRITE_LOCK_TIMEOUT", "0.2")
+        db_path = tmp_path / "lock.db"
+        db_a = DatabaseManager(db_path)
+        db_b = DatabaseManager(db_path)
+
+        try:
+            with db_a.transaction():
+                with pytest.raises(DatabaseError) as excinfo:
+                    with db_b.transaction():
+                        pass
+                assert "[DB-LOCK-001]" in str(excinfo.value)
+        finally:
+            db_a.checkpoint_and_close()
+            db_b.checkpoint_and_close()
 
     def test_file_permissions(self, tmp_path):
         """Test that database files have secure permissions (600)."""

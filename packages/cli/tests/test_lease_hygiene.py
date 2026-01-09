@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
+import pytest
+
 from motus.context_cache import ContextCache
 from motus.coordination.api.coordinator import Coordinator
 from motus.coordination.api.lease_store import LeaseStore
@@ -53,3 +55,42 @@ def test_get_context_expires_stale_lease(tmp_path):
         agent_id="agent-2",
     )
     assert claim2.decision.decision == "GRANTED"
+
+
+def test_lease_store_write_txn_rolls_back(tmp_path):
+    store = LeaseStore(db_path=tmp_path / "leases.db")
+
+    with pytest.raises(RuntimeError):
+        with store._write_txn() as conn:
+            conn.execute("CREATE TABLE test_txn (id INTEGER PRIMARY KEY)")
+            raise RuntimeError("boom")
+
+    assert store._conn.in_transaction is False
+    store.close()
+
+
+def test_lease_store_db_lock_timeout(tmp_path, monkeypatch):
+    monkeypatch.setenv("MOTUS_LEASE_WRITE_LOCK_TIMEOUT", "0.2")
+    db_path = tmp_path / "leases.db"
+
+    store_a = LeaseStore(db_path=db_path)
+    store_b = LeaseStore(db_path=db_path)
+
+    store_a._conn.execute("BEGIN IMMEDIATE")
+    try:
+        with pytest.raises(RuntimeError) as excinfo:
+            store_b.create_lease(
+                owner_agent_id="agent-1",
+                mode="write",
+                resources=[Resource(type="file", path="/lock.txt")],
+                ttl_s=300,
+                snapshot_id="snap-1",
+                policy_version="v1",
+                lens_digest="abc123",
+            )
+        assert "[LEASE-LOCK-002]" in str(excinfo.value)
+    finally:
+        if store_a._conn.in_transaction:
+            store_a._conn.rollback()
+        store_a.close()
+        store_b.close()
