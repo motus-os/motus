@@ -6,8 +6,8 @@
 import json
 from pathlib import Path
 
-from motus.logging import get_logger
 from motus.core.layered_config import get_config
+from motus.logging import get_logger
 
 logger = get_logger(__name__)
 

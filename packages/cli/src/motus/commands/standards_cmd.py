@@ -15,8 +15,8 @@ from rich.console import Console
 from rich.table import Table
 
 from motus.cli.exit_codes import EXIT_ERROR, EXIT_SUCCESS, EXIT_USAGE
-from motus.orient.fs_resolver import find_motus_dir
 from motus.core.database import get_db_manager
+from motus.orient.fs_resolver import find_motus_dir
 from motus.standards.proposals import PromotionError, ProposalManager
 from motus.standards.validator import StandardsValidator
 

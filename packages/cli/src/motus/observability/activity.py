@@ -18,8 +18,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Iterator
 
-from motus.migration.path_migration import find_workspace_dir
 from motus.file_lock import FileLockError, file_lock
+from motus.migration.path_migration import find_workspace_dir
 
 ACTIVITY_SCHEMA = "motus.activity.v1"
 DEFAULT_ACTIVITY_FILENAME = "activity.jsonl"

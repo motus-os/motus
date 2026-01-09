@@ -131,12 +131,12 @@ def dispatch_command(
         raise SystemExit(orient_command(args))
     if command == "standards":
         from motus.commands.standards_cmd import (
-            standards_registry_command,
-            standards_show_command,
             standards_list_proposals_command,
             standards_promote_command,
             standards_propose_command,
+            standards_registry_command,
             standards_reject_command,
+            standards_show_command,
             standards_validate_command,
         )
 

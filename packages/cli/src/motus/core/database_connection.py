@@ -340,7 +340,7 @@ class DatabaseManager(DatabaseQueryMixin):
             if age_s is not None:
                 parts.append(f"age={age_s}s")
         elif self._write_lock_owner:
-            parts.append(f"status=local")
+            parts.append("status=local")
             parts.append(f"thread={self._write_lock_owner}")
             if self._write_lock_acquired_at is not None:
                 age_s = int(time.monotonic() - self._write_lock_acquired_at)
