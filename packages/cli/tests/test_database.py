@@ -10,6 +10,7 @@ Tests:
 
 import json
 import sqlite3
+import warnings
 from pathlib import Path
 
 import pytest
@@ -20,6 +21,8 @@ from motus.core import (
     MigrationError,
     SchemaError,
 )
+from motus.core.database_connection import get_database_path
+from motus.core.layered_config import reset_config
 from motus.core.bootstrap import bootstrap_database, is_first_run
 from motus.core.migrations import MigrationRunner
 from motus.core.migrations_schema import parse_migration_file
@@ -142,6 +145,51 @@ class TestDatabaseManager:
         assert size >= 0
 
         db.checkpoint_and_close()
+
+    def test_wal_size_thresholds_use_config(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("MOTUS_HEALTH__WAL_WARNING_MB", "0")
+        monkeypatch.setenv("MOTUS_HEALTH__WAL_CRITICAL_MB", "0")
+        reset_config()
+
+        db_path = tmp_path / "test.db"
+        db = DatabaseManager(db_path)
+
+        with db.connection() as conn:
+            conn.execute("CREATE TABLE test (id INTEGER PRIMARY KEY, data TEXT)")
+            for i in range(25):
+                conn.execute("INSERT INTO test VALUES (?, ?)", (i, "x" * 1000))
+
+        status, size = db.check_wal_size()
+        assert status == "checkpoint_forced"
+        assert size >= 0
+
+        db.checkpoint_and_close()
+        reset_config()
+
+    def test_legacy_mc_db_path_env(self, tmp_path, monkeypatch):
+        db_path = tmp_path / "legacy.db"
+        monkeypatch.setenv("MC_DB_PATH", str(db_path))
+        reset_config()
+
+        assert get_database_path() == db_path
+
+        reset_config()
+
+    def test_mc_env_warns_on_divergent_paths(self, tmp_path, monkeypatch):
+        mc_path = tmp_path / "legacy.db"
+        motus_path = tmp_path / "motus.db"
+        monkeypatch.setenv("MC_DB_PATH", str(mc_path))
+        monkeypatch.setenv("MOTUS_DATABASE__PATH", str(motus_path))
+        reset_config()
+
+        with warnings.catch_warnings(record=True) as recorded:
+            warnings.simplefilter("always")
+            assert get_database_path() == motus_path
+            assert any(
+                "MC_DB_PATH" in str(item.message) for item in recorded
+            )
+
+        reset_config()
 
     def test_record_metric_inserts_row(self, tmp_path):
         """record_metric creates metrics table and inserts a row."""

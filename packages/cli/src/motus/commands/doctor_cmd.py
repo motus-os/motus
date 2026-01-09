@@ -19,12 +19,22 @@ from motus.config_loader import get_config_path
 from motus.core import get_db_manager, verify_schema_version
 from motus.core.database_connection import get_database_path
 from motus.core.errors import DatabaseError, SchemaError
+from motus.core.layered_config import get_config
 from motus.hardening.health import HealthChecker, HealthResult, HealthStatus
 from motus.hardening.package_conflicts import detect_package_conflicts
 
 MIN_DISK_FREE_BYTES = 100 * 1024 * 1024
 MAX_LOG_BYTES = 100 * 1024 * 1024
-MAX_WAL_BYTES = 50 * 1024 * 1024
+
+
+def _wal_warning_bytes() -> int:
+    config = get_config()
+    warning_mb = config.get_value("health.wal_warning_mb", 50)
+    try:
+        warning_mb = float(warning_mb)
+    except (TypeError, ValueError):
+        warning_mb = 50
+    return max(0, int(warning_mb * 1024 * 1024))
 
 
 def _package_conflict_check() -> HealthResult:
@@ -223,7 +233,8 @@ def _log_size_check() -> HealthResult:
 def _wal_check(*, fix: bool = False) -> HealthResult:
     db = get_db_manager()
     size = db.get_wal_size()
-    if size <= MAX_WAL_BYTES:
+    warning_bytes = _wal_warning_bytes()
+    if size <= warning_bytes:
         return HealthResult(
             name="wal_size",
             status=HealthStatus.PASS,
@@ -233,7 +244,7 @@ def _wal_check(*, fix: bool = False) -> HealthResult:
     if fix:
         db.checkpoint_wal()
         size = db.get_wal_size()
-        status = HealthStatus.PASS if size <= MAX_WAL_BYTES else HealthStatus.WARN
+        status = HealthStatus.PASS if size <= warning_bytes else HealthStatus.WARN
         return HealthResult(
             name="wal_size",
             status=status,

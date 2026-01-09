@@ -4,11 +4,13 @@ from __future__ import annotations
 
 from motus.coordination.api import Coordinator
 from motus.coordination.schemas import ClaimedResource as Resource
+from motus.core.layered_config import reset_config
 
 
 def test_leases_persist_across_instances(tmp_path, monkeypatch) -> None:
     db_path = tmp_path / "coordination.db"
     monkeypatch.setenv("MC_DB_PATH", str(db_path))
+    reset_config()
 
     coordinator_a = Coordinator()
     resource = Resource(type="file", path="src/persistent.txt")
@@ -32,6 +34,7 @@ def test_leases_persist_across_instances(tmp_path, monkeypatch) -> None:
     assert claim_b.decision.decision == "BUSY"
     assert claim_b.decision.owner is not None
     assert claim_b.decision.owner.agent_id == "agent-a"
+    reset_config()
 
 
 def test_context_cache_persists_across_instances(tmp_path, monkeypatch) -> None:
@@ -40,6 +43,7 @@ def test_context_cache_persists_across_instances(tmp_path, monkeypatch) -> None:
     cache_path = tmp_path / "context_cache.db"
     monkeypatch.setenv("MC_DB_PATH", str(db_path))
     monkeypatch.setenv("MC_CONTEXT_CACHE_DB_PATH", str(cache_path))
+    reset_config()
 
     # First coordinator - add data to context cache
     coordinator_a = Coordinator()
@@ -60,3 +64,4 @@ def test_context_cache_persists_across_instances(tmp_path, monkeypatch) -> None:
     spec_b = coordinator_b._context_cache.get_resource_spec(resource)
     assert spec_b is not None
     assert spec_b["payload"]["content"] == "hello"
+    reset_config()

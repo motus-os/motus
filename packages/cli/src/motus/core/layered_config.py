@@ -82,6 +82,7 @@ class LayeredConfig:
             "database.path": "~/.motus/coordination.db",
             "database.wal_mode": True,
             "database.backup_dir": "~/.motus/backups",
+            "context_cache.path": "~/.motus/context_cache.db",
             "federation.enabled": False,
             "federation.upstream_url": "",
             "federation.api_key": "",
@@ -153,6 +154,8 @@ class LayeredConfig:
         normalized = dict(data)
         if "db_path" in normalized and "database.path" not in normalized:
             normalized["database.path"] = normalized["db_path"]
+        if "context_cache_db_path" in normalized and "context_cache.path" not in normalized:
+            normalized["context_cache.path"] = normalized["context_cache_db_path"]
         if "sqlite_wal_mode" in normalized and "database.wal_mode" not in normalized:
             normalized["database.wal_mode"] = normalized["sqlite_wal_mode"]
         return normalized
@@ -176,6 +179,26 @@ class LayeredConfig:
                     value = int(value)
 
                 self._layers["environment"][config_key] = value
+
+        legacy_map = {
+            "MC_DB_PATH": "database.path",
+            "MC_CONTEXT_CACHE_DB_PATH": "context_cache.path",
+        }
+        for env_var, config_key in legacy_map.items():
+            value = os.environ.get(env_var)
+            if value is None:
+                continue
+            if config_key in self._layers["environment"]:
+                current = self._layers["environment"][config_key]
+                if current != value:
+                    warnings.warn(
+                        f"Both MOTUS_ and {env_var} are set for {config_key}; "
+                        "using MOTUS_ value.",
+                        RuntimeWarning,
+                        stacklevel=2,
+                    )
+                continue
+            self._layers["environment"][config_key] = value
 
     def _flatten_dict(self, d: dict, parent_key: str = "") -> dict:
         """Flatten nested dict to dotted keys.

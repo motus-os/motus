@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 from motus.logging import get_logger
+from motus.core.layered_config import get_config
 
 logger = get_logger(__name__)
 
@@ -90,8 +91,22 @@ class DatabaseQueryMixin:
     def check_wal_size(self) -> tuple[str, int]:
         """Check WAL file size and checkpoint if needed."""
         size = self.get_wal_size()
+        config = get_config()
+        warning_mb = config.get_value("health.wal_warning_mb", 50)
+        critical_mb = config.get_value("health.wal_critical_mb", 100)
+        try:
+            warning_mb = float(warning_mb)
+        except (TypeError, ValueError):
+            warning_mb = 50
+        try:
+            critical_mb = float(critical_mb)
+        except (TypeError, ValueError):
+            critical_mb = 100
 
-        if size > 100_000_000:  # 100MB
+        warning_bytes = max(0, int(warning_mb * 1024 * 1024))
+        critical_bytes = max(warning_bytes, int(critical_mb * 1024 * 1024))
+
+        if size > critical_bytes:
             logger.warning(
                 f"WAL file too large ({size / 1_000_000:.1f}MB), "
                 "forcing checkpoint"
@@ -100,7 +115,7 @@ class DatabaseQueryMixin:
                 conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
             return ("checkpoint_forced", size)
 
-        if size > 50_000_000:  # 50MB
+        if size > warning_bytes:
             logger.warning(f"WAL file growing: {size / 1_000_000:.1f}MB")
             return ("warning", size)
 

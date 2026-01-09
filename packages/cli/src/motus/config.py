@@ -41,10 +41,12 @@ class PathConfig:
     @property
     def context_cache_db_path(self) -> Path:
         """Context Cache SQLite database path."""
-        from motus.config_loader import load_config
+        from motus.core.layered_config import get_config
 
-        db_path = load_config().context_cache_db_path
-        return Path(db_path).expanduser()
+        db_path = get_config().get_value(
+            "context_cache.path", "~/.motus/context_cache.db"
+        )
+        return Path(str(db_path)).expanduser()
 
     @property
     def vault_dir(self) -> Path | None:
