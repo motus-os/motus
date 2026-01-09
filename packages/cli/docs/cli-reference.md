@@ -134,6 +134,9 @@ Other DB utilities:
 - `motus db analyze`
 - `motus db stats --json`
 - `motus db checkpoint`
+- `motus db lock-info --json`
+- `motus db wait --max-seconds 30`
+- `motus db recover`
 
 ## Session Commands
 

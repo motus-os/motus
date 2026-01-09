@@ -139,7 +139,12 @@ def _table_counts(conn, tables: list[str]) -> dict[str, int]:
         query = _TABLE_COUNT_QUERIES.get(name)
         if query is None:
             continue
-        count = conn.execute(query).fetchone()[0]
+        try:
+            count = conn.execute(query).fetchone()[0]
+        except sqlite3.OperationalError as exc:
+            if "no such table" in str(exc).lower():
+                continue
+            raise
         counts[name] = int(count)
     return counts
 
@@ -154,7 +159,7 @@ def db_stats_command(args: Any) -> int:
     file_size = db_path.stat().st_size
     wal_size = db.get_wal_size()
 
-    with db.connection(read_only=True) as conn:
+    with db.readonly_connection() as conn:
         counts = _table_counts(
             conn,
             [
@@ -236,6 +241,10 @@ def db_lock_info_command(args: Any) -> int:
 
     console.print(f"Lock status: {payload.get('status')}", markup=False)
     console.print(f"PID: {pid} (alive={alive})", markup=False)
+    if payload.get("ppid") is not None:
+        console.print(f"PPID: {payload.get('ppid')}", markup=False)
+    if payload.get("host"):
+        console.print(f"Host: {payload.get('host')}", markup=False)
     console.print(f"Thread: {payload.get('thread')}", markup=False)
     console.print(f"Command: {payload.get('command')}", markup=False)
     if age_s is not None:
