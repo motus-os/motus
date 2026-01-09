@@ -12,7 +12,20 @@ import time
 from pathlib import Path
 
 
-def _run(cmd: list[str], *, env: dict[str, str] | None = None, cwd: Path | None = None) -> subprocess.CompletedProcess:
+VENV_CREATE_TIMEOUT_S = 120
+PIP_INSTALL_TIMEOUT_S = 600
+PIP_LIST_TIMEOUT_S = 120
+MOTUS_INFO_TIMEOUT_S = 60
+MOTUS_HELP_TIMEOUT_S = 60
+
+
+def _run(
+    cmd: list[str],
+    *,
+    env: dict[str, str] | None = None,
+    cwd: Path | None = None,
+    timeout_s: int | None = None,
+) -> subprocess.CompletedProcess:
     return subprocess.run(
         cmd,
         cwd=str(cwd) if cwd else None,
@@ -20,6 +33,7 @@ def _run(cmd: list[str], *, env: dict[str, str] | None = None, cwd: Path | None 
         capture_output=True,
         text=True,
         check=False,
+        timeout=timeout_s,
     )
 
 
@@ -35,8 +49,12 @@ def _env_for_venv(venv_dir: Path) -> dict[str, str]:
     return env
 
 
-def _pip_list(pip_bin: Path, env: dict[str, str]) -> dict[str, str]:
-    result = _run([str(pip_bin), "list", "--format", "json"], env=env)
+def _pip_list(pip_bin: Path, env: dict[str, str], timeout_s: int) -> dict[str, str]:
+    result = _run(
+        [str(pip_bin), "list", "--format", "json"],
+        env=env,
+        timeout_s=timeout_s,
+    )
     if result.returncode != 0:
         return {}
     try:
@@ -46,13 +64,13 @@ def _pip_list(pip_bin: Path, env: dict[str, str]) -> dict[str, str]:
     return {item.get("name", ""): item.get("version", "") for item in data if item.get("name")}
 
 
-def _motus_info(python_bin: Path, env: dict[str, str]) -> dict[str, str]:
+def _motus_info(python_bin: Path, env: dict[str, str], timeout_s: int) -> dict[str, str]:
     code = (
         "import json, motus, sys; "
         "print(json.dumps({'file': motus.__file__, "
         "'version': getattr(motus, '__version__', 'unknown')}))"
     )
-    result = _run([str(python_bin), "-c", code], env=env)
+    result = _run([str(python_bin), "-c", code], env=env, timeout_s=timeout_s)
     if result.returncode != 0:
         return {"error": result.stderr.strip() or "motus import failed"}
     try:
@@ -103,27 +121,56 @@ def main() -> int:
         pip_bin = _bin_dir(venv_dir) / "pip"
         env = _env_for_venv(venv_dir)
 
-        create = _run([sys.executable, "-m", "venv", str(venv_dir)])
+        try:
+            create = _run([sys.executable, "-m", "venv", str(venv_dir)], timeout_s=VENV_CREATE_TIMEOUT_S)
+        except subprocess.TimeoutExpired:
+            payload["errors"] = [f"venv create timed out after {VENV_CREATE_TIMEOUT_S}s"]
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+            return 1
         if create.returncode != 0:
             payload["errors"] = [f"venv create failed: {create.stderr.strip()}"]
             output_path.parent.mkdir(parents=True, exist_ok=True)
             output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
             return 1
 
-        install = _run([str(pip_bin), "install", "."], env=env, cwd=source_path)
+        try:
+            install = _run(
+                [str(pip_bin), "install", "."],
+                env=env,
+                cwd=source_path,
+                timeout_s=PIP_INSTALL_TIMEOUT_S,
+            )
+        except subprocess.TimeoutExpired:
+            payload["errors"] = [f"pip install timed out after {PIP_INSTALL_TIMEOUT_S}s"]
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+            return 1
         if install.returncode != 0:
             payload["errors"] = [f"pip install failed: {install.stderr.strip()}"]
             output_path.parent.mkdir(parents=True, exist_ok=True)
             output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
             return 1
 
-        payload["packages"] = _pip_list(pip_bin, env)
+        try:
+            payload["packages"] = _pip_list(pip_bin, env, PIP_LIST_TIMEOUT_S)
+        except subprocess.TimeoutExpired:
+            payload["errors"] = [f"pip list timed out after {PIP_LIST_TIMEOUT_S}s"]
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+            return 1
         conflicts = [
             name for name in payload["packages"].keys() if name.lower() in {"motus", "motus-command"}
         ]
         payload["conflicts"] = conflicts
 
-        motus_info = _motus_info(python_bin, env)
+        try:
+            motus_info = _motus_info(python_bin, env, MOTUS_INFO_TIMEOUT_S)
+        except subprocess.TimeoutExpired:
+            payload["errors"] = [f"motus import timed out after {MOTUS_INFO_TIMEOUT_S}s"]
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+            return 1
         payload["motus_import"] = motus_info
 
         motus_path = motus_info.get("file", "")
@@ -133,7 +180,13 @@ def main() -> int:
         payload["shadowed"] = shadowed
 
         motus_bin = _bin_dir(venv_dir) / "motus"
-        help_result = _run([str(motus_bin), "--help"], env=env)
+        try:
+            help_result = _run([str(motus_bin), "--help"], env=env, timeout_s=MOTUS_HELP_TIMEOUT_S)
+        except subprocess.TimeoutExpired:
+            payload["errors"] = [f"motus --help timed out after {MOTUS_HELP_TIMEOUT_S}s"]
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+            return 1
         payload["motus_help_ok"] = help_result.returncode == 0
 
         payload["passed"] = (

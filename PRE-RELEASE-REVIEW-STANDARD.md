@@ -31,6 +31,7 @@
 - `scripts/gates/run-all-gates.sh` - gate execution
 - `GITHUB-REVIEW-PROCESS.md` - repository presence
 - `packages/website/REVIEW-PROCESS.md` - website review
+- `docs/quality/MANUAL-GITHUB-SETUP.md` - manual GitHub settings
 
 ## Artifact Chain (Outputs -> Constraints -> Validation)
 
@@ -83,6 +84,7 @@
 | 0.4 | Version set correctly | `pyproject.toml` version |
 | 0.5 | CHANGELOG updated | Version entry exists |
 | 0.6 | No uncommitted changes in package | `git status` clean |
+| 0.7 | Manual GitHub settings documented | `docs/quality/MANUAL-GITHUB-SETUP.md` |
 
 ### Success Criteria
 
@@ -92,6 +94,7 @@
 - [ ] Version number follows semver
 - [ ] CHANGELOG has entry for this version
 - [ ] Package directory has no uncommitted changes
+- [ ] Manual GitHub setup steps are documented
 
 ### Confidence Definition
 

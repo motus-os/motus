@@ -5,6 +5,7 @@
 
 import json
 import os
+import socket
 import sqlite3
 import stat
 import sys
@@ -24,7 +25,7 @@ from .layered_config import get_config
 
 logger = get_logger(__name__)
 
-EXPECTED_SCHEMA_VERSION = 20
+EXPECTED_SCHEMA_VERSION = 21
 
 
 def configure_connection(
@@ -162,6 +163,10 @@ class DatabaseManager(DatabaseQueryMixin):
                 msg = str(e).lower()
                 if "database or disk is full" in msg:
                     raise DiskFullError("[DB-DISK-001] Disk full, free space and retry.") from e
+                if "database is locked" in msg:
+                    raise DatabaseError(
+                        f"[DB-LOCK-001] Database busy, please retry.{self._lock_holder_hint()}"
+                    ) from e
                 raise DatabaseError.from_sqlite_error(e, "database connection") from e
             except Exception as e:
                 raise DatabaseError(
@@ -185,6 +190,11 @@ class DatabaseManager(DatabaseQueryMixin):
                 )
                 _configure_connection(self._ro_connection, read_only=True)
             except sqlite3.OperationalError as e:
+                msg = str(e).lower()
+                if "database is locked" in msg:
+                    raise DatabaseError(
+                        f"[DB-LOCK-001] Database busy, please retry.{self._lock_holder_hint()}"
+                    ) from e
                 raise DatabaseError.from_sqlite_error(e, "read-only database connection") from e
             except Exception as e:
                 raise DatabaseError(
@@ -255,14 +265,16 @@ class DatabaseManager(DatabaseQueryMixin):
                             "DB lock timeout; lock registry=%s",
                             lock_info,
                         )
-                    raise DatabaseError.from_sqlite_error(exc, "begin immediate") from exc
+                    raise DatabaseError(
+                        f"[DB-LOCK-001] Database busy, please retry.{self._lock_holder_hint()}"
+                    ) from exc
                 time.sleep(0.05)
 
     @contextmanager
     def _write_guard(self) -> Generator[None, None, None]:
         if not self._write_lock.acquire(timeout=self._write_lock_timeout_s):
             raise DatabaseError(
-                "[DB-LOCK-002] Timed out waiting for local write lock."
+                f"[DB-LOCK-002] Timed out waiting for local write lock.{self._lock_holder_hint()}"
             )
         self._write_lock_owner = threading.current_thread().name
         self._write_lock_acquired_at = time.monotonic()
@@ -287,6 +299,38 @@ class DatabaseManager(DatabaseQueryMixin):
         payload["lock_registry_path"] = str(path)
         return payload
 
+    def _lock_holder_hint(self) -> str:
+        parts: list[str] = []
+        info = self.lock_info()
+        if info:
+            status = info.get("status")
+            if status:
+                parts.append(f"status={status}")
+            pid = info.get("pid")
+            if isinstance(pid, int):
+                parts.append(f"pid={pid}")
+            thread = info.get("thread")
+            if thread:
+                parts.append(f"thread={thread}")
+            command = info.get("command")
+            if command:
+                token = command.split()[0] if command.split() else ""
+                cmd_name = Path(token).name if token else ""
+                if cmd_name:
+                    parts.append(f"cmd={cmd_name}")
+            age_s = _age_seconds(info.get("started_at"))
+            if age_s is not None:
+                parts.append(f"age={age_s}s")
+        elif self._write_lock_owner:
+            parts.append(f"status=local")
+            parts.append(f"thread={self._write_lock_owner}")
+            if self._write_lock_acquired_at is not None:
+                age_s = int(time.monotonic() - self._write_lock_acquired_at)
+                parts.append(f"age={age_s}s")
+        if not parts:
+            return ""
+        return f" Lock holder: {', '.join(parts)}."
+
     def _build_lock_registry_path(self) -> Path | None:
         try:
             base = self.db_path.parent / "state" / "locks"
@@ -301,6 +345,8 @@ class DatabaseManager(DatabaseQueryMixin):
             self._lock_registry_path.parent.mkdir(parents=True, exist_ok=True)
             payload = {
                 "pid": os.getpid(),
+                "ppid": os.getppid(),
+                "host": socket.gethostname(),
                 "thread": self._write_lock_owner,
                 "command": " ".join(sys.argv) if sys.argv else "",
                 "status": status,
@@ -359,3 +405,13 @@ def reset_db_manager() -> None:
 
 def _utc_now_iso_z() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+
+def _age_seconds(raw: str | None) -> int | None:
+    if not raw:
+        return None
+    try:
+        dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return int((datetime.now(timezone.utc) - dt).total_seconds())

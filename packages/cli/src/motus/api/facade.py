@@ -54,6 +54,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sqlite3
 import time
 import uuid
 from dataclasses import dataclass
@@ -131,34 +132,106 @@ def _persist_decision(
     supersedes_decision_id: str | None = None,
 ) -> bool:
     """Persist a decision to the decisions table (KERNEL-SCHEMA v0.1.3)."""
+    def _insert_decision(
+        conn: sqlite3.Connection,
+        *,
+        resolved_work_id: str | None,
+        resolved_attempt_id: str | None,
+    ) -> None:
+        conn.execute(
+            """
+            INSERT INTO decisions (
+                id, work_id, attempt_id, lease_id, decision_type, decision_summary,
+                rationale, alternatives_considered, constraints, decided_by,
+                supersedes_decision_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                decision_id,
+                resolved_work_id,
+                resolved_attempt_id,
+                lease_id,
+                decision_type,
+                decision_summary,
+                rationale,
+                json.dumps(alternatives_considered or []),
+                json.dumps(constraints or []),
+                decided_by,
+                supersedes_decision_id,
+            ),
+        )
+
+    def _resolve_refs(
+        db_manager,
+        current_work_id: str | None,
+        current_attempt_id: str | None,
+    ) -> tuple[str | None, str | None]:
+        if current_work_id is None and current_attempt_id is None:
+            return current_work_id, current_attempt_id
+        try:
+            with db_manager.readonly_connection() as ro_conn:
+                if current_work_id is not None:
+                    row = ro_conn.execute(
+                        "SELECT 1 FROM roadmap_items WHERE id = ?",
+                        (current_work_id,),
+                    ).fetchone()
+                    if row is None:
+                        current_work_id = None
+                if current_attempt_id is not None:
+                    row = ro_conn.execute(
+                        "SELECT 1 FROM attempts WHERE id = ?",
+                        (current_attempt_id,),
+                    ).fetchone()
+                    if row is None:
+                        current_attempt_id = None
+        except Exception as exc:
+            _kernel_logger.warning(
+                f"Decision reference validation skipped: {exc}"
+            )
+            return None, None
+        return current_work_id, current_attempt_id
+
+    db = get_db_manager()
     try:
-        db = get_db_manager()
         with db.transaction() as conn:
-            conn.execute(
-                """
-                INSERT INTO decisions (
-                    id, work_id, attempt_id, lease_id, decision_type, decision_summary,
-                    rationale, alternatives_considered, constraints, decided_by,
-                    supersedes_decision_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
-                (
-                    decision_id,
-                    work_id,
-                    attempt_id,
-                    lease_id,
-                    decision_type,
-                    decision_summary,
-                    rationale,
-                    json.dumps(alternatives_considered or []),
-                    json.dumps(constraints or []),
-                    decided_by,
-                    supersedes_decision_id,
-                ),
+            _insert_decision(
+                conn,
+                resolved_work_id=work_id,
+                resolved_attempt_id=attempt_id,
             )
         return True
-    except Exception as e:
-        _kernel_logger.warning(f"Failed to persist decision: {e}")
+    except sqlite3.IntegrityError as exc:
+        if "FOREIGN KEY constraint failed" not in str(exc):
+            _kernel_logger.warning(f"Failed to persist decision: {exc}")
+            return False
+
+        resolved_work_id, resolved_attempt_id = _resolve_refs(
+            db,
+            work_id,
+            attempt_id,
+        )
+        if resolved_work_id == work_id and resolved_attempt_id == attempt_id:
+            _kernel_logger.warning(f"Failed to persist decision: {exc}")
+            return False
+
+        try:
+            with db.transaction() as conn:
+                _insert_decision(
+                    conn,
+                    resolved_work_id=resolved_work_id,
+                    resolved_attempt_id=resolved_attempt_id,
+                )
+            _kernel_logger.warning(
+                "Decision persisted after dropping missing kernel references"
+            )
+            return True
+        except Exception as retry_exc:
+            _kernel_logger.warning(
+                f"Failed to persist decision after retry: {retry_exc}"
+            )
+            return False
+    except Exception as exc:
+        _kernel_logger.warning(f"Failed to persist decision: {exc}")
         return False
 
 

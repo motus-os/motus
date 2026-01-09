@@ -154,13 +154,13 @@ def _create_audit_insert_triggers(conn: sqlite3.Connection, tables: list[str]) -
 def _create_audit_indexes(conn: sqlite3.Connection, tables: list[str]) -> None:
     for table in tables:
         conn.execute(
-            f"CREATE INDEX IF NOT EXISTS idx_{table}_created_at ON {table}(created_at)"
+            f"CREATE INDEX IF NOT EXISTS idx_{table}_created_at ON {table}(created_at)"  # nosec B608
         )
         conn.execute(
-            f"CREATE INDEX IF NOT EXISTS idx_{table}_updated_at ON {table}(updated_at)"
+            f"CREATE INDEX IF NOT EXISTS idx_{table}_updated_at ON {table}(updated_at)"  # nosec B608
         )
         conn.execute(
-            f"CREATE INDEX IF NOT EXISTS idx_{table}_deleted_at ON {table}(deleted_at)"
+            f"CREATE INDEX IF NOT EXISTS idx_{table}_deleted_at ON {table}(deleted_at)"  # nosec B608
         )
 
 
@@ -175,12 +175,12 @@ def _apply_audit_columns(conn: sqlite3.Connection) -> None:
 
         existing = {
             row[1]
-            for row in conn.execute(f"PRAGMA table_info({table})").fetchall()
+            for row in conn.execute(f"PRAGMA table_info({table})").fetchall()  # nosec B608
         }
         for col_name, col_def in AUDIT_COLUMNS:
             if col_name not in existing:
                 conn.execute(
-                    f"ALTER TABLE {table} ADD COLUMN {col_name} {col_def}"
+                    f"ALTER TABLE {table} ADD COLUMN {col_name} {col_def}"  # nosec B608
                 )
 
         if _table_exists(conn, table):

@@ -13,6 +13,7 @@ from motus.atomic_io import atomic_write_json
 from motus.coordination.namespace_acl import NamespaceACL
 from motus.coordination.schemas import CLAIM_RECORD_SCHEMA, ClaimedResource, ClaimRecord
 from motus.file_lock import FileLockError, file_lock
+from motus.logging import get_logger
 
 from .claims_validation import (
     ClaimRegistryError,
@@ -28,6 +29,7 @@ from .claims_validation import (
 _namespace_locks: dict[str, threading.Lock] = {}
 _namespace_locks_lock = threading.Lock()
 NAMESPACE_LOCK_TIMEOUT_SECONDS = float(os.environ.get("MC_CLAIM_LOCK_TIMEOUT", "5"))
+logger = get_logger(__name__)
 
 
 def _get_namespace_lock(namespace: str) -> threading.Lock:
@@ -82,7 +84,13 @@ class ClaimRegistry(_ClaimStorage):
         ]
         conflicts: list[ClaimRecord] = []
         for claim_path in self._list_claim_files():
-            claim = self._load_claim(claim_path)
+            try:
+                claim = self._load_claim(claim_path)
+            except ClaimRegistryError as exc:
+                logger.warning(
+                    "skipping corrupt claim file", path=str(claim_path), error=str(exc)
+                )
+                continue
             if claim is None:
                 continue
             if claim.schema != CLAIM_RECORD_SCHEMA:
@@ -124,7 +132,13 @@ class ClaimRegistry(_ClaimStorage):
                 allowed_namespaces = set(self._acl.get_allowed_namespaces(requesting_agent_id))
         claims: list[ClaimRecord] = []
         for claim_path in self._list_claim_files():
-            claim = self._load_claim(claim_path)
+            try:
+                claim = self._load_claim(claim_path)
+            except ClaimRegistryError as exc:
+                logger.warning(
+                    "skipping corrupt claim file", path=str(claim_path), error=str(exc)
+                )
+                continue
             if claim is None:
                 continue
             if claim.schema != CLAIM_RECORD_SCHEMA:

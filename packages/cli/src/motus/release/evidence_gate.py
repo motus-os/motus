@@ -17,6 +17,10 @@ from typing import Any
 from motus.hardening.package_conflicts import detect_package_conflicts
 
 MAX_HEALTH_LEDGER_AGE_HOURS = 24
+PYTEST_TIMEOUT_S = 1200
+BANDIT_TIMEOUT_S = 300
+PIP_AUDIT_TIMEOUT_S = 300
+CLEAN_VENV_TIMEOUT_S = 900
 
 
 @dataclass(frozen=True)
@@ -49,13 +53,16 @@ class EvidenceBundleResult:
         }
 
 
-def _run(cmd: list[str], *, cwd: Path) -> subprocess.CompletedProcess:
+def _run(
+    cmd: list[str], *, cwd: Path, timeout_s: int | None = None
+) -> subprocess.CompletedProcess:
     return subprocess.run(
         cmd,
         cwd=str(cwd),
         capture_output=True,
         text=True,
         check=False,
+        timeout=timeout_s,
     )
 
 
@@ -134,7 +141,15 @@ def _check_pytest(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
         f"--json-report-file={report_path}",
         "-q",
     ]
-    result = _run(cmd, cwd=cli_root)
+    try:
+        result = _run(cmd, cwd=cli_root, timeout_s=PYTEST_TIMEOUT_S)
+    except subprocess.TimeoutExpired:
+        return EvidenceCheckResult(
+            name="pytest_results",
+            passed=False,
+            message="pytest timed out",
+            details={"timeout_s": PYTEST_TIMEOUT_S},
+        )
     if result.returncode != 0 and not report_path.exists():
         return EvidenceCheckResult(
             name="pytest_results",
@@ -171,7 +186,15 @@ def _check_pytest(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
 
 def _check_bandit(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
     cmd = ["bandit", "-r", "src/", "-f", "json", "-o", str(report_path)]
-    result = _run(cmd, cwd=cli_root)
+    try:
+        result = _run(cmd, cwd=cli_root, timeout_s=BANDIT_TIMEOUT_S)
+    except subprocess.TimeoutExpired:
+        return EvidenceCheckResult(
+            name="bandit_results",
+            passed=False,
+            message="bandit timed out",
+            details={"timeout_s": BANDIT_TIMEOUT_S},
+        )
     if result.returncode != 0 and not report_path.exists():
         return EvidenceCheckResult(
             name="bandit_results",
@@ -221,7 +244,15 @@ DEV_ONLY_PACKAGES = frozenset([
 
 def _check_pip_audit(cli_root: Path, report_path: Path) -> EvidenceCheckResult:
     cmd = ["pip-audit", "--format", "json", "-o", str(report_path)]
-    result = _run(cmd, cwd=cli_root)
+    try:
+        result = _run(cmd, cwd=cli_root, timeout_s=PIP_AUDIT_TIMEOUT_S)
+    except subprocess.TimeoutExpired:
+        return EvidenceCheckResult(
+            name="pip_audit_results",
+            passed=False,
+            message="pip-audit timed out",
+            details={"timeout_s": PIP_AUDIT_TIMEOUT_S},
+        )
     if result.returncode != 0 and not report_path.exists():
         return EvidenceCheckResult(
             name="pip_audit_results",
@@ -275,7 +306,15 @@ def _check_clean_venv(repo_root: Path) -> EvidenceCheckResult:
         )
 
     cmd = [sys.executable, str(script_path), "--output", str(output_path)]
-    result = _run(cmd, cwd=repo_root)
+    try:
+        result = _run(cmd, cwd=repo_root, timeout_s=CLEAN_VENV_TIMEOUT_S)
+    except subprocess.TimeoutExpired:
+        return EvidenceCheckResult(
+            name="clean_venv_proof",
+            passed=False,
+            message="clean-venv proof timed out",
+            details={"timeout_s": CLEAN_VENV_TIMEOUT_S},
+        )
     if result.returncode != 0 and not output_path.exists():
         return EvidenceCheckResult(
             name="clean_venv_proof",

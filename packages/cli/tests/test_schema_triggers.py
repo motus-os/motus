@@ -198,6 +198,25 @@ def test_entity_versions_triggers_block_update_delete(migrated_db) -> None:
     conn.rollback()
 
 
+def test_standard_version_capture(migrated_db) -> None:
+    conn = migrated_db
+    initial = conn.execute(
+        "SELECT COUNT(*) as count FROM entity_versions WHERE entity_type = 'standard'"
+    ).fetchone()
+    assert initial["count"] > 0
+
+    conn.execute(
+        "UPDATE standards SET description = 'Updated', "
+        "updated_at = datetime('now', '+1 second') "
+        "WHERE id = 'STD-REL-001'"
+    )
+    updated = conn.execute(
+        "SELECT COUNT(*) as count FROM entity_versions "
+        "WHERE entity_type = 'standard' AND entity_id = 'STD-REL-001'"
+    ).fetchone()
+    assert updated["count"] >= 2
+
+
 def test_cr_version_capture_trigger(migrated_db) -> None:
     conn = migrated_db
     conn.execute(

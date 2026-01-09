@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import re
 import sqlite3
 import time
 from pathlib import Path
@@ -103,7 +104,11 @@ def _prepare_legacy_leases(conn: sqlite3.Connection) -> None:
         suffix += 1
         legacy_name = f"leases_legacy_{suffix}"
 
-    conn.execute(f"ALTER TABLE leases RENAME TO {legacy_name}")
+    if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", legacy_name):
+        raise MigrationError(f"[MIGRATE-002] Unsafe legacy table name: {legacy_name}")
+
+    rename_sql = f'ALTER TABLE leases RENAME TO "{legacy_name}"'
+    conn.execute(rename_sql)
 def _execute_migration_up(conn: sqlite3.Connection, migration: Migration) -> None:
     try:
         if migration.version == 19:
