@@ -116,8 +116,8 @@ class ContextCache:
             self._db_path, isolation_level=None, check_same_thread=False
         )
         configure_connection(self._conn)
-        self._write_lock = threading.Lock()
-        self._write_lock_timeout_s = float(
+        self._conn_lock = threading.RLock()
+        self._conn_lock_timeout_s = float(
             os.environ.get("MOTUS_CONTEXT_CACHE_LOCK_TIMEOUT", "5")
         )
         self._init_schema()
@@ -153,19 +153,25 @@ class ContextCache:
         self._conn.close()
 
     @contextmanager
-    def _write_txn(self) -> Any:
-        if not self._write_lock.acquire(timeout=self._write_lock_timeout_s):
+    def _conn_guard(self) -> Any:
+        if not self._conn_lock.acquire(timeout=self._conn_lock_timeout_s):
             raise RuntimeError("[CONTEXT-CACHE-LOCK-001] Timed out waiting for cache lock")
         try:
-            self._conn.execute("BEGIN IMMEDIATE")
             yield self._conn
-            self._conn.commit()
-        except Exception:
-            if self._conn.in_transaction:
-                self._conn.rollback()
-            raise
         finally:
-            self._write_lock.release()
+            self._conn_lock.release()
+
+    @contextmanager
+    def _write_txn(self) -> Any:
+        with self._conn_guard() as conn:
+            try:
+                conn.execute("BEGIN IMMEDIATE")
+                yield conn
+                conn.commit()
+            except Exception:
+                if conn.in_transaction:
+                    conn.rollback()
+                raise
 
     # =========================================================================
     # ContextCacheReader protocol implementation
@@ -180,16 +186,17 @@ class ContextCache:
         Returns:
             ResourceSpec payload with metadata, or None if not found.
         """
-        cursor = self._conn.cursor()
-        cursor.execute(
-            """
-            SELECT payload, source_hash, observed_at
-            FROM resource_specs
-            WHERE resource_type = ? AND resource_path = ?
-            """,
-            (resource.type, resource.path),
-        )
-        row = cursor.fetchone()
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                SELECT payload, source_hash, observed_at
+                FROM resource_specs
+                WHERE resource_type = ? AND resource_path = ?
+                """,
+                (resource.type, resource.path),
+            )
+            row = cursor.fetchone()
         if row is None:
             return None
 
@@ -210,16 +217,17 @@ class ContextCache:
         Returns:
             PolicyBundle payload with metadata, or None if not found.
         """
-        cursor = self._conn.cursor()
-        cursor.execute(
-            """
-            SELECT payload, source_hash, observed_at
-            FROM policy_bundles
-            WHERE policy_version = ?
-            """,
-            (policy_version,),
-        )
-        row = cursor.fetchone()
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                SELECT payload, source_hash, observed_at
+                FROM policy_bundles
+                WHERE policy_version = ?
+                """,
+                (policy_version,),
+            )
+            row = cursor.fetchone()
         if row is None:
             return None
 
@@ -248,29 +256,30 @@ class ContextCache:
         if len(tool_names) > max_tools:
             raise ValueError(f"Too many tool names requested (max {max_tools})")
 
-        cursor = self._conn.cursor()
-        placeholders = ",".join("?" * len(tool_names))
-        cursor.execute(
-            f"""
-            SELECT name, payload, source_hash, observed_at
-            FROM tool_specs
-            WHERE name IN ({placeholders})
-            """,  # nosec B608 - placeholders are ?,?,? count
-            tool_names,
-        )
-
-        results: list[dict[str, Any]] = []
-        for row in cursor.fetchall():
-            payload = json.loads(row["payload"])
-            results.append(
-                {
-                    "payload": payload,
-                    "source_hash": row["source_hash"],
-                    "observed_at": row["observed_at"],
-                    "source_id": row["name"],
-                }
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
+            placeholders = ",".join("?" * len(tool_names))
+            cursor.execute(
+                f"""
+                SELECT name, payload, source_hash, observed_at
+                FROM tool_specs
+                WHERE name IN ({placeholders})
+                """,  # nosec B608 - placeholders are ?,?,? count
+                tool_names,
             )
-        return results
+
+            results: list[dict[str, Any]] = []
+            for row in cursor.fetchall():
+                payload = json.loads(row["payload"])
+                results.append(
+                    {
+                        "payload": payload,
+                        "source_hash": row["source_hash"],
+                        "observed_at": row["observed_at"],
+                        "source_id": row["name"],
+                    }
+                )
+            return results
 
     def get_recent_outcomes(
         self, resources: list[Resource], limit: int = 25
@@ -290,37 +299,38 @@ class ContextCache:
         if len(resources) > max_resources:
             raise ValueError(f"Too many resources requested (max {max_resources})")
 
-        cursor = self._conn.cursor()
-        conditions = " OR ".join(
-            "(resource_type = ? AND resource_path = ?)" for _ in resources
-        )
-        params: list[str] = []
-        for r in resources:
-            params.extend([r.type, r.path])
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
+            conditions = " OR ".join(
+                "(resource_type = ? AND resource_path = ?)" for _ in resources
+            )
+            params: list[str] = []
+            for r in resources:
+                params.extend([r.type, r.path])
 
-        cursor.execute(
-            f"""
-            SELECT outcome_id, payload, occurred_at
-            FROM outcomes
-            WHERE {conditions}
-            ORDER BY occurred_at DESC
-            LIMIT ?
-            """,  # nosec B608 - conditions are (type=? AND path=?) templates
-            params + [limit],
-        )
+            cursor.execute(
+                f"""
+                SELECT outcome_id, payload, occurred_at
+                FROM outcomes
+                WHERE {conditions}
+                ORDER BY occurred_at DESC
+                LIMIT ?
+                """,  # nosec B608 - conditions are (type=? AND path=?) templates
+                params + [limit],
+            )
 
-        results: list[dict[str, Any]] = []
-        for row in cursor.fetchall():
-            payload = json.loads(row["payload"])
-            payload_json = json.dumps(payload, sort_keys=True, separators=(",", ":"))
-            source_hash = hashlib.sha256(payload_json.encode("utf-8")).hexdigest()
-            results.append({
-                "payload": payload,
-                "source_hash": source_hash,
-                "observed_at": row["occurred_at"],
-                "source_id": row["outcome_id"],
-            })
-        return results
+            results: list[dict[str, Any]] = []
+            for row in cursor.fetchall():
+                payload = json.loads(row["payload"])
+                payload_json = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+                source_hash = hashlib.sha256(payload_json.encode("utf-8")).hexdigest()
+                results.append({
+                    "payload": payload,
+                    "source_hash": source_hash,
+                    "observed_at": row["occurred_at"],
+                    "source_id": row["outcome_id"],
+                })
+            return results
 
     # =========================================================================
     # State hash for provenance
@@ -331,29 +341,32 @@ class ContextCache:
 
         Used for Lens provenance tagging. Same data = same hash.
         """
-        cursor = self._conn.cursor()
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
 
-        # Collect all hashes in deterministic order
-        hashes: list[str] = []
+            # Collect all hashes in deterministic order
+            hashes: list[str] = []
 
-        cursor.execute("SELECT source_hash FROM resource_specs ORDER BY id")
-        for row in cursor.fetchall():
-            hashes.append(row["source_hash"])
+            cursor.execute("SELECT source_hash FROM resource_specs ORDER BY id")
+            for row in cursor.fetchall():
+                hashes.append(row["source_hash"])
 
-        cursor.execute("SELECT source_hash FROM policy_bundles ORDER BY policy_version")
-        for row in cursor.fetchall():
-            hashes.append(row["source_hash"])
+            cursor.execute(
+                "SELECT source_hash FROM policy_bundles ORDER BY policy_version"
+            )
+            for row in cursor.fetchall():
+                hashes.append(row["source_hash"])
 
-        cursor.execute("SELECT source_hash FROM tool_specs ORDER BY name")
-        for row in cursor.fetchall():
-            hashes.append(row["source_hash"])
+            cursor.execute("SELECT source_hash FROM tool_specs ORDER BY name")
+            for row in cursor.fetchall():
+                hashes.append(row["source_hash"])
 
-        # Don't include outcomes in state hash (they're advisory, not authoritative)
+            # Don't include outcomes in state hash (they're advisory, not authoritative)
 
-        combined = "|".join(hashes)
-        cursor.execute("SELECT mc_sha256(?)", (combined,))
-        combined_hash = cursor.fetchone()[0] or ""
-        return combined_hash[:16]
+            combined = "|".join(hashes)
+            cursor.execute("SELECT mc_sha256(?)", (combined,))
+            combined_hash = cursor.fetchone()[0] or ""
+            return combined_hash[:16]
 
     # =========================================================================
     # Write operations (for populating the cache)

@@ -149,8 +149,8 @@ class LeaseStore:
             self._db_path, isolation_level=None, check_same_thread=False
         )
         configure_connection(self._conn)
-        self._write_lock = threading.Lock()
-        self._write_lock_timeout_s = float(
+        self._conn_lock = threading.RLock()
+        self._conn_lock_timeout_s = float(
             os.environ.get("MOTUS_LEASE_WRITE_LOCK_TIMEOUT", "5")
         )
         self._init_schema()
@@ -199,7 +199,7 @@ class LeaseStore:
         self._conn.close()
 
     def _begin_immediate(self, conn: sqlite3.Connection) -> None:
-        deadline = time.monotonic() + self._write_lock_timeout_s
+        deadline = time.monotonic() + self._conn_lock_timeout_s
         previous_timeout_ms = _get_busy_timeout(conn)
         if previous_timeout_ms is not None:
             try:
@@ -230,19 +230,25 @@ class LeaseStore:
                     pass
 
     @contextmanager
-    def _write_txn(self) -> Any:
-        if not self._write_lock.acquire(timeout=self._write_lock_timeout_s):
+    def _conn_guard(self) -> Any:
+        if not self._conn_lock.acquire(timeout=self._conn_lock_timeout_s):
             raise RuntimeError("[LEASE-LOCK-001] Timed out waiting for lease store lock")
         try:
-            self._begin_immediate(self._conn)
             yield self._conn
-            self._conn.commit()
-        except Exception:
-            if self._conn.in_transaction:
-                self._conn.rollback()
-            raise
         finally:
-            self._write_lock.release()
+            self._conn_lock.release()
+
+    @contextmanager
+    def _write_txn(self) -> Any:
+        with self._conn_guard() as conn:
+            try:
+                self._begin_immediate(conn)
+                yield conn
+                conn.commit()
+            except Exception:
+                if conn.in_transaction:
+                    conn.rollback()
+                raise
 
     # =========================================================================
     # Lease operations
@@ -335,9 +341,10 @@ class LeaseStore:
 
     def get_lease(self, lease_id: str) -> Lease | None:
         """Get a lease by ID."""
-        cursor = self._conn.cursor()
-        cursor.execute(LEASE_SELECT_BY_ID, (lease_id,))
-        row = cursor.fetchone()
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
+            cursor.execute(LEASE_SELECT_BY_ID, (lease_id,))
+            row = cursor.fetchone()
         if row is None:
             return None
         lease = self._row_to_lease(row)
@@ -355,10 +362,11 @@ class LeaseStore:
                         """,
                         (_iso_z(now), lease_id),
                     )
-                refreshed = self._conn.execute(
-                    LEASE_SELECT_BY_ID,
-                    (lease_id,),
-                ).fetchone()
+                with self._conn_guard() as conn:
+                    refreshed = conn.execute(
+                        LEASE_SELECT_BY_ID,
+                        (lease_id,),
+                    ).fetchone()
                 if refreshed is None:
                     return None
                 return self._row_to_lease(refreshed)
@@ -378,29 +386,30 @@ class LeaseStore:
             List of active leases holding any of the resources.
         """
         now = _utcnow()
-        cursor = self._conn.cursor()
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
 
-        params: list[Any] = [_iso_z(now), _iso_z(now)]
+            params: list[Any] = [_iso_z(now), _iso_z(now)]
 
-        if mode is not None:
-            query = LEASE_SELECT_ACTIVE_WITH_MODE
-            params.append(mode)
-        else:
-            query = LEASE_SELECT_ACTIVE_BASE
+            if mode is not None:
+                query = LEASE_SELECT_ACTIVE_WITH_MODE
+                params.append(mode)
+            else:
+                query = LEASE_SELECT_ACTIVE_BASE
 
-        cursor.execute(query, params)
+            cursor.execute(query, params)
 
-        # Filter by resource overlap
-        resource_keys = {(r.type, r.path) for r in resources}
-        result: list[Lease] = []
+            # Filter by resource overlap
+            resource_keys = {(r.type, r.path) for r in resources}
+            result: list[Lease] = []
 
-        for row in cursor.fetchall():
-            lease = self._row_to_lease(row)
-            lease_keys = {(r.type, r.path) for r in lease.resources}
-            if lease_keys & resource_keys:
-                result.append(lease)
+            for row in cursor.fetchall():
+                lease = self._row_to_lease(row)
+                lease_keys = {(r.type, r.path) for r in lease.resources}
+                if lease_keys & resource_keys:
+                    result.append(lease)
 
-        return result
+            return result
 
     def update_heartbeat(self, lease_id: str, ttl_s: int = 300) -> Lease | None:
         """Update heartbeat deadline for a lease.
@@ -490,16 +499,17 @@ class LeaseStore:
         now = _utcnow()
         now_iso = _iso_z(now)
 
-        cursor = self._conn.cursor()
-        cursor.execute(
-            """
-            SELECT lease_id FROM coordination_leases
-            WHERE status = 'active'
-            AND (expires_at <= ? OR heartbeat_deadline <= ?)
-            """,
-            (now_iso, now_iso),
-        )
-        expired_ids = [row["lease_id"] for row in cursor.fetchall()]
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                SELECT lease_id FROM coordination_leases
+                WHERE status = 'active'
+                AND (expires_at <= ? OR heartbeat_deadline <= ?)
+                """,
+                (now_iso, now_iso),
+            )
+            expired_ids = [row["lease_id"] for row in cursor.fetchall()]
 
         if expired_ids:
             update_rows = [(_iso_z(now), lease_id) for lease_id in expired_ids]
@@ -604,32 +614,34 @@ class LeaseStore:
 
     def get_events(self, lease_id: str) -> list[dict[str, Any]]:
         """Get all events for a lease."""
-        cursor = self._conn.cursor()
-        cursor.execute(
-            """
-            SELECT event_id, event_type, payload, created_at
-            FROM events
-            WHERE lease_id = ?
-            ORDER BY created_at
-            """,
-            (lease_id,),
-        )
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                SELECT event_id, event_type, payload, created_at
+                FROM events
+                WHERE lease_id = ?
+                ORDER BY created_at
+                """,
+                (lease_id,),
+            )
 
-        return [
-            {
-                "event_id": row["event_id"],
-                "event_type": row["event_type"],
-                "payload": json.loads(row["payload"]),
-                "created_at": row["created_at"],
-            }
-            for row in cursor.fetchall()
-        ]
+            return [
+                {
+                    "event_id": row["event_id"],
+                    "event_type": row["event_type"],
+                    "payload": json.loads(row["payload"]),
+                    "created_at": row["created_at"],
+                }
+                for row in cursor.fetchall()
+            ]
 
     def event_exists(self, event_id: str) -> bool:
         """Check if an event already exists (for idempotency)."""
-        cursor = self._conn.cursor()
-        cursor.execute("SELECT 1 FROM events WHERE event_id = ?", (event_id,))
-        return cursor.fetchone() is not None
+        with self._conn_guard() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT 1 FROM events WHERE event_id = ?", (event_id,))
+            return cursor.fetchone() is not None
 
     # =========================================================================
     # Helpers

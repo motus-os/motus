@@ -88,4 +88,3 @@ WHERE NOT EXISTS (
 
 DROP TRIGGER IF EXISTS standards_version_capture;
 DROP TRIGGER IF EXISTS standards_version_seed;
-DELETE FROM entity_versions WHERE entity_type = 'standard';
