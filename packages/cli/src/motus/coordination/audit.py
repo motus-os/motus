@@ -153,17 +153,18 @@ class AuditLog:
 
         events = []
         try:
-            with path.open("r", encoding="utf-8") as f:
-                for line_num, line in enumerate(f, start=1):
-                    line = line.strip()
-                    if not line:
-                        continue
-                    try:
-                        payload = json.loads(line)
-                        events.append(AuditEvent.from_json(payload))
-                    except Exception as e:
-                        # Log error but continue (fail-safe: don't crash on malformed lines)
-                        print(f"Warning: Failed to parse event at {path}:{line_num}: {e}")
+            with file_lock(path, timeout=_AUDIT_LOCK_TIMEOUT_SECONDS, exclusive=False):
+                with path.open("r", encoding="utf-8") as f:
+                    for line_num, line in enumerate(f, start=1):
+                        line = line.strip()
+                        if not line:
+                            continue
+                        try:
+                            payload = json.loads(line)
+                            events.append(AuditEvent.from_json(payload))
+                        except Exception as e:
+                            # Log error but continue (fail-safe: don't crash on malformed lines)
+                            print(f"Warning: Failed to parse event at {path}:{line_num}: {e}")
         except Exception as e:
             raise AuditLogError(f"failed to read events from {path}") from e
 

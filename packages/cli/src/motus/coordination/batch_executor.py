@@ -195,14 +195,16 @@ class BatchCoordinator(_BatchStorage):
         batches: list[WorkBatch] = []
         if self._active_dir.exists():
             for path in sorted(self._active_dir.glob("wb-*.json")):
-                batches.append(WorkBatch.from_json(json.loads(path.read_text(encoding="utf-8"))))
+                payload = self._read_batch_payload(path)
+                batches.append(WorkBatch.from_json(payload))
         if include_closed and self._closed_dir.exists():
             remaining = MAX_BATCH_LIST_FILES - len(batches)
             if remaining <= 0:
                 raise BatchCoordinatorError("batch listing exceeds maximum file limit")
             paths = self._bounded_closed_paths(max_files=remaining)
             for path in sorted(paths):
-                batches.append(WorkBatch.from_json(json.loads(path.read_text(encoding="utf-8"))))
+                payload = self._read_batch_payload(path)
+                batches.append(WorkBatch.from_json(payload))
         batches.sort(key=lambda b: b.sequence_number)
         return batches
 

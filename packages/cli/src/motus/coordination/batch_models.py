@@ -82,7 +82,7 @@ class _BatchStorage:
 
     def _batch_lock_path(self, batch_id: str) -> Path:
         safe = "".join(ch if ch.isalnum() or ch in {"-", "_"} else "_" for ch in batch_id)
-        return self._root / ".locks" / f"{safe}.lock"
+        return self._root / ".locks" / safe
 
     def _batch_path_closed(self, batch_id: str, *, created_at: datetime) -> Path:
         month = created_at.strftime("%Y-%m")
@@ -120,8 +120,17 @@ class _BatchStorage:
         path = self._find_any_batch_path(batch_id)
         if path is None:
             raise BatchNotFoundError(batch_id)
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload = self._read_batch_payload(path, batch_id=batch_id)
         return WorkBatch.from_json(payload)
+
+    def _read_batch_payload(self, path: Path, *, batch_id: str | None = None) -> dict[str, Any]:
+        lock_id = batch_id or path.stem
+        lock_path = self._batch_lock_path(lock_id)
+        try:
+            with file_lock(lock_path, timeout=_BATCH_LOCK_TIMEOUT_SECONDS, exclusive=False):
+                return json.loads(path.read_text(encoding="utf-8"))
+        except FileLockError as exc:
+            raise BatchCoordinatorError(f"failed to lock batch file: {lock_path}") from exc
 
     def _write_active(self, batch: WorkBatch) -> None:
         self._active_dir.mkdir(parents=True, exist_ok=True)
@@ -153,7 +162,7 @@ class _BatchStorage:
         if self._active_dir.exists():
             for path in self._active_dir.glob("wb-*.json"):
                 try:
-                    payload = json.loads(path.read_text(encoding="utf-8"))
+                    payload = self._read_batch_payload(path)
                     candidates.append(
                         (int(payload.get("sequence_number", 0)), str(payload.get("batch_hash", "")))
                     )
@@ -162,7 +171,7 @@ class _BatchStorage:
         if self._closed_dir.exists():
             for path in self._closed_dir.rglob("wb-*.json"):
                 try:
-                    payload = json.loads(path.read_text(encoding="utf-8"))
+                    payload = self._read_batch_payload(path)
                     candidates.append(
                         (int(payload.get("sequence_number", 0)), str(payload.get("batch_hash", "")))
                     )

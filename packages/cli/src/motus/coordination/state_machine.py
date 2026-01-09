@@ -229,6 +229,10 @@ class CRStateMachine:
 
     def list_by_state(self, state: str) -> list[CRStateRecord]:
         state_norm = state.strip().upper()
-        index = self._load_index()
-        cr_ids = list(index.get(state_norm, []))
+        try:
+            with self._index_lock():
+                index = self._load_index()
+                cr_ids = list(index.get(state_norm, []))
+        except FileLockError as exc:
+            raise CRStateMachineError("failed to lock CR index") from exc
         return [self.get_state(cr_id) for cr_id in cr_ids]

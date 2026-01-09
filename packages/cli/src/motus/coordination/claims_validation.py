@@ -64,7 +64,7 @@ def _resources_overlap(a: ClaimedResource, b: ClaimedResource) -> bool:
 
 class _ClaimStorage:
     def __init__(self, root_dir: str | Path, *, namespace_acl: NamespaceACL | None = None) -> None:
-        self._root = Path(root_dir)
+        self._root = Path(root_dir).expanduser().resolve()
         self._sequence_path = self._root / "SEQUENCE"
         self._acl = namespace_acl
 

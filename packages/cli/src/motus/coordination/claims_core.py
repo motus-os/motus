@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import os
 import threading
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import timedelta
 from pathlib import Path
@@ -67,6 +68,7 @@ class ClaimRegistry(_ClaimStorage):
         resources: list[dict[str, str]] | list[ClaimedResource],
         *,
         namespace: str | None = None,
+        lock: bool = True,
     ) -> list[ClaimRecord]:
         now = _utcnow()
         requested_namespace = _norm_namespace(namespace)
@@ -83,28 +85,40 @@ class ClaimRegistry(_ClaimStorage):
             for r in requested
         ]
         conflicts: list[ClaimRecord] = []
-        for claim_path in self._list_claim_files():
-            try:
-                claim = self._load_claim(claim_path)
-            except ClaimRegistryError as exc:
-                logger.warning(
-                    "skipping corrupt claim file", path=str(claim_path), error=str(exc)
-                )
-                continue
-            if claim is None:
-                continue
-            if claim.schema != CLAIM_RECORD_SCHEMA:
-                continue
-            if claim.status != "active":
-                continue
-            if self._is_expired(claim, now=now):
-                continue
-            if _norm_namespace(claim.namespace) != requested_namespace:
-                continue
-            for have in claim.claimed_resources:
-                if any(_resources_overlap(have, want) for want in requested):
-                    conflicts.append(claim)
-                    break
+        lock_path = self._namespace_lock_path(requested_namespace)
+        lock_ctx = (
+            file_lock(lock_path, timeout=NAMESPACE_LOCK_TIMEOUT_SECONDS, exclusive=False)
+            if lock
+            else nullcontext()
+        )
+        try:
+            with lock_ctx:
+                for claim_path in self._list_claim_files():
+                    try:
+                        claim = self._load_claim(claim_path)
+                    except ClaimRegistryError as exc:
+                        logger.warning(
+                            "skipping corrupt claim file", path=str(claim_path), error=str(exc)
+                        )
+                        continue
+                    if claim is None:
+                        continue
+                    if claim.schema != CLAIM_RECORD_SCHEMA:
+                        continue
+                    if claim.status != "active":
+                        continue
+                    if self._is_expired(claim, now=now):
+                        continue
+                    if _norm_namespace(claim.namespace) != requested_namespace:
+                        continue
+                    for have in claim.claimed_resources:
+                        if any(_resources_overlap(have, want) for want in requested):
+                            conflicts.append(claim)
+                            break
+        except FileLockError as exc:
+            raise ClaimRegistryError(
+                f"failed to lock claim namespace file: {lock_path}"
+            ) from exc
         return conflicts
 
     def list_claims(
@@ -113,6 +127,7 @@ class ClaimRegistry(_ClaimStorage):
         requesting_agent_id: str,
         namespace: str | None = None,
         all_namespaces: bool = False,
+        lock: bool = True,
     ) -> list[ClaimRecord]:
         now = _utcnow()
         requested_namespace = _norm_namespace(namespace) if namespace is not None else None
@@ -131,28 +146,44 @@ class ClaimRegistry(_ClaimStorage):
             else:
                 allowed_namespaces = set(self._acl.get_allowed_namespaces(requesting_agent_id))
         claims: list[ClaimRecord] = []
-        for claim_path in self._list_claim_files():
-            try:
-                claim = self._load_claim(claim_path)
-            except ClaimRegistryError as exc:
-                logger.warning(
-                    "skipping corrupt claim file", path=str(claim_path), error=str(exc)
-                )
-                continue
-            if claim is None:
-                continue
-            if claim.schema != CLAIM_RECORD_SCHEMA:
-                continue
-            if claim.status != "active":
-                continue
-            if self._is_expired(claim, now=now):
-                continue
-            claim_namespace = _norm_namespace(claim.namespace)
-            if requested_namespace is not None and claim_namespace != requested_namespace:
-                continue
-            if allowed_namespaces is not None and claim_namespace not in allowed_namespaces:
-                continue
-            claims.append(claim)
+        lock_path = (
+            self._registry_lock_path()
+            if requested_namespace is None
+            else self._namespace_lock_path(requested_namespace)
+        )
+        lock_ctx = (
+            file_lock(lock_path, timeout=NAMESPACE_LOCK_TIMEOUT_SECONDS, exclusive=False)
+            if lock
+            else nullcontext()
+        )
+        try:
+            with lock_ctx:
+                for claim_path in self._list_claim_files():
+                    try:
+                        claim = self._load_claim(claim_path)
+                    except ClaimRegistryError as exc:
+                        logger.warning(
+                            "skipping corrupt claim file", path=str(claim_path), error=str(exc)
+                        )
+                        continue
+                    if claim is None:
+                        continue
+                    if claim.schema != CLAIM_RECORD_SCHEMA:
+                        continue
+                    if claim.status != "active":
+                        continue
+                    if self._is_expired(claim, now=now):
+                        continue
+                    claim_namespace = _norm_namespace(claim.namespace)
+                    if requested_namespace is not None and claim_namespace != requested_namespace:
+                        continue
+                    if allowed_namespaces is not None and claim_namespace not in allowed_namespaces:
+                        continue
+                    claims.append(claim)
+        except FileLockError as exc:
+            raise ClaimRegistryError(
+                f"failed to lock claim namespace file: {lock_path}"
+            ) from exc
         claims.sort(key=lambda c: (c.expires_at, c.claim_id))
         return claims
 
@@ -215,7 +246,9 @@ class ClaimRegistry(_ClaimStorage):
                     if existing is not None:
                         return existing
 
-                    conflicts = self.check_claims(resources, namespace=resolved_namespace)
+                    conflicts = self.check_claims(
+                        resources, namespace=resolved_namespace, lock=False
+                    )
                     if conflicts:
                         return ClaimConflict(conflicts=conflicts)
                     seq = self._next_sequence()
@@ -261,7 +294,10 @@ class ClaimRegistry(_ClaimStorage):
 
     def _namespace_lock_path(self, namespace: str) -> Path:
         safe = "".join(ch if ch.isalnum() or ch in {"-", "_"} else "_" for ch in namespace)
-        return self._root / ".locks" / f"{safe}.lock"
+        return self._root / ".locks" / safe
+
+    def _registry_lock_path(self) -> Path:
+        return self._root / ".locks" / "registry"
 
     def renew_claim(self, claim_id: str, *, lease_duration_s: int | None = None) -> ClaimRecord:
         now = _utcnow()

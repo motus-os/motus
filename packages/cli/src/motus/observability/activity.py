@@ -19,10 +19,12 @@ from pathlib import Path
 from typing import Any, Iterable, Iterator
 
 from motus.migration.path_migration import find_workspace_dir
+from motus.file_lock import FileLockError, file_lock
 
 ACTIVITY_SCHEMA = "motus.activity.v1"
 DEFAULT_ACTIVITY_FILENAME = "activity.jsonl"
 MAX_FIELD_CHARS = int(os.environ.get("MOTUS_ACTIVITY_MAX_FIELD_CHARS", "2048"))
+_ACTIVITY_LOCK_TIMEOUT_SECONDS = float(os.environ.get("MOTUS_ACTIVITY_LOCK_TIMEOUT", "5"))
 
 
 def _utc_now_iso_z() -> str:
@@ -149,8 +151,11 @@ class ActivityLedger:
         line = json.dumps(event.to_json(), sort_keys=True, separators=(",", ":")) + "\n"
 
         try:
-            with path.open("a", encoding="utf-8") as handle:
-                handle.write(line)
+            with file_lock(path, timeout=_ACTIVITY_LOCK_TIMEOUT_SECONDS):
+                with path.open("a", encoding="utf-8") as handle:
+                    handle.write(line)
+        except FileLockError:
+            return None
         except Exception:
             # Best-effort: never block primary workflow.
             return None
