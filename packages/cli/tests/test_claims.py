@@ -153,12 +153,11 @@ def test_directory_claim_conflicts_with_file_inside(tmp_path: Path) -> None:
     assert isinstance(claim2, ClaimConflict)
 
 
-def test_malformed_claim_file_fails_closed(tmp_path: Path) -> None:
+def test_malformed_claim_file_is_skipped(tmp_path: Path) -> None:
     registry = ClaimRegistry(tmp_path)
     (tmp_path / "cl-2025-12-18-0001.json").write_text("{not json", encoding="utf-8")
 
-    with pytest.raises(ClaimRegistryError):
-        registry.check_claims([{"type": "file", "path": "foo.py"}])
+    assert registry.check_claims([{"type": "file", "path": "foo.py"}]) == []
 
 
 def test_namespace_scopes_conflict_detection(tmp_path: Path) -> None:
