@@ -157,3 +157,37 @@ class TestRejectDraft:
 
         assert result.accepted is False
         assert "Draft not found" in result.message
+
+
+class TestPersistenceFailures:
+    """Ensure persistence failures are surfaced to callers."""
+
+    def test_outcome_persistence_failure(self, wc, active_lease, monkeypatch):
+        monkeypatch.setattr("motus.api.facade._persist_outcome", lambda **_: False)
+        result = wc.put_outcome(
+            active_lease,
+            "file",
+            path="src/failure.txt",
+        )
+        assert result.accepted is False
+        assert "not persisted" in result.message
+
+    def test_evidence_persistence_failure(self, wc, active_lease, monkeypatch):
+        monkeypatch.setattr("motus.api.facade._persist_evidence", lambda **_: False)
+        result = wc.record_evidence(
+            active_lease,
+            "test_result",
+            test_results={"passed": 1, "failed": 0, "skipped": 0},
+        )
+        assert result.accepted is False
+        assert "not persisted" in result.message
+
+    def test_decision_persistence_failure(self, wc, active_lease, monkeypatch):
+        monkeypatch.setattr("motus.api.facade._persist_decision", lambda **_: False)
+        result = wc.record_decision(
+            active_lease,
+            "Choose option A",
+            rationale="Test persistence failure",
+        )
+        assert result.accepted is False
+        assert "not persisted" in result.message
