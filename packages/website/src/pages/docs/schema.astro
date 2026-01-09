@@ -86,21 +86,6 @@ const base = import.meta.env.BASE_URL.endsWith('/')
     </Panel>
   </Section>
 
-  <Section tone="light" class="text-center" innerClass="max-w-4xl">
-    <SectionHeader
-      title="Full Schema Reference"
-      subtitle="The proof registry links to the authoritative schema source."
-      size="md"
-      class="mb-8"
-    />
-    <a
-      href={`${base}docs/evidence#claim-kernel_schema`}
-      class="inline-flex items-center gap-2 bg-mint text-charcoal font-semibold px-phi-4 py-phi-2 rounded-lg hover:bg-white transition-colors"
-    >
-      View Schema Evidence
-    </a>
-  </Section>
-
   <Section tone="light" pad="tight" innerClass="max-w-5xl">
     <DocsWayfinding pageId="schema" base={base} />
   </Section>
