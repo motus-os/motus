@@ -9,7 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.16.6",
+    "astro": "^5.16.8",
     "js-yaml": "^4.1.1"
   },
   "devDependencies": {
