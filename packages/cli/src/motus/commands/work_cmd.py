@@ -50,13 +50,22 @@ def _table_exists(conn, table_name: str) -> bool:
     return row is not None
 
 
-def _fetch_persisted_status(lease_id: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+def _fetch_persisted_status(
+    lease_id: str,
+    work_id: str | None,
+) -> tuple[
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+    list[dict[str, Any]],
+]:
     try:
         db = get_db_manager()
         with db.readonly_connection() as conn:
             outcomes: list[dict[str, Any]] = []
             evidence: list[dict[str, Any]] = []
             decisions: list[dict[str, Any]] = []
+            gate_outcomes: list[dict[str, Any]] = []
 
             if _table_exists(conn, "kernel_outcomes"):
                 rows = conn.execute(
@@ -112,14 +121,35 @@ def _fetch_persisted_status(lease_id: str) -> tuple[list[dict[str, Any]], list[d
                     for row in rows
                 ]
 
-        return outcomes, evidence, decisions
+            if work_id and _table_exists(conn, "gate_outcomes"):
+                rows = conn.execute(
+                    """
+                    SELECT gate_id, result, reason, decided_at, step_id
+                    FROM gate_outcomes
+                    WHERE work_id = ?
+                    ORDER BY decided_at
+                    """,
+                    (work_id,),
+                ).fetchall()
+                gate_outcomes = [
+                    {
+                        "gate_id": row["gate_id"],
+                        "result": row["result"],
+                        "reason": row["reason"],
+                        "decided_at": row["decided_at"],
+                        "step_id": row["step_id"],
+                    }
+                    for row in rows
+                ]
+
+        return outcomes, evidence, decisions, gate_outcomes
     except Exception as exc:
         logger.debug(
             "Failed to load persisted work status",
             error_type=type(exc).__name__,
             error=str(exc),
         )
-        return [], [], []
+        return [], [], [], []
 
 
 def cmd_work_claim(args: Any) -> int:
@@ -365,9 +395,13 @@ def cmd_work_status(args: Any) -> int:
     evidence = wc.get_evidence(args.lease_id)
     decisions = wc.get_decisions(args.lease_id)
 
-    persisted_outcomes, persisted_evidence, persisted_decisions = _fetch_persisted_status(
-        args.lease_id
-    )
+    work_id = result.lease.work_id if result.lease else None
+    (
+        persisted_outcomes,
+        persisted_evidence,
+        persisted_decisions,
+        gate_outcomes,
+    ) = _fetch_persisted_status(args.lease_id, work_id)
     if persisted_outcomes:
         outcomes = persisted_outcomes
     if persisted_evidence:
@@ -382,6 +416,7 @@ def cmd_work_status(args: Any) -> int:
             "outcomes": outcomes,
             "evidence": evidence,
             "decisions": decisions,
+            "gate_outcomes": gate_outcomes,
         }
         console.print_json(json.dumps(output, default=str))
         return 0
@@ -409,6 +444,14 @@ def cmd_work_status(args: Any) -> int:
         console.print(f"\n[cyan]Decisions ({len(decisions)}):[/cyan]")
         for d in decisions:
             console.print(f"  - {d['decision']}")
+
+    if gate_outcomes:
+        console.print(f"\n[cyan]Gate Outcomes ({len(gate_outcomes)}):[/cyan]")
+        for g in gate_outcomes:
+            gate_line = f"  - {g['gate_id']}: {g['result']}"
+            if g.get("step_id"):
+                gate_line += f" (step={g['step_id']})"
+            console.print(gate_line)
 
     return 0
 

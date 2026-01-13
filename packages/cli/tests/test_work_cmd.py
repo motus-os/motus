@@ -185,7 +185,7 @@ def test_work_status_reads_persisted_records(
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
-    _bootstrap_db(tmp_path, monkeypatch)
+    db_path = _bootstrap_db(tmp_path, monkeypatch)
 
     compiler = WorkCompiler()
     result = compiler.claim_work(
@@ -205,6 +205,17 @@ def test_work_status_reads_persisted_records(
     )
     compiler.record_decision(lease_id, "Approve change")
 
+    conn = sqlite3.connect(db_path)
+    conn.execute(
+        """
+        INSERT INTO gate_outcomes (id, gate_id, result, decided_by, work_id)
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        ("gate-1", "GATE-TEST-001", "pass", "agent-1", result.lease.work_id),
+    )
+    conn.commit()
+    conn.close()
+
     args = SimpleNamespace(json=True, lease_id=lease_id)
     assert cmd_work_status(args) == 0
 
@@ -216,3 +227,5 @@ def test_work_status_reads_persisted_records(
     assert payload["evidence"][0]["evidence_type"] == "test_result"
     assert len(payload["decisions"]) == 1
     assert payload["decisions"][0]["decision"] == "Approve change"
+    assert len(payload["gate_outcomes"]) == 1
+    assert payload["gate_outcomes"][0]["gate_id"] == "GATE-TEST-001"
