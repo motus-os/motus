@@ -44,6 +44,17 @@ class Migration:
     up_sql: str
     down_sql: str
     checksum: str
+def _has_sql_content(sql_block: str) -> bool:
+    for line in sql_block.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("--"):
+            continue
+        return True
+    return False
+
+
 def parse_migration_file(file_path: Path) -> Migration:
     content = file_path.read_text()
 
@@ -67,8 +78,10 @@ def parse_migration_file(file_path: Path) -> Migration:
             f"[MIGRATE-001] Missing -- UP section in {file_path.name}"
         )
 
-    up_sql = up_match.group(1).strip()
-    down_sql = down_match.group(1).strip() if down_match else ""
+    up_raw = up_match.group(1)
+    down_raw = down_match.group(1) if down_match else ""
+    up_sql = up_raw.strip() if _has_sql_content(up_raw) else ""
+    down_sql = down_raw.strip() if _has_sql_content(down_raw) else ""
     checksum = hashlib.sha256(content.encode()).hexdigest()[:16]
 
     return Migration(

@@ -113,6 +113,14 @@ def _prepare_legacy_leases(conn: sqlite3.Connection) -> None:
 def _execute_script(conn: sqlite3.Connection, script: str) -> None:
     statement = ""
     for line in script.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("--"):
+            continue
+        upper = stripped.upper()
+        if not statement and upper in {"BEGIN;", "BEGIN IMMEDIATE;", "BEGIN EXCLUSIVE;", "COMMIT;", "ROLLBACK;"}:
+            continue
         statement += f"{line}\n"
         if sqlite3.complete_statement(statement):
             if statement.strip():
