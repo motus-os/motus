@@ -17,6 +17,7 @@ single source of truth for work state.
 - Evidence is append-only and required before completion.
 - Status queries must read persisted ledger records (not in-memory state).
 - Reflection notes are captured as document evidence artifacts.
+- Learning notes are captured as document evidence artifacts.
 
 ## Primary Interfaces
 - Work Compiler (6-call API)
@@ -38,3 +39,4 @@ single source of truth for work state.
 - Evidence requirements are enforced.
 - `motus work status` reads persisted outcomes/evidence/decisions.
 - Reflection notes are recorded via Work Compiler evidence.
+- Learning notes are recorded via Work Compiler evidence.

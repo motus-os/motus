@@ -10,6 +10,7 @@ Provides CLI access to the 6-call Work Compiler API:
 - motus work evidence <lease_id> - Record verification artifact
 - motus work decision <lease_id> - Log decision
 - motus work reflect <lease_id> - Record reflection note
+- motus work learn <lease_id> - Record learning note
 - motus work release <lease_id> - Release with outcome
 - motus work status <lease_id> - Show current lease status
 - motus work cleanup - Expire stale leases
@@ -143,6 +144,16 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     reflect_parser.add_argument("lease_id", help="Active lease ID")
     reflect_parser.add_argument("note", help="Reflection note text")
     reflect_parser.add_argument("--json", action="store_true", help="Output as JSON")
+
+    # motus work learn <lease_id>
+    learn_parser = work_subparsers.add_parser(
+        "learn",
+        help="Record learning note",
+        description="Record a learning note tied to the active lease",
+    )
+    learn_parser.add_argument("lease_id", help="Active lease ID")
+    learn_parser.add_argument("note", help="Learning note text")
+    learn_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
     # motus work release <lease_id>
     release_parser = work_subparsers.add_parser(

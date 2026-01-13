@@ -379,6 +379,35 @@ def cmd_work_reflect(args: Any) -> int:
     return 0 if result.accepted else 1
 
 
+def cmd_work_learn(args: Any) -> int:
+    """Handle: motus work learn <lease_id> <note>"""
+    wc = _get_work_compiler()
+    as_json = getattr(args, "json", False)
+    note = getattr(args, "note", None) or ""
+
+    result = wc.record_evidence(
+        args.lease_id,
+        "document",
+        artifacts={"kind": "learning", "note": note},
+    )
+
+    if as_json:
+        output = {
+            "accepted": result.accepted,
+            "evidence_id": result.evidence_id,
+            "message": result.message,
+        }
+        console.print_json(json.dumps(output))
+        return 0 if result.accepted else 1
+
+    if result.accepted:
+        console.print(f"[green]Learning recorded: {result.evidence_id}[/green]")
+    else:
+        console.print(f"[red]{result.message}[/red]")
+
+    return 0 if result.accepted else 1
+
+
 def cmd_work_release(args: Any) -> int:
     """Handle: motus work release <lease_id> <outcome>"""
     wc = _get_work_compiler()
@@ -600,6 +629,8 @@ def handle_work_command(args: Any) -> int:
         return cmd_work_decision(args)
     elif subcommand == "reflect":
         return cmd_work_reflect(args)
+    elif subcommand == "learn":
+        return cmd_work_learn(args)
     elif subcommand == "release":
         return cmd_work_release(args)
     elif subcommand == "status":
@@ -610,7 +641,7 @@ def handle_work_command(args: Any) -> int:
         return cmd_work_list(args)
     else:
         console.print(
-            "[yellow]Usage: motus work <claim|context|outcome|evidence|decision|reflect|release|status|cleanup|list>[/yellow]"
+            "[yellow]Usage: motus work <claim|context|outcome|evidence|decision|reflect|learn|release|status|cleanup|list>[/yellow]"
         )
         console.print("\nThe 6-call Work Compiler protocol:")
         console.print("  1. motus work claim <task_id>     - Claim work, get lease")
@@ -621,4 +652,5 @@ def handle_work_command(args: Any) -> int:
         console.print("  6. motus work release <lease_id>  - Release with outcome")
         console.print("\nSupplemental steps:")
         console.print("  - motus work reflect <lease_id>   - Record reflection note")
+        console.print("  - motus work learn <lease_id>     - Record learning note")
         return 0

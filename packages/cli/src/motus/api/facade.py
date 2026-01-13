@@ -1333,8 +1333,12 @@ class WorkCompiler:
 
         if work_id and step_id:
             artifact_type = "evidence"
-            if artifacts and artifacts.get("kind") == "reflection":
-                artifact_type = "reflection_note"
+            if artifacts:
+                kind = artifacts.get("kind")
+                if kind == "reflection":
+                    artifact_type = "reflection_note"
+                elif kind == "learning":
+                    artifact_type = "learning_note"
             _persist_work_artifact(
                 evidence_id,
                 artifact_type,

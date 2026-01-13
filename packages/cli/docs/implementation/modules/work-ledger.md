@@ -28,5 +28,6 @@ and gate outcomes, with append-only guarantees for immutable records.
 
 - Work Compiler writes steps and artifacts on claim/evidence/decision/release.
 - Reflection notes are stored as `reflection_note` artifacts.
+- Learning notes are stored as `learning_note` artifacts.
 - Policy runner writes gate outcomes when `--work-id/--step-id` are provided.
 - `motus work status` surfaces persisted outcomes, evidence, decisions, and gate outcomes.
