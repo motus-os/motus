@@ -47,6 +47,31 @@ def register_work_parsers(subparsers: argparse._SubParsersAction) -> argparse.Ar
     claim_parser.add_argument("--intent", "-i", help="Description of what you'll do")
     claim_parser.add_argument("--agent", "-a", help="Agent ID (default: from MC_AGENT_ID)")
     claim_parser.add_argument("--ttl", type=int, default=3600, help="Lease TTL in seconds (default: 3600)")
+    claim_parser.add_argument(
+        "--work-mode",
+        choices=["bypass", "expanded"],
+        help="Work mode for the claim (bypass or expanded)",
+    )
+    claim_parser.add_argument(
+        "--work-type",
+        help="Work type identifier (e.g., planning)",
+    )
+    claim_parser.add_argument(
+        "--routing-class",
+        choices=["deterministic", "review"],
+        help="Routing class for the claim",
+    )
+    claim_parser.add_argument(
+        "--program-ref",
+        help="Program or project reference identifier",
+    )
+    claim_parser.add_argument(
+        "--scope",
+        action="append",
+        dest="scope",
+        metavar="SCOPE",
+        help="Scope tags for the claim (can specify multiple)",
+    )
     claim_parser.add_argument("--json", action="store_true", help="Output as JSON")
 
     # motus work context <lease_id>

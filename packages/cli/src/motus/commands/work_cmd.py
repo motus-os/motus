@@ -58,6 +58,11 @@ def cmd_work_claim(args: Any) -> int:
 
     intent = getattr(args, "intent", None) or f"Work on {args.task_id}"
     ttl_s = getattr(args, "ttl", 3600)
+    work_mode = getattr(args, "work_mode", None)
+    work_type = getattr(args, "work_type", None)
+    routing_class = getattr(args, "routing_class", None)
+    program_ref = getattr(args, "program_ref", None)
+    scope = getattr(args, "scope", None) or []
 
     result = wc.claim_work(
         task_id=args.task_id,
@@ -65,6 +70,11 @@ def cmd_work_claim(args: Any) -> int:
         intent=intent,
         agent_id=agent_id,
         ttl_s=ttl_s,
+        work_mode=work_mode,
+        work_type=work_type,
+        routing_class=routing_class,
+        program_ref=program_ref,
+        scope=scope or None,
     )
 
     if as_json:

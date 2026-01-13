@@ -105,6 +105,20 @@ def _metrics_enabled() -> bool:
         return True
 
 
+def _hash_payload(payload: dict[str, Any]) -> str:
+    payload_json = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload_json.encode("utf-8")).hexdigest()
+
+
+def _normalize_scope_value(scope: list[str] | None) -> str | None:
+    if not scope:
+        return None
+    cleaned = sorted({s.strip() for s in scope if s and s.strip()})
+    if not cleaned:
+        return None
+    return json.dumps(cleaned, separators=(",", ":"))
+
+
 def _map_release_outcome(outcome: Outcome) -> str | None:
     if outcome == "success":
         return "completed"
@@ -333,6 +347,83 @@ def _persist_outcome(
         return False
 
 
+def _persist_work_step(
+    step_id: str,
+    work_id: str,
+    owner: str,
+    *,
+    sequence: int,
+    status: str = "in_progress",
+    action_type: str | None = None,
+    ooda_tag: str | None = None,
+    confidence_level: str | None = None,
+    confidence_score: int | None = None,
+    started_at: str | None = None,
+) -> bool:
+    try:
+        db = get_db_manager()
+        with db.transaction() as conn:
+            conn.execute(
+                """
+                INSERT INTO work_steps (
+                    id, work_id, status, owner, sequence, action_type, ooda_tag,
+                    confidence_level, confidence_score, started_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    step_id,
+                    work_id,
+                    status,
+                    owner,
+                    sequence,
+                    action_type,
+                    ooda_tag,
+                    confidence_level,
+                    confidence_score,
+                    started_at,
+                ),
+            )
+        return True
+    except Exception as exc:
+        _kernel_logger.warning(f"Failed to persist work step: {exc}")
+        return False
+
+
+def _persist_work_artifact(
+    artifact_id: str,
+    artifact_type: str,
+    source_ref: str,
+    hash_value: str,
+    created_by: str,
+    *,
+    work_id: str,
+    step_id: str | None,
+) -> bool:
+    try:
+        db = get_db_manager()
+        with db.transaction() as conn:
+            conn.execute(
+                """
+                INSERT INTO work_artifacts (
+                    id, artifact_type, source_ref, hash, created_by, work_id, step_id
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    artifact_id,
+                    artifact_type,
+                    source_ref,
+                    hash_value,
+                    created_by,
+                    work_id,
+                    step_id,
+                ),
+            )
+        return True
+    except Exception as exc:
+        _kernel_logger.warning(f"Failed to persist work artifact: {exc}")
+        return False
+
+
 def _persist_attempt(
     attempt_id: str,
     work_id: str,
@@ -471,6 +562,7 @@ class WorkCompiler:
         self._draft_decisions: dict[str, dict[str, Any]] = {}
         self._lease_task_ids: dict[str, str] = {}  # PA-099: lease_id -> task_id
         self._lease_attempt_ids: dict[str, str] = {}
+        self._lease_step_ids: dict[str, str] = {}
 
     def _cache_lease_metadata(
         self,
@@ -542,6 +634,64 @@ class WorkCompiler:
     def _clear_lease_metadata(self, lease_id: str) -> None:
         self._lease_task_ids.pop(lease_id, None)
         self._lease_attempt_ids.pop(lease_id, None)
+        self._lease_step_ids.pop(lease_id, None)
+
+    def _ensure_work_step(
+        self,
+        lease_id: str,
+        work_id: str | None,
+        owner: str,
+    ) -> str | None:
+        if not work_id:
+            return None
+        existing = self._lease_step_ids.get(lease_id)
+        if existing:
+            return existing
+        try:
+            db = get_db_manager()
+            with db.readonly_connection() as conn:
+                row = conn.execute(
+                    "SELECT COALESCE(MAX(sequence), 0) FROM work_steps WHERE work_id = ?",
+                    (work_id,),
+                ).fetchone()
+            sequence = int(row[0] or 0) + 1
+            step_id = _generate_id("step")
+            now = _utcnow().isoformat()
+            persisted = _persist_work_step(
+                step_id,
+                work_id,
+                owner,
+                sequence=sequence,
+                action_type="execute",
+                ooda_tag="act",
+                started_at=now,
+            )
+            if persisted:
+                self._lease_step_ids[lease_id] = step_id
+                return step_id
+        except Exception as exc:
+            _kernel_logger.warning(f"Failed to ensure work step: {exc}")
+        return None
+
+    def _finalize_work_step(self, lease_id: str, outcome: Outcome) -> None:
+        step_id = self._lease_step_ids.get(lease_id)
+        if not step_id:
+            return
+        status = "completed" if outcome in ("success", "partial") else "blocked"
+        completed_at = _utcnow().isoformat() if status == "completed" else None
+        try:
+            db = get_db_manager()
+            with db.transaction() as conn:
+                conn.execute(
+                    """
+                    UPDATE work_steps
+                    SET status = ?, completed_at = ?, updated_at = datetime('now')
+                    WHERE id = ? AND status != 'completed'
+                    """,
+                    (status, completed_at, step_id),
+                )
+        except Exception as exc:
+            _kernel_logger.warning(f"Failed to finalize work step {step_id}: {exc}")
 
     def _record_metric(
         self,
@@ -614,6 +764,11 @@ class WorkCompiler:
         *,
         mode: LeaseMode = "write",
         ttl_s: int = 3600,
+        work_mode: Literal["bypass", "expanded"] | None = None,
+        work_type: str | None = None,
+        routing_class: Literal["deterministic", "review"] | None = None,
+        program_ref: str | None = None,
+        scope: list[str] | None = None,
     ) -> ClaimResponse:
         """Reserve a roadmap item and get a lease.
 
@@ -729,23 +884,41 @@ class WorkCompiler:
                 )
                 try:
                     db = get_db_manager()
+                    scope_value = _normalize_scope_value(scope)
                     with db.transaction() as conn:
                         conn.execute(
                             """
                             UPDATE roadmap_items
-                            SET claimed_at = ?, lease_expires_at = ?, updated_at = datetime('now')
+                            SET claimed_at = ?,
+                                lease_expires_at = ?,
+                                mode = COALESCE(?, mode),
+                                work_type = COALESCE(?, work_type),
+                                routing_class = COALESCE(?, routing_class),
+                                program_ref = COALESCE(?, program_ref),
+                                intent = COALESCE(?, intent),
+                                scope = COALESCE(?, scope),
+                                owner = COALESCE(owner, ?),
+                                updated_at = datetime('now')
                             WHERE id = ?
                             """,
                             (
                                 result.lease.issued_at.isoformat(),
                                 result.lease.expires_at.isoformat(),
+                                work_mode,
+                                work_type.strip() if work_type else None,
+                                routing_class,
+                                program_ref.strip() if program_ref else None,
+                                intent,
+                                scope_value,
+                                agent_id,
                                 task_id,
                             ),
                         )
                 except Exception as exc:
                     _kernel_logger.warning(
-                        f"Failed to update work claim timestamps for {task_id}: {exc}"
+                        f"Failed to update work claim metadata for {task_id}: {exc}"
                     )
+                self._ensure_work_step(result.lease.lease_id, task_id, agent_id)
 
             try:
                 from motus.core.roadmap import get_missing_prereqs
@@ -1116,6 +1289,16 @@ class WorkCompiler:
 
         # Persist to kernel table (PA-061, PA-099)
         work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
+        step_id = self._ensure_work_step(lease_id, work_id, lease.owner_agent_id)
+        artifact_hash = _hash_payload(
+            {
+                "evidence_type": evidence_type,
+                "artifacts": artifacts or {},
+                "test_results": test_results or {},
+                "diff_summary": diff_summary,
+                "log_excerpt": log_excerpt,
+            }
+        )
         persisted = _persist_evidence(
             evidence_id=evidence_id,
             lease_id=lease_id,
@@ -1146,6 +1329,17 @@ class WorkCompiler:
                 accepted=False,
                 evidence_id=evidence_id,
                 message="Evidence recorded but not persisted",
+            )
+
+        if work_id and step_id:
+            _persist_work_artifact(
+                evidence_id,
+                "evidence",
+                f"evidence:{evidence_id}",
+                artifact_hash,
+                lease.owner_agent_id,
+                work_id=work_id,
+                step_id=step_id,
             )
 
         self._record_metric(
@@ -1264,6 +1458,15 @@ class WorkCompiler:
 
         # Persist to kernel table (PA-061, PA-099)
         work_id, attempt_id = self._resolve_lease_metadata(lease_id, lease)
+        step_id = self._ensure_work_step(lease_id, work_id, lease.owner_agent_id)
+        artifact_hash = _hash_payload(
+            {
+                "decision": decision,
+                "rationale": rationale,
+                "alternatives_considered": alternatives_considered or [],
+                "constraints": constraints or [],
+            }
+        )
         persisted = _persist_decision(
             decision_id=decision_id,
             lease_id=lease_id,
@@ -1293,6 +1496,17 @@ class WorkCompiler:
                 accepted=False,
                 decision_id=decision_id,
                 message="Decision logged but not persisted",
+            )
+
+        if work_id and step_id:
+            _persist_work_artifact(
+                decision_id,
+                "decision_note",
+                f"decision:{decision_id}",
+                artifact_hash,
+                lease.owner_agent_id,
+                work_id=work_id,
+                step_id=step_id,
             )
 
         self._record_metric(
@@ -1391,6 +1605,7 @@ class WorkCompiler:
                 _kernel_logger.warning(
                     f"Failed to update work release timestamp for {work_id}: {exc}"
                 )
+        self._finalize_work_step(lease_id, outcome)
 
         # Clean up in-memory storage
         self._outcomes.pop(lease_id, None)
