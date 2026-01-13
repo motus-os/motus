@@ -7,8 +7,8 @@ Goal: Replace the current ecosystem page with a system flowchart that shows the 
 - Building: mint border + badge.
 - Future: purple border + badge.
 
-## Naming (Future Layer)
-- Work Ledger (Future): signed work receipts + provenance.
+## Naming (Future + Building Layer)
+- Work Ledger (Building): ledger core shipped; signed receipts + provenance future.
 - Asset Registry (Future bundled module): IP assets, owners, license terms.
 - Motus Exchange (Future): brokerage for licensed IP + work execution.
 

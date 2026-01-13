@@ -311,10 +311,10 @@ nodes:
   type: internal
   group: future
   label: Work Ledger
-  status: future
+  status: building
   registry_id: work-ledger
-  summary: Signed work receipts + provenance ledger for verified execution.
-  flow_note: Signed provenance
+  summary: Ledger core for verified execution; signed receipts + provenance future.
+  flow_note: Ledger core shipped
   website_path: /implementation#work-ledger
   docs_url: /implementation#work-ledger
   origin: internal
