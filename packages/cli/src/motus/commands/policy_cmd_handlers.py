@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import time
 import uuid
@@ -127,6 +128,10 @@ def policy_run_command(args) -> int:
 
         from motus.policy.runner import run_gate_plan
 
+        work_id = getattr(args, "work_id", None)
+        step_id = getattr(args, "step_id", None)
+        decided_by = os.environ.get("MC_AGENT_ID", "policy_runner")
+
         result = run_gate_plan(
             plan=plan,
             declared_files=changed_files,
@@ -135,6 +140,9 @@ def policy_run_command(args) -> int:
             vault_dir=policy.vault_dir,
             evidence_dir=evidence_dir,
             policy=policy,
+            work_id=work_id,
+            step_id=step_id,
+            decided_by=decided_by if work_id else None,
         )
         t4 = time.perf_counter()
         timings_ms["run_ms"] = (t4 - t3) * 1000

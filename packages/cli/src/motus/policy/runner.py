@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import os
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
@@ -62,6 +63,9 @@ def run_gate_plan(
     gate_command_overrides: Mapping[str, Sequence[str] | str] | None = None,
     run_id: str | None = None,
     created_at: str | None = None,
+    work_id: str | None = None,
+    step_id: str | None = None,
+    decided_by: str | None = None,
 ) -> RunResult:
     """Run required gates and write an evidence bundle (always, pass or fail)."""
 
@@ -90,6 +94,8 @@ def run_gate_plan(
         plan.to_dict() if hasattr(plan, "to_dict") else _plan_inline_for_manifest(plan)
     )
     plan_hash = compute_run_hash(plan_dict_for_hash)
+    policy_ref = f"gates:{plan.policy_versions.gates}"
+    decided_by_value = decided_by or os.environ.get("MC_AGENT_ID", "policy_runner")
 
     write_pack_match_trace(
         changed_files=declared_files,
@@ -115,6 +121,10 @@ def run_gate_plan(
         requires_permits=requires_permits,
         signing_key_id=signing_key_id,
         signing_key=signing_key,
+        work_id=work_id,
+        step_id=step_id,
+        decided_by=decided_by_value,
+        policy_ref=policy_ref,
     )
 
     results = outcome.results

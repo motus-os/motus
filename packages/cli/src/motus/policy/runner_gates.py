@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from motus.coordination.trace import DecisionTraceWriter
+from motus.coordination.gate_outcomes import persist_gate_outcome
 from motus.exceptions import SubprocessError, SubprocessTimeoutError
 from motus.policy._runner_utils import (
     _find_gate,
@@ -38,6 +39,8 @@ from motus.policy.runner_gate_support import (
 class GateRunOutcome:
     results: list[GateResult]
     exit_code: int
+
+
 def run_gates(
     *,
     plan,
@@ -55,10 +58,28 @@ def run_gates(
     requires_permits: bool,
     signing_key_id: str | None,
     signing_key: str | None,
+    work_id: str | None = None,
+    step_id: str | None = None,
+    decided_by: str | None = None,
+    policy_ref: str | None = None,
 ) -> GateRunOutcome:
     results: list[GateResult] = []
     overall_exit = 0
     override_map = dict(gate_command_overrides or {})
+
+    def _persist_gate(gate_id: str, status: str, exit_code: int) -> None:
+        if not work_id:
+            return
+        persist_gate_outcome(
+            gate_id=gate_id,
+            status=status,
+            work_id=work_id,
+            step_id=step_id,
+            decided_by=decided_by or "policy_runner",
+            reason=f"run_id={run_id} exit_code={exit_code}",
+            policy_ref=policy_ref,
+        )
+
     if requires_signature and (signing_key is None or signing_key_id is None):
         msg = (
             "Run blocked: evidence signing is required for this profile.\n"
@@ -82,6 +103,7 @@ def run_gates(
                 declared_files_source=declared_files_source,
                 plan_hash=plan_hash,
             )
+            _persist_gate(gate_id, "fail", 127)
         return GateRunOutcome(results=results, exit_code=1)
     scope_set: set[str] | None = None
     if requires_permits:
@@ -110,6 +132,7 @@ def run_gates(
                 declared_files_source=declared_files_source,
                 plan_hash=plan_hash,
             )
+            _persist_gate(gate_id, "fail", 127)
             overall_exit = overall_exit or 1
             continue
 
@@ -135,6 +158,7 @@ def run_gates(
                 declared_files_source=declared_files_source,
                 plan_hash=plan_hash,
             )
+            _persist_gate(gate_id, "pass", 0)
             continue
 
         command: Sequence[str] | str | None
@@ -164,6 +188,7 @@ def run_gates(
                 declared_files_source=declared_files_source,
                 plan_hash=plan_hash,
             )
+            _persist_gate(gate_id, "fail", 127)
             overall_exit = overall_exit or 1
             continue
 
@@ -232,6 +257,7 @@ def run_gates(
                 declared_files_source=declared_files_source,
                 plan_hash=plan_hash,
             )
+            _persist_gate(gate_id, "fail", 124)
             overall_exit = overall_exit or 1
             continue
         except (SubprocessError, Exception) as e:
@@ -257,6 +283,7 @@ def run_gates(
                 declared_files_source=declared_files_source,
                 plan_hash=plan_hash,
             )
+            _persist_gate(gate_id, "fail", 127)
             overall_exit = overall_exit or 1
             continue
 
@@ -301,5 +328,6 @@ def run_gates(
             declared_files_source=declared_files_source,
             plan_hash=plan_hash,
         )
+        _persist_gate(gate_id, status, exit_code)
 
     return GateRunOutcome(results=results, exit_code=overall_exit)

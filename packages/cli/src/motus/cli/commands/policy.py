@@ -60,6 +60,14 @@ def register_policy_parsers(
         "--evidence-dir",
         help="Evidence root directory (defaults to <repo>/.motus/evidence or MC_EVIDENCE_DIR)",
     )
+    policy_run_parser.add_argument(
+        "--work-id",
+        help="Work item id to attach gate outcomes",
+    )
+    policy_run_parser.add_argument(
+        "--step-id",
+        help="Step id to attach gate outcomes (optional)",
+    )
 
     policy_verify_parser = policy_subparsers.add_parser(
         "verify", help="Verify an evidence bundle (hashes + signature)"
