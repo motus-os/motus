@@ -8,10 +8,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from motus.commands.work_cmd import cmd_work_list
+from motus.commands.work_cmd import cmd_work_list, cmd_work_status
 from motus.core.bootstrap import bootstrap_database_at_path
 from motus.core.database_connection import reset_db_manager
 from motus.core.layered_config import reset_config
+from motus.api import WorkCompiler
+from motus.coordination.schemas import ClaimedResource
 
 
 def _bootstrap_db(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
@@ -176,3 +178,41 @@ def test_work_list_all_includes_expired(monkeypatch: pytest.MonkeyPatch, tmp_pat
     payload = json.loads(captured)
     assert payload["count"] == 1
     assert payload["items"][0]["lease_id"] == "lease-expired"
+
+
+def test_work_status_reads_persisted_records(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    _bootstrap_db(tmp_path, monkeypatch)
+
+    compiler = WorkCompiler()
+    result = compiler.claim_work(
+        task_id="ADHOC-STATUS-001",
+        resources=[ClaimedResource(type="file", path="README.md")],
+        intent="Status query",
+        agent_id="agent-1",
+    )
+    assert result.decision.decision == "GRANTED"
+
+    lease_id = result.lease.lease_id
+    compiler.put_outcome(lease_id, "file", path="output.txt")
+    compiler.record_evidence(
+        lease_id,
+        "test_result",
+        test_results={"passed": 1, "failed": 0, "skipped": 0},
+    )
+    compiler.record_decision(lease_id, "Approve change")
+
+    args = SimpleNamespace(json=True, lease_id=lease_id)
+    assert cmd_work_status(args) == 0
+
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["lease_id"] == lease_id
+    assert len(payload["outcomes"]) == 1
+    assert payload["outcomes"][0]["outcome_type"] == "file"
+    assert len(payload["evidence"]) == 1
+    assert payload["evidence"][0]["evidence_type"] == "test_result"
+    assert len(payload["decisions"]) == 1
+    assert payload["decisions"][0]["decision"] == "Approve change"

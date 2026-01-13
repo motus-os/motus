@@ -42,6 +42,86 @@ def _parse_resource(spec: str) -> Resource:
     return Resource(type=type_part, path=path_part)
 
 
+def _table_exists(conn, table_name: str) -> bool:
+    row = conn.execute(
+        "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
+        (table_name,),
+    ).fetchone()
+    return row is not None
+
+
+def _fetch_persisted_status(lease_id: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    try:
+        db = get_db_manager()
+        with db.readonly_connection() as conn:
+            outcomes: list[dict[str, Any]] = []
+            evidence: list[dict[str, Any]] = []
+            decisions: list[dict[str, Any]] = []
+
+            if _table_exists(conn, "kernel_outcomes"):
+                rows = conn.execute(
+                    """
+                    SELECT outcome_type, path, description
+                    FROM kernel_outcomes
+                    WHERE lease_id = ?
+                    ORDER BY created_at
+                    """,
+                    (lease_id,),
+                ).fetchall()
+                outcomes = [
+                    {
+                        "outcome_type": row["outcome_type"],
+                        "path": row["path"],
+                        "description": row["description"],
+                    }
+                    for row in rows
+                ]
+
+            if _table_exists(conn, "evidence"):
+                rows = conn.execute(
+                    """
+                    SELECT id, evidence_type
+                    FROM evidence
+                    WHERE lease_id = ?
+                    ORDER BY created_at
+                    """,
+                    (lease_id,),
+                ).fetchall()
+                evidence = [
+                    {
+                        "evidence_id": row["id"],
+                        "evidence_type": row["evidence_type"],
+                    }
+                    for row in rows
+                ]
+
+            if _table_exists(conn, "decisions"):
+                rows = conn.execute(
+                    """
+                    SELECT decision_summary, decision_type
+                    FROM decisions
+                    WHERE lease_id = ?
+                    ORDER BY decided_at
+                    """,
+                    (lease_id,),
+                ).fetchall()
+                decisions = [
+                    {
+                        "decision": row["decision_summary"] or row["decision_type"],
+                    }
+                    for row in rows
+                ]
+
+        return outcomes, evidence, decisions
+    except Exception as exc:
+        logger.debug(
+            "Failed to load persisted work status",
+            error_type=type(exc).__name__,
+            error=str(exc),
+        )
+        return [], [], []
+
+
 def cmd_work_claim(args: Any) -> int:
     """Handle: motus work claim <task_id>"""
     wc = _get_work_compiler()
@@ -280,10 +360,20 @@ def cmd_work_status(args: Any) -> int:
     # Get context to see lease status
     result = wc.get_context(args.lease_id)
 
-    # Get recorded items
+    # Get recorded items (persisted preferred, fallback to memory)
     outcomes = wc.get_outcomes(args.lease_id)
     evidence = wc.get_evidence(args.lease_id)
     decisions = wc.get_decisions(args.lease_id)
+
+    persisted_outcomes, persisted_evidence, persisted_decisions = _fetch_persisted_status(
+        args.lease_id
+    )
+    if persisted_outcomes:
+        outcomes = persisted_outcomes
+    if persisted_evidence:
+        evidence = persisted_evidence
+    if persisted_decisions:
+        decisions = persisted_decisions
 
     if as_json:
         output = {
