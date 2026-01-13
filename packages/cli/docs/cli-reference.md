@@ -490,6 +490,8 @@ motus policy run --git-diff BASE HEAD [OPTIONS]
 - `--repo PATH` - Repository root (default: current directory)
 - `--pack-cap N` - Override profile pack cap
 - `--evidence-dir PATH` - Evidence root (default: .motus/evidence or MC_EVIDENCE_DIR)
+- `--work-id ID` - Work item id to attach gate outcomes
+- `--step-id ID` - Step id to attach gate outcomes (optional)
 - `--json` - Emit machine-readable JSON
 
 **Examples:**
