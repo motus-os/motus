@@ -727,6 +727,25 @@ class WorkCompiler:
                     work_id=task_id,
                     worker_id=agent_id,
                 )
+                try:
+                    db = get_db_manager()
+                    with db.transaction() as conn:
+                        conn.execute(
+                            """
+                            UPDATE roadmap_items
+                            SET claimed_at = ?, lease_expires_at = ?, updated_at = datetime('now')
+                            WHERE id = ?
+                            """,
+                            (
+                                result.lease.issued_at.isoformat(),
+                                result.lease.expires_at.isoformat(),
+                                task_id,
+                            ),
+                        )
+                except Exception as exc:
+                    _kernel_logger.warning(
+                        f"Failed to update work claim timestamps for {task_id}: {exc}"
+                    )
 
             try:
                 from motus.core.roadmap import get_missing_prereqs
@@ -1355,6 +1374,23 @@ class WorkCompiler:
         attempt_id = None
         if result.lease is not None:
             work_id, attempt_id = self._resolve_lease_metadata(lease_id, result.lease)
+
+        if work_id:
+            try:
+                db = get_db_manager()
+                with db.transaction() as conn:
+                    conn.execute(
+                        """
+                        UPDATE roadmap_items
+                        SET released_at = ?, updated_at = datetime('now')
+                        WHERE id = ?
+                        """,
+                        (_utcnow().isoformat(), work_id),
+                    )
+            except Exception as exc:
+                _kernel_logger.warning(
+                    f"Failed to update work release timestamp for {work_id}: {exc}"
+                )
 
         # Clean up in-memory storage
         self._outcomes.pop(lease_id, None)
