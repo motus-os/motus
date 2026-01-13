@@ -10,7 +10,7 @@
 
 | Term | Definition | Example |
 |------|------------|---------|
-| Work Compiler | The kernel loop that transforms work into verified outcomes | claim -> execute -> evidence -> release |
+| Work Compiler | The kernel loop that transforms work into verified outcomes | claim -> context -> evidence -> decision -> release |
 | Phase | A major stage of work with clear boundaries and exit criteria | Phase 0: Reconciliation, Phase A: Monorepo Setup |
 | Mission | A group of parallelizable tasks within a phase, sharing a common objective | Phase 0, Mission 1: Reconciliation Foundation |
 | Planning Item | Any trackable unit of work with status and ownership | RI-A-001, P0-025, CR-2025-12-29-example |
@@ -69,6 +69,8 @@ The canonical Work Compiler protocol.
 | Flight Rule | Pre-computed decision (no thinking required) |
 | Playbook | Domain guidance with MUST/SHOULD/MAY rules |
 | ADR | Architectural Decision Record |
+| Work Artifact | Append-only record linking work to evidence or decisions |
+| Gate Outcome | Persisted policy gate decision for a Work Item/Step |
 
 ---
 
@@ -129,6 +131,9 @@ The canonical Work Compiler protocol.
 | Table | Purpose |
 |-------|---------|
 | `roadmap_items` | All work items with status, phase, dependencies |
+| `work_steps` | Per-work execution steps and status |
+| `work_artifacts` | Append-only evidence/decision artifacts |
+| `gate_outcomes` | Policy gate decisions linked to work/steps |
 | `terminology` | Canonical term definitions (this document's source) |
 | `audit_log` | Immutable change history |
 
