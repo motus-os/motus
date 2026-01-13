@@ -28,3 +28,4 @@ and gate outcomes, with append-only guarantees for immutable records.
 
 - Work Compiler writes steps and artifacts on claim/evidence/decision/release.
 - Policy runner writes gate outcomes when `--work-id/--step-id` are provided.
+- `motus work status` surfaces persisted outcomes, evidence, decisions, and gate outcomes.
