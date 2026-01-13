@@ -178,10 +178,10 @@ bundled_modules:
   - id: work-ledger
     marketing_name: "Work Ledger"
     scope: bundled
-    status: future
+    status: building
     roadmap_id: "RI-IP-002"
     target_release: null
-    description: "Signed work receipts + provenance ledger for verified execution."
+    description: "Ledger core shipped; signed receipts + provenance future."
     dependencies:
       - "proof-engine"
     best_practices:
