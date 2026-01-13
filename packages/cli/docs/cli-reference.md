@@ -55,6 +55,7 @@ motus policy plan --files src/main.py  # Plan policy gates for a file
 | `intent` | Extract/show intent from a session |
 | `modules` | List registered Motus modules |
 | `policy` | Plan and run Vault OS policy gates (proof of compliance) |
+| `work` | Execute Work Compiler protocol (claim, evidence, release, status) |
 | `rollback` | Restore state to a previous checkpoint |
 | `scratch` | Manage scratch entries and promotions |
 | `teleport` | Export a session bundle for cross-session context transfer |
@@ -106,6 +107,32 @@ motus scratch promote SCR-2026-01-06-001 --phase phase_h --item-type work
 
 ```bash
 motus scratch rebuild-index
+```
+
+## Work Commands
+
+Work Compiler 6-call protocol plus helpers.
+
+| Command | Purpose |
+|---------|---------|
+| `motus work claim` | Claim work and get a lease |
+| `motus work context` | Refresh context (Lens) |
+| `motus work outcome` | Register a deliverable |
+| `motus work evidence` | Record verification evidence |
+| `motus work decision` | Log a decision |
+| `motus work release` | Release the lease with final outcome |
+| `motus work status` | Show persisted outcomes/evidence/decisions (+ gate outcomes) |
+| `motus work list` | List active leases |
+| `motus work cleanup` | Expire stale leases |
+
+**Example flow:**
+```bash
+motus work claim RI-001 --intent "Refactor parser" --resource file:src/parser.py
+motus work context lease-20260113-1234abcd
+motus work evidence lease-20260113-1234abcd test_result --passed 12
+motus work decision lease-20260113-1234abcd "Keep current strategy"
+motus work release lease-20260113-1234abcd success
+motus work status lease-20260113-1234abcd --json
 ```
 
 ## Database Commands
