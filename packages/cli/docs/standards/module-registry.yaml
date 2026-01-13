@@ -4,10 +4,16 @@ status_semantics:
   building: "In active development; roadmap_id required."
   future: "Concept only; no runnable examples."
 
+boundary_semantics:
+  kernel: "Kernel-owned primitives and invariants."
+  bundled_adapter: "Motus-shipped adapter layer (configurable, not kernel truth)."
+  external_adapter: "External or reference adapters; kernel never depends on these."
+
 kernel:
   id: kernel
   marketing_name: "Motus Kernel"
   scope: kernel
+  boundary: kernel
   status: current
   roadmap_id: null
   target_release: "v0.1.0"
@@ -33,6 +39,7 @@ bundled_modules:
   - id: module-sdk
     marketing_name: "Module SDK"
     scope: bundled
+    boundary: bundled_adapter
     status: building
     roadmap_id: "RI-MOD-001"
     target_release: null
@@ -50,6 +57,7 @@ bundled_modules:
   - id: capability-matrix
     marketing_name: "Capability Matrix"
     scope: bundled
+    boundary: bundled_adapter
     status: building
     roadmap_id: "RI-MOD-010"
     target_release: null
@@ -68,6 +76,7 @@ bundled_modules:
   - id: contract-compiler
     marketing_name: "Contract Compiler"
     scope: bundled
+    boundary: bundled_adapter
     status: building
     roadmap_id: "RI-MOD-020"
     target_release: null
@@ -86,6 +95,7 @@ bundled_modules:
   - id: knowledge-engine
     marketing_name: "Knowledge Engine"
     scope: bundled
+    boundary: bundled_adapter
     status: building
     roadmap_id: "RI-MOD-030"
     target_release: null
@@ -104,6 +114,7 @@ bundled_modules:
   - id: lens-engine
     marketing_name: "Lens Engine"
     scope: bundled
+    boundary: bundled_adapter
     status: building
     roadmap_id: "RI-MOD-040"
     target_release: null
@@ -123,6 +134,7 @@ bundled_modules:
   - id: proof-engine
     marketing_name: "Proof Engine"
     scope: bundled
+    boundary: bundled_adapter
     status: building
     roadmap_id: "RI-MOD-050"
     target_release: null
@@ -141,6 +153,7 @@ bundled_modules:
   - id: module-manager
     marketing_name: "Module Manager"
     scope: bundled
+    boundary: bundled_adapter
     status: building
     roadmap_id: "RI-MOD-060"
     target_release: null
@@ -159,6 +172,7 @@ bundled_modules:
   - id: motus-blueprints
     marketing_name: "Motus Blueprints"
     scope: bundled
+    boundary: bundled_adapter
     status: building
     roadmap_id: "RI-MOD-070"
     target_release: null
@@ -178,10 +192,11 @@ bundled_modules:
   - id: work-ledger
     marketing_name: "Work Ledger"
     scope: bundled
+    boundary: kernel
     status: future
     roadmap_id: "RI-IP-002"
     target_release: null
-    description: "Signed work receipts + provenance ledger for verified execution."
+    description: "Kernel ledger + receipts (legacy module entry for packaging map)."
     dependencies:
       - "proof-engine"
     best_practices:
@@ -196,6 +211,7 @@ bundled_modules:
   - id: asset-registry
     marketing_name: "Asset Registry"
     scope: bundled
+    boundary: bundled_adapter
     status: future
     roadmap_id: "RI-IP-001"
     target_release: null
@@ -215,6 +231,7 @@ bundled_modules:
   - id: motus-exchange
     marketing_name: "Motus Exchange"
     scope: bundled
+    boundary: bundled_adapter
     status: future
     roadmap_id: "RI-IP-005"
     target_release: null
@@ -230,3 +247,58 @@ bundled_modules:
     implementation_guides:
       website: "/implementation#motus-exchange"
       docs: "packages/cli/docs/implementation/modules/motus-exchange.md"
+
+adapter_modules:
+  - id: mcp-adapter
+    marketing_name: "MCP Adapter"
+    scope: adapter
+    boundary: external_adapter
+    status: current
+    roadmap_id: null
+    target_release: "v0.1.0"
+    description: "Reference MCP server integration (external adapter surface)."
+
+  - id: ingest-adapter
+    marketing_name: "Ingest Adapter"
+    scope: adapter
+    boundary: external_adapter
+    status: current
+    roadmap_id: null
+    target_release: "v0.1.0"
+    description: "Telemetry ingest and parser reference adapters."
+
+  - id: integration-adapter
+    marketing_name: "Integrations Adapter"
+    scope: adapter
+    boundary: external_adapter
+    status: building
+    roadmap_id: null
+    target_release: null
+    description: "External system integrations (Jira, GitHub, Linear, etc.)."
+
+  - id: ui-adapter
+    marketing_name: "UI Adapter"
+    scope: adapter
+    boundary: external_adapter
+    status: building
+    roadmap_id: "RI-UI-002"
+    target_release: "v0.2.0"
+    description: "External UI surfaces; not part of kernel."
+
+  - id: orchestrator-adapter
+    marketing_name: "Orchestrator Adapter"
+    scope: adapter
+    boundary: external_adapter
+    status: building
+    roadmap_id: "RI-ORCH-001"
+    target_release: "v0.2.0"
+    description: "External orchestration layer for multi-agent coordination."
+
+  - id: bench-harness
+    marketing_name: "Benchmark Harness"
+    scope: adapter
+    boundary: external_adapter
+    status: building
+    roadmap_id: "RI-BENCH-010"
+    target_release: "v0.1.2"
+    description: "Internal benchmark harness (reference adapter tooling)."

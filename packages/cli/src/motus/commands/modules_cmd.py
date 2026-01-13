@@ -72,7 +72,7 @@ def _normalize_module(raw: dict[str, Any], *, default_scope: str) -> dict[str, A
         raise ValueError("Module entry missing id")
     name = str(raw.get("marketing_name") or raw.get("name") or module_id).strip()
     status = str(raw.get("status", "")).strip()
-    scope = str(raw.get("scope") or default_scope).strip()
+    scope = str(raw.get("boundary") or raw.get("scope") or default_scope).strip()
     description = str(raw.get("description", "")).strip()
     return {
         "id": module_id,
@@ -98,6 +98,14 @@ def _collect_modules(registry: dict[str, Any]) -> list[dict[str, Any]]:
         if not isinstance(entry, dict):
             raise ValueError("bundled_modules entries must be mappings")
         modules.append(_normalize_module(entry, default_scope="bundled"))
+
+    adapters = registry.get("adapter_modules") or []
+    if not isinstance(adapters, list):
+        raise ValueError("adapter_modules must be a list")
+    for entry in adapters:
+        if not isinstance(entry, dict):
+            raise ValueError("adapter_modules entries must be mappings")
+        modules.append(_normalize_module(entry, default_scope="adapter"))
 
     return modules
 
