@@ -158,3 +158,81 @@ def test_record_evidence_and_decision_create_artifacts(wc) -> None:
     types = {row["artifact_type"] for row in rows}
     assert types == {"evidence", "decision_note"}
     assert all(row["step_id"] for row in rows)
+
+
+def test_release_work_marks_step_completed(wc) -> None:
+    compiler, db_path = wc
+    work_id = "RI-LEDGER-003"
+    _insert_work_item(db_path, work_id)
+
+    result = compiler.claim_work(
+        task_id=work_id,
+        resources=[ClaimedResource(type="file", path="README.md")],
+        intent="Release success",
+        agent_id="agent-1",
+    )
+    assert result.decision.decision == "GRANTED"
+
+    release = compiler.release_work(result.lease.lease_id, "success")
+    assert release.decision.decision == "GRANTED"
+
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    work_row = conn.execute(
+        "SELECT released_at FROM roadmap_items WHERE id = ?",
+        (work_id,),
+    ).fetchone()
+    step_row = conn.execute(
+        """
+        SELECT status, completed_at
+        FROM work_steps
+        WHERE work_id = ?
+        """,
+        (work_id,),
+    ).fetchone()
+    conn.close()
+
+    assert work_row is not None
+    assert work_row["released_at"]
+    assert step_row is not None
+    assert step_row["status"] == "completed"
+    assert step_row["completed_at"]
+
+
+def test_release_work_marks_step_blocked_on_failure(wc) -> None:
+    compiler, db_path = wc
+    work_id = "RI-LEDGER-004"
+    _insert_work_item(db_path, work_id)
+
+    result = compiler.claim_work(
+        task_id=work_id,
+        resources=[ClaimedResource(type="file", path="README.md")],
+        intent="Release failure",
+        agent_id="agent-1",
+    )
+    assert result.decision.decision == "GRANTED"
+
+    release = compiler.release_work(result.lease.lease_id, "failure")
+    assert release.decision.decision == "GRANTED"
+
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    work_row = conn.execute(
+        "SELECT released_at FROM roadmap_items WHERE id = ?",
+        (work_id,),
+    ).fetchone()
+    step_row = conn.execute(
+        """
+        SELECT status, completed_at
+        FROM work_steps
+        WHERE work_id = ?
+        """,
+        (work_id,),
+    ).fetchone()
+    conn.close()
+
+    assert work_row is not None
+    assert work_row["released_at"]
+    assert step_row is not None
+    assert step_row["status"] == "blocked"
+    assert step_row["completed_at"] is None
