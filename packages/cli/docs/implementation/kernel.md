@@ -15,6 +15,7 @@ single source of truth for work state.
 - `coordination.db` is the single source of truth.
 - All state changes flow through kernel APIs (no raw SQL writes).
 - Evidence is append-only and required before completion.
+- Status queries must read persisted ledger records (not in-memory state).
 
 ## Primary Interfaces
 - Work Compiler (6-call API)
@@ -34,3 +35,4 @@ single source of truth for work state.
 - Fresh install creates all tables.
 - 6-call flow works end-to-end.
 - Evidence requirements are enforced.
+- `motus work status` reads persisted outcomes/evidence/decisions.
