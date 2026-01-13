@@ -193,10 +193,10 @@ bundled_modules:
     marketing_name: "Work Ledger"
     scope: bundled
     boundary: kernel
-    status: future
+    status: building
     roadmap_id: "RI-IP-002"
     target_release: null
-    description: "Kernel ledger + receipts (legacy module entry for packaging map)."
+    description: "Kernel ledger core shipped; receipts/provenance expand over time."
     dependencies:
       - "proof-engine"
     best_practices:
