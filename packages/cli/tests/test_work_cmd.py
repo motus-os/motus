@@ -258,6 +258,15 @@ def test_work_reflect_records_document_evidence(
         "SELECT evidence_type, artifacts FROM evidence WHERE id = ?",
         (payload["evidence_id"],),
     ).fetchone()
+    artifact_row = conn.execute(
+        """
+        SELECT artifact_type
+        FROM work_artifacts
+        WHERE work_id = ?
+        ORDER BY created_at DESC
+        """,
+        (result.lease.work_id,),
+    ).fetchone()
     conn.close()
 
     assert row is not None
@@ -265,3 +274,5 @@ def test_work_reflect_records_document_evidence(
     artifacts = json.loads(row["artifacts"])
     assert artifacts["kind"] == "reflection"
     assert artifacts["note"] == "Reflecting on progress"
+    assert artifact_row is not None
+    assert artifact_row["artifact_type"] == "reflection_note"

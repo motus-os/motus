@@ -1332,9 +1332,12 @@ class WorkCompiler:
             )
 
         if work_id and step_id:
+            artifact_type = "evidence"
+            if artifacts and artifacts.get("kind") == "reflection":
+                artifact_type = "reflection_note"
             _persist_work_artifact(
                 evidence_id,
-                "evidence",
+                artifact_type,
                 f"evidence:{evidence_id}",
                 artifact_hash,
                 lease.owner_agent_id,
