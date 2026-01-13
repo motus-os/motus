@@ -63,6 +63,8 @@ def test_policy_run_help_exists(capsys) -> None:
     assert e.value.code == 0
     out = capsys.readouterr().out
     assert "usage: motus policy run" in out
+    assert "--work-id" in out
+    assert "--step-id" in out
 
 
 def test_policy_verify_help_exists(capsys) -> None:
@@ -197,3 +199,66 @@ def test_policy_run_exits_with_runner_code(tmp_path: Path) -> None:
                 main()
 
     assert e.value.code == 7
+
+
+def test_policy_run_passes_work_and_step_ids(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    vault_dir = _write_vault_tree(tmp_path / "vault")
+    repo_dir = tmp_path / "repo"
+    repo_dir.mkdir()
+
+    evidence_root = tmp_path / "evidence"
+    evidence_dir = evidence_root / "run-456"
+    manifest_path = evidence_dir / "manifest.json"
+    summary_path = evidence_dir / "summary.md"
+    evidence_dir.mkdir(parents=True)
+    manifest_path.write_text(json.dumps({"run_id": "run-456"}), encoding="utf-8")
+    summary_path.write_text("# summary\n", encoding="utf-8")
+
+    monkeypatch.setenv("MC_AGENT_ID", "agent-1")
+
+    from motus.policy.run import RunResult
+
+    with patch(
+        "motus.policy.runner.run_gate_plan",
+        return_value=RunResult(
+            exit_code=0,
+            evidence_dir=evidence_dir,
+            manifest_path=manifest_path,
+            summary_path=summary_path,
+        ),
+    ) as run_gate_plan:
+        with patch(
+            "sys.argv",
+            [
+                "motus",
+                "policy",
+                "run",
+                "--vault-dir",
+                str(vault_dir),
+                "--repo",
+                str(repo_dir),
+                "--profile",
+                "personal",
+                "--files",
+                "src/example.py",
+                "--evidence-dir",
+                str(evidence_root),
+                "--work-id",
+                "RI-TEST-001",
+                "--step-id",
+                "STEP-001",
+            ],
+        ):
+            from motus.cli.core import main
+
+            with pytest.raises(SystemExit) as e:
+                main()
+
+    assert e.value.code == 0
+    assert run_gate_plan.call_count == 1
+    kwargs = run_gate_plan.call_args.kwargs
+    assert kwargs["work_id"] == "RI-TEST-001"
+    assert kwargs["step_id"] == "STEP-001"
+    assert kwargs["decided_by"] == "agent-1"

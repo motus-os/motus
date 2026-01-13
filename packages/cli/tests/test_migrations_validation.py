@@ -195,6 +195,9 @@ class TestExpectedSchema:
             "features",
             "change_requests",
             "roadmap_items",
+            "work_steps",
+            "work_artifacts",
+            "gate_outcomes",
             "bugs",
             "releases",
             "standards",
@@ -229,6 +232,10 @@ class TestExpectedSchema:
             "entity_versions_no_delete",
             "compliance_immutable",
             "compliance_no_delete",
+            "work_artifacts_no_update",
+            "work_artifacts_no_delete",
+            "gate_outcomes_no_update",
+            "gate_outcomes_no_delete",
         ]
 
         cursor = conn.execute(
