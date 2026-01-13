@@ -8,7 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from motus.commands.work_cmd import cmd_work_list, cmd_work_status
+from motus.commands.work_cmd import cmd_work_list, cmd_work_status, cmd_work_reflect
 from motus.core.bootstrap import bootstrap_database_at_path
 from motus.core.database_connection import reset_db_manager
 from motus.core.layered_config import reset_config
@@ -229,3 +229,39 @@ def test_work_status_reads_persisted_records(
     assert payload["decisions"][0]["decision"] == "Approve change"
     assert len(payload["gate_outcomes"]) == 1
     assert payload["gate_outcomes"][0]["gate_id"] == "GATE-TEST-001"
+
+
+def test_work_reflect_records_document_evidence(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    db_path = _bootstrap_db(tmp_path, monkeypatch)
+
+    compiler = WorkCompiler()
+    result = compiler.claim_work(
+        task_id="ADHOC-REFLECT-001",
+        resources=[ClaimedResource(type="file", path="README.md")],
+        intent="Reflection note",
+        agent_id="agent-1",
+    )
+    assert result.decision.decision == "GRANTED"
+
+    args = SimpleNamespace(json=True, lease_id=result.lease.lease_id, note="Reflecting on progress")
+    assert cmd_work_reflect(args) == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["accepted"] is True
+
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    row = conn.execute(
+        "SELECT evidence_type, artifacts FROM evidence WHERE id = ?",
+        (payload["evidence_id"],),
+    ).fetchone()
+    conn.close()
+
+    assert row is not None
+    assert row["evidence_type"] == "document"
+    artifacts = json.loads(row["artifacts"])
+    assert artifacts["kind"] == "reflection"
+    assert artifacts["note"] == "Reflecting on progress"

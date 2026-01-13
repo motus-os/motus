@@ -120,6 +120,7 @@ Work Compiler 6-call protocol plus helpers.
 | `motus work outcome` | Register a deliverable |
 | `motus work evidence` | Record verification evidence |
 | `motus work decision` | Log a decision |
+| `motus work reflect` | Record a reflection note |
 | `motus work release` | Release the lease with final outcome |
 | `motus work status` | Show persisted outcomes/evidence/decisions (+ gate outcomes) |
 | `motus work list` | List active leases |
